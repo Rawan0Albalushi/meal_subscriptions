@@ -3,15 +3,18 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Restaurants from './pages/Restaurants';
-import RestaurantDetail from './pages/RestaurantDetail';
-import SubscriptionForm from './pages/SubscriptionForm';
-import MySubscriptions from './pages/MySubscriptions';
-import SubscriptionDetail from './pages/SubscriptionDetail';
-import DeliveryAddresses from './pages/DeliveryAddresses';
-import TestDesign from './pages/TestDesign';
+import RequireRole from './components/RequireRole';
+import Home from './pages/Customer/Home';
+import Login from './pages/Customer/Login';
+import Restaurants from './pages/Customer/Restaurants';
+import RestaurantDetail from './pages/Customer/RestaurantDetail';
+import SubscriptionForm from './pages/Customer/SubscriptionForm';
+import MySubscriptions from './pages/Customer/MySubscriptions';
+import SubscriptionDetail from './pages/Customer/SubscriptionDetail';
+import DeliveryAddresses from './pages/Customer/DeliveryAddresses';
+import AdminLayout from './pages/Admin/AdminLayout';
+import SellerLayout from './pages/Seller/SellerLayout';
+
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
@@ -31,7 +34,6 @@ function AppRoutes() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/test-design" element={<TestDesign />} />
                     <Route path="/restaurants" element={<Restaurants />} />
                     <Route path="/restaurants/:id" element={<RestaurantDetail />} />
                     <Route 
@@ -72,6 +74,26 @@ function AppRoutes() {
                             isAuthenticated ? 
                             <DeliveryAddresses /> : 
                             <Navigate to="/login" replace />
+                        } 
+                    />
+                    
+                    {/* Admin routes */}
+                    <Route 
+                        path="/admin/*" 
+                        element={
+                            <RequireRole role="admin">
+                                <AdminLayout />
+                            </RequireRole>
+                        } 
+                    />
+                    
+                    {/* Seller routes */}
+                    <Route 
+                        path="/seller/*" 
+                        element={
+                            <RequireRole role="seller">
+                                <SellerLayout />
+                            </RequireRole>
                         } 
                     />
                 </Routes>

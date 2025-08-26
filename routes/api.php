@@ -37,3 +37,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/delivery-addresses/{id}', [DeliveryAddressController::class, 'destroy']);
 });
 
+// Admin routes
+Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/stats', function () {
+        return response()->json(['ok' => true]);
+    });
+});
+
+// Seller routes
+Route::middleware(['auth:sanctum', 'role:seller'])->prefix('seller')->group(function () {
+    Route::get('/orders', function () {
+        return response()->json(['ok' => true]);
+    });
+});
+

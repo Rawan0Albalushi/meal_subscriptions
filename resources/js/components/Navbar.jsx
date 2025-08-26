@@ -233,6 +233,31 @@ const Navbar = () => {
                                     }}>
                                         مرحبا {user?.full_name || user?.name || 'المستخدم'}
                                     </span>
+                                    
+                                    {/* Dashboard Link for Admin/Seller */}
+                                    {(user.role === 'admin' || user.role === 'seller') && (
+                                        <Link to={user.role === 'admin' ? '/admin' : '/seller'} style={{
+                                            padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
+                                            borderRadius: '0.5rem',
+                                            background: 'rgba(79, 70, 229, 0.1)',
+                                            color: 'rgb(79 70 229)',
+                                            textDecoration: 'none',
+                                            fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
+                                            fontWeight: '500',
+                                            transition: 'all 0.2s',
+                                            whiteSpace: 'nowrap'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.background = 'rgba(79, 70, 229, 0.2)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                                        }}
+                                        >
+                                            {user.role === 'admin' ? 'لوحة التحكم' : 'لوحة البائع'}
+                                        </Link>
+                                    )}
+                                    
                                      <button
                                          onClick={handleLogout}
                                         style={{
@@ -421,6 +446,35 @@ const Navbar = () => {
                                                 {user?.full_name || user?.name || 'المستخدم'}
                                             </div>
                                         </div>
+                                        
+                                        {/* Dashboard Link for Admin/Seller in Mobile */}
+                                        {(user.role === 'admin' || user.role === 'seller') && (
+                                            <Link to={user.role === 'admin' ? '/admin' : '/seller'} 
+                                                style={{
+                                                    padding: 'clamp(0.75rem, 3vw, 1rem)',
+                                                    borderRadius: '0.75rem',
+                                                    background: 'rgba(79, 70, 229, 0.1)',
+                                                    color: 'rgb(79 70 229)',
+                                                    textDecoration: 'none',
+                                                    fontSize: 'clamp(1rem, 3vw, 1.125rem)',
+                                                    fontWeight: '600',
+                                                    border: '1px solid rgba(79, 70, 229, 0.2)',
+                                                    transition: 'all 0.2s ease',
+                                                    textAlign: 'center'
+                                                }}
+                                                onClick={() => setIsMobileMenuOpen(false)}
+                                                onMouseEnter={(e) => {
+                                                    e.target.style.background = 'rgba(79, 70, 229, 0.2)';
+                                                    e.target.style.transform = 'translateX(-5px)';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                                                    e.target.style.transform = 'translateX(0)';
+                                                }}
+                                            >
+                                                🎛️ {user.role === 'admin' ? 'لوحة التحكم' : 'لوحة البائع'}
+                                            </Link>
+                                        )}
                                         
                                  <button
                                      onClick={() => {

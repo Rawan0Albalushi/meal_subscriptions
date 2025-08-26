@@ -1,12 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const Home = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
   const { t, language } = useLanguage();
+
+  // Redirect users based on their role
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.role === 'admin') {
+        navigate('/admin');
+      } else if (user.role === 'seller') {
+        navigate('/seller');
+      }
+    }
+  }, [isAuthenticated, user, navigate]);
   const featuredRestaurants = [
     {
       id: 1,

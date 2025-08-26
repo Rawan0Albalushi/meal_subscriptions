@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { restaurantsAPI, deliveryAddressesAPI, subscriptionsAPI } from '../services/api';
-import { useAuth } from '../contexts/AuthContext';
+import { restaurantsAPI, deliveryAddressesAPI, subscriptionsAPI } from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 
 const SubscriptionForm = () => {
   const { restaurantId, subscriptionType, mealIds } = useParams();
