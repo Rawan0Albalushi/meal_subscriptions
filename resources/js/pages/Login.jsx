@@ -15,6 +15,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   // Clear form on component mount and when switching between login/register
   useEffect(() => {
@@ -40,16 +41,21 @@ const Login = () => {
     setTouched({});
   }, []);
 
-  // Redirect if already authenticated
+  // Redirect if already authenticated (but not during registration success)
   useEffect(() => {
-    if (isAuthenticated) {
+    // Check if user is actually authenticated with valid token
+    const token = localStorage.getItem('auth_token');
+    const user = localStorage.getItem('user');
+    
+    if (isAuthenticated && token && user && !showSuccessMessage) {
       navigate('/');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, showSuccessMessage]);
 
   // Clear auth error when switching forms
   useEffect(() => {
     clearError();
+    setShowSuccessMessage(false);
   }, [isLogin, clearError]);
 
   const validateForm = () => {
@@ -111,8 +117,29 @@ const Login = () => {
         });
       }
 
+      console.log('Auth result:', result);
       if (result.success) {
-        navigate('/');
+        if (isLogin) {
+          // Show success message for login
+          console.log('Showing login success message');
+          setShowSuccessMessage(true);
+          // Redirect to home page after 2 seconds
+          setTimeout(() => {
+            console.log('Redirecting to home page');
+            navigate('/');
+          }, 2000);
+        } else {
+          // Show success message for registration
+          console.log('Showing success message');
+          setShowSuccessMessage(true);
+          // Redirect to home page after 2 seconds
+          setTimeout(() => {
+            console.log('Redirecting to home page');
+            navigate('/');
+          }, 2000);
+        }
+      } else {
+        console.log('Auth failed:', result.error);
       }
     } catch (error) {
       console.error('Auth error:', error);
@@ -201,6 +228,83 @@ const Login = () => {
         direction: 'rtl'
       }}
     >
+      {/* Success Message Overlay */}
+      {showSuccessMessage && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: 'white',
+            borderRadius: '1rem',
+            padding: '2rem',
+            textAlign: 'center',
+            maxWidth: '400px',
+            margin: '1rem',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)'
+          }}>
+            <div className="success-icon" style={{
+              width: '4rem',
+              height: '4rem',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, rgb(34 197 94), rgb(16 185 129))',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 1rem',
+              fontSize: '2rem'
+            }}>
+              {isLogin ? '🎉' : '✅'}
+            </div>
+            <h2 style={{
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+              color: 'rgb(34 197 94)',
+              marginBottom: '0.5rem'
+            }}>
+              {isLogin ? 'تم تسجيل الدخول بنجاح!' : 'تم التسجيل بنجاح!'}
+            </h2>
+            <p style={{
+              color: 'rgb(75 85 99)',
+              marginBottom: '1rem'
+            }}>
+              سيتم توجيهك للصفحة الرئيسية خلال لحظات...
+            </p>
+                                          <div style={{
+                  width: '100%',
+                  height: '0.25rem',
+                  background: 'rgb(229 231 235)',
+                  borderRadius: '0.125rem',
+                  overflow: 'hidden'
+                }}>
+                  <div className="progress-bar" style={{
+                    width: '100%',
+                    height: '100%',
+                    background: 'linear-gradient(135deg, rgb(34 197 94), rgb(16 185 129))',
+                    transformOrigin: 'left'
+                  }}></div>
+                </div>
+            <div style={{
+              marginTop: '1rem',
+              fontSize: '0.875rem',
+              color: 'rgb(75 85 99)',
+              opacity: 0.8
+            }}>
+              ⏱️ جاري التوجيه...
+            </div>
+          </div>
+        </div>
+      )}
+
+
       <div style={{ 
         maxWidth: '900px', 
         width: '100%',

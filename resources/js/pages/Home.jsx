@@ -1,8 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
+import HomeNavbar from '../components/HomeNavbar';
 
 const Home = () => {
   const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
+  const { t, language } = useLanguage();
   const featuredRestaurants = [
     {
       id: 1,
@@ -35,50 +40,15 @@ const Home = () => {
 
     return (
     <div style={{ minHeight: '100vh' }}>
-      {/* Navbar */}
-      <header className="navbar-glass" style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 50
-      }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '4rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <div className="pulse-glow" style={{ 
-                height: '2.5rem', 
-                width: '2.5rem', 
-                borderRadius: '1rem', 
-                background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontWeight: 'bold',
-                fontSize: '1.125rem'
-              }}>
-                م
-                </div>
-              <span className="gradient-text" style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>اشتراكات الوجبات</span>
-                        </div>
-            <nav style={{ display: 'none', alignItems: 'center', gap: '1.5rem', fontSize: '0.875rem', color: 'rgb(75 85 99)' }}>
-              <a className="nav-link" style={{ color: 'inherit', textDecoration: 'none' }} href="#features">المزايا</a>
-              <a className="nav-link" style={{ color: 'inherit', textDecoration: 'none' }} href="#restaurants">المطاعم</a>
-              <a className="nav-link" style={{ color: 'inherit', textDecoration: 'none' }} href="#how">كيف يعمل؟</a>
-            </nav>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <a href="/login" className="navbar-btn navbar-btn-outline">تسجيل الدخول</a>
-              <a href="/restaurants" className="navbar-btn navbar-btn-primary">عرض المطاعم</a>
-                        </div>
-                    </div>
-                </div>
-      </header>
+      {/* Home Navigation Bar */}
+      <HomeNavbar />
 
       {/* Hero Section */}
       <section className="section-enhanced" style={{ 
         background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',
         position: 'relative',
         overflow: 'hidden',
-        padding: '3rem 0'
+        padding: '2rem 0 3rem 0'
       }}>
         {/* Floating decorative elements */}
         <div className="floating-elements">
@@ -102,7 +72,7 @@ const Home = () => {
           }}></div>
                     </div>
                     
-        <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
+        <div style={{ width: '100%', padding: '0 2rem' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', alignItems: 'center', gap: '3rem', position: 'relative', zIndex: 1 }}>
             <div className="hero-text" style={{ textAlign: 'center' }}>
               <div className="hero-badge" style={{
@@ -115,21 +85,21 @@ const Home = () => {
                 color: 'rgb(67 56 202)',
                 marginBottom: '1.5rem'
               }}>
-                🎉 خصم 30% للاشتراكات الجديدة
+                🎉 {t('discountBadge')}
                                     </div>
               <h1 className="hero-title" style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 'bold', lineHeight: '1.2', marginBottom: '1.5rem' }}>
-                اشترك من مطاعمك المفضّلة
-                <span className="gradient-text" style={{ display: 'block' }}>ووصل وجبتك في وقت ثابت</span>
+                {t('heroTitle')}
+                <span className="gradient-text" style={{ display: 'block' }}>{t('heroSubtitle')}</span>
               </h1>
               <p style={{ marginTop: '1rem', color: 'rgb(75 85 99)', marginBottom: '2rem', fontSize: '1.125rem', lineHeight: '1.7' }}>
-                اختر مطعمًا واحدًا، خطّة أسبوعية أو شهرية، وحدّد وجبة كل يوم (الأحد–الأربعاء) مع عنوان توصيل واحد.
+                {t('heroDescription')}
               </p>
               <div className="hero-buttons" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                 <a href="/restaurants" className="hero-btn hero-btn-primary">
-                  🚀 ابدأ الآن
+                  🚀 {t('getStarted')}
                 </a>
                 <a href="#features" className="hero-btn hero-btn-outline">
-                  ✨ تعرّف أكثر
+                  ✨ {t('learnMore')}
                 </a>
                                 </div>
                             </div>
@@ -146,8 +116,8 @@ const Home = () => {
                 }}>
                   <div style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🍽️</div>
-                    <div style={{ fontSize: '1.5rem', fontWeight: '600', color: 'rgb(79 70 229)' }}>معاينة التصميم</div>
-                    <div style={{ fontSize: '1rem', color: 'rgb(107 114 128)', marginTop: '0.5rem' }}>تصميم حديث وجذاب</div>
+                    <div style={{ fontSize: '1.5rem', fontWeight: '600', color: 'rgb(79 70 229)' }}>{t('designPreview')}</div>
+                    <div style={{ fontSize: '1rem', color: 'rgb(107 114 128)', marginTop: '0.5rem' }}>{t('designDescription')}</div>
                   </div>
                     </div>
                 </div>
@@ -158,30 +128,30 @@ const Home = () => {
 
       {/* Features Section */}
       <section id="features" className="section-enhanced" style={{ padding: '3rem 0' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
+        <div style={{ width: '100%', padding: '0 2rem' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <h2 className="gradient-text" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', fontWeight: 'bold', marginBottom: '1rem' }}>
-              لماذا الاشتراك معنا؟
+              {t('whySubscribe')}
                         </h2>
             <p style={{ fontSize: '1.125rem', color: 'rgb(75 85 99)', maxWidth: '600px', margin: '0 auto' }}>
-              نقدم لك تجربة فريدة ومميزة في عالم اشتراكات الوجبات
+              {t('featuresDescription')}
                         </p>
                     </div>
           <div className="grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
             <div className="card card-hover" style={{ height: '100%', textAlign: 'center' }}>
               <div className="feature-icon" style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>🍽️</div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.75rem', color: 'rgb(79 70 229)' }}>وجبات متنوعة</h3>
-              <p style={{ fontSize: '1rem', color: 'rgb(75 85 99)', lineHeight: '1.7' }}>قائمة مختارة من المطاعم؛ اختر فطور أو غداء أو عشاء بما يناسب ذوقك.</p>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.75rem', color: 'rgb(79 70 229)' }}>{t('diverseMeals')}</h3>
+              <p style={{ fontSize: '1rem', color: 'rgb(75 85 99)', lineHeight: '1.7' }}>{t('diverseMealsDesc')}</p>
                             </div>
             <div className="card card-hover" style={{ height: '100%', textAlign: 'center' }}>
               <div className="feature-icon" style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>⏰</div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.75rem', color: 'rgb(79 70 229)' }}>وقت توصيل ثابت</h3>
-              <p style={{ fontSize: '1rem', color: 'rgb(75 85 99)', lineHeight: '1.7' }}>نوصّل في نفس الموعد المخصّص لنوع الوجبة طوال مدة الاشتراك.</p>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.75rem', color: 'rgb(79 70 229)' }}>{t('fixedDelivery')}</h3>
+              <p style={{ fontSize: '1rem', color: 'rgb(75 85 99)', lineHeight: '1.7' }}>{t('fixedDeliveryDesc')}</p>
                             </div>
             <div className="card card-hover" style={{ height: '100%', textAlign: 'center' }}>
               <div className="feature-icon" style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>💳</div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.75rem', color: 'rgb(79 70 229)' }}>دفع آمن عبر ثواني</h3>
-              <p style={{ fontSize: '1rem', color: 'rgb(75 85 99)', lineHeight: '1.7' }}>ادفع عبر Thawani بخطوة واحدة وبسعر نهائي واضح.</p>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.75rem', color: 'rgb(79 70 229)' }}>{t('securePayment')}</h3>
+              <p style={{ fontSize: '1rem', color: 'rgb(75 85 99)', lineHeight: '1.7' }}>{t('securePaymentDesc')}</p>
                             </div>
                             </div>
                         </div>
@@ -192,13 +162,13 @@ const Home = () => {
         background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
         padding: '3rem 0'
       }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
+        <div style={{ width: '100%', padding: '0 2rem' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <h2 className="gradient-text" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', fontWeight: 'bold', marginBottom: '1rem' }}>
-              مطاعمنا المميزة
+              {t('featuredRestaurants')}
             </h2>
             <p style={{ fontSize: '1.125rem', color: 'rgb(75 85 99)', maxWidth: '600px', margin: '0 auto' }}>
-              اكتشف مجموعة متنوعة من المطاعم المميزة وابدأ رحلتك معنا
+              {t('restaurantsDescription')}
             </p>
                                     </div>
                                     
@@ -258,7 +228,7 @@ const Home = () => {
                     transition: 'transform 0.2s'
                   }}
                 >
-                  اشترك الآن
+                  {t('subscribe')}
                 </button>
                                 </div>
                             ))}
@@ -266,7 +236,7 @@ const Home = () => {
 
           <div style={{ textAlign: 'center' }}>
             <a href="/restaurants" className="feature-btn feature-btn-primary">
-              🍕 عرض جميع المطاعم
+              🍕 {t('viewAllRestaurants')}
             </a>
                     </div>
                 </div>
@@ -277,21 +247,21 @@ const Home = () => {
         background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',
         padding: '3rem 0'
       }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
+        <div style={{ width: '100%', padding: '0 2rem' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <h2 className="gradient-text" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', fontWeight: 'bold', marginBottom: '1rem' }}>
-              كيف يعمل الاشتراك؟
+              {t('howItWorks')}
                         </h2>
             <p style={{ fontSize: '1.125rem', color: 'rgb(75 85 99)', maxWidth: '600px', margin: '0 auto' }}>
-              خطوات بسيطة لتبدأ رحلتك معنا
+              {t('howItWorksDesc')}
                         </p>
                     </div>
           <ol style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem', textAlign: 'center' }}>
             {[
-              "سجّل بالبريد أو Google أو Apple",
-              "اختر مطعمًا وخطتك (أسبوعي/شهري)",
-              "حدّد وجبة كل يوم (أحد-أربعاء) وعنوانًا واحدًا",
-              "ادفع عبر ثواني واستلم في الموعد الثابت",
+              t('step1'),
+              t('step2'),
+              t('step3'),
+              t('step4'),
             ].map((step, i) => (
               <li key={i} className="card card-hover">
                 <div className="step-number">{i+1}</div>
@@ -304,9 +274,9 @@ const Home = () => {
 
       {/* Footer */}
       <footer className="section footer-enhanced" style={{ padding: '2rem 0' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
+        <div style={{ width: '100%', padding: '0 2rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem', fontSize: '1rem', color: 'rgb(107 114 128)' }}>
-            <p style={{ fontSize: '1.125rem', fontWeight: '600' }}>© {new Date().getFullYear()} اشتراكات الوجبات</p>
+            <p style={{ fontSize: '1.125rem', fontWeight: '600' }}>© {new Date().getFullYear()} {t('copyright')}</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
               <a 
                 href="https://maksab.om/" 
@@ -326,13 +296,15 @@ const Home = () => {
                   e.target.style.color = '#3b82f6';
                 }}
               >
-                منصة مكسب ↗
+                {t('poweredBy')} ↗
               </a>
             </div>
             </div>
         </div>
       </footer>
         </div>
+
+
     );
 };
 

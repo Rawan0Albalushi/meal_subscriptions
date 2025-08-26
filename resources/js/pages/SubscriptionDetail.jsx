@@ -19,7 +19,7 @@ const SubscriptionDetail = () => {
             setLoading(true);
             const response = await fetch(`/api/subscriptions/${id}`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
                     'Content-Type': 'application/json'
                 }
             });
@@ -47,7 +47,7 @@ const SubscriptionDetail = () => {
             const response = await fetch(`/api/subscriptions/${id}`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -286,4 +286,5 @@ const SubscriptionDetail = () => {
 };
 
 export default SubscriptionDetail;
+
 

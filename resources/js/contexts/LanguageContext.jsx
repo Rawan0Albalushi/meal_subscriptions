@@ -29,6 +29,36 @@ export const LanguageProvider = ({ children }) => {
             welcomeSubtitle: 'اختر من مجموعة متنوعة من المطاعم واحصل على وجباتك المفضلة في الوقت المحدد',
             getStarted: 'ابدأ الآن',
             viewRestaurants: 'عرض المطاعم',
+            learnMore: 'تعرف أكثر',
+            discountBadge: 'خصم 30% للاشتراكات الجديدة',
+            heroTitle: 'اشترك من مطاعمك المفضلة',
+            heroSubtitle: 'ووصل وجبتك في وقت ثابت',
+            heroDescription: 'اختر مطعمًا واحدًا، خطّة أسبوعية أو شهرية، وحدّد وجبة كل يوم (الأحد–الأربعاء) مع عنوان توصيل واحد.',
+            designPreview: 'معاينة التصميم',
+            designDescription: 'تصميم حديث وجذاب',
+            
+            // Features Section
+            whySubscribe: 'لماذا الاشتراك معنا؟',
+            featuresDescription: 'نقدم لك تجربة فريدة ومميزة في عالم اشتراكات الوجبات',
+            diverseMeals: 'وجبات متنوعة',
+            diverseMealsDesc: 'قائمة مختارة من المطاعم؛ اختر فطور أو غداء أو عشاء بما يناسب ذوقك.',
+            fixedDelivery: 'وقت توصيل ثابت',
+            fixedDeliveryDesc: 'نوصّل في نفس الموعد المخصّص لنوع الوجبة طوال مدة الاشتراك.',
+            securePayment: 'دفع آمن عبر ثواني',
+            securePaymentDesc: 'ادفع عبر Thawani بخطوة واحدة وبسعر نهائي واضح.',
+            
+            // Restaurants Section
+            featuredRestaurants: 'مطاعمنا المميزة',
+            restaurantsDescription: 'اكتشف مجموعة متنوعة من المطاعم المميزة وابدأ رحلتك معنا',
+            viewAllRestaurants: 'عرض جميع المطاعم',
+            
+            // How it works
+            howItWorks: 'كيف يعمل الاشتراك؟',
+            howItWorksDesc: 'خطوات بسيطة لتبدأ رحلتك معنا',
+            step1: 'سجّل بالبريد أو Google أو Apple',
+            step2: 'اختر مطعمًا وخطتك (أسبوعي/شهري)',
+            step3: 'حدّد وجبة كل يوم (أحد-أربعاء) وعنوانًا واحدًا',
+            step4: 'ادفع عبر ثواني واستلم في الموعد الثابت',
             
             // Restaurant
             viewMenu: 'عرض القائمة',
@@ -80,6 +110,10 @@ export const LanguageProvider = ({ children }) => {
             breakfast: 'فطور',
             lunch: 'غداء',
             dinner: 'عشاء',
+            
+            // Footer
+            copyright: 'اشتراكات الوجبات',
+            poweredBy: 'منصة مكسب',
         },
         en: {
             // Navigation
@@ -96,6 +130,36 @@ export const LanguageProvider = ({ children }) => {
             welcomeSubtitle: 'Choose from a variety of restaurants and get your favorite meals delivered on time',
             getStarted: 'Get Started',
             viewRestaurants: 'View Restaurants',
+            learnMore: 'Learn More',
+            discountBadge: '30% discount for new subscriptions',
+            heroTitle: 'Subscribe from your favorite restaurants',
+            heroSubtitle: 'And get your meal delivered at a fixed time',
+            heroDescription: 'Choose one restaurant, a weekly or monthly plan, and select a meal every day (Sunday-Wednesday) with one delivery address.',
+            designPreview: 'Design Preview',
+            designDescription: 'Modern and attractive design',
+            
+            // Features Section
+            whySubscribe: 'Why Subscribe with Us?',
+            featuresDescription: 'We offer you a unique and distinctive experience in the world of meal subscriptions',
+            diverseMeals: 'Diverse Meals',
+            diverseMealsDesc: 'A curated list of restaurants; choose breakfast, lunch, or dinner to suit your taste.',
+            fixedDelivery: 'Fixed Delivery Time',
+            fixedDeliveryDesc: 'We deliver at the same designated time for the meal type throughout the subscription period.',
+            securePayment: 'Secure Payment in Seconds',
+            securePaymentDesc: 'Pay through Thawani in one step with a clear final price.',
+            
+            // Restaurants Section
+            featuredRestaurants: 'Our Featured Restaurants',
+            restaurantsDescription: 'Discover a variety of distinguished restaurants and start your journey with us',
+            viewAllRestaurants: 'View All Restaurants',
+            
+            // How it works
+            howItWorks: 'How Does Subscription Work?',
+            howItWorksDesc: 'Simple steps to start your journey with us',
+            step1: 'Register with email, Google, or Apple',
+            step2: 'Choose a restaurant and your plan (weekly/monthly)',
+            step3: 'Select a meal every day (Sunday-Wednesday) with one address',
+            step4: 'Pay in seconds and receive at the fixed time',
             
             // Restaurant
             viewMenu: 'View Menu',
@@ -147,6 +211,10 @@ export const LanguageProvider = ({ children }) => {
             breakfast: 'Breakfast',
             lunch: 'Lunch',
             dinner: 'Dinner',
+            
+            // Footer
+            copyright: 'Meal Subscriptions',
+            poweredBy: 'Powered by Maksab',
         }
     };
 
@@ -155,8 +223,26 @@ export const LanguageProvider = ({ children }) => {
     };
 
     const toggleLanguage = () => {
-        setLanguage(language === 'ar' ? 'en' : 'ar');
+        const newLanguage = language === 'ar' ? 'en' : 'ar';
+        setLanguage(newLanguage);
+        
+        // Update document direction
+        document.documentElement.dir = newLanguage === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = newLanguage;
+        
+        // Save to localStorage
+        localStorage.setItem('language', newLanguage);
     };
+
+    // Initialize language from localStorage
+    React.useEffect(() => {
+        const savedLanguage = localStorage.getItem('language');
+        if (savedLanguage && (savedLanguage === 'ar' || savedLanguage === 'en')) {
+            setLanguage(savedLanguage);
+            document.documentElement.dir = savedLanguage === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = savedLanguage;
+        }
+    }, []);
 
     const value = {
         language,
@@ -174,4 +260,5 @@ export const LanguageProvider = ({ children }) => {
         </LanguageContext.Provider>
     );
 };
+
 

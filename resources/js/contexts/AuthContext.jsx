@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { authAPI } from '../services/api';
 
 const AuthContext = createContext();
@@ -15,14 +15,48 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    // Function to clear all auth data
+    const clearAuthData = () => {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user');
+        sessionStorage.removeItem('welcomeShown');
+        setUser(null);
+        setIsAuthenticated(false);
+        setError(null);
+    };
+
+    // Function to validate auth data
+    const validateAuthData = (token, userData) => {
+        if (!token || !userData) {
+            return false;
+        }
+        
+        try {
+            const user = JSON.parse(userData);
+            return user && (user.id || user.email) && token.length > 10;
+        } catch (error) {
+            return false;
+        }
+    };
 
     // Check if user is logged in on app start
     useEffect(() => {
         const token = localStorage.getItem('auth_token');
         const savedUser = localStorage.getItem('user');
         
-        if (token && savedUser) {
-            setUser(JSON.parse(savedUser));
+        if (validateAuthData(token, savedUser)) {
+            try {
+                const parsedUser = JSON.parse(savedUser);
+                setUser(parsedUser);
+                setIsAuthenticated(true);
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+                clearAuthData();
+            }
+        } else {
+            clearAuthData();
         }
         setLoading(false);
     }, []);
@@ -39,10 +73,18 @@ export const AuthProvider = ({ children }) => {
                 localStorage.setItem('auth_token', token);
                 localStorage.setItem('user', JSON.stringify(user));
                 
+                // Set fresh login flag for welcome message
+                sessionStorage.setItem('isFreshLogin', 'true');
+                
                 // Update state
                 setUser(user);
+                setIsAuthenticated(true);
                 
                 return { success: true, data: response.data.data };
+            } else {
+                const errorMessage = response.data.message || 'حدث خطأ أثناء تسجيل الدخول';
+                setError(errorMessage);
+                return { success: false, error: errorMessage };
             }
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'حدث خطأ أثناء تسجيل الدخول';
@@ -63,10 +105,18 @@ export const AuthProvider = ({ children }) => {
                 localStorage.setItem('auth_token', token);
                 localStorage.setItem('user', JSON.stringify(user));
                 
+                // Set fresh login flag for welcome message
+                sessionStorage.setItem('isFreshLogin', 'true');
+                
                 // Update state
                 setUser(user);
+                setIsAuthenticated(true);
                 
                 return { success: true, data: response.data.data };
+            } else {
+                const errorMessage = response.data.message || 'حدث خطأ أثناء إنشاء الحساب';
+                setError(errorMessage);
+                return { success: false, error: errorMessage };
             }
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'حدث خطأ أثناء إنشاء الحساب';
@@ -81,13 +131,7 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error('Logout error:', error);
         } finally {
-            // Clear localStorage
-            localStorage.removeItem('auth_token');
-            localStorage.removeItem('user');
-            
-            // Update state
-            setUser(null);
-            setError(null);
+            clearAuthData();
         }
     };
 
@@ -103,7 +147,7 @@ export const AuthProvider = ({ children }) => {
         register,
         logout,
         clearError,
-        isAuthenticated: !!user,
+        isAuthenticated,
     };
 
     return (

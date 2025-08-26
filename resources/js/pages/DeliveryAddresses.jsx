@@ -29,7 +29,7 @@ const DeliveryAddresses = () => {
             setLoading(true);
             const response = await fetch('/api/delivery-addresses', {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
                     'Content-Type': 'application/json'
                 }
             });
@@ -62,7 +62,7 @@ const DeliveryAddresses = () => {
             const response = await fetch(url, {
                 method,
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData)
@@ -110,7 +110,7 @@ const DeliveryAddresses = () => {
             const response = await fetch(`/api/delivery-addresses/${addressId}`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
                     'Content-Type': 'application/json'
                 }
             });

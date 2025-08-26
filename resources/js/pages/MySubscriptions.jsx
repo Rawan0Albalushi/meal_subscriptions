@@ -17,7 +17,7 @@ const MySubscriptions = () => {
             setLoading(true);
             const response = await fetch('/api/subscriptions', {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
                     'Content-Type': 'application/json'
                 }
             });

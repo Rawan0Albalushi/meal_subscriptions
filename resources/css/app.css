@@ -1020,3 +1020,68 @@ body {
     transform: translateY(-2px);
   }
 }
+
+/* Loading Animation for Success Message */
+@keyframes loading {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* Success Message Animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0,0,0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -30px, 0);
+  }
+  70% {
+    transform: translate3d(0, -15px, 0);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+
+/* Success Message Classes */
+.success-message {
+  animation: slideInRight 0.5s ease-out;
+}
+
+.success-icon {
+  animation: bounce 0.6s ease-in-out;
+}
+
+.welcome-section {
+  animation: slideInDown 0.8s ease-out;
+}
+
+.progress-bar {
+  animation: loading 2s linear;
+}

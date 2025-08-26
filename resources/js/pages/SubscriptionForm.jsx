@@ -185,58 +185,6 @@ const SubscriptionForm = () => {
       background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',
       direction: 'rtl'
     }}>
-      {/* Header */}
-      <header style={{
-        background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 50
-      }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '4rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <div style={{ 
-                height: '2.5rem', 
-                width: '2.5rem', 
-                borderRadius: '1rem', 
-                background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontWeight: 'bold',
-                fontSize: '1.125rem'
-              }}>
-                م
-              </div>
-              <span style={{ fontSize: '1.25rem', fontWeight: 'bold', background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                اشتراكات الوجبات
-              </span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <button 
-                onClick={() => navigate(`/restaurants/${restaurantId}`)}
-                style={{
-                  padding: '0.5rem 1rem',
-                  borderRadius: '0.5rem',
-                  border: '1px solid rgb(79 70 229)',
-                  background: 'white',
-                  color: 'rgb(79 70 229)',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
-              >
-                ← العودة للمطعم
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '2rem 1rem' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <h1 style={{ 
