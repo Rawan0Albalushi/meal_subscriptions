@@ -21,9 +21,13 @@ function AppRoutes() {
 
     return (
         <>
-            {/* Show Navbar only for non-home pages */}
-            {location.pathname !== '/' && <Navbar />}
-            <main style={{ width: '100%', padding: location.pathname === '/' ? '0' : '2rem' }}>
+            {/* Show Navbar on all pages except home, or on home if user is authenticated */}
+            {(location.pathname !== '/' || isAuthenticated) && <Navbar />}
+            <main style={{ 
+                width: '100%', 
+                padding: (location.pathname === '/' && !isAuthenticated) ? '0' : '1rem',
+                paddingTop: (location.pathname === '/' && !isAuthenticated) ? '0' : '1rem'
+            }}>
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
@@ -32,6 +36,14 @@ function AppRoutes() {
                     <Route path="/restaurants/:id" element={<RestaurantDetail />} />
                     <Route 
                         path="/subscribe/:restaurantId" 
+                        element={
+                            isAuthenticated ? 
+                            <SubscriptionForm /> : 
+                            <Navigate to="/login" replace />
+                        } 
+                    />
+                    <Route 
+                        path="/subscribe/:restaurantId/:mealId" 
                         element={
                             isAuthenticated ? 
                             <SubscriptionForm /> : 

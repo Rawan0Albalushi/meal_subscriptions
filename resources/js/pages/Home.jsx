@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import HomeNavbar from '../components/HomeNavbar';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -40,9 +39,6 @@ const Home = () => {
 
     return (
     <div style={{ minHeight: '100vh' }}>
-      {/* Home Navigation Bar */}
-      <HomeNavbar />
-
       {/* Hero Section */}
       <section className="section-enhanced" style={{ 
         background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',

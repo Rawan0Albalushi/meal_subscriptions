@@ -967,6 +967,139 @@ body {
   transform: none;
 }
 
+/* Mobile Responsive Improvements */
+@media (max-width: 768px) {
+  /* Improve touch targets */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better spacing for mobile */
+  .mobile-padding {
+    padding: 1rem;
+  }
+  
+  /* Stack elements vertically on mobile */
+  .mobile-stack {
+    flex-direction: column !important;
+  }
+  
+  /* Center text on mobile */
+  .mobile-center {
+    text-align: center !important;
+  }
+  
+  /* Full width on mobile */
+  .mobile-full {
+    width: 100% !important;
+  }
+  
+  /* Better grid for mobile */
+  .mobile-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  /* Improved popup for mobile */
+  .mobile-popup {
+    max-width: 90vw !important;
+    margin: 1rem !important;
+  }
+  
+  /* Better button spacing on mobile */
+  .mobile-buttons {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+  
+  /* Improved card layout for mobile */
+  .mobile-card {
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  /* Better text sizing for mobile */
+  .mobile-text {
+    font-size: clamp(0.875rem, 3vw, 1rem) !important;
+  }
+  
+  .mobile-title {
+    font-size: clamp(1.25rem, 4vw, 1.5rem) !important;
+  }
+  
+  .mobile-subtitle {
+    font-size: clamp(1rem, 3vw, 1.25rem) !important;
+  }
+}
+
+/* Tablet Responsive Improvements */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .tablet-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .tablet-padding {
+    padding: 1.5rem !important;
+  }
+}
+
+/* Touch Device Improvements */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  button, a, input, select, textarea {
+    min-height: 48px;
+    min-width: 48px;
+  }
+  
+  /* Better spacing for touch */
+  .touch-spacing {
+    gap: 1rem !important;
+    margin: 0.75rem 0 !important;
+  }
+  
+  /* Improved button feedback */
+  .touch-button:active {
+    transform: scale(0.95) !important;
+  }
+  
+  /* Better scrolling */
+  .touch-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+}
+
+/* Mobile Menu Improvements */
+.mobile-menu-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-menu-item:active {
+  transform: scale(0.98);
+}
+
+/* Prevent body scroll when mobile menu is open */
+body.menu-open {
+  overflow: hidden;
+}
+
+/* Enhanced Mobile Menu Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-menu-fade-in {
+  animation: fadeInUp 0.3s ease-out;
+}
+
 /* Enhanced Success States */
 .success-glow {
   animation: success-pulse 0.6s ease-out;
@@ -1028,6 +1161,30 @@ body {
   }
   100% {
     width: 100%;
+  }
+}
+
+/* Slide In Animation for Popups */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Slide Down Animation for Mobile Menu */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
