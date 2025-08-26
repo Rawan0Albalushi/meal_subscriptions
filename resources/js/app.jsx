@@ -21,8 +21,8 @@ function AppRoutes() {
 
     return (
         <>
-            {/* Show Navbar on all pages except home, or on home if user is authenticated */}
-            {(location.pathname !== '/' || isAuthenticated) && <Navbar />}
+            {/* Show Navbar on all pages */}
+            <Navbar />
             <main style={{ 
                 width: '100%', 
                 padding: (location.pathname === '/' && !isAuthenticated) ? '0' : '1rem',
@@ -43,7 +43,7 @@ function AppRoutes() {
                         } 
                     />
                     <Route 
-                        path="/subscribe/:restaurantId/:mealId" 
+                        path="/subscribe/:restaurantId/:subscriptionType/:mealIds" 
                         element={
                             isAuthenticated ? 
                             <SubscriptionForm /> : 
