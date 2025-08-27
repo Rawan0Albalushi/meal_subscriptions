@@ -9,13 +9,32 @@ use Illuminate\Http\Request;
 
 class RestaurantController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $restaurants = Restaurant::where('is_active', true)
-            ->with(['meals' => function ($query) {
-                $query->where('is_available', true);
-            }])
-            ->get();
+        $query = Restaurant::where('is_active', true);
+
+        // فلتر العناوين
+        if ($request->has('locations') && $request->locations) {
+            $locations = is_array($request->locations) ? $request->locations : [$request->locations];
+            $query->where(function($q) use ($locations) {
+                foreach ($locations as $location) {
+                    $q->orWhereJsonContains('locations', $location);
+                }
+            });
+        }
+
+        // فلتر أنواع الوجبات
+        if ($request->has('meal_types') && $request->meal_types) {
+            $mealTypes = is_array($request->meal_types) ? $request->meal_types : [$request->meal_types];
+            $query->whereHas('meals', function($q) use ($mealTypes) {
+                $q->where('is_available', true)
+                  ->whereIn('meal_type', $mealTypes);
+            });
+        }
+
+        $restaurants = $query->with(['meals' => function ($query) {
+            $query->where('is_available', true);
+        }])->get();
 
         return response()->json([
             'success' => true,
@@ -46,6 +65,31 @@ class RestaurantController extends Controller
         return response()->json([
             'success' => true,
             'data' => $meals
+        ]);
+    }
+
+    public function getFilters()
+    {
+        // الحصول على العناوين المتاحة
+        $locations = Restaurant::where('is_active', true)
+            ->whereNotNull('locations')
+            ->pluck('locations')
+            ->flatten()
+            ->unique()
+            ->values();
+
+        // الحصول على أنواع الوجبات المتاحة
+        $mealTypes = Meal::where('is_available', true)
+            ->pluck('meal_type')
+            ->unique()
+            ->values();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'locations' => $locations,
+                'meal_types' => $mealTypes
+            ]
         ]);
     }
 }

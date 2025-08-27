@@ -47,7 +47,17 @@ export const authAPI = {
 
 // Restaurants API
 export const restaurantsAPI = {
-    getAll: () => api.get('/restaurants'),
+    getAll: (filters = {}) => {
+        const params = new URLSearchParams();
+        if (filters.locations) {
+            params.append('locations[]', filters.locations);
+        }
+        if (filters.meal_types) {
+            params.append('meal_types[]', filters.meal_types);
+        }
+        return api.get(`/restaurants?${params.toString()}`);
+    },
+    getFilters: () => api.get('/restaurants/filters'),
     getById: (id) => api.get(`/restaurants/${id}`),
     getMeals: (restaurantId) => api.get(`/restaurants/${restaurantId}/meals`),
 };

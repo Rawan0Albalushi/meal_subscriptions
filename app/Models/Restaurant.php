@@ -19,11 +19,13 @@ class Restaurant extends Model
         'email',
         'address_ar',
         'address_en',
+        'locations',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'locations' => 'array',
     ];
 
     public function meals()
@@ -49,5 +51,22 @@ class Restaurant extends Model
     public function getAddressAttribute()
     {
         return app()->getLocale() === 'ar' ? $this->address_ar : $this->address_en;
+    }
+
+    public function getLocationsTextAttribute()
+    {
+        if (!$this->locations) {
+            return '';
+        }
+
+        $locationNames = [
+            'bosher' => 'بوشر',
+            'khoudh' => 'الخوض',
+            'maabilah' => 'المعبيلة'
+        ];
+
+        return collect($this->locations)->map(function($location) use ($locationNames) {
+            return $locationNames[$location] ?? $location;
+        })->implode('، ');
     }
 }
