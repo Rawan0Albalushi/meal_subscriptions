@@ -12,4 +12,12 @@ export default defineConfig({
         react(),
         tailwindcss(),
     ],
+    optimizeDeps: {
+        include: ['leaflet']
+    },
+    build: {
+        rollupOptions: {
+            external: ['leaflet']
+        }
+    }
 });

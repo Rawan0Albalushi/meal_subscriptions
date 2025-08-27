@@ -15,6 +15,8 @@ class DeliveryAddress extends Model
         'phone',
         'address',
         'city',
+        'latitude',
+        'longitude',
         'postal_code',
         'additional_notes',
         'is_default',
