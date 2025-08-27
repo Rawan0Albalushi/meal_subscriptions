@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { restaurantsAPI, subscriptionTypesAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const RestaurantDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { t, language, dir } = useLanguage();
   
   const [restaurant, setRestaurant] = useState(null);
   const [meals, setMeals] = useState([]);
@@ -19,11 +21,11 @@ const RestaurantDetail = () => {
   const [startDate, setStartDate] = useState('');
 
   const weekDays = [
-    { key: 'sunday', label: 'الأحد', icon: '🌅' },
-    { key: 'monday', label: 'الاثنين', icon: '🌞' },
-    { key: 'tuesday', label: 'الثلاثاء', icon: '☀️' },
-    { key: 'wednesday', label: 'الأربعاء', icon: '🌤️' },
-    { key: 'thursday', label: 'الخميس', icon: '🌅' }
+    { key: 'sunday', label: language === 'ar' ? 'الأحد' : 'Sunday', icon: '🌅' },
+    { key: 'monday', label: language === 'ar' ? 'الاثنين' : 'Monday', icon: '🌞' },
+    { key: 'tuesday', label: language === 'ar' ? 'الثلاثاء' : 'Tuesday', icon: '☀️' },
+    { key: 'wednesday', label: language === 'ar' ? 'الأربعاء' : 'Wednesday', icon: '🌤️' },
+    { key: 'thursday', label: language === 'ar' ? 'الخميس' : 'Thursday', icon: '🌅' }
   ];
 
   useEffect(() => {
@@ -41,7 +43,7 @@ const RestaurantDetail = () => {
           console.log('✅ Successfully set restaurant in state');
         } else {
           console.error('❌ Failed to fetch restaurant:', restaurantResponse);
-          setError('فشل في جلب بيانات المطعم من الباكند');
+          setError(t('restaurantLoadError'));
         }
 
         // Fetch restaurant meals
@@ -59,7 +61,7 @@ const RestaurantDetail = () => {
           console.log('✅ Successfully set meals in state');
         } else {
           console.error('❌ Failed to fetch meals:', mealsResponse);
-          setError('فشل في جلب الوجبات من الباكند');
+          setError(t('mealsLoadError'));
         }
 
         // Fetch subscription types
@@ -71,7 +73,7 @@ const RestaurantDetail = () => {
           console.log('✅ Successfully set subscription types in state');
         } else {
           console.error('❌ Failed to fetch subscription types:', subscriptionTypesResponse);
-          setError('فشل في جلب أنواع الاشتراك من الباكند');
+          setError(t('subscriptionTypesLoadError'));
         }
                       } catch (error) {
           console.error('❌ Error fetching restaurant data:', error);
@@ -81,7 +83,7 @@ const RestaurantDetail = () => {
             status: error.response?.status,
             url: error.config?.url
           });
-          setError('حدث خطأ أثناء جلب بيانات المطعم أو الوجبات');
+          setError(t('generalLoadError'));
         } finally {
           console.log('✅ Finished fetching data');
           console.log('📊 Final state:', {
@@ -95,9 +97,9 @@ const RestaurantDetail = () => {
 
             if (id) {
           console.log('🔄 Starting to fetch data for restaurant ID:', id);
-          fetchRestaurantData();
-        }
-  }, [id]);
+              fetchRestaurantData();
+  }
+    }, [id, t, language]);
 
   // Reset selected meals when restaurant changes
   useEffect(() => {
@@ -129,13 +131,13 @@ const RestaurantDetail = () => {
 
   const handleContinueToSubscription = () => {
     if (!startDate) {
-      alert('يرجى اختيار تاريخ بدء الاشتراك');
+      alert(t('selectStartDate'));
       return;
     }
     
     const selectedDays = Object.keys(selectedMeals);
     if (selectedDays.length === 0) {
-      alert('يرجى اختيار وجبة واحدة على الأقل');
+      alert(t('selectAtLeastOneMeal'));
       return;
     }
     
@@ -172,7 +174,9 @@ const RestaurantDetail = () => {
     
     const start = new Date(startDate);
     const days = [];
-    const mealLabels = ['الوجبة الأولى', 'الوجبة الثانية', 'الوجبة الثالثة', 'الوجبة الرابعة', 'الوجبة الخامسة'];
+    const mealLabels = language === 'ar' 
+      ? ['الوجبة الأولى', 'الوجبة الثانية', 'الوجبة الثالثة', 'الوجبة الرابعة', 'الوجبة الخامسة']
+      : ['First Meal', 'Second Meal', 'Third Meal', 'Fourth Meal', 'Fifth Meal'];
     const mealIcons = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣'];
     const dayKeys = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday'];
     
@@ -188,7 +192,7 @@ const RestaurantDetail = () => {
           label: mealLabels[mealIndex],
           icon: mealIcons[mealIndex],
           date: currentDate.toISOString().split('T')[0],
-          displayDate: currentDate.toLocaleDateString('ar-SA', { 
+          displayDate: currentDate.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', { 
             weekday: 'long', 
             year: 'numeric', 
             month: 'long', 
@@ -229,13 +233,13 @@ const RestaurantDetail = () => {
           color: 'rgb(79 70 229)', 
           fontWeight: '600' 
         }}>
-          جاري تحميل بيانات المطعم والوجبات...
+          {t('loadingRestaurantData')}
         </div>
         <div style={{ 
           fontSize: '0.875rem', 
           color: 'rgb(107 114 128)' 
         }}>
-          يرجى الانتظار قليلاً
+          {t('pleaseWait')}
         </div>
       </div>
     );
@@ -267,7 +271,7 @@ const RestaurantDetail = () => {
           textAlign: 'center',
           maxWidth: '400px'
         }}>
-          حدث خطأ أثناء جلب بيانات المطعم أو الوجبات. يرجى التحقق من الاتصال بالإنترنت والمحاولة مرة أخرى.
+          {t('errorMessage')}
         </div>
         <button 
           onClick={() => window.location.reload()}
@@ -292,7 +296,7 @@ const RestaurantDetail = () => {
             e.target.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
           }}
         >
-          🔄 إعادة المحاولة
+          🔄 {t('retry')}
         </button>
       </div>
     );
@@ -316,7 +320,7 @@ const RestaurantDetail = () => {
           fontWeight: '600',
           textAlign: 'center'
         }}>
-          المطعم غير موجود
+          {t('restaurantNotFound')}
         </div>
         <div style={{ 
           fontSize: '0.875rem', 
@@ -324,7 +328,7 @@ const RestaurantDetail = () => {
           textAlign: 'center',
           maxWidth: '400px'
         }}>
-          يبدو أن المطعم الذي تبحث عنه غير موجود أو تم حذفه. يرجى العودة إلى قائمة المطاعم.
+          {t('restaurantNotFoundMessage')}
         </div>
         <button 
           onClick={() => navigate('/restaurants')}
@@ -349,7 +353,7 @@ const RestaurantDetail = () => {
             e.target.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
           }}
         >
-          🏪 العودة للمطاعم
+          🏪 {t('backToRestaurants')}
         </button>
       </div>
     );
@@ -359,7 +363,7 @@ const RestaurantDetail = () => {
     <div style={{ 
       minHeight: '100vh', 
       background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',
-      direction: 'rtl',
+      direction: dir,
       overflowX: 'hidden',
       position: 'relative'
     }}>
@@ -467,7 +471,7 @@ const RestaurantDetail = () => {
                   marginBottom: '0.5rem',
                   color: 'rgb(79 70 229)'
                 }}>
-                {restaurant.name_ar}
+                {language === 'ar' ? restaurant.name_ar : restaurant.name_en}
               </h1>
                               <p style={{ 
                   fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)', 
@@ -475,7 +479,7 @@ const RestaurantDetail = () => {
                   marginBottom: '0.75rem',
                   lineHeight: '1.5'
                 }}>
-                {restaurant.description_ar}
+                {language === 'ar' ? restaurant.description_ar : restaurant.description_en}
               </p>
                               <div style={{ 
                   display: 'flex', 
@@ -496,7 +500,7 @@ const RestaurantDetail = () => {
                     borderRadius: '0.5rem',
                     border: '1px solid rgba(229, 231, 235, 0.3)'
                   }}>
-                    📍 {restaurant.address_ar || restaurant.address_en}
+                    📍 {language === 'ar' ? restaurant.address_ar : restaurant.address_en}
                   </div>
                   <div style={{ 
                     display: 'flex', 
@@ -558,7 +562,7 @@ const RestaurantDetail = () => {
             color: 'rgb(79 70 229)',
             textAlign: 'center'
           }}>
-            اختر نوع الاشتراك
+            {t('selectSubscriptionType')}
           </h2>
           
           <p style={{ 
@@ -569,7 +573,7 @@ const RestaurantDetail = () => {
             lineHeight: '1.6',
             padding: '0 clamp(0.5rem, 4vw, 2rem)'
           }}>
-            اختر نوع الاشتراك المناسب لك وابدأ رحلتك مع {restaurant.name_ar}
+            {t('selectSubscriptionTypeMessage', { restaurantName: language === 'ar' ? restaurant.name_ar : restaurant.name_en })}
           </p>
           
           <div style={{ 
@@ -581,16 +585,24 @@ const RestaurantDetail = () => {
             {subscriptionTypes.map((subscriptionType) => {
               const subscription = {
                 type: subscriptionType.type,
-                title: subscriptionType.name_ar,
-                subtitle: `${subscriptionType.meals_count} وجبة في ${subscriptionType.type === 'weekly' ? 'الأسبوع' : 'الشهر'}`,
+                title: language === 'ar' ? subscriptionType.name_ar : subscriptionType.name_en,
+                subtitle: language === 'ar' 
+                  ? `${subscriptionType.meals_count} وجبة في ${subscriptionType.type === 'weekly' ? 'الأسبوع' : 'الشهر'}`
+                  : `${subscriptionType.meals_count} meals per ${subscriptionType.type === 'weekly' ? 'week' : 'month'}`,
                 price: subscriptionType.price.toString(),
-                currency: 'ريال',
-                period: subscriptionType.type === 'weekly' ? 'أسبوعياً' : 'شهرياً',
+                currency: language === 'ar' ? 'ريال' : 'SAR',
+                period: language === 'ar' 
+                  ? (subscriptionType.type === 'weekly' ? 'أسبوعياً' : 'شهرياً')
+                  : (subscriptionType.type === 'weekly' ? 'Weekly' : 'Monthly'),
                 icon: subscriptionType.type === 'weekly' ? '📅' : '📆',
-                features: [
+                features: language === 'ar' ? [
                   'توصيل من الأحد إلى الخميس',
                   'وجبة واحدة يومياً',
                   'مرونة في اختيار الوجبات'
+                ] : [
+                  'Delivery from Sunday to Thursday',
+                  'One meal per day',
+                  'Flexibility in meal selection'
                 ],
                 gradient: subscriptionType.type === 'weekly' 
                   ? 'linear-gradient(135deg, #10b981, #059669)' 
@@ -652,7 +664,7 @@ const RestaurantDetail = () => {
                      fontWeight: '500',
                      zIndex: 2
                    }}>
-                     الأكثر شعبية
+                     {t('mostPopular')}
                    </div>
                  )}
 
@@ -824,7 +836,7 @@ const RestaurantDetail = () => {
               color: 'rgb(79 70 229)',
               textAlign: 'center'
             }}>
-              اختر وجبة لكل يوم
+              {t('selectMealForEachDay')}
             </h2>
             
             <p style={{ 
@@ -836,8 +848,8 @@ const RestaurantDetail = () => {
               padding: '0 clamp(0.5rem, 4vw, 2rem)'
             }}>
               {selectedSubscriptionType === 'weekly' 
-                ? 'اختر وجبة مختلفة لكل يوم من أيام العمل' 
-                : 'اختر وجبة مختلفة لكل يوم من أيام العمل لمدة 4 أسابيع'}
+                ? t('selectMealForEachDayWeekly') 
+                : t('selectMealForEachDayMonthly')}
             </p>
             
 
@@ -860,14 +872,14 @@ const RestaurantDetail = () => {
                 fontWeight: '700',
                 marginBottom: '0.5rem'
               }}>
-                📅 تاريخ بدء الاشتراك
+                📅 {t('startSubscriptionDate')}
               </div>
               <div style={{
                 fontSize: '0.875rem',
                 color: 'rgb(107 114 128)',
                 marginBottom: '1.5rem'
               }}>
-                اختر تاريخ البدء من أيام العمل
+                {t('selectStartDateMessage')}
               </div>
               <div style={{ position: 'relative' }}>
                 <input 
@@ -885,7 +897,7 @@ const RestaurantDetail = () => {
                       setStartDate(selectedDate);
                       setSelectedMeals({}); // Reset selected meals when changing start date
                     } else {
-                      alert('يرجى اختيار يوم من أيام العمل فقط (الأحد إلى الخميس)');
+                      alert(t('selectWeekdayOnly'));
                       e.target.value = startDate; // Reset to previous value
                     }
                   }} 
@@ -942,7 +954,7 @@ const RestaurantDetail = () => {
                   onMouseLeave={(e) => {
                     e.target.style.background = 'rgba(79, 70, 229, 0.1)';
                   }}
-                  title="اختر أول يوم متاح"
+                  title={t('selectFirstAvailableDay')}
                 >
                   🚀
                 </button>
@@ -962,14 +974,14 @@ const RestaurantDetail = () => {
                       fontWeight: '600',
                       marginBottom: '0.25rem'
                     }}>
-                      ✅ تم اختيار التاريخ
+                      ✅ {t('dateSelected')}
                     </div>
                     <div style={{
                       fontSize: '1rem',
                       color: '#047857',
                       fontWeight: '700'
                     }}>
-                      {new Date(startDate).toLocaleDateString('ar-SA', {
+                      {new Date(startDate).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
                         weekday: 'long',
                         year: 'numeric',
                         month: 'long',
@@ -984,7 +996,7 @@ const RestaurantDetail = () => {
                   marginTop: '0.75rem',
                   lineHeight: '1.5'
                 }}>
-                  ⚠️ يمكن اختيار أيام العمل فقط (الأحد إلى الخميس)
+                  ⚠️ {t('selectWeekdayOnlyMessage')}
                 </p>
             </div>
             
@@ -997,7 +1009,7 @@ const RestaurantDetail = () => {
                   lineHeight: '1.6',
                   marginBottom: '1rem'
                 }}>
-                  لا توجد وجبات متاحة حالياً
+                  {t('noMealsAvailable')}
                 </p>
                 <p style={{ 
                   color: 'rgb(107 114 128)', 
@@ -1005,7 +1017,7 @@ const RestaurantDetail = () => {
                   lineHeight: '1.5',
                   marginBottom: '1.5rem'
                 }}>
-                  يرجى المحاولة مرة أخرى لاحقاً أو التواصل مع المطعم
+                  {t('pleaseTryAgainLater')}
                 </p>
                 <button 
                   onClick={() => window.location.reload()}
@@ -1030,7 +1042,7 @@ const RestaurantDetail = () => {
                     e.target.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
                   }}
                 >
-                  🔄 إعادة تحميل
+                  🔄 {t('reload')}
                 </button>
               </div>
             ) : !startDate ? (
@@ -1049,14 +1061,14 @@ const RestaurantDetail = () => {
                   lineHeight: '1.6',
                   marginBottom: '1rem'
                 }}>
-                  يرجى اختيار تاريخ بدء الاشتراك أولاً
+                  {t('selectStartDateFirst')}
                 </p>
                 <p style={{ 
                   color: 'rgb(107 114 128)', 
                   fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
                   lineHeight: '1.5'
                 }}>
-                  سيتم عرض الأيام المتاحة بناءً على التاريخ المختار
+                  {t('daysWillBeDisplayedBasedOnSelectedDate')}
                 </p>
               </div>
             ) : (
@@ -1111,7 +1123,7 @@ const RestaurantDetail = () => {
                           fontSize: '0.75rem',
                           fontWeight: '600'
                         }}>
-                          تم الاختيار
+                          {t('selected')}
                         </div>
                       )}
                     </div>
@@ -1196,25 +1208,25 @@ const RestaurantDetail = () => {
                             }}>
                               🍽️
                             </div>
-                            <h4 style={{ 
-                              fontSize: '1rem', 
-                              fontWeight: '600', 
-                              marginBottom: '0.5rem',
-                              color: 'rgb(79 70 229)',
-                              textAlign: 'center'
-                            }}>
-                              {meal.name_ar}
-                            </h4>
-                            <p style={{ 
-                              fontSize: '0.75rem', 
-                              color: 'rgb(75 85 99)', 
-                              marginBottom: '1rem',
-                              lineHeight: '1.4',
-                              textAlign: 'center',
-                              minHeight: '2.5rem'
-                            }}>
-                              {meal.description_ar || 'لا يوجد وصف متاح'}
-                            </p>
+                                                          <h4 style={{ 
+                                fontSize: '1rem', 
+                                fontWeight: '600', 
+                                marginBottom: '0.5rem',
+                                color: 'rgb(79 70 229)',
+                                textAlign: 'center'
+                              }}>
+                                {language === 'ar' ? meal.name_ar : meal.name_en}
+                              </h4>
+                              <p style={{ 
+                                fontSize: '0.75rem', 
+                                color: 'rgb(75 85 99)', 
+                                marginBottom: '1rem',
+                                lineHeight: '1.4',
+                                textAlign: 'center',
+                                minHeight: '2.5rem'
+                              }}>
+                                {language === 'ar' ? meal.description_ar : meal.description_en || t('noDescriptionAvailable')}
+                              </p>
                             
                             <button 
                               style={{
@@ -1241,7 +1253,7 @@ const RestaurantDetail = () => {
                                 e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
                               }}
                             >
-                              {isSelected ? 'تم الاختيار' : 'اختيار هذه الوجبة'}
+                              {isSelected ? t('selected') : t('selectThisMeal')}
                             </button>
                           </div>
                         );
@@ -1296,9 +1308,9 @@ const RestaurantDetail = () => {
                   color: 'rgb(75 85 99)'
                 }}>
                   <span>✓</span>
-                  <span>تم اختيار {Object.keys(selectedMeals).length} وجبة</span>
+                  <span>{t('selectedMealsCount', { count: Object.keys(selectedMeals).length })}</span>
                   <span>•</span>
-                  <span>تاريخ البدء: {new Date(startDate).toLocaleDateString('ar-SA')}</span>
+                  <span>{t('startDate')}: {new Date(startDate).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US')}</span>
                 </div>
                 <button 
                   onClick={handleContinueToSubscription}
@@ -1326,7 +1338,7 @@ const RestaurantDetail = () => {
                   }}
                 >
                   <span style={{ position: 'relative', zIndex: 2 }}>
-                    🚀 متابعة إلى صفحة الاشتراك
+                    🚀 {t('continueToSubscription')}
                   </span>
                   <div style={{
                     position: 'absolute',
@@ -1402,144 +1414,117 @@ const RestaurantDetail = () => {
               borderRadius: '50%',
               filter: 'blur(20px)'
             }}></div>
-            <div style={{ 
-              fontSize: 'clamp(3rem, 8vw, 4rem)', 
-              marginBottom: '1.5rem',
-              background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(99, 102, 241, 0.1))',
-              borderRadius: '50%',
-              width: 'clamp(4rem, 12vw, 5rem)',
-              height: 'clamp(4rem, 12vw, 5rem)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1.5rem auto',
-              border: '3px solid rgba(79, 70, 229, 0.2)',
-              boxShadow: '0 10px 30px rgba(79, 70, 229, 0.2)'
-            }}>
-              🔐
-            </div>
-            <h3 style={{ 
-              fontSize: 'clamp(1.25rem, 4vw, 1.5rem)', 
-              fontWeight: 'bold', 
-              marginBottom: '1rem',
-              color: 'rgb(79 70 229)'
-            }}>
-              تسجيل الدخول مطلوب
-            </h3>
-            <p style={{ 
-              fontSize: 'clamp(0.875rem, 3vw, 1rem)', 
-              color: 'rgb(75 85 99)', 
-              marginBottom: '1.5rem',
-              lineHeight: '1.6'
-            }}>
-              للاشتراك في الوجبات، يرجى تسجيل الدخول أولاً
-            </p>
-            <div style={{ 
-              display: 'flex', 
-              flexDirection: 'column',
-              gap: '0.75rem', 
-              justifyContent: 'center'
-            }}>
-              <button 
-                onClick={() => setShowLoginPopup(false)}
-                style={{
-                  padding: 'clamp(1rem, 3vw, 1.25rem) 2rem',
-                  borderRadius: '1rem',
-                  border: '2px solid rgb(156 163 175)',
-                  background: 'white',
-                  color: 'rgb(75 85 99)',
-                  fontSize: 'clamp(1rem, 2.5vw, 1.125rem)',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = 'rgb(249 250 251)';
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = 'white';
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
-                }}
-                onTouchStart={(e) => {
-                  e.target.style.transform = 'scale(0.98)';
-                }}
-                onTouchEnd={(e) => {
-                  e.target.style.transform = 'scale(1)';
-                }}
-              >
-                إلغاء
-              </button>
-              <button 
-                onClick={() => {
-                  setShowLoginPopup(false);
-                  navigate('/login');
-                }}
-                style={{
-                  padding: 'clamp(1rem, 3vw, 1.25rem) 2rem',
-                  borderRadius: '1rem',
-                  background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
-                  color: 'white',
-                  border: 'none',
-                  fontSize: 'clamp(1rem, 2.5vw, 1.125rem)',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  boxShadow: '0 8px 20px rgba(79, 70, 229, 0.3)',
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'translateY(-3px) scale(1.02)';
-                  e.target.style.boxShadow = '0 12px 30px rgba(79, 70, 229, 0.4)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'translateY(0) scale(1)';
-                  e.target.style.boxShadow = '0 8px 20px rgba(79, 70, 229, 0.3)';
-                }}
-                onTouchStart={(e) => {
-                  e.target.style.transform = 'scale(0.98)';
-                }}
-                onTouchEnd={(e) => {
-                  e.target.style.transform = 'scale(1)';
-                }}
-              >
-                <span style={{ position: 'relative', zIndex: 2 }}>
-                  🔐 تسجيل الدخول
-                </span>
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: '-100%',
-                  width: '100%',
-                  height: '100%',
-                  background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
-                  transition: 'left 0.5s ease',
-                  zIndex: 1
-                }}></div>
-              </button>
+
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              {/* Icon */}
+              <div style={{
+                fontSize: '3rem',
+                marginBottom: '1rem',
+                filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))'
+              }}>
+                🔐
+              </div>
+
+              {/* Title */}
+              <h3 style={{
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                color: 'rgb(79 70 229)',
+                marginBottom: '1rem'
+              }}>
+                {t('loginRequired')}
+              </h3>
+
+              {/* Message */}
+              <p style={{
+                fontSize: '1rem',
+                color: 'rgb(75 85 99)',
+                lineHeight: '1.6',
+                marginBottom: '2rem'
+              }}>
+                {t('loginRequiredMessage')}
+              </p>
+
+              {/* Buttons */}
+              <div style={{
+                display: 'flex',
+                gap: '1rem',
+                justifyContent: 'center',
+                flexWrap: 'wrap'
+              }}>
+                <button
+                  onClick={() => setShowLoginPopup(false)}
+                  style={{
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '0.75rem',
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    color: 'rgb(75 85 99)',
+                    border: '2px solid rgba(229, 231, 235, 0.5)',
+                    fontSize: '0.875rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    minWidth: '120px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'rgba(75, 85, 99, 0.1)';
+                    e.target.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.9)';
+                    e.target.style.transform = 'translateY(0)';
+                  }}
+                >
+                  {t('cancel')}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowLoginPopup(false);
+                    navigate('/login');
+                  }}
+                  style={{
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '0.75rem',
+                    background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                    color: 'white',
+                    border: 'none',
+                    fontSize: '0.875rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    boxShadow: '0 4px 15px rgba(79, 70, 229, 0.3)',
+                    minWidth: '120px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 8px 25px rgba(79, 70, 229, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 15px rgba(79, 70, 229, 0.3)';
+                  }}
+                >
+                  {t('login')}
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      <style>
-        {`
-          @keyframes slideIn {
-            from {
-              opacity: 0;
-              transform: translateY(10px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
+      {/* CSS Animations */}
+      <style>{`
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
           }
-        `}
-      </style>
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </div>
   );
 };

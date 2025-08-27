@@ -368,7 +368,7 @@ class DatabaseSeeder extends Seeder
                 'total_amount' => 420.00,
                 'status' => 'active',
                 'payment_status' => 'paid',
-                'payment_method' => 'credit_card',
+
                 'transaction_id' => 'TXN_' . uniqid(),
             ],
             [
@@ -381,7 +381,7 @@ class DatabaseSeeder extends Seeder
                 'total_amount' => 540.00,
                 'status' => 'pending',
                 'payment_status' => 'pending',
-                'payment_method' => 'bank_transfer',
+
                 'transaction_id' => null,
             ],
             [
@@ -394,7 +394,7 @@ class DatabaseSeeder extends Seeder
                 'total_amount' => 345.00,
                 'status' => 'active',
                 'payment_status' => 'paid',
-                'payment_method' => 'cash',
+
                 'transaction_id' => 'TXN_' . uniqid(),
             ],
         ];

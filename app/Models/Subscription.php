@@ -20,7 +20,7 @@ class Subscription extends Model
         'total_amount',
         'status',
         'payment_status',
-        'payment_method',
+
         'transaction_id',
         'special_instructions',
     ];

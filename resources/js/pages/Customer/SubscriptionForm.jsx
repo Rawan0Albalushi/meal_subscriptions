@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { restaurantsAPI, deliveryAddressesAPI, subscriptionsAPI, subscriptionTypesAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import PopupMessage from '../../components/PopupMessage';
 import InteractiveMap from '../../components/InteractiveMap';
 
@@ -9,6 +10,7 @@ const SubscriptionForm = () => {
   const { restaurantId, subscriptionType, startDate, mealIds } = useParams();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { t, language, dir } = useLanguage();
   
   const [restaurant, setRestaurant] = useState(null);
   const [selectedMeals, setSelectedMeals] = useState([]);
@@ -28,15 +30,14 @@ const SubscriptionForm = () => {
   const [addingNewAddress, setAddingNewAddress] = useState(false);
   const [newAddress, setNewAddress] = useState({ name: '', address: '', phone: '', city: '' });
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [showMap, setShowMap] = useState(false);
   
   // Week days mapping
   const weekDays = [
-    { key: 'sunday', label: 'الأحد', icon: '🌅' },
-    { key: 'monday', label: 'الاثنين', icon: '🌞' },
-    { key: 'tuesday', label: 'الثلاثاء', icon: '☀️' },
-    { key: 'wednesday', label: 'الأربعاء', icon: '🌤️' },
-    { key: 'thursday', label: 'الخميس', icon: '🌅' }
+    { key: 'sunday', label: t('sunday'), icon: '🌅' },
+    { key: 'monday', label: t('monday'), icon: '🌞' },
+    { key: 'tuesday', label: t('tuesday'), icon: '☀️' },
+    { key: 'wednesday', label: t('wednesday'), icon: '🌤️' },
+    { key: 'thursday', label: t('thursday'), icon: '🌅' }
   ];
 
   // Function to get date for a specific day key based on start date
@@ -44,15 +45,31 @@ const SubscriptionForm = () => {
     if (!startDate) return null;
     
     const start = new Date(startDate);
-    const dayKeys = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday'];
-    const dayIndex = dayKeys.indexOf(dayKey);
+    const dayIndex = {
+      'sunday': 0,
+      'monday': 1,
+      'tuesday': 2,
+      'wednesday': 3,
+      'thursday': 4,
+      'friday': 5,
+      'saturday': 6
+    };
     
-    if (dayIndex === -1) return null;
+    const targetDayIndex = dayIndex[dayKey];
+    if (targetDayIndex === undefined) return null;
+    
+    const startDayIndex = start.getDay();
+    let daysToAdd = targetDayIndex - startDayIndex;
+    
+    // If the target day is before the start day, add 7 days
+    if (daysToAdd < 0) {
+      daysToAdd += 7;
+    }
     
     const targetDate = new Date(start);
-    targetDate.setDate(start.getDate() + dayIndex);
+    targetDate.setDate(start.getDate() + daysToAdd);
     
-    return targetDate.toLocaleDateString('ar-SA', {
+    return targetDate.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -65,7 +82,6 @@ const SubscriptionForm = () => {
     subscriptionType: subscriptionType || 'weekly',
     startDate: startDate || '',
     deliveryAddressId: '',
-    paymentMethod: 'credit_card',
     specialInstructions: ''
   });
 
@@ -186,8 +202,8 @@ const SubscriptionForm = () => {
     tomorrow.setHours(0, 0, 0, 0);
 
     if (selectedDate < tomorrow) {
-      setPopupTitle('خطأ في التاريخ');
-      setPopupMessage('تاريخ البداية يجب أن يكون غداً أو بعده. لا يمكن إنشاء اشتراك ليوم اليوم.');
+      setPopupTitle(t('dateError'));
+      setPopupMessage(t('startDateMustBeTomorrow'));
       setShowErrorPopup(true);
       return;
     }
@@ -195,8 +211,8 @@ const SubscriptionForm = () => {
     // Validate that the date is a weekday (Sunday to Thursday)
     const dayOfWeek = selectedDate.getDay();
     if (dayOfWeek === 5 || dayOfWeek === 6) { // Friday = 5, Saturday = 6
-      setPopupTitle('خطأ في التاريخ');
-      setPopupMessage('تاريخ البداية يجب أن يكون يوم عمل (الأحد إلى الخميس)');
+      setPopupTitle(t('dateError'));
+      setPopupMessage(t('startDateMustBeWeekday'));
       setShowErrorPopup(true);
       return;
     }
@@ -207,8 +223,8 @@ const SubscriptionForm = () => {
 
       // Validate delivery address
       if (!formData.deliveryAddressId && deliveryAddresses.length > 0 && !addingNewAddress) {
-        setPopupTitle('خطأ في العنوان');
-        setPopupMessage('يرجى اختيار عنوان التوصيل أو إضافة عنوان جديد');
+        setPopupTitle(t('addressError'));
+        setPopupMessage(t('selectDeliveryAddressOrAddNew'));
         setShowErrorPopup(true);
         return;
       }
@@ -218,7 +234,7 @@ const SubscriptionForm = () => {
       const shouldCreateAddress = addingNewAddress || deliveryAddresses.length === 0 || !deliveryAddressId;
       if (shouldCreateAddress) {
         if (!newAddress.name || !newAddress.address || !newAddress.phone || !newAddress.city) {
-          setError('يرجى إدخال بيانات العنوان كاملة');
+          setError(t('enterCompleteAddressData'));
           setSubmitting(false);
           return;
         }
@@ -231,8 +247,8 @@ const SubscriptionForm = () => {
           longitude: selectedLocation?.lng || null
         });
         if (!createRes.data?.success) {
-          const errorMsg = createRes.data?.message || 'تعذر حفظ العنوان';
-          setPopupTitle('خطأ في حفظ العنوان');
+          const errorMsg = createRes.data?.message || t('addressSaveFailed');
+          setPopupTitle(t('addressSaveError'));
           setPopupMessage(errorMsg);
           setShowErrorPopup(true);
           setSubmitting(false);
@@ -241,18 +257,12 @@ const SubscriptionForm = () => {
         deliveryAddressId = createRes.data.data.id;
       }
 
-      // Validate payment method
-      if (!formData.paymentMethod) {
-        setPopupTitle('خطأ في طريقة الدفع');
-        setPopupMessage('يرجى اختيار طريقة الدفع');
-        setShowErrorPopup(true);
-        return;
-      }
+
 
       // Validate selected meals
       if (selectedMeals.length === 0) {
-        setPopupTitle('خطأ في اختيار الوجبات');
-        setPopupMessage('يرجى اختيار وجبة واحدة على الأقل');
+        setPopupTitle(t('mealsSelectionError'));
+        setPopupMessage(t('selectAtLeastOneMeal'));
         setShowErrorPopup(true);
         return;
       }
@@ -268,27 +278,26 @@ const SubscriptionForm = () => {
         delivery_days: deliveryDays,
         start_date: formData.startDate,
         special_instructions: formData.specialInstructions,
-        payment_method: formData.paymentMethod,
         total_amount: calculateTotalPrice()
       };
 
       const response = await subscriptionsAPI.create(subscriptionData);
       if (response.data.success) {
         // Show success popup
-        setPopupTitle('تم إنشاء الاشتراك بنجاح! 🎉');
-        setPopupMessage('تم إنشاء اشتراكك بنجاح. سيتم توجيهك إلى صفحة الاشتراكات لمتابعة طلبك.');
+        setPopupTitle(t('subscriptionCreatedSuccess'));
+        setPopupMessage(t('subscriptionCreatedMessage'));
         setShowSuccessPopup(true);
       } else {
         // Show error popup
-        setPopupTitle('فشل في إنشاء الاشتراك');
-        setPopupMessage(response.data?.message || 'حدث خطأ أثناء إنشاء الاشتراك');
+        setPopupTitle(t('subscriptionCreationFailed'));
+        setPopupMessage(response.data?.message || t('subscriptionCreationError'));
         setShowErrorPopup(true);
       }
     } catch (e) {
       console.error('Error creating subscription:', e);
       
       // Get detailed error message
-      let errorMessage = 'حدث خطأ أثناء إنشاء الاشتراك';
+      let errorMessage = t('subscriptionCreationError');
       
       if (e.response?.data?.errors) {
         // Handle validation errors
@@ -304,7 +313,7 @@ const SubscriptionForm = () => {
       }
       
       // Show error popup with detailed message
-      setPopupTitle('فشل في إنشاء الاشتراك');
+      setPopupTitle(t('subscriptionCreationFailed'));
       setPopupMessage(errorMessage);
       setShowErrorPopup(true);
     } finally {
@@ -317,7 +326,7 @@ const SubscriptionForm = () => {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg font-medium">جاري تحميل البيانات...</p>
+          <p className="text-gray-600 text-lg font-medium">{t('loadingData')}</p>
         </div>
       </div>
     );
@@ -333,7 +342,7 @@ const SubscriptionForm = () => {
             onClick={() => navigate(`/restaurants/${restaurantId}`)}
             className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
           >
-            العودة للمطعم
+            {t('backToRestaurant')}
           </button>
         </div>
       </div>
@@ -341,17 +350,17 @@ const SubscriptionForm = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100" dir="rtl">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100" dir={dir}>
       <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
         
         {/* Header Section */}
         <div className="text-center mb-8">
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-white/20">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
-              إنشاء اشتراك جديد
+              {t('createNewSubscription')}
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              أكمل تفاصيل اشتراكك وابدأ رحلتك مع {restaurant?.name_ar}
+              {t('completeSubscriptionDetails')} {language === 'ar' ? restaurant?.name_ar : restaurant?.name_en}
             </p>
           </div>
         </div>
@@ -363,7 +372,7 @@ const SubscriptionForm = () => {
             <div className="text-center mb-8">
               <div className="text-5xl mb-4">📋</div>
               <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                ملخص الاشتراك
+                {t('subscriptionSummary')}
               </h2>
             </div>
 
@@ -376,10 +385,10 @@ const SubscriptionForm = () => {
                 <div className="bg-white/20 rounded-full p-3 backdrop-blur-sm">
                   <span className="text-2xl">🏪</span>
                 </div>
-                <span className="text-xl font-bold">{restaurant?.name_ar}</span>
+                <span className="text-xl font-bold">{language === 'ar' ? restaurant?.name_ar : restaurant?.name_en}</span>
               </div>
               <p className="text-center text-white/90 leading-relaxed relative z-10">
-                {restaurant?.description_ar}
+                {language === 'ar' ? restaurant?.description_ar : restaurant?.description_en}
               </p>
             </div>
 
@@ -387,15 +396,15 @@ const SubscriptionForm = () => {
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-gradient-to-br from-emerald-50 to-green-100 border border-emerald-200 rounded-2xl p-4 text-center">
                 <div className="text-xs text-emerald-600 font-semibold uppercase tracking-wide mb-2">
-                  نوع الاشتراك
+                  {t('subscriptionTypeLabel')}
                 </div>
                 <div className="text-lg font-bold text-gray-800">
-                  {formData.subscriptionType === 'weekly' ? 'أسبوعي' : 'شهري'}
+                  {formData.subscriptionType === 'weekly' ? t('weekly') : t('monthly')}
                 </div>
               </div>
               <div className="bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 rounded-2xl p-4 text-center">
                 <div className="text-xs text-blue-600 font-semibold uppercase tracking-wide mb-2">
-                  عدد الوجبات
+                  {t('mealsCount')}
                 </div>
                 <div className="text-lg font-bold text-gray-800">
                   {selectedMeals.length}
@@ -407,7 +416,7 @@ const SubscriptionForm = () => {
             {selectedMeals.length > 0 && (
               <div className="mb-6">
                 <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
-                  الوجبات المختارة
+                  {t('selectedMeals')}
                 </h3>
                 <div className="space-y-3">
                   {selectedMeals.map((meal, index) => (
@@ -421,7 +430,7 @@ const SubscriptionForm = () => {
                           {getDateForDayKey(meal.dayKey)}
                         </div>
                         <div className="font-semibold text-gray-800">
-                          {meal.name_ar}
+                          {language === 'ar' ? meal.name_ar : meal.name_en}
                         </div>
                       </div>
                     </div>
@@ -436,10 +445,10 @@ const SubscriptionForm = () => {
               <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/5 rounded-full translate-y-10 -translate-x-10"></div>
               
               <div className="text-sm opacity-90 mb-2 relative z-10">
-                سعر الاشتراك
+                {t('subscriptionPrice')}
               </div>
               <div className="text-3xl font-bold relative z-10">
-                {calculateTotalPrice()} ريال عماني
+                {calculateTotalPrice()} {t('omaniRiyal')}
               </div>
             </div>
           </div>
@@ -449,7 +458,7 @@ const SubscriptionForm = () => {
             <div className="text-center mb-8">
               <div className="text-5xl mb-4">✏️</div>
               <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                تفاصيل الاشتراك
+                {t('subscriptionDetails')}
               </h2>
             </div>
 
@@ -458,16 +467,16 @@ const SubscriptionForm = () => {
               {/* Start Date Display */}
               <div>
                 <label className="block text-lg font-bold text-gray-800 mb-3">
-                  📅 تاريخ بدء الاشتراك
+                  📅 {t('subscriptionStartDate')}
                 </label>
                 <div className="bg-gradient-to-r from-gray-50 to-blue-50 border-2 border-indigo-200 rounded-2xl p-4 text-center">
                   <div className="text-lg font-semibold text-gray-800">
-                    {formData.startDate ? new Date(formData.startDate).toLocaleDateString('ar-SA', {
+                    {formData.startDate ? new Date(formData.startDate).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
                       weekday: 'long',
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric'
-                    }) : 'لم يتم تحديد التاريخ'}
+                    }) : t('dateNotSelected')}
                   </div>
                 </div>
               </div>
@@ -475,7 +484,7 @@ const SubscriptionForm = () => {
               {/* Delivery Address */}
               <div>
                 <label className="block text-lg font-bold text-gray-800 mb-3">
-                  🏠 عنوان التوصيل
+                  🏠 {t('deliveryAddress')}
                 </label>
                 
                 {deliveryAddresses.length > 0 && !addingNewAddress ? (
@@ -486,7 +495,7 @@ const SubscriptionForm = () => {
                       className="w-full p-4 bg-white border-2 border-gray-200 rounded-2xl text-lg focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300 outline-none"
                       required
                     >
-                      <option value="">اختر عنوان التوصيل</option>
+                      <option value="">{t('selectDeliveryAddress')}</option>
                       {deliveryAddresses.map((address) => (
                         <option key={address.id} value={address.id}>
                           {address.name} - {address.address}
@@ -498,68 +507,62 @@ const SubscriptionForm = () => {
                        onClick={() => setAddingNewAddress(true)}
                        className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-6 rounded-2xl font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
                      >
-                       + إضافة عنوان جديد
+                       {t('addNewAddress')}
                      </button>
                      
-                     <button 
-                       type="button" 
-                       onClick={() => setShowMap(!showMap)}
-                       className="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white py-3 px-6 rounded-2xl font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-                     >
-                       🗺️ تحديد الموقع على الخريطة
-                     </button>
+
                   </div>
                 ) : (
                   <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 border border-gray-200">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">
-                          اسم العنوان
+                          {t('addressName')}
                         </label>
                         <input 
                           type="text" 
                           value={newAddress.name} 
                           onChange={(e) => setNewAddress(prev => ({ ...prev, name: e.target.value }))} 
-                          placeholder="مثل: المنزل، العمل" 
+                          placeholder={t('addressNamePlaceholder')} 
                           className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-300 outline-none"
                           required 
                         />
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">
-                          العنوان التفصيلي
+                          {t('detailedAddress')}
                         </label>
                         <input 
                           type="text" 
                           value={newAddress.address} 
                           onChange={(e) => setNewAddress(prev => ({ ...prev, address: e.target.value }))} 
-                          placeholder="الحي، الشارع، رقم المنزل" 
+                          placeholder={t('detailedAddressPlaceholder')} 
                           className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-300 outline-none"
                           required 
                         />
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">
-                          المدينة
+                          {t('city')}
                         </label>
                         <input 
                           type="text" 
                           value={newAddress.city} 
                           onChange={(e) => setNewAddress(prev => ({ ...prev, city: e.target.value }))} 
-                          placeholder="الرياض، جدة، الدمام" 
+                          placeholder={t('cityPlaceholder')} 
                           className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-300 outline-none"
                           required 
                         />
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">
-                          رقم الهاتف
+                          {t('phone')}
                         </label>
                         <input 
                           type="tel" 
                           value={newAddress.phone} 
                           onChange={(e) => setNewAddress(prev => ({ ...prev, phone: e.target.value }))} 
-                          placeholder="05xxxxxxxx" 
+                          placeholder={t('phonePlaceholder')} 
                           className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-300 outline-none"
                           required 
                         />
@@ -571,7 +574,7 @@ const SubscriptionForm = () => {
                         onClick={() => setAddingNewAddress(false)}
                         className="mt-4 bg-gradient-to-r from-red-500 to-red-600 text-white py-2 px-4 rounded-xl font-semibold hover:shadow-lg transition-all duration-300"
                       >
-                        إلغاء
+                        {t('cancel')}
                       </button>
                     )}
                   </div>
@@ -579,56 +582,54 @@ const SubscriptionForm = () => {
               </div>
 
               {/* Interactive Map */}
-              {showMap && (
-                <div className="mt-6">
-                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
-                    <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
-                      🗺️ تحديد موقعك على الخريطة
-                    </h3>
-                    <InteractiveMap 
-                      onLocationSelect={handleLocationSelect}
-                      selectedLocation={selectedLocation}
-                      initialLat={23.5880}
-                      initialLng={58.3829}
-                    />
-                    
-                    {selectedLocation && (
-                      <div className="mt-4 p-4 bg-white rounded-xl border border-green-200">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-sm font-semibold text-gray-700 mb-1">
-                              الموقع المحدد:
-                            </p>
-                            <p className="text-xs text-gray-600">
-                              خط العرض: {selectedLocation.lat.toFixed(6)}
-                            </p>
-                            <p className="text-xs text-gray-600">
-                              خط الطول: {selectedLocation.lng.toFixed(6)}
-                            </p>
-                          </div>
-                          <button 
-                            type="button"
-                            onClick={() => setSelectedLocation(null)}
-                            className="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600 transition-colors"
-                          >
-                            إلغاء
-                          </button>
+              <div className="mt-6">
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+                  <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
+                    {t('selectLocationOnMapTitle')}
+                  </h3>
+                  <InteractiveMap 
+                    onLocationSelect={handleLocationSelect}
+                    selectedLocation={selectedLocation}
+                    initialLat={23.5880}
+                    initialLng={58.3829}
+                  />
+                  
+                  {selectedLocation && (
+                    <div className="mt-4 p-4 bg-white rounded-xl border border-green-200">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-semibold text-gray-700 mb-1">
+                            {t('selectedLocation')}
+                          </p>
+                          <p className="text-xs text-gray-600">
+                            {t('latitude')} {selectedLocation.lat.toFixed(6)}
+                          </p>
+                          <p className="text-xs text-gray-600">
+                            {t('longitude')} {selectedLocation.lng.toFixed(6)}
+                          </p>
                         </div>
+                        <button 
+                          type="button"
+                          onClick={() => setSelectedLocation(null)}
+                          className="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600 transition-colors"
+                        >
+                          {t('cancel')}
+                        </button>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
 
               {/* Special Instructions */}
               <div>
                 <label className="block text-lg font-bold text-gray-800 mb-3">
-                  📝 تعليمات خاصة
+                  {t('specialInstructions')}
                 </label>
                 <textarea 
                   value={formData.specialInstructions} 
                   onChange={(e) => handleInputChange('specialInstructions', e.target.value)} 
-                  placeholder="أي تعليمات خاصة للتوصيل أو تفضيلات إضافية..." 
+                  placeholder={t('specialInstructionsPlaceholder')} 
                   rows={4} 
                   className="w-full p-4 bg-white border-2 border-gray-200 rounded-2xl text-lg focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300 outline-none resize-none"
                 />
@@ -643,12 +644,12 @@ const SubscriptionForm = () => {
                 {submitting ? (
                   <div className="flex items-center justify-center gap-3">
                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                    جاري إنشاء الاشتراك...
+                    {t('creatingSubscription')}
                   </div>
                 ) : (
                   <div className="flex items-center justify-center gap-3">
                     <span className="text-2xl">🚀</span>
-                    إنشاء الاشتراك
+                    {t('createSubscription')}
                   </div>
                 )}
               </button>

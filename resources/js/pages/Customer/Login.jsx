@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const { login, register, error, clearError, isAuthenticated } = useAuth();
-  const { t, language } = useLanguage();
+  const { t, language, dir } = useLanguage();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '',
@@ -63,30 +63,26 @@ const Login = () => {
   const validateForm = () => {
     const newErrors = {};
     
-    // Email validation
-    if (!formData.email) {
-      newErrors.email = 'البريد الإلكتروني مطلوب';
+    if (!isLogin && !formData.fullName.trim()) {
+      newErrors.fullName = t('fullNameRequired');
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.email = t('emailRequired');
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'يرجى إدخال بريد إلكتروني صحيح';
+      newErrors.email = t('invalidEmail');
     }
     
-    // Password validation
     if (!formData.password) {
-      newErrors.password = 'كلمة المرور مطلوبة';
+      newErrors.password = t('passwordRequired');
     } else if (formData.password.length < 6) {
-      newErrors.password = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+      newErrors.password = t('passwordMinLength');
     }
     
-    // Full name validation for registration
-    if (!isLogin && !formData.fullName) {
-      newErrors.fullName = 'الاسم الكامل مطلوب';
-    }
-    
-    // Confirm password validation for registration
     if (!isLogin && !formData.confirmPassword) {
-      newErrors.confirmPassword = 'تأكيد كلمة المرور مطلوب';
-    } else if (!isLogin && formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'كلمة المرور غير متطابقة';
+      newErrors.confirmPassword = t('confirmPasswordRequired');
+    } else if (!isLogin && formData.confirmPassword !== formData.password) {
+      newErrors.confirmPassword = t('passwordsDoNotMatch');
     }
     
     setErrors(newErrors);
@@ -172,34 +168,34 @@ const Login = () => {
     switch (field) {
       case 'email':
         if (!value) {
-          newErrors.email = 'البريد الإلكتروني مطلوب';
+          newErrors.email = t('emailRequired');
         } else if (!/\S+@\S+\.\S+/.test(value)) {
-          newErrors.email = 'يرجى إدخال بريد إلكتروني صحيح';
+          newErrors.email = t('invalidEmail');
         } else {
           delete newErrors.email;
         }
         break;
       case 'password':
         if (!value) {
-          newErrors.password = 'كلمة المرور مطلوبة';
+          newErrors.password = t('passwordRequired');
         } else if (value.length < 6) {
-          newErrors.password = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+          newErrors.password = t('passwordMinLength');
         } else {
           delete newErrors.password;
         }
         break;
       case 'fullName':
         if (!value) {
-          newErrors.fullName = 'الاسم الكامل مطلوب';
+          newErrors.fullName = t('fullNameRequired');
         } else {
           delete newErrors.fullName;
         }
         break;
       case 'confirmPassword':
         if (!value) {
-          newErrors.confirmPassword = 'تأكيد كلمة المرور مطلوب';
+          newErrors.confirmPassword = t('confirmPasswordRequired');
         } else if (value !== formData.password) {
-          newErrors.confirmPassword = 'كلمة المرور غير متطابقة';
+          newErrors.confirmPassword = t('passwordsDoNotMatch');
         } else {
           delete newErrors.confirmPassword;
         }
@@ -215,8 +211,6 @@ const Login = () => {
     validateField(field, formData[field]);
   };
 
-
-
   return (
     <div 
       key={`login-${isLogin}`}
@@ -227,7 +221,7 @@ const Login = () => {
         alignItems: 'center',
         justifyContent: 'center',
         padding: '1rem',
-        direction: 'rtl'
+        direction: dir
       }}
     >
       {/* Success Message Overlay */}
@@ -250,62 +244,48 @@ const Login = () => {
             padding: '2rem',
             textAlign: 'center',
             maxWidth: '400px',
-            margin: '1rem',
-            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)'
+            width: '90%',
+            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)'
           }}>
-            <div className="success-icon" style={{
+            <div style={{
               width: '4rem',
               height: '4rem',
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, rgb(34 197 94), rgb(16 185 129))',
+              background: 'linear-gradient(135deg, #10b981, #059669)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               margin: '0 auto 1rem',
               fontSize: '2rem'
             }}>
-              {isLogin ? '🎉' : '✅'}
+              ✅
             </div>
-            <h2 style={{
-              fontSize: '1.5rem',
+            <h3 style={{
+              fontSize: '1.25rem',
               fontWeight: 'bold',
-              color: 'rgb(34 197 94)',
+              color: 'rgb(55 65 81)',
               marginBottom: '0.5rem'
             }}>
-              {isLogin ? 'تم تسجيل الدخول بنجاح!' : 'تم التسجيل بنجاح!'}
-            </h2>
+              {isLogin ? t('loginSuccess') : t('registrationSuccess')}
+            </h3>
             <p style={{
               color: 'rgb(75 85 99)',
+              fontSize: '0.875rem',
               marginBottom: '1rem'
             }}>
-              سيتم توجيهك للصفحة الرئيسية خلال لحظات...
+              {isLogin ? t('redirectingToHome') : t('redirectingToHome')}
             </p>
-                                          <div style={{
-                  width: '100%',
-                  height: '0.25rem',
-                  background: 'rgb(229 231 235)',
-                  borderRadius: '0.125rem',
-                  overflow: 'hidden'
-                }}>
-                  <div className="progress-bar" style={{
-                    width: '100%',
-                    height: '100%',
-                    background: 'linear-gradient(135deg, rgb(34 197 94), rgb(16 185 129))',
-                    transformOrigin: 'left'
-                  }}></div>
-                </div>
             <div style={{
               marginTop: '1rem',
               fontSize: '0.875rem',
               color: 'rgb(75 85 99)',
               opacity: 0.8
             }}>
-              ⏱️ جاري التوجيه...
+              ⏱️ {t('redirecting')}
             </div>
           </div>
         </div>
       )}
-
 
       <div style={{ 
         maxWidth: '900px', 
@@ -336,7 +316,7 @@ const Login = () => {
             margin: '0 auto 1.5rem',
             boxShadow: '0 10px 25px rgba(79, 70, 229, 0.3)'
           }}>
-            م
+            {language === 'ar' ? 'م' : 'M'}
           </div>
           <h1 style={{ 
             fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', 
@@ -344,10 +324,10 @@ const Login = () => {
             marginBottom: '1rem',
             color: 'rgb(79 70 229)'
           }}>
-                                    {t('welcomeTo')}
-                          <span style={{ display: 'block', marginTop: '0.5rem' }}>
-                {t('mealSubscriptions')}
-              </span>
+            {t('welcomeTo')}
+            <span style={{ display: 'block', marginTop: '0.5rem' }}>
+              {t('mealSubscriptions')}
+            </span>
           </h1>
           <p style={{ 
             fontSize: '1rem', 
@@ -355,25 +335,17 @@ const Login = () => {
             marginBottom: '1.5rem',
             lineHeight: '1.6'
           }}>
-            {isLogin 
-              ? 'سجل دخولك للوصول إلى اشتراكاتك المفضلة'
-              : 'انضم إلينا واحصل على أفضل الوجبات المميزة'
-            }
+            {t('loginPageDescription')}
           </p>
-          
-          {/* Features List */}
-          <div style={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            gap: '0.75rem',
-            textAlign: 'right'
-          }}>
+
+          {/* Features */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: dir === 'rtl' ? 'right' : 'left' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <div style={{ 
                 width: '1.75rem', 
                 height: '1.75rem', 
                 borderRadius: '50%', 
-                background: 'linear-gradient(135deg, rgb(34 197 94), rgb(16 185 129))',
+                background: 'linear-gradient(135deg, rgb(34 197 94), rgb(22 163 74))',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -381,9 +353,9 @@ const Login = () => {
                 color: 'white',
                 flexShrink: 0
               }}>
-                ✅
+                🍽️
               </div>
-              <span style={{ color: 'rgb(55 65 81)', fontSize: '0.875rem' }}>وجبات متنوعة من أفضل المطاعم</span>
+              <span style={{ color: 'rgb(55 65 81)', fontSize: '0.875rem' }}>{t('diverseMeals')}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <div style={{ 
@@ -400,7 +372,7 @@ const Login = () => {
               }}>
                 ⏰
               </div>
-              <span style={{ color: 'rgb(55 65 81)', fontSize: '0.875rem' }}>توصيل في الوقت المحدد</span>
+              <span style={{ color: 'rgb(55 65 81)', fontSize: '0.875rem' }}>{t('fixedDelivery')}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <div style={{ 
@@ -417,7 +389,7 @@ const Login = () => {
               }}>
                 💳
               </div>
-              <span style={{ color: 'rgb(55 65 81)', fontSize: '0.875rem' }}>دفع آمن وسهل</span>
+              <span style={{ color: 'rgb(55 65 81)', fontSize: '0.875rem' }}>{t('securePayment')}</span>
             </div>
           </div>
         </div>
@@ -430,7 +402,7 @@ const Login = () => {
           padding: '2rem',
           boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
           border: '1px solid rgba(229, 231, 235, 0.5)',
-          direction: 'rtl'
+          direction: dir
         }}>
           {/* Toggle Buttons */}
           <div style={{ 
@@ -455,7 +427,7 @@ const Login = () => {
                 fontSize: '0.875rem'
               }}
             >
-              تسجيل الدخول
+              {t('login')}
             </button>
             <button
               onClick={() => setIsLogin(false)}
@@ -472,7 +444,7 @@ const Login = () => {
                 fontSize: '0.875rem'
               }}
             >
-              إنشاء حساب
+              {t('createAccount')}
             </button>
           </div>
 
@@ -483,7 +455,7 @@ const Login = () => {
             marginBottom: '0.5rem',
             textAlign: 'center'
           }}>
-                            {isLogin ? t('welcomeBack') + '!' : t('joinUs')}
+            {isLogin ? t('welcomeBack') + '!' : t('joinUs')}
           </h2>
           <p style={{ 
             color: 'rgb(75 85 99)', 
@@ -491,7 +463,7 @@ const Login = () => {
             marginBottom: '1.5rem',
             fontSize: '0.875rem'
           }}>
-            {isLogin ? 'سجل دخولك للوصول إلى اشتراكاتك' : 'أنشئ حسابك الجديد واستمتع بخدماتنا'}
+            {isLogin ? t('loginDescription') : t('registerDescription')}
           </p>
 
           {/* Backend Error Message */}
@@ -525,12 +497,12 @@ const Login = () => {
                   fontWeight: '500',
                   fontSize: '0.875rem'
                 }}>
-                  الاسم الكامل
+                  {t('fullName')}
                 </label>
                 <input 
                   key={`fullName-${isLogin}`}
                   type="text" 
-                  autoComplete="off"
+                  autoComplete="name"
                   value={formData.fullName}
                   onChange={(e) => handleInputChange('fullName', e.target.value)}
                   onBlur={() => handleBlur('fullName')}
@@ -543,16 +515,16 @@ const Login = () => {
                     outline: 'none',
                     transition: 'all 0.3s ease',
                     background: 'rgba(255, 255, 255, 0.9)',
-                    textAlign: 'right'
+                    textAlign: dir === 'rtl' ? 'right' : 'left'
                   }}
-                  placeholder="أدخل اسمك الكامل"
+                  placeholder={t('enterFullName')}
                 />
                 {touched.fullName && errors.fullName && (
                   <div style={{ 
                     color: '#ef4444', 
                     fontSize: '0.75rem', 
                     marginTop: '0.25rem',
-                    textAlign: 'right'
+                    textAlign: dir === 'rtl' ? 'right' : 'left'
                   }}>
                     {errors.fullName}
                   </div>
@@ -568,7 +540,7 @@ const Login = () => {
                 fontWeight: '500',
                 fontSize: '0.875rem'
               }}>
-                البريد الإلكتروني
+                {t('email')}
               </label>
               <input 
                 key={`email-${isLogin}`}
@@ -586,16 +558,16 @@ const Login = () => {
                   outline: 'none',
                   transition: 'all 0.3s ease',
                   background: 'rgba(255, 255, 255, 0.9)',
-                  textAlign: 'right'
+                  textAlign: dir === 'rtl' ? 'right' : 'left'
                 }}
-                placeholder="أدخل بريدك الإلكتروني"
+                placeholder={t('enterEmail')}
               />
               {touched.email && errors.email && (
                 <div style={{ 
                   color: '#ef4444', 
                   fontSize: '0.75rem', 
                   marginTop: '0.25rem',
-                  textAlign: 'right'
+                  textAlign: dir === 'rtl' ? 'right' : 'left'
                 }}>
                   {errors.email}
                 </div>
@@ -610,7 +582,7 @@ const Login = () => {
                 fontWeight: '500',
                 fontSize: '0.875rem'
               }}>
-                كلمة المرور
+                {t('password')}
               </label>
               <input 
                 key={`password-${isLogin}`}
@@ -628,16 +600,16 @@ const Login = () => {
                   outline: 'none',
                   transition: 'all 0.3s ease',
                   background: 'rgba(255, 255, 255, 0.9)',
-                  textAlign: 'right'
+                  textAlign: dir === 'rtl' ? 'right' : 'left'
                 }}
-                placeholder="أدخل كلمة المرور"
+                placeholder={t('enterPassword')}
               />
               {touched.password && errors.password && (
                 <div style={{ 
                   color: '#ef4444', 
                   fontSize: '0.75rem', 
                   marginTop: '0.25rem',
-                  textAlign: 'right'
+                  textAlign: dir === 'rtl' ? 'right' : 'left'
                 }}>
                   {errors.password}
                 </div>
@@ -653,7 +625,7 @@ const Login = () => {
                   fontWeight: '500',
                   fontSize: '0.875rem'
                 }}>
-                  تأكيد كلمة المرور
+                  {t('confirmPassword')}
                 </label>
                 <input 
                   key={`confirmPassword-${isLogin}`}
@@ -671,16 +643,16 @@ const Login = () => {
                     outline: 'none',
                     transition: 'all 0.3s ease',
                     background: 'rgba(255, 255, 255, 0.9)',
-                    textAlign: 'right'
+                    textAlign: dir === 'rtl' ? 'right' : 'left'
                   }}
-                  placeholder="أعد إدخال كلمة المرور"
+                  placeholder={t('confirmPasswordPlaceholder')}
                 />
                 {touched.confirmPassword && errors.confirmPassword && (
                   <div style={{ 
                     color: '#ef4444', 
                     fontSize: '0.75rem', 
                     marginTop: '0.25rem',
-                    textAlign: 'right'
+                    textAlign: dir === 'rtl' ? 'right' : 'left'
                   }}>
                     {errors.confirmPassword}
                   </div>
@@ -692,10 +664,10 @@ const Login = () => {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'rgb(75 85 99)' }}>
                   <input type="checkbox" style={{ width: '0.875rem', height: '0.875rem' }} />
-                  تذكرني
+                  {t('rememberMe')}
                 </label>
                 <a href="#" style={{ color: 'rgb(79 70 229)', textDecoration: 'none', fontSize: '0.75rem', fontWeight: '500' }}>
-                  نسيت كلمة المرور؟
+                  {t('forgotPassword')}
                 </a>
               </div>
             )}
@@ -721,8 +693,8 @@ const Login = () => {
               }}
             >
               {isSubmitting 
-                ? (isLogin ? 'جاري تسجيل الدخول...' : 'جاري إنشاء الحساب...') 
-                : (isLogin ? 'تسجيل الدخول' : 'إنشاء حساب')
+                ? (isLogin ? t('loggingIn') : t('creatingAccount')) 
+                : (isLogin ? t('login') : t('createAccount'))
               }
             </button>
           </form>
@@ -736,7 +708,7 @@ const Login = () => {
               marginBottom: '1.25rem'
             }}>
               <div style={{ flex: 1, height: '1px', background: 'rgb(209 213 219)' }}></div>
-              <span style={{ color: 'rgb(75 85 99)', fontSize: '0.75rem' }}>أو</span>
+              <span style={{ color: 'rgb(75 85 99)', fontSize: '0.75rem' }}>{t('or')}</span>
               <div style={{ flex: 1, height: '1px', background: 'rgb(209 213 219)' }}></div>
             </div>
             
@@ -795,7 +767,7 @@ const Login = () => {
               justifyContent: 'center',
               gap: '0.375rem'
             }}>
-              ← العودة للصفحة الرئيسية
+              {dir === 'rtl' ? '← ' : ''}{t('backToHome')}{dir === 'ltr' ? ' →' : ''}
             </a>
           </div>
         </div>

@@ -53,7 +53,7 @@ class SubscriptionController extends Controller
             'delivery_days.*' => 'in:sunday,monday,tuesday,wednesday,thursday,friday,saturday',
             'start_date' => 'required|date|after_or_equal:tomorrow',
             'special_instructions' => 'nullable|string|max:500',
-            'payment_method' => 'required|in:credit_card,cash,bank_transfer',
+
         ], [
             'restaurant_id.required' => 'معرف المطعم مطلوب',
             'meal_ids.required' => 'معرف الوجبة مطلوب',
@@ -64,7 +64,7 @@ class SubscriptionController extends Controller
             'delivery_days.min' => 'يجب اختيار يوم واحد على الأقل',
             'start_date.required' => 'تاريخ البداية مطلوب',
             'start_date.after_or_equal' => 'تاريخ البداية يجب أن يكون غداً أو بعده',
-            'payment_method.required' => 'طريقة الدفع مطلوبة',
+
         ]);
 
         try {
@@ -94,7 +94,7 @@ class SubscriptionController extends Controller
                 'total_amount' => $subscriptionType->price,
                 'status' => 'pending',
                 'payment_status' => 'pending',
-                'payment_method' => $request->payment_method,
+
                 'special_instructions' => $request->special_instructions,
             ]);
 

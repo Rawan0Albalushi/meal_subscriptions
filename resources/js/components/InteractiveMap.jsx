@@ -97,7 +97,11 @@ const InteractiveMap = ({
               </button>
             `;
             
-            div.onclick = getCurrentLocation;
+            div.onclick = (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              getCurrentLocation();
+            };
             return div;
           };
           locationButton.addTo(mapInstanceRef.current);
@@ -121,7 +125,10 @@ const InteractiveMap = ({
                   ${selectedLocation.lat.toFixed(6)}, ${selectedLocation.lng.toFixed(6)}
                 </div>
               </div>
-            `);
+            `, {
+              closeButton: false,
+              closeOnClick: false
+            });
           }
 
                      // إضافة مؤشر قابل للسحب إذا لم يكن هناك موقع محدد
@@ -143,25 +150,50 @@ const InteractiveMap = ({
                   ${initialLat.toFixed(6)}, ${initialLng.toFixed(6)}
                 </div>
               </div>
-            `);
+            `, {
+              closeButton: false,
+              closeOnClick: false
+            });
           }
 
                      // إضافة مؤشر الموقع الحالي للمستخدم
            if (userLocation) {
-             L.marker([userLocation.lat, userLocation.lng], {
+             const userMarker = L.marker([userLocation.lat, userLocation.lng], {
                icon: L.divIcon({
                  className: 'user-location-marker',
                  html: '<div style="background-color: #10b981; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
                  iconSize: [16, 16],
                  iconAnchor: [8, 8]
                })
-             }).addTo(mapInstanceRef.current).bindPopup('موقعك الحالي');
+             }).addTo(mapInstanceRef.current).bindPopup('موقعك الحالي', {
+               closeButton: false,
+               closeOnClick: false
+             });
+             
+             userMarker.on('click', (e) => {
+               if (e.originalEvent) {
+                 e.originalEvent.preventDefault();
+                 e.originalEvent.stopPropagation();
+               }
+             });
            }
 
           // إضافة أحداث النقر والسحب
           mapInstanceRef.current.on('click', handleMapClick);
+          mapInstanceRef.current.on('click', (e) => {
+            if (e.originalEvent) {
+              e.originalEvent.preventDefault();
+              e.originalEvent.stopPropagation();
+            }
+          });
           if (markerRef.current) {
             markerRef.current.on('dragend', handleMarkerDrag);
+            markerRef.current.on('click', (e) => {
+              if (e.originalEvent) {
+                e.originalEvent.preventDefault();
+                e.originalEvent.stopPropagation();
+              }
+            });
           }
 
           setIsLoading(false);
@@ -221,9 +253,18 @@ const InteractiveMap = ({
                 ${selectedLocation.lat.toFixed(6)}, ${selectedLocation.lng.toFixed(6)}
               </div>
             </div>
-          `);
+          `, {
+            closeButton: false,
+            closeOnClick: false
+          });
 
           markerRef.current.on('dragend', handleMarkerDrag);
+          markerRef.current.on('click', (e) => {
+            if (e.originalEvent) {
+              e.originalEvent.preventDefault();
+              e.originalEvent.stopPropagation();
+            }
+          });
           mapInstanceRef.current.setView([selectedLocation.lat, selectedLocation.lng], 16);
         } catch (error) {
           console.error('خطأ في تحديث المؤشر:', error);
@@ -261,14 +302,24 @@ const InteractiveMap = ({
             };
 
             const L = await waitForLeaflet();
-            L.marker([latitude, longitude], {
+            const userMarker = L.marker([latitude, longitude], {
               icon: L.divIcon({
                 className: 'user-location-marker',
                 html: '<div style="background-color: #10b981; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
                 iconSize: [16, 16],
                 iconAnchor: [8, 8]
               })
-            }).addTo(mapInstanceRef.current).bindPopup('موقعك الحالي');
+                         }).addTo(mapInstanceRef.current).bindPopup('موقعك الحالي', {
+               closeButton: false,
+               closeOnClick: false
+             });
+             
+             userMarker.on('click', (e) => {
+              if (e.originalEvent) {
+                e.originalEvent.preventDefault();
+                e.originalEvent.stopPropagation();
+              }
+            });
             
             setIsLoading(false);
           } catch (error) {
@@ -294,6 +345,10 @@ const InteractiveMap = ({
 
   // معالجة النقر على الخريطة
   const handleMapClick = async (e) => {
+    // منع انتشار الحدث لتجنب تداخله مع أحداث النموذج
+    e.originalEvent.preventDefault();
+    e.originalEvent.stopPropagation();
+    
     try {
       const { lat, lng } = e.latlng;
       
@@ -331,9 +386,18 @@ const InteractiveMap = ({
             ${lat.toFixed(6)}, ${lng.toFixed(6)}
           </div>
         </div>
-      `);
+      `, {
+        closeButton: false,
+        closeOnClick: false
+      });
 
       markerRef.current.on('dragend', handleMarkerDrag);
+      markerRef.current.on('click', (e) => {
+        if (e.originalEvent) {
+          e.originalEvent.preventDefault();
+          e.originalEvent.stopPropagation();
+        }
+      });
       
       // استدعاء دالة callback مع إحداثيات الموقع
       onLocationSelect({ lat, lng });
@@ -344,6 +408,12 @@ const InteractiveMap = ({
 
   // معالجة سحب المؤشر
   const handleMarkerDrag = (e) => {
+    // منع انتشار الحدث لتجنب تداخله مع أحداث النموذج
+    if (e.originalEvent) {
+      e.originalEvent.preventDefault();
+      e.originalEvent.stopPropagation();
+    }
+    
     const { lat, lng } = e.target.getLatLng();
     onLocationSelect({ lat, lng });
   };

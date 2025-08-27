@@ -5,6 +5,98 @@ html {
   scroll-behavior: smooth; 
 }
 
+/* RTL/LTR Support */
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="ltr"] {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Font families for different languages */
+.font-arabic {
+  font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.font-english {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* RTL specific adjustments */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .rtl-mirror {
+  transform: scaleX(-1);
+}
+
+/* LTR specific adjustments */
+[dir="ltr"] .ltr-flip {
+  transform: scaleX(-1);
+}
+
+/* Text alignment utilities */
+[dir="rtl"] .text-start {
+  text-align: right;
+}
+
+[dir="ltr"] .text-start {
+  text-align: left;
+}
+
+[dir="rtl"] .text-end {
+  text-align: left;
+}
+
+[dir="ltr"] .text-end {
+  text-align: right;
+}
+
+/* Margin and padding utilities for RTL/LTR */
+[dir="rtl"] .ms-auto {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+[dir="ltr"] .ms-auto {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+[dir="rtl"] .me-auto {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+[dir="ltr"] .me-auto {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+/* Flex direction utilities */
+[dir="rtl"] .flex-row {
+  flex-direction: row-reverse;
+}
+
+[dir="ltr"] .flex-row {
+  flex-direction: row;
+}
+
+/* Input text alignment */
+[dir="rtl"] input,
+[dir="rtl"] textarea {
+  text-align: right;
+}
+
+[dir="ltr"] input,
+[dir="ltr"] textarea {
+  text-align: left;
+}
+
 /* Loading Animations */
 @keyframes pulse {
   0%, 100% {
@@ -21,6 +113,33 @@ html {
   }
   40% {
     transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
   }
 }
 
@@ -1553,4 +1672,167 @@ body.menu-open {
 .leaflet-control-attribution a:hover {
   text-decoration: underline !important;
   color: #3730a3 !important;
+}
+
+/* Connection Lines Animation */
+.connection-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(79, 70, 229, 0.2), transparent);
+  transform: translateY(-50%);
+  z-index: 0;
+  animation: gradient-shift 3s ease-in-out infinite;
+}
+
+/* Responsive Design for Steps */
+@media (max-width: 768px) {
+  .step-card {
+    margin-bottom: 2rem;
+  }
+  
+  .connection-line {
+    display: none;
+  }
+}
+
+/* Color gradient utilities for step cards */
+.from-blue-500 {
+  background-color: #3b82f6;
+}
+
+.to-indigo-600 {
+  background-color: #4f46e5;
+}
+
+.from-purple-500 {
+  background-color: #a855f7;
+}
+
+.to-pink-600 {
+  background-color: #db2777;
+}
+
+.from-green-500 {
+  background-color: #22c55e;
+}
+
+.to-emerald-600 {
+  background-color: #059669;
+}
+
+.from-orange-500 {
+  background-color: #f97316;
+}
+
+.to-red-600 {
+  background-color: #dc2626;
+}
+
+/* Enhanced How It Works Section Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.3;
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Enhanced Step Cards */
+.step-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.step-card:hover::before {
+  left: 100%;
+}
+
+.step-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12), 0 12px 24px rgba(79, 70, 229, 0.15);
+}
+
+/* Step Icon Animation */
+.step-icon {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.step-card:hover .step-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Step Number Badge */
+.step-number-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgb(79 70 229) 0%, rgb(139 92 246) 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+  border: 3px solid white;
+  transition: all 0.3s ease;
+}
+
+.step-card:hover .step-number-badge {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.5);
 }

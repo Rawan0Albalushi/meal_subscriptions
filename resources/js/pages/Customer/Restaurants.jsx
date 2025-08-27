@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { restaurantsAPI } from '../../services/api';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const Restaurants = () => {
+  const { t, language, dir } = useLanguage();
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,18 +20,32 @@ const Restaurants = () => {
   const [showMealTypeDropdown, setShowMealTypeDropdown] = useState(false);
   const navigate = useNavigate();
 
-  // أسماء العناوين بالعربية
+  // أسماء العناوين حسب اللغة
   const locationNames = {
-    'bosher': 'بوشر',
-    'khoudh': 'الخوض',
-    'maabilah': 'المعبيلة'
+    ar: {
+      'bosher': 'بوشر',
+      'khoudh': 'الخوض',
+      'maabilah': 'المعبيلة'
+    },
+    en: {
+      'bosher': 'Bosher',
+      'khoudh': 'Al Khoudh',
+      'maabilah': 'Al Mabaila'
+    }
   };
 
-  // أسماء أنواع الوجبات بالعربية
+  // أسماء أنواع الوجبات حسب اللغة
   const mealTypeNames = {
-    'breakfast': 'فطور',
-    'lunch': 'غداء',
-    'dinner': 'عشاء'
+    ar: {
+      'breakfast': 'فطور',
+      'lunch': 'غداء',
+      'dinner': 'عشاء'
+    },
+    en: {
+      'breakfast': 'Breakfast',
+      'lunch': 'Lunch',
+      'dinner': 'Dinner'
+    }
   };
 
   // Fallback filters في حالة عدم وجود بيانات
@@ -43,7 +59,12 @@ const Restaurants = () => {
       try {
         const response = await restaurantsAPI.getFilters();
         if (response.data.success) {
-          setAvailableFilters(response.data.data);
+          // استخدام البيانات المترجمة من الباكند
+          const filtersData = response.data.data;
+          setAvailableFilters({
+            locations: filtersData.raw_locations || fallbackFilters.locations,
+            meal_types: filtersData.raw_meal_types || fallbackFilters.meal_types
+          });
         } else {
           // Fallback to default filters
           setAvailableFilters(fallbackFilters);
@@ -67,14 +88,14 @@ const Restaurants = () => {
           setRestaurants(response.data.data);
         }
       } catch (error) {
-        setError('حدث خطأ في تحميل المطاعم');
+        setError(t('restaurantsLoadError'));
       } finally {
         setLoading(false);
       }
     };
 
     fetchRestaurants();
-  }, [filters]);
+  }, [filters, t]);
 
   // إغلاق القوائم المنسدلة عند النقر خارجها
   useEffect(() => {
@@ -145,20 +166,21 @@ const Restaurants = () => {
   const hasActiveFilters = filters.locations || filters.meal_types;
 
   const getSelectedLocationsText = () => {
-    if (!filters.locations) return 'اختر العنوان';
-    return locationNames[filters.locations] || filters.locations;
+    if (!filters.locations) return t('selectLocation');
+    return locationNames[language][filters.locations] || filters.locations;
   };
 
   const getSelectedMealTypesText = () => {
-    if (!filters.meal_types) return 'اختر نوع الوجبة';
-    return mealTypeNames[filters.meal_types] || filters.meal_types;
+    if (!filters.meal_types) return t('selectMealType');
+    return mealTypeNames[language][filters.meal_types] || filters.meal_types;
   };
 
   return (
     <div style={{ 
       minHeight: '100vh', 
       background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',
-      overflowX: 'hidden'
+      overflowX: 'hidden',
+      direction: dir
     }}>
       {/* Main Content */}
       <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '1rem' }}>
@@ -170,18 +192,18 @@ const Restaurants = () => {
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             marginBottom: '1rem'
-          }}>
-            المطاعم المتاحة
-          </h1>
-          <p style={{ 
-            fontSize: 'clamp(0.875rem, 3vw, 1.125rem)', 
-            color: 'rgb(75 85 99)', 
-            maxWidth: '600px', 
-            margin: '0 auto',
-            lineHeight: '1.6'
-          }}>
-            اختر من بين أفضل المطاعم وابدأ رحلتك مع اشتراكات الوجبات
-          </p>
+                      }}>
+              {t('availableRestaurants')}
+            </h1>
+            <p style={{ 
+              fontSize: 'clamp(0.875rem, 3vw, 1.125rem)', 
+              color: 'rgb(75 85 99)', 
+              maxWidth: '600px', 
+              margin: '0 auto',
+              lineHeight: '1.6'
+            }}>
+              {t('restaurantsDescription')}
+            </p>
         </div>
 
         {/* Filters Section */}
@@ -209,7 +231,7 @@ const Restaurants = () => {
               color: 'rgb(79 70 229)',
               margin: 0
             }}>
-              🔍 فلاتر البحث
+              🔍 {t('searchFilters')}
             </h2>
             {hasActiveFilters && (
               <button
@@ -232,7 +254,7 @@ const Restaurants = () => {
                   e.target.style.color = 'rgb(107 114 128)';
                 }}
               >
-                مسح الفلاتر
+                {t('clearFilters')}
               </button>
             )}
           </div>
@@ -250,7 +272,7 @@ const Restaurants = () => {
                 color: 'rgb(75 85 99)',
                 marginBottom: '0.75rem'
               }}>
-                📍 العناوين
+                📍 {t('locations')}
               </h3>
               <div style={{ position: 'relative' }}>
                 <button
@@ -270,7 +292,7 @@ const Restaurants = () => {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    textAlign: 'right'
+                    textAlign: dir === 'rtl' ? 'right' : 'left'
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.borderColor = 'rgb(79 70 229)';
@@ -290,7 +312,8 @@ const Restaurants = () => {
                     {getSelectedLocationsText()}
                   </span>
                   <span style={{ 
-                    marginLeft: '0.5rem',
+                    marginLeft: dir === 'rtl' ? '0' : '0.5rem',
+                    marginRight: dir === 'rtl' ? '0.5rem' : '0',
                     transform: showLocationDropdown ? 'rotate(180deg)' : 'rotate(0deg)',
                     transition: 'transform 0.2s ease'
                   }}>
@@ -324,7 +347,8 @@ const Restaurants = () => {
                         borderBottom: '1px solid rgb(243 244 246)',
                         fontSize: '0.875rem',
                         color: 'rgb(75 85 99)',
-                        fontWeight: '500'
+                        fontWeight: '500',
+                        textAlign: dir === 'rtl' ? 'right' : 'left'
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.backgroundColor = 'rgb(249 250 251)';
@@ -337,7 +361,7 @@ const Restaurants = () => {
                         handleLocationFilter('');
                       }}
                     >
-                      إلغاء التحديد
+                      {t('clearSelection')}
                     </div>
                     {availableFilters.locations.map(location => (
                       <div
@@ -350,7 +374,8 @@ const Restaurants = () => {
                           fontSize: '0.875rem',
                           color: filters.locations === location ? 'rgb(79 70 229)' : 'rgb(75 85 99)',
                           fontWeight: filters.locations === location ? '600' : '500',
-                          backgroundColor: filters.locations === location ? 'rgb(238 242 255)' : 'transparent'
+                          backgroundColor: filters.locations === location ? 'rgb(238 242 255)' : 'transparent',
+                          textAlign: dir === 'rtl' ? 'right' : 'left'
                         }}
                         onMouseEnter={(e) => {
                           if (filters.locations !== location) {
@@ -368,7 +393,7 @@ const Restaurants = () => {
                           handleLocationFilter(location);
                         }}
                       >
-                        {locationNames[location] || location}
+                        {locationNames[language][location] || location}
                       </div>
                     ))}
                   </div>
@@ -384,7 +409,7 @@ const Restaurants = () => {
                 color: 'rgb(75 85 99)',
                 marginBottom: '0.75rem'
               }}>
-                🍽️ أنواع الوجبات
+                🍽️ {t('mealTypes')}
               </h3>
               <div style={{ position: 'relative' }}>
                 <button
@@ -404,7 +429,7 @@ const Restaurants = () => {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    textAlign: 'right'
+                    textAlign: dir === 'rtl' ? 'right' : 'left'
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.borderColor = 'rgb(34 197 94)';
@@ -424,7 +449,8 @@ const Restaurants = () => {
                     {getSelectedMealTypesText()}
                   </span>
                   <span style={{ 
-                    marginLeft: '0.5rem',
+                    marginLeft: dir === 'rtl' ? '0' : '0.5rem',
+                    marginRight: dir === 'rtl' ? '0.5rem' : '0',
                     transform: showMealTypeDropdown ? 'rotate(180deg)' : 'rotate(0deg)',
                     transition: 'transform 0.2s ease'
                   }}>
@@ -458,7 +484,8 @@ const Restaurants = () => {
                         borderBottom: '1px solid rgb(243 244 246)',
                         fontSize: '0.875rem',
                         color: 'rgb(75 85 99)',
-                        fontWeight: '500'
+                        fontWeight: '500',
+                        textAlign: dir === 'rtl' ? 'right' : 'left'
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.backgroundColor = 'rgb(249 250 251)';
@@ -471,7 +498,7 @@ const Restaurants = () => {
                         handleMealTypeFilter('');
                       }}
                     >
-                      إلغاء التحديد
+                      {t('clearSelection')}
                     </div>
                     {availableFilters.meal_types.map(mealType => (
                       <div
@@ -484,7 +511,8 @@ const Restaurants = () => {
                           fontSize: '0.875rem',
                           color: filters.meal_types === mealType ? 'rgb(34 197 94)' : 'rgb(75 85 99)',
                           fontWeight: filters.meal_types === mealType ? '600' : '500',
-                          backgroundColor: filters.meal_types === mealType ? 'rgb(240 253 244)' : 'transparent'
+                          backgroundColor: filters.meal_types === mealType ? 'rgb(240 253 244)' : 'transparent',
+                          textAlign: dir === 'rtl' ? 'right' : 'left'
                         }}
                         onMouseEnter={(e) => {
                           if (filters.meal_types !== mealType) {
@@ -502,7 +530,7 @@ const Restaurants = () => {
                           handleMealTypeFilter(mealType);
                         }}
                       >
-                        {mealTypeNames[mealType] || mealType}
+                        {mealTypeNames[language][mealType] || mealType}
                       </div>
                     ))}
                   </div>
@@ -516,7 +544,7 @@ const Restaurants = () => {
         {loading && (
           <div style={{ textAlign: 'center', padding: '3rem' }}>
             <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⏳</div>
-            <p style={{ color: 'rgb(75 85 99)' }}>جاري تحميل المطاعم...</p>
+            <p style={{ color: 'rgb(75 85 99)' }}>{t('loadingRestaurants')}</p>
           </div>
         )}
 
@@ -537,13 +565,13 @@ const Restaurants = () => {
               color: 'rgb(75 85 99)', 
               marginBottom: '0.5rem' 
             }}>
-              لا توجد مطاعم متاحة
+              {t('noRestaurantsAvailable')}
             </h3>
             <p style={{ 
               color: 'rgb(107 114 128)',
               marginBottom: '1.5rem'
             }}>
-              جرب تغيير الفلاتر المحددة
+              {t('tryChangingFilters')}
             </p>
             <button
               onClick={clearFilters}
@@ -559,7 +587,7 @@ const Restaurants = () => {
                 transition: 'all 0.2s ease'
               }}
             >
-              عرض جميع المطاعم
+              {t('showAllRestaurants')}
             </button>
           </div>
         )}
@@ -634,7 +662,7 @@ const Restaurants = () => {
                     margin: 0,
                     lineHeight: '1.3'
                   }}>
-                    {restaurant.name_ar}
+                    {language === 'ar' ? restaurant.name_ar : restaurant.name_en}
                   </h3>
                 </div>
 
@@ -658,7 +686,7 @@ const Restaurants = () => {
                     overflow: 'hidden',
                     textOverflow: 'ellipsis'
                   }}>
-                    {restaurant.description_ar || restaurant.description_en}
+                    {language === 'ar' ? restaurant.description_ar : restaurant.description_en}
                   </p>
                 </div>
                 
@@ -678,7 +706,7 @@ const Restaurants = () => {
                       textAlign: 'center',
                       fontWeight: '600'
                     }}>
-                      📍 {restaurant.locations.map(loc => locationNames[loc] || loc).join('، ')}
+                      📍 {restaurant.locations.map(loc => locationNames[language][loc] || loc).join('، ')}
                     </div>
                   )}
                   <div style={{ 
@@ -712,7 +740,7 @@ const Restaurants = () => {
                       e.target.style.transform = 'translateY(0)';
                     }}
                   >
-                    🍽️ عرض الوجبات
+                    🍽️ {t('viewMeals')}
                   </button>
                 </div>
               </div>
@@ -720,8 +748,6 @@ const Restaurants = () => {
           </div>
         )}
       </div>
-
-
     </div>
   );
 };

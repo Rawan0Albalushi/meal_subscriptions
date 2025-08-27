@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authAPI } from '../services/api';
+import { useLanguage } from './LanguageContext';
 
 const AuthContext = createContext();
 
@@ -16,6 +17,7 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const { t } = useLanguage();
 
     // Function to clear all auth data
     const clearAuthData = () => {
@@ -41,22 +43,20 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // Check if user is logged in on app start
+    // Check authentication status on mount
     useEffect(() => {
         const token = localStorage.getItem('auth_token');
-        const savedUser = localStorage.getItem('user');
+        const userData = localStorage.getItem('user');
         
-        if (validateAuthData(token, savedUser)) {
+        if (token && userData) {
             try {
-                const parsedUser = JSON.parse(savedUser);
-                setUser(parsedUser);
+                const user = JSON.parse(userData);
+                setUser(user);
                 setIsAuthenticated(true);
             } catch (error) {
                 console.error('Error parsing user data:', error);
                 clearAuthData();
             }
-        } else {
-            clearAuthData();
         }
         setLoading(false);
     }, []);
@@ -82,12 +82,12 @@ export const AuthProvider = ({ children }) => {
                 
                 return { success: true, data: response.data.data };
             } else {
-                const errorMessage = response.data.message || 'حدث خطأ أثناء تسجيل الدخول';
+                const errorMessage = response.data.message || t('loginError');
                 setError(errorMessage);
                 return { success: false, error: errorMessage };
             }
         } catch (error) {
-            const errorMessage = error.response?.data?.message || 'حدث خطأ أثناء تسجيل الدخول';
+            const errorMessage = error.response?.data?.message || t('loginError');
             setError(errorMessage);
             return { success: false, error: errorMessage };
         }
@@ -114,12 +114,12 @@ export const AuthProvider = ({ children }) => {
                 
                 return { success: true, data: response.data.data };
             } else {
-                const errorMessage = response.data.message || 'حدث خطأ أثناء إنشاء الحساب';
+                const errorMessage = response.data.message || t('registrationError');
                 setError(errorMessage);
                 return { success: false, error: errorMessage };
             }
         } catch (error) {
-            const errorMessage = error.response?.data?.message || 'حدث خطأ أثناء إنشاء الحساب';
+            const errorMessage = error.response?.data?.message || t('registrationError');
             setError(errorMessage);
             return { success: false, error: errorMessage };
         }
