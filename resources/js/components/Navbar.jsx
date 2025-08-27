@@ -43,20 +43,8 @@ const Navbar = () => {
 
     // Get page title based on current location
     const getPageTitle = () => {
-        switch (location.pathname) {
-            case '/restaurants':
-                return language === 'ar' ? 'المطاعم' : 'Restaurants';
-            case '/my-subscriptions':
-                return language === 'ar' ? 'اشتراكاتي' : 'My Subscriptions';
-            case '/login':
-                return language === 'ar' ? 'تسجيل الدخول' : 'Login';
-            case '/subscribe':
-                return language === 'ar' ? 'إنشاء اشتراك' : 'Create Subscription';
-            case '/delivery-addresses':
-                return language === 'ar' ? 'عناوين التوصيل' : 'Delivery Addresses';
-            default:
-                return language === 'ar' ? 'اشتراكات الوجبات' : 'Meal Subscriptions';
-        }
+        // Always return the platform name regardless of the page
+        return language === 'ar' ? 'اشتراكات الوجبات' : 'Meal Subscriptions';
     };
 
     return (

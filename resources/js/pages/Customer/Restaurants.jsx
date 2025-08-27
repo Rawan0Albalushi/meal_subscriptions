@@ -100,7 +100,9 @@ const Restaurants = () => {
               }}
               >
                 <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-                  <div style={{ fontSize: 'clamp(3rem, 8vw, 4rem)', marginBottom: '1rem' }}>{restaurant.logo}</div>
+                  <div style={{ fontSize: 'clamp(3rem, 8vw, 4rem)', marginBottom: '1rem' }}>
+                    {restaurant.logo || '🍽️'}
+                  </div>
                   <h3 style={{ 
                     fontSize: 'clamp(1.25rem, 4vw, 1.5rem)', 
                     fontWeight: 'bold', 
@@ -113,7 +115,7 @@ const Restaurants = () => {
                     fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)', 
                     color: 'rgb(107 114 128)',
                     lineHeight: '1.6'
-                  }}>{restaurant.description_ar}</p>
+                  }}>{restaurant.description_ar || restaurant.description_en}</p>
                 </div>
                 
                 <div style={{ 
@@ -127,7 +129,7 @@ const Restaurants = () => {
                     color: 'rgb(75 85 99)',
                     textAlign: 'center'
                   }}>
-                    📍 {restaurant.address_ar}
+                    📍 {restaurant.address_ar || restaurant.address_en}
                   </div>
                   <div style={{ 
                     fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)', 

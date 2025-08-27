@@ -4,7 +4,7 @@ import { restaurantsAPI, deliveryAddressesAPI, subscriptionsAPI } from '../../se
 import { useAuth } from '../../contexts/AuthContext';
 
 const SubscriptionForm = () => {
-  const { restaurantId, subscriptionType, mealIds } = useParams();
+  const { restaurantId, subscriptionType, startDate, mealIds } = useParams();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   
@@ -27,11 +27,32 @@ const SubscriptionForm = () => {
     { key: 'wednesday', label: 'الأربعاء', icon: '🌤️' },
     { key: 'thursday', label: 'الخميس', icon: '🌅' }
   ];
+
+  // Function to get date for a specific day key based on start date
+  const getDateForDayKey = (dayKey) => {
+    if (!startDate) return null;
+    
+    const start = new Date(startDate);
+    const dayKeys = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday'];
+    const dayIndex = dayKeys.indexOf(dayKey);
+    
+    if (dayIndex === -1) return null;
+    
+    const targetDate = new Date(start);
+    targetDate.setDate(start.getDate() + dayIndex);
+    
+    return targetDate.toLocaleDateString('ar-SA', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
   
   // Form data
   const [formData, setFormData] = useState({
     subscriptionType: subscriptionType || 'weekly',
-    startDate: '',
+    startDate: startDate || '',
     deliveryAddressId: '',
     paymentMethod: 'credit_card',
     specialInstructions: ''
@@ -97,7 +118,7 @@ const SubscriptionForm = () => {
     };
 
     fetchData();
-  }, [restaurantId, mealIds, isAuthenticated, navigate]);
+  }, [restaurantId, mealIds, startDate, isAuthenticated, navigate]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -522,6 +543,14 @@ const SubscriptionForm = () => {
                             {meal.dayLabel}
                           </div>
                           <div style={{ 
+                            fontSize: '0.75rem', 
+                            color: 'rgb(107 114 128)',
+                            marginBottom: '0.25rem',
+                            fontWeight: '400'
+                          }}>
+                            {getDateForDayKey(meal.dayKey)}
+                          </div>
+                          <div style={{ 
                             fontSize: '0.9rem', 
                             color: 'rgb(55 65 81)',
                             marginBottom: '0.375rem',
@@ -529,7 +558,6 @@ const SubscriptionForm = () => {
                           }}>
                             {meal.name_ar}
                           </div>
-                                                     <></>
                         </div>
                       </div>
                     ))}
@@ -656,7 +684,9 @@ const SubscriptionForm = () => {
               </div>
 
               <form onSubmit={handleSubmit}>
-                {/* Start Date */}
+
+
+                {/* Selected Start Date Display */}
                 <div style={{ marginBottom: '2rem' }}>
                   <label style={{ 
                     display: 'block', 
@@ -666,7 +696,7 @@ const SubscriptionForm = () => {
                     color: 'rgb(55 65 81)',
                     position: 'relative'
                   }}>
-                    📅 تاريخ بداية الاشتراك
+                    📅 تاريخ بدء الاشتراك
                     <div style={{
                       position: 'absolute',
                       bottom: '-2px',
@@ -677,32 +707,22 @@ const SubscriptionForm = () => {
                       borderRadius: '1px'
                     }}></div>
                   </label>
-                  <input 
-                    type="date" 
-                    value={formData.startDate} 
-                    onChange={(e) => handleInputChange('startDate', e.target.value)} 
-                    min={new Date().toISOString().split('T')[0]} 
-                    style={{ 
-                      width: '100%', 
-                      padding: '1rem', 
-                      borderRadius: '1rem', 
-                      border: '2px solid rgba(102, 126, 234, 0.1)', 
-                      fontSize: '1rem', 
-                      background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-                      transition: 'all 0.3s ease',
-                      outline: 'none',
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
-                    }} 
-                    onFocus={(e) => {
-                      e.target.style.borderColor = 'rgb(102, 126, 234)';
-                      e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.15)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = 'rgba(102, 126, 234, 0.1)';
-                      e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.05)';
-                    }}
-                    required 
-                  />
+                  <div style={{ 
+                    padding: '1rem', 
+                    borderRadius: '1rem', 
+                    border: '2px solid rgba(102, 126, 234, 0.2)', 
+                    fontSize: '1rem', 
+                    background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+                    color: 'rgb(55 65 81)',
+                    fontWeight: '600'
+                  }}>
+                    {formData.startDate ? new Date(formData.startDate).toLocaleDateString('ar-SA', {
+                      weekday: 'long',
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    }) : 'لم يتم تحديد التاريخ'}
+                  </div>
                 </div>
 
                 {/* Delivery Address */}

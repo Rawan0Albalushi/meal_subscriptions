@@ -45,7 +45,7 @@ function AppRoutes() {
                         } 
                     />
                     <Route 
-                        path="/subscribe/:restaurantId/:subscriptionType/:mealIds" 
+                        path="/subscribe/:restaurantId/:subscriptionType/:startDate/:mealIds" 
                         element={
                             isAuthenticated ? 
                             <SubscriptionForm /> : 
