@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { subscriptionsAPI } from '../../services/api';
 
 const MySubscriptions = () => {
     const { t, language } = useLanguage();
@@ -15,21 +16,16 @@ const MySubscriptions = () => {
     const fetchSubscriptions = async () => {
         try {
             setLoading(true);
-            const response = await fetch('/api/subscriptions', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            const data = await response.json();
+            const response = await subscriptionsAPI.getAll();
             
-            if (data.success) {
-                setSubscriptions(data.data);
+            if (response.data.success) {
+                setSubscriptions(response.data.data);
             } else {
-                setError('Failed to fetch subscriptions');
+                setError('فشل في جلب الاشتراكات');
             }
         } catch (err) {
-            setError('Error fetching subscriptions');
+            setError('خطأ في جلب الاشتراكات');
+            console.error('Error fetching subscriptions:', err);
         } finally {
             setLoading(false);
         }
@@ -147,20 +143,7 @@ const MySubscriptions = () => {
                 
                 <div style={{ width: '100%', padding: '0 2rem' }}>
                     <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
-                        <div style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '0.5rem',
-                            borderRadius: '9999px',
-                            padding: '0.5rem 1.25rem',
-                            fontSize: '0.875rem',
-                            color: 'rgb(67 56 202)',
-                            marginBottom: '1.5rem',
-                            background: 'rgba(255, 255, 255, 0.9)',
-                            backdropFilter: 'blur(10px)'
-                        }}>
-                            📋 {language === 'ar' ? 'اشتراكاتك' : 'Your Subscriptions'}
-                        </div>
+
                         <h1 style={{ 
                             fontSize: 'clamp(2rem, 5vw, 3.5rem)', 
                             fontWeight: 'bold', 
@@ -296,31 +279,7 @@ const MySubscriptions = () => {
                                                 </div>
                                             </div>
                                             
-                                    {/* Status */}
-                                    <div style={{ marginBottom: '1.5rem' }}>
-                                        <div style={{
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            gap: '0.5rem',
-                                            padding: '0.5rem 1rem',
-                                            borderRadius: '0.5rem',
-                                            background: `linear-gradient(135deg, ${getStatusColor(subscription.status).includes('green') ? 'rgb(34 197 94)' : 
-                                                                                   getStatusColor(subscription.status).includes('yellow') ? 'rgb(234 179 8)' :
-                                                                                   getStatusColor(subscription.status).includes('red') ? 'rgb(239 68 68)' :
-                                                                                   getStatusColor(subscription.status).includes('blue') ? 'rgb(59 130 246)' :
-                                                                                   'rgb(107 114 128)'}, ${getStatusColor(subscription.status).includes('green') ? 'rgb(16 185 129)' : 
-                                                                                   getStatusColor(subscription.status).includes('yellow') ? 'rgb(245 158 11)' :
-                                                                                   getStatusColor(subscription.status).includes('red') ? 'rgb(236 72 153)' :
-                                                                                   getStatusColor(subscription.status).includes('blue') ? 'rgb(99 102 241)' :
-                                                                                   'rgb(156 163 175)'})`,
-                                            color: 'white',
-                                            fontSize: '0.875rem',
-                                            fontWeight: '600'
-                                        }}>
-                                            <span>{getStatusIcon(subscription.status)}</span>
-                                                    {subscription.status_text}
-                                            </div>
-                                        </div>
+
                                         
                                     {/* Details Grid */}
                                     <div style={{ 

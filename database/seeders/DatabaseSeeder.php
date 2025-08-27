@@ -299,6 +299,11 @@ class DatabaseSeeder extends Seeder
             }
         }
 
+        // Create subscription types
+        $this->call([
+            SubscriptionTypeSeeder::class,
+        ]);
+
         // Create delivery addresses for users
         $addressesData = [
             // Addresses for first user

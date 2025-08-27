@@ -51,11 +51,36 @@ class SubscriptionItem extends Model
     public function getStatusTextAttribute()
     {
         $statuses = [
-            'pending' => ['ar' => 'في الانتظار', 'en' => 'Pending'],
+            'pending' => ['ar' => 'قيد الانتظار', 'en' => 'Pending'],
+            'preparing' => ['ar' => 'قيد التحضير', 'en' => 'Preparing'],
             'delivered' => ['ar' => 'تم التوصيل', 'en' => 'Delivered'],
             'cancelled' => ['ar' => 'ملغي', 'en' => 'Cancelled'],
         ];
 
         return $statuses[$this->status][app()->getLocale()] ?? $this->status;
+    }
+
+    public function getStatusColorAttribute()
+    {
+        $colors = [
+            'pending' => 'from-yellow-500 to-orange-500',
+            'preparing' => 'from-blue-500 to-indigo-500',
+            'delivered' => 'from-green-500 to-emerald-500',
+            'cancelled' => 'from-red-500 to-pink-500',
+        ];
+
+        return $colors[$this->status] ?? 'from-gray-500 to-gray-600';
+    }
+
+    public function getStatusIconAttribute()
+    {
+        $icons = [
+            'pending' => '⏳',
+            'preparing' => '👨‍🍳',
+            'delivered' => '✅',
+            'cancelled' => '❌',
+        ];
+
+        return $icons[$this->status] ?? '📋';
     }
 }

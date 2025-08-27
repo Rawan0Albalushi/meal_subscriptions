@@ -1,11 +1,10 @@
 import axios from 'axios';
 
-// Create axios instance
+// Create axios instance with base configuration
 const api = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api',
+    baseURL: '/api',
     headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
     },
 });
 
@@ -30,7 +29,6 @@ api.interceptors.response.use(
     },
     (error) => {
         if (error.response?.status === 401) {
-            // Token expired or invalid
             localStorage.removeItem('auth_token');
             localStorage.removeItem('user');
             window.location.href = '/login';
@@ -44,7 +42,7 @@ export const authAPI = {
     login: (credentials) => api.post('/auth/login', credentials),
     register: (userData) => api.post('/auth/register', userData),
     logout: () => api.post('/auth/logout'),
-    getUser: () => api.get('/user'),
+    user: () => api.get('/auth/user'),
 };
 
 // Restaurants API
@@ -60,7 +58,15 @@ export const subscriptionsAPI = {
     getById: (id) => api.get(`/subscriptions/${id}`),
     create: (subscriptionData) => api.post('/subscriptions', subscriptionData),
     update: (id, subscriptionData) => api.put(`/subscriptions/${id}`, subscriptionData),
+    updateItemStatus: (subscriptionId, itemId, status) => api.put(`/subscriptions/${subscriptionId}/items/${itemId}/status`, { status }),
     delete: (id) => api.delete(`/subscriptions/${id}`),
+};
+
+// Subscription Types API
+export const subscriptionTypesAPI = {
+    getAll: () => api.get('/subscription-types'),
+    getById: (id) => api.get(`/subscription-types/${id}`),
+    getByType: (type) => api.get(`/subscription-types/type/${type}`),
 };
 
 // Delivery Addresses API
@@ -70,6 +76,15 @@ export const deliveryAddressesAPI = {
     create: (addressData) => api.post('/delivery-addresses', addressData),
     update: (id, addressData) => api.put(`/delivery-addresses/${id}`, addressData),
     delete: (id) => api.delete(`/delivery-addresses/${id}`),
+};
+
+// Admin APIs
+export const adminSubscriptionTypesAPI = {
+    getAll: () => api.get('/admin/subscription-types'),
+    getById: (id) => api.get(`/admin/subscription-types/${id}`),
+    create: (typeData) => api.post('/admin/subscription-types', typeData),
+    update: (id, typeData) => api.put(`/admin/subscription-types/${id}`, typeData),
+    delete: (id) => api.delete(`/admin/subscription-types/${id}`),
 };
 
 export default api;

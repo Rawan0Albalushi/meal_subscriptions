@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('delivery_date');
             $table->enum('day_of_week', ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']);
             $table->decimal('price', 8, 2);
-            $table->enum('status', ['pending', 'delivered', 'cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'preparing', 'delivered', 'cancelled'])->default('pending');
             $table->timestamps();
         });
     }

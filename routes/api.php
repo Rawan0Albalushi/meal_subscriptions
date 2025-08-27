@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RestaurantController;
 use App\Http\Controllers\Api\SubscriptionController;
+use App\Http\Controllers\Api\SubscriptionTypeController;
 use App\Http\Controllers\Api\DeliveryAddressController;
 use App\Http\Controllers\Api\AuthController;
 
@@ -21,6 +22,11 @@ Route::get('/restaurants', [RestaurantController::class, 'index']);
 Route::get('/restaurants/{id}', [RestaurantController::class, 'show']);
 Route::get('/restaurants/{restaurantId}/meals', [RestaurantController::class, 'meals']);
 
+// Subscription type routes
+Route::get('/subscription-types', [SubscriptionTypeController::class, 'index']);
+Route::get('/subscription-types/{id}', [SubscriptionTypeController::class, 'show']);
+Route::get('/subscription-types/type/{type}', [SubscriptionTypeController::class, 'getByType']);
+
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
     // Subscription routes
@@ -28,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/subscriptions', [SubscriptionController::class, 'store']);
     Route::get('/subscriptions/{id}', [SubscriptionController::class, 'show']);
     Route::put('/subscriptions/{id}', [SubscriptionController::class, 'update']);
+    Route::put('/subscriptions/{subscriptionId}/items/{itemId}/status', [SubscriptionController::class, 'updateItemStatus']);
 
     // Delivery address routes
     Route::get('/delivery-addresses', [DeliveryAddressController::class, 'index']);
@@ -42,6 +49,9 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
     Route::get('/stats', function () {
         return response()->json(['ok' => true]);
     });
+    
+    // Subscription type management
+    Route::apiResource('subscription-types', \App\Http\Controllers\Api\Admin\SubscriptionTypeController::class);
 });
 
 // Seller routes

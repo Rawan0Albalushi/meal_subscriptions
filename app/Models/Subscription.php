@@ -13,6 +13,7 @@ class Subscription extends Model
         'user_id',
         'restaurant_id',
         'delivery_address_id',
+        'subscription_type_id',
         'subscription_type',
         'start_date',
         'end_date',
@@ -48,6 +49,11 @@ class Subscription extends Model
     public function subscriptionItems()
     {
         return $this->hasMany(SubscriptionItem::class);
+    }
+
+    public function subscriptionType()
+    {
+        return $this->belongsTo(SubscriptionType::class);
     }
 
     public function getSubscriptionTypeTextAttribute()

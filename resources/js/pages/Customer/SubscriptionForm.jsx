@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { restaurantsAPI, deliveryAddressesAPI, subscriptionsAPI } from '../../services/api';
+import { restaurantsAPI, deliveryAddressesAPI, subscriptionsAPI, subscriptionTypesAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
+import PopupMessage from '../../components/PopupMessage';
 
 const SubscriptionForm = () => {
   const { restaurantId, subscriptionType, startDate, mealIds } = useParams();
@@ -11,13 +12,20 @@ const SubscriptionForm = () => {
   const [restaurant, setRestaurant] = useState(null);
   const [selectedMeals, setSelectedMeals] = useState([]);
   const [deliveryAddresses, setDeliveryAddresses] = useState([]);
+  const [subscriptionTypeData, setSubscriptionTypeData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  
+  // Popup message states
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+  const [popupTitle, setPopupTitle] = useState('');
 
-  // Address form (inline create)
-  const [addingNewAddress, setAddingNewAddress] = useState(false);
-  const [newAddress, setNewAddress] = useState({ name: '', address: '', phone: '' });
+        // Address form (inline create)
+      const [addingNewAddress, setAddingNewAddress] = useState(false);
+      const [newAddress, setNewAddress] = useState({ name: '', address: '', phone: '', city: '' });
   
   // Week days mapping
   const weekDays = [
@@ -57,6 +65,20 @@ const SubscriptionForm = () => {
     paymentMethod: 'credit_card',
     specialInstructions: ''
   });
+
+  // Function to get tomorrow's date in YYYY-MM-DD format
+  const getTomorrowDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
+  };
+
+  // Function to check if date is a weekday
+  const isWeekday = (dateString) => {
+    const date = new Date(dateString);
+    const dayOfWeek = date.getDay();
+    return dayOfWeek >= 0 && dayOfWeek <= 4; // Sunday = 0, Thursday = 4
+  };
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -109,9 +131,27 @@ const SubscriptionForm = () => {
         if (addressesResponse.data.success) {
           setDeliveryAddresses(addressesResponse.data.data);
         }
+
+        // Fetch subscription type data
+        const subscriptionTypeResponse = await subscriptionTypesAPI.getByType(subscriptionType);
+        if (subscriptionTypeResponse.data.success) {
+          setSubscriptionTypeData(subscriptionTypeResponse.data.data);
+        }
       } catch (e) {
         console.error('Error fetching data:', e);
-        setError('حدث خطأ أثناء جلب البيانات');
+        
+        // Get detailed error message
+        let errorMessage = 'حدث خطأ أثناء جلب البيانات';
+        
+        if (e.response?.data?.message) {
+          errorMessage = e.response.data.message;
+        } else if (e.response?.data?.error) {
+          errorMessage = e.response.data.error;
+        } else if (e.message) {
+          errorMessage = e.message;
+        }
+        
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -125,21 +165,52 @@ const SubscriptionForm = () => {
   };
 
   const calculateTotalPrice = () => {
-    const subscriptionPrice = formData.subscriptionType === 'weekly' ? 10 : 80;
-    return subscriptionPrice;
+    if (!subscriptionTypeData) return 0;
+    return subscriptionTypeData.price;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validate start date
+    const selectedDate = new Date(formData.startDate);
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+
+    if (selectedDate < tomorrow) {
+      setPopupTitle('خطأ في التاريخ');
+      setPopupMessage('تاريخ البداية يجب أن يكون غداً أو بعده. لا يمكن إنشاء اشتراك ليوم اليوم.');
+      setShowErrorPopup(true);
+      return;
+    }
+
+    // Validate that the date is a weekday (Sunday to Thursday)
+    const dayOfWeek = selectedDate.getDay();
+    if (dayOfWeek === 5 || dayOfWeek === 6) { // Friday = 5, Saturday = 6
+      setPopupTitle('خطأ في التاريخ');
+      setPopupMessage('تاريخ البداية يجب أن يكون يوم عمل (الأحد إلى الخميس)');
+      setShowErrorPopup(true);
+      return;
+    }
+    
     try {
       setSubmitting(true);
       setError(null);
 
-      // Ensure we have a delivery address id; create one if adding new
-      let deliveryAddressId = formData.deliveryAddressId;
-      if (addingNewAddress || !deliveryAddressId) {
-        if (!newAddress.name || !newAddress.address || !newAddress.phone) {
+          // Validate delivery address
+    if (!formData.deliveryAddressId && deliveryAddresses.length > 0 && !addingNewAddress) {
+      setPopupTitle('خطأ في العنوان');
+      setPopupMessage('يرجى اختيار عنوان التوصيل أو إضافة عنوان جديد');
+      setShowErrorPopup(true);
+      return;
+    }
+
+    // Ensure we have a delivery address id; create one if needed
+    let deliveryAddressId = formData.deliveryAddressId;
+    const shouldCreateAddress = addingNewAddress || deliveryAddresses.length === 0 || !deliveryAddressId;
+    if (shouldCreateAddress) {
+        if (!newAddress.name || !newAddress.address || !newAddress.phone || !newAddress.city) {
           setError('يرجى إدخال بيانات العنوان كاملة');
           setSubmitting(false);
           return;
@@ -147,21 +218,45 @@ const SubscriptionForm = () => {
         const createRes = await deliveryAddressesAPI.create({
           name: newAddress.name,
           address: newAddress.address,
-          phone: newAddress.phone
+          phone: newAddress.phone,
+          city: newAddress.city
         });
         if (!createRes.data?.success) {
-          setError(createRes.data?.message || 'تعذر حفظ العنوان');
+          const errorMsg = createRes.data?.message || 'تعذر حفظ العنوان';
+          setPopupTitle('خطأ في حفظ العنوان');
+          setPopupMessage(errorMsg);
+          setShowErrorPopup(true);
           setSubmitting(false);
           return;
         }
         deliveryAddressId = createRes.data.data.id;
       }
 
+          // Validate payment method
+    if (!formData.paymentMethod) {
+      setPopupTitle('خطأ في طريقة الدفع');
+      setPopupMessage('يرجى اختيار طريقة الدفع');
+      setShowErrorPopup(true);
+      return;
+    }
+
+    // Validate selected meals
+    if (selectedMeals.length === 0) {
+      setPopupTitle('خطأ في اختيار الوجبات');
+      setPopupMessage('يرجى اختيار وجبة واحدة على الأقل');
+      setShowErrorPopup(true);
+      return;
+    }
+
+    // Get delivery days from selected meals
+    const deliveryDays = selectedMeals.map(m => m.dayKey).filter(Boolean);
+
       const subscriptionData = {
         restaurant_id: restaurantId,
         meal_ids: selectedMeals.map(m => m.mealId || m.id),
         delivery_address_id: deliveryAddressId,
         subscription_type: formData.subscriptionType,
+        delivery_days: deliveryDays,
         start_date: formData.startDate,
         special_instructions: formData.specialInstructions,
         payment_method: formData.paymentMethod,
@@ -170,13 +265,39 @@ const SubscriptionForm = () => {
 
       const response = await subscriptionsAPI.create(subscriptionData);
       if (response.data.success) {
-        navigate(`/subscriptions/${response.data.data.id}`);
+        // Show success popup
+        setPopupTitle('تم إنشاء الاشتراك بنجاح! 🎉');
+        setPopupMessage('تم إنشاء اشتراكك بنجاح. سيتم توجيهك إلى صفحة الاشتراكات لمتابعة طلبك.');
+        setShowSuccessPopup(true);
       } else {
-        setError(response.data?.message || 'حدث خطأ أثناء إنشاء الاشتراك');
+        // Show error popup
+        setPopupTitle('فشل في إنشاء الاشتراك');
+        setPopupMessage(response.data?.message || 'حدث خطأ أثناء إنشاء الاشتراك');
+        setShowErrorPopup(true);
       }
     } catch (e) {
       console.error('Error creating subscription:', e);
-      setError(e.response?.data?.message || 'حدث خطأ أثناء إنشاء الاشتراك');
+      
+      // Get detailed error message
+      let errorMessage = 'حدث خطأ أثناء إنشاء الاشتراك';
+      
+      if (e.response?.data?.errors) {
+        // Handle validation errors
+        const validationErrors = e.response.data.errors;
+        const errorMessages = Object.values(validationErrors).flat();
+        errorMessage = errorMessages.join(', ');
+      } else if (e.response?.data?.message) {
+        errorMessage = e.response.data.message;
+      } else if (e.response?.data?.error) {
+        errorMessage = e.response.data.error;
+      } else if (e.message) {
+        errorMessage = e.message;
+      }
+      
+      // Show error popup with detailed message
+      setPopupTitle('فشل في إنشاء الاشتراك');
+      setPopupMessage(errorMessage);
+      setShowErrorPopup(true);
     } finally {
       setSubmitting(false);
     }
@@ -904,6 +1025,43 @@ const SubscriptionForm = () => {
                             marginBottom: '0.5rem', 
                             color: 'rgb(55 65 81)'
                           }}>
+                            المدينة
+                          </label>
+                          <input 
+                            type="text" 
+                            value={newAddress.city} 
+                            onChange={(e) => setNewAddress(prev => ({ ...prev, city: e.target.value }))} 
+                            placeholder="الرياض، جدة، الدمام" 
+                            style={{ 
+                              width: '100%', 
+                              padding: '0.75rem', 
+                              borderRadius: '0.75rem', 
+                              border: '1px solid rgba(102, 126, 234, 0.1)', 
+                              fontSize: '0.9rem', 
+                              background: 'white',
+                              outline: 'none',
+                              transition: 'all 0.3s ease',
+                              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)'
+                            }}
+                            onFocus={(e) => {
+                              e.target.style.borderColor = 'rgb(102, 126, 234)';
+                              e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.1)';
+                            }}
+                            onBlur={(e) => {
+                              e.target.style.borderColor = 'rgba(102, 126, 234, 0.1)';
+                              e.target.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.05)';
+                            }}
+                            required 
+                          />
+                        </div>
+                        <div>
+                          <label style={{ 
+                            display: 'block', 
+                            fontSize: '0.9rem', 
+                            fontWeight: '700', 
+                            marginBottom: '0.5rem', 
+                            color: 'rgb(55 65 81)'
+                          }}>
                             رقم الهاتف
                           </label>
                           <input 
@@ -1099,6 +1257,30 @@ const SubscriptionForm = () => {
           `}
         </style>
       </div>
+      
+      {/* Success Popup */}
+      <PopupMessage
+        isVisible={showSuccessPopup}
+        type="success"
+        title={popupTitle}
+        message={popupMessage}
+        onClose={() => {
+          setShowSuccessPopup(false);
+          // Navigate to subscriptions page after popup closes
+          navigate('/my-subscriptions');
+        }}
+      />
+      
+      {/* Error Popup */}
+      <PopupMessage
+        isVisible={showErrorPopup}
+        type="error"
+        title={popupTitle}
+        message={popupMessage}
+        onClose={() => {
+          setShowErrorPopup(false);
+        }}
+      />
     </div>
   );
 };

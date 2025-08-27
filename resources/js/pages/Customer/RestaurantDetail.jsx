@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { restaurantsAPI } from '../../services/api';
+import { restaurantsAPI, subscriptionTypesAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 
 const RestaurantDetail = () => {
@@ -10,6 +10,7 @@ const RestaurantDetail = () => {
   
   const [restaurant, setRestaurant] = useState(null);
   const [meals, setMeals] = useState([]);
+  const [subscriptionTypes, setSubscriptionTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
@@ -59,6 +60,18 @@ const RestaurantDetail = () => {
         } else {
           console.error('❌ Failed to fetch meals:', mealsResponse);
           setError('فشل في جلب الوجبات من الباكند');
+        }
+
+        // Fetch subscription types
+        console.log('📋 Fetching subscription types');
+        const subscriptionTypesResponse = await subscriptionTypesAPI.getAll();
+        if (subscriptionTypesResponse.data.success) {
+          console.log('📋 Fetched subscription types:', subscriptionTypesResponse.data.data);
+          setSubscriptionTypes(subscriptionTypesResponse.data.data);
+          console.log('✅ Successfully set subscription types in state');
+        } else {
+          console.error('❌ Failed to fetch subscription types:', subscriptionTypesResponse);
+          setError('فشل في جلب أنواع الاشتراك من الباكند');
         }
                       } catch (error) {
           console.error('❌ Error fetching restaurant data:', error);
@@ -565,34 +578,30 @@ const RestaurantDetail = () => {
             gap: '1.25rem',
             padding: '0 0.5rem'
           }}>
-            {[
-              {
-                type: 'weekly',
-                title: 'اشتراك أسبوعي',
-                subtitle: '4 وجبات في الأسبوع',
-                price: '120',
+            {subscriptionTypes.map((subscriptionType) => {
+              const subscription = {
+                type: subscriptionType.type,
+                title: subscriptionType.name_ar,
+                subtitle: `${subscriptionType.meals_count} وجبة في ${subscriptionType.type === 'weekly' ? 'الأسبوع' : 'الشهر'}`,
+                price: subscriptionType.price.toString(),
                 currency: 'ريال',
-                period: 'أسبوعياً',
-                icon: '📅',
-                features: ['توصيل من الأحد إلى الخميس', 'وجبة واحدة يومياً', 'مرونة في اختيار الوجبات'],
-                gradient: 'linear-gradient(135deg, #10b981, #059669)',
-                bgGradient: 'linear-gradient(135deg, #ecfdf5, #d1fae5)',
-                borderColor: '#10b981'
-              },
-              {
-                type: 'monthly',
-                title: 'اشتراك شهري',
-                subtitle: '16 وجبة في الشهر',
-                price: '400',
-                currency: 'ريال',
-                period: 'شهرياً',
-                icon: '📆',
-                features: ['توصيل من الأحد إلى الخميس', 'وجبة واحدة يومياً', 'خصم 15% على السعر الإجمالي'],
-                gradient: 'linear-gradient(135deg, #6366f1, #4f46e5)',
-                bgGradient: 'linear-gradient(135deg, #eef2ff, #e0e7ff)',
-                borderColor: '#6366f1'
-              }
-            ].map((subscription) => (
+                period: subscriptionType.type === 'weekly' ? 'أسبوعياً' : 'شهرياً',
+                icon: subscriptionType.type === 'weekly' ? '📅' : '📆',
+                features: [
+                  'توصيل من الأحد إلى الخميس',
+                  'وجبة واحدة يومياً',
+                  'مرونة في اختيار الوجبات'
+                ],
+                gradient: subscriptionType.type === 'weekly' 
+                  ? 'linear-gradient(135deg, #10b981, #059669)' 
+                  : 'linear-gradient(135deg, #6366f1, #4f46e5)',
+                bgGradient: subscriptionType.type === 'weekly' 
+                  ? 'linear-gradient(135deg, #ecfdf5, #d1fae5)' 
+                  : 'linear-gradient(135deg, #eef2ff, #e0e7ff)',
+                borderColor: subscriptionType.type === 'weekly' ? '#10b981' : '#6366f1'
+              };
+              
+              return (
               <div 
                 key={subscription.type}
                 onClick={() => handleSubscriptionTypeSelect(subscription.type)}
@@ -780,7 +789,8 @@ const RestaurantDetail = () => {
                   ))}
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
 
