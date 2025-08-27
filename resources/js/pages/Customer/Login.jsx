@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const { login, register, error, clearError, isAuthenticated } = useAuth();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '',
@@ -342,10 +344,10 @@ const Login = () => {
             marginBottom: '1rem',
             color: 'rgb(79 70 229)'
           }}>
-            مرحباً بك في
-            <span style={{ display: 'block', marginTop: '0.5rem' }}>
-              اشتراكات الوجبات
-            </span>
+                                    {t('welcomeTo')}
+                          <span style={{ display: 'block', marginTop: '0.5rem' }}>
+                {t('mealSubscriptions')}
+              </span>
           </h1>
           <p style={{ 
             fontSize: '1rem', 
@@ -481,7 +483,7 @@ const Login = () => {
             marginBottom: '0.5rem',
             textAlign: 'center'
           }}>
-            {isLogin ? 'مرحباً بعودتك!' : 'انضم إلينا الآن'}
+                            {isLogin ? t('welcomeBack') + '!' : t('joinUs')}
           </h2>
           <p style={{ 
             color: 'rgb(75 85 99)', 

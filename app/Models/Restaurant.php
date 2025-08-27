@@ -28,6 +28,8 @@ class Restaurant extends Model
         'locations' => 'array',
     ];
 
+    protected $appends = ['name', 'description', 'address', 'locations_text'];
+
     public function meals()
     {
         return $this->hasMany(Meal::class);
@@ -60,13 +62,23 @@ class Restaurant extends Model
         }
 
         $locationNames = [
-            'bosher' => 'بوشر',
-            'khoudh' => 'الخوض',
-            'maabilah' => 'المعبيلة'
+            'ar' => [
+                'bosher' => 'بوشر',
+                'khoudh' => 'الخوض',
+                'maabilah' => 'المعبيلة'
+            ],
+            'en' => [
+                'bosher' => 'Bosher',
+                'khoudh' => 'Al Khoudh',
+                'maabilah' => 'Al Mabaila'
+            ]
         ];
 
-        return collect($this->locations)->map(function($location) use ($locationNames) {
-            return $locationNames[$location] ?? $location;
-        })->implode('، ');
+        $currentLocale = app()->getLocale();
+        $names = $locationNames[$currentLocale] ?? $locationNames['ar'];
+
+        return collect($this->locations)->map(function($location) use ($names) {
+            return $names[$location] ?? $location;
+        })->implode($currentLocale === 'ar' ? '، ' : ', ');
     }
 }

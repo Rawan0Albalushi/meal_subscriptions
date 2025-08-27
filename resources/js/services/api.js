@@ -8,13 +8,18 @@ const api = axios.create({
     },
 });
 
-// Request interceptor to add auth token
+// Request interceptor to add auth token and language preference
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('auth_token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+        
+        // Add language preference from localStorage
+        const language = localStorage.getItem('language') || 'ar';
+        config.headers['Accept-Language'] = language;
+        
         return config;
     },
     (error) => {

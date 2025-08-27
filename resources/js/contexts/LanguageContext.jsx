@@ -24,6 +24,16 @@ export const LanguageProvider = ({ children }) => {
             logout: 'تسجيل الخروج',
             language: 'اللغة',
             
+            // Greetings
+            hello: 'مرحبا',
+            welcome: 'مرحباً بك',
+            welcomeBack: 'مرحباً بعودتك',
+            welcomeTo: 'مرحباً بك في',
+            joinUs: 'انضم إلينا الآن',
+            loginSuccess: 'تم تسجيل دخولك بنجاح',
+            dear: 'عزيزي',
+            user: 'المستخدم',
+            
             // Home page
             welcomeTitle: 'اشترك في وجباتك المفضلة',
             welcomeSubtitle: 'اختر من مجموعة متنوعة من المطاعم واحصل على وجباتك المفضلة في الوقت المحدد',
@@ -44,7 +54,7 @@ export const LanguageProvider = ({ children }) => {
             diverseMealsDesc: 'قائمة مختارة من المطاعم؛ اختر فطور أو غداء أو عشاء بما يناسب ذوقك.',
             fixedDelivery: 'وقت توصيل ثابت',
             fixedDeliveryDesc: 'نوصّل في نفس الموعد المخصّص لنوع الوجبة طوال مدة الاشتراك.',
-            securePayment: 'دفع آمن عبر ثواني',
+            securePayment: 'دفع آمن عبر Thawani',
             securePaymentDesc: 'ادفع عبر Thawani بخطوة واحدة وبسعر نهائي واضح.',
             
             // Restaurants Section
@@ -58,7 +68,7 @@ export const LanguageProvider = ({ children }) => {
             step1: 'سجّل بالبريد أو Google أو Apple',
             step2: 'اختر مطعمًا وخطتك (أسبوعي/شهري)',
             step3: 'حدّد وجبة كل يوم (أحد-أربعاء) وعنوانًا واحدًا',
-            step4: 'ادفع عبر ثواني واستلم في الموعد الثابت',
+            step4: 'ادفع عبر Thawani واستلم في الموعد الثابت',
             
             // Restaurant
             viewMenu: 'عرض القائمة',
@@ -114,6 +124,7 @@ export const LanguageProvider = ({ children }) => {
             // Footer
             copyright: 'اشتراكات الوجبات',
             poweredBy: 'منصة مكسب',
+            mealSubscriptions: 'اشتراكات الوجبات',
         },
         en: {
             // Navigation
@@ -124,6 +135,16 @@ export const LanguageProvider = ({ children }) => {
             login: 'Login',
             logout: 'Logout',
             language: 'Language',
+            
+            // Greetings
+            hello: 'Hello',
+            welcome: 'Welcome',
+            welcomeBack: 'Welcome Back',
+            welcomeTo: 'Welcome to',
+            joinUs: 'Join Us Now',
+            loginSuccess: 'You have been successfully logged in',
+            dear: 'dear',
+            user: 'User',
             
             // Home page
             welcomeTitle: 'Subscribe to Your Favorite Meals',
@@ -145,7 +166,7 @@ export const LanguageProvider = ({ children }) => {
             diverseMealsDesc: 'A curated list of restaurants; choose breakfast, lunch, or dinner to suit your taste.',
             fixedDelivery: 'Fixed Delivery Time',
             fixedDeliveryDesc: 'We deliver at the same designated time for the meal type throughout the subscription period.',
-            securePayment: 'Secure Payment in Seconds',
+            securePayment: 'Secure Payment in Thawani',
             securePaymentDesc: 'Pay through Thawani in one step with a clear final price.',
             
             // Restaurants Section
@@ -159,7 +180,7 @@ export const LanguageProvider = ({ children }) => {
             step1: 'Register with email, Google, or Apple',
             step2: 'Choose a restaurant and your plan (weekly/monthly)',
             step3: 'Select a meal every day (Sunday-Wednesday) with one address',
-            step4: 'Pay in seconds and receive at the fixed time',
+            step4: 'Pay in Thawani and receive at the fixed time',
             
             // Restaurant
             viewMenu: 'View Menu',
@@ -215,6 +236,7 @@ export const LanguageProvider = ({ children }) => {
             // Footer
             copyright: 'Meal Subscriptions',
             poweredBy: 'Powered by Maksab',
+            mealSubscriptions: 'Meal Subscriptions',
         }
     };
 

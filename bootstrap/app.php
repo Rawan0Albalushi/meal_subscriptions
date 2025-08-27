@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\EnsureRole::class,
         ]);
+        
+        // Add global middleware for setting locale
+        $middleware->append(\App\Http\Middleware\SetLocale::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

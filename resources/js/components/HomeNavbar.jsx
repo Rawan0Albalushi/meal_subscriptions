@@ -78,10 +78,10 @@ const HomeNavbar = () => {
                         </div>
                         <div>
                             <div style={{ fontWeight: 'bold', fontSize: '1rem', marginBottom: '0.25rem' }}>
-                                مرحباً بك {user.full_name || user.name || 'عزيزي'}!
+                                {t('welcome')} {user.full_name || user.name || t('dear')}!
                             </div>
                             <div style={{ fontSize: '0.875rem', opacity: 0.9 }}>
-                                تم تسجيل دخولك بنجاح
+                                {t('loginSuccess')}
                             </div>
                         </div>
                     </div>
@@ -152,28 +152,7 @@ const HomeNavbar = () => {
                                 {t('mySubscriptions')}
                             </Link>
 
-                            {/* Language Toggle Button */}
-                            <button
-                                onClick={toggleLanguage}
-                                style={{
-                                    width: '2rem',
-                                    height: '2rem',
-                                    borderRadius: '0.5rem',
-                                    color: 'rgb(79 70 229)',
-                                    border: 'none',
-                                    fontWeight: '500',
-                                    fontSize: '0.75rem',
-                                    transition: 'all 0.2s',
-                                    background: 'transparent',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}
-                                title={language === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'}
-                            >
-                                {language === 'ar' ? 'EN' : 'ع'}
-                            </button>
+
                         </div>
 
                         {/* Right Section - Simple Auth */}
@@ -187,7 +166,7 @@ const HomeNavbar = () => {
                                         fontSize: '0.875rem',
                                         fontWeight: '500'
                                     }}>
-                                        مرحبا {user?.full_name || user?.name || 'المستخدم'}
+                                        {t('hello')} {user?.full_name || user?.name || t('user')}
                                     </span>
                                     <button
                                         onClick={handleLogout}
@@ -204,6 +183,45 @@ const HomeNavbar = () => {
                                         }}
                                     >
                                         {t('logout')}
+                                    </button>
+                                    
+                                    {/* Language Toggle Button */}
+                                    <button
+                                        onClick={toggleLanguage}
+                                        style={{
+                                            width: '2.75rem',
+                                            height: '2.75rem',
+                                            borderRadius: '0.75rem',
+                                            color: 'rgb(79 70 229)',
+                                            border: '2px solid rgba(79, 70, 229, 0.3)',
+                                            fontWeight: '600',
+                                            fontSize: '1.5rem',
+                                            transition: 'all 0.3s ease',
+                                            background: 'rgba(255, 255, 255, 0.9)',
+                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            boxShadow: '0 4px 12px rgba(79, 70, 229, 0.15)',
+                                            position: 'relative',
+                                            overflow: 'hidden',
+                                            backdropFilter: 'blur(10px)'
+                                        }}
+                                        title={language === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.transform = 'translateY(-3px) scale(1.08)';
+                                            e.target.style.boxShadow = '0 12px 25px rgba(79, 70, 229, 0.25)';
+                                            e.target.style.borderColor = 'rgba(79, 70, 229, 0.6)';
+                                            e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.transform = 'translateY(0) scale(1)';
+                                            e.target.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.15)';
+                                            e.target.style.borderColor = 'rgba(79, 70, 229, 0.3)';
+                                            e.target.style.background = 'rgba(255, 255, 255, 0.9)';
+                                        }}
+                                    >
+                                        🌐
                                     </button>
                                 </>
                             ) : (

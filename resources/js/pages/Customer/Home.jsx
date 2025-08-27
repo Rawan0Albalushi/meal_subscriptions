@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { restaurantsAPI } from '../../services/api';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -18,35 +19,63 @@ const Home = () => {
       }
     }
   }, [isAuthenticated, user, navigate]);
-  const featuredRestaurants = [
-    {
-      id: 1,
-      name: "مطعم الشرق الأوسط",
-      cuisine: "مأكولات شرقية",
-      rating: 4.8,
-      deliveryTime: "30-45 دقيقة",
-      image: "🍽️",
-      description: "أفضل المأكولات الشرقية التقليدية"
-    },
-    {
-      id: 2,
-      name: "بيتزا إيطاليا",
-      cuisine: "بيتزا إيطالية",
-      rating: 4.6,
-      deliveryTime: "25-40 دقيقة",
-      image: "🍕",
-      description: "بيتزا إيطالية أصيلة بأفضل المكونات"
-    },
-    {
-      id: 3,
-      name: "سوشي اليابان",
-      cuisine: "مأكولات يابانية",
-      rating: 4.9,
-      deliveryTime: "35-50 دقيقة",
-      image: "🍣",
-      description: "سوشي طازج ومأكولات يابانية أصيلة"
-    }
-  ];
+  const [featuredRestaurants, setFeaturedRestaurants] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch featured restaurants from backend
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        setLoading(true);
+        const response = await restaurantsAPI.getAll();
+        if (response.data.success) {
+          // Take first 3 restaurants as featured
+          const restaurants = response.data.data.slice(0, 3).map(restaurant => ({
+            id: restaurant.id,
+            name: restaurant.name,
+            rating: (4.5 + Math.random() * 0.5).toFixed(1), // Random rating between 4.5-5.0, fixed to 1 decimal
+            deliveryTime: language === 'ar' ? "30-45 دقيقة" : "30-45 min",
+            image: restaurant.logo || "🍽️",
+            description: restaurant.description
+          }));
+          setFeaturedRestaurants(restaurants);
+        }
+      } catch (error) {
+        console.error('Error fetching restaurants:', error);
+        // Fallback to static data if API fails
+        setFeaturedRestaurants([
+          {
+            id: 1,
+            name: language === 'ar' ? "مطعم الشرق الأوسط" : "Middle East Restaurant",
+            rating: "4.8",
+            deliveryTime: language === 'ar' ? "30-45 دقيقة" : "30-45 min",
+            image: "🍽️",
+            description: language === 'ar' ? "أفضل المأكولات الشرقية التقليدية" : "Best traditional Eastern cuisine"
+          },
+          {
+            id: 2,
+            name: language === 'ar' ? "بيتزا إيطاليا" : "Pizza Italia",
+            rating: "4.6",
+            deliveryTime: language === 'ar' ? "25-40 دقيقة" : "25-40 min",
+            image: "🍕",
+            description: language === 'ar' ? "بيتزا إيطالية أصيلة بأفضل المكونات" : "Authentic Italian pizza with the best ingredients"
+          },
+          {
+            id: 3,
+            name: language === 'ar' ? "سوشي اليابان" : "Sushi Japan",
+            rating: "4.9",
+            deliveryTime: language === 'ar' ? "35-50 دقيقة" : "35-50 min",
+            image: "🍣",
+            description: language === 'ar' ? "سوشي طازج ومأكولات يابانية أصيلة" : "Fresh sushi and authentic Japanese cuisine"
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRestaurants();
+  }, [language]);
 
     return (
     <div style={{ minHeight: '100vh' }}>
@@ -185,60 +214,244 @@ const Home = () => {
             gap: '2rem',
             marginBottom: '3rem'
           }}>
-            {featuredRestaurants.map((restaurant) => (
+            {loading ? (
+              // Loading skeleton
+              Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} style={{
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  backdropFilter: 'blur(20px)',
+                  borderRadius: '1.25rem',
+                  padding: '2rem',
+                  boxShadow: '0 20px 40px rgba(0, 0, 0, 0.08)',
+                  border: '1px solid rgba(229, 231, 235, 0.3)',
+                  height: '400px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}>
+                  {/* Animated loading icon */}
+                  <div style={{ 
+                    fontSize: '3.5rem', 
+                    marginBottom: '1.5rem',
+                    animation: 'pulse 2s infinite'
+                  }}>
+                    🍽️
+                  </div>
+                  
+                  {/* Loading text */}
+                  <div style={{ 
+                    color: 'rgb(79 70 229)', 
+                    fontSize: '1.1rem',
+                    fontWeight: '600',
+                    marginBottom: '0.5rem'
+                  }}>
+                    {language === 'ar' ? 'جاري التحميل...' : 'Loading...'}
+                  </div>
+                  
+                  {/* Loading dots */}
+                  <div style={{ 
+                    display: 'flex', 
+                    gap: '0.25rem',
+                    marginTop: '0.5rem'
+                  }}>
+                    <div style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      background: 'rgb(79 70 229)',
+                      animation: 'bounce 1.4s infinite ease-in-out both',
+                      animationDelay: '0s'
+                    }}></div>
+                    <div style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      background: 'rgb(79 70 229)',
+                      animation: 'bounce 1.4s infinite ease-in-out both',
+                      animationDelay: '0.16s'
+                    }}></div>
+                    <div style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      background: 'rgb(79 70 229)',
+                      animation: 'bounce 1.4s infinite ease-in-out both',
+                      animationDelay: '0.32s'
+                    }}></div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              featuredRestaurants.map((restaurant) => (
               <div key={restaurant.id} style={{
                 background: 'rgba(255, 255, 255, 0.95)',
                 backdropFilter: 'blur(20px)',
-                borderRadius: '1rem',
-                padding: '1.5rem',
-                boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
-                transition: 'transform 0.2s, box-shadow 0.2s',
+                borderRadius: '1.25rem',
+                padding: '2rem',
+                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.08)',
+                transition: 'all 0.3s ease',
                 cursor: 'pointer',
-                border: '1px solid rgba(229, 231, 235, 0.5)'
+                border: '1px solid rgba(229, 231, 235, 0.3)',
+                position: 'relative',
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                height: '400px' // Fixed height for consistency
               }}
               onClick={() => navigate(`/restaurants/${restaurant.id}`)}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-8px)';
+                e.currentTarget.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.08)';
+              }}
               >
-                <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-                  <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>{restaurant.image}</div>
-                  <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'rgb(79 70 229)', marginBottom: '0.5rem' }}>
+                {/* Header Section - Icon and Name */}
+                <div style={{ 
+                  textAlign: 'center', 
+                  marginBottom: '1.5rem',
+                  flex: '0 0 auto'
+                }}>
+                  {/* Restaurant Icon */}
+                  <div style={{ 
+                    fontSize: '3.5rem', 
+                    marginBottom: '1.25rem',
+                    filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1))',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '4rem'
+                  }}>
+                    {restaurant.image}
+                  </div>
+                  
+                  {/* Restaurant Name */}
+                  <h3 style={{ 
+                    fontSize: '1.375rem', 
+                    fontWeight: '700', 
+                    color: 'rgb(79 70 229)', 
+                    marginBottom: '0.75rem',
+                    lineHeight: '1.3',
+                    minHeight: '2.5rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
                     {restaurant.name}
-                                        </h3>
-                  <p style={{ color: 'rgb(75 85 99)', marginBottom: '0.5rem' }}>{restaurant.cuisine}</p>
-                  <p style={{ fontSize: '0.875rem', color: 'rgb(107 114 128)' }}>{restaurant.description}</p>
-                                        </div>
-                                        
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ color: 'rgb(34 197 94)' }}>⭐</span>
-                    <span style={{ fontWeight: '600' }}>{restaurant.rating}</span>
-                                        </div>
-                  <div style={{ fontSize: '0.875rem', color: 'rgb(75 85 99)' }}>
-                    ⏰ {restaurant.deliveryTime}
-                                        </div>
-                                    </div>
-                                    
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/restaurants/${restaurant.id}`);
-                  }}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    borderRadius: '0.5rem',
-                    background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
-                    color: 'white',
-                    border: 'none',
-                    fontSize: '1rem',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'transform 0.2s'
-                  }}
-                >
-                  {t('subscribe')}
-                </button>
-                                </div>
-                            ))}
+                  </h3>
+                </div>
+                
+                {/* Content Section - Description */}
+                <div style={{ 
+                  flex: '1 1 auto',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  marginBottom: '1.5rem'
+                }}>
+                  {/* Restaurant Description */}
+                  <p style={{ 
+                    fontSize: '0.95rem', 
+                    color: 'rgb(75 85 99)', 
+                    lineHeight: '1.6',
+                    marginBottom: '0',
+                    textAlign: 'center',
+                    minHeight: '3.2em',
+                    maxHeight: '3.2em',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    {restaurant.description}
+                  </p>
+                </div>
+                
+                {/* Footer Section - Rating, Delivery Time, and Button */}
+                <div style={{ 
+                  flex: '0 0 auto',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1rem'
+                }}>
+                  {/* Rating and Delivery Time */}
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center', 
+                    padding: '0.75rem 1rem',
+                    background: 'rgba(79, 70, 229, 0.05)',
+                    borderRadius: '0.75rem',
+                    border: '1px solid rgba(79, 70, 229, 0.1)',
+                    minHeight: '3rem'
+                  }}>
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '0.5rem',
+                      flex: '1'
+                    }}>
+                      <span style={{ color: 'rgb(34 197 94)', fontSize: '1.1rem' }}>⭐</span>
+                      <span style={{ fontWeight: '600', color: 'rgb(79 70 229)' }}>
+                        {restaurant.rating}
+                      </span>
+                    </div>
+                    <div style={{ 
+                      fontSize: '0.875rem', 
+                      color: 'rgb(75 85 99)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                      flex: '1',
+                      justifyContent: 'flex-end'
+                    }}>
+                      <span style={{ fontSize: '1rem' }}>⏰</span>
+                      <span>{restaurant.deliveryTime}</span>
+                    </div>
+                  </div>
+                  
+                  {/* Subscribe Button */}
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/restaurants/${restaurant.id}`);
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '0.875rem',
+                      borderRadius: '0.75rem',
+                      background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                      color: 'white',
+                      border: 'none',
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      minHeight: '3rem'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 6px 16px rgba(79, 70, 229, 0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
+                    }}
+                  >
+                    {t('subscribe')}
+                  </button>
+                </div>
+              </div>
+                            ))
+            )}
                         </div>
 
           <div style={{ textAlign: 'center' }}>

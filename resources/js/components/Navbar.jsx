@@ -143,34 +143,7 @@ const Navbar = () => {
                                         {t('mySubscriptions')}
                                     </Link>
 
-                            {/* Language Toggle Button */}
-                            <button
-                                onClick={toggleLanguage}
-                                style={{
-                                    width: 'clamp(1.75rem, 4vw, 2rem)',
-                                    height: 'clamp(1.75rem, 4vw, 2rem)',
-                                    borderRadius: '0.5rem',
-                                    color: 'rgb(79 70 229)',
-                                    border: 'none',
-                                    fontWeight: '500',
-                                    fontSize: 'clamp(0.7rem, 2vw, 0.75rem)',
-                                    transition: 'all 0.2s',
-                                    background: 'transparent',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}
-                                title={language === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'}
-                                onMouseEnter={(e) => {
-                                    e.target.style.background = 'rgba(79, 70, 229, 0.1)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.target.style.background = 'transparent';
-                                }}
-                            >
-                                {language === 'ar' ? 'EN' : 'ع'}
-                            </button>
+
                         </div>
 
                         {/* Mobile Menu Button */}
@@ -219,7 +192,7 @@ const Navbar = () => {
                                         fontWeight: '500',
                                         whiteSpace: 'nowrap'
                                     }}>
-                                        مرحبا {user?.full_name || user?.name || 'المستخدم'}
+                                        {t('hello')} {user?.full_name || user?.name || t('user')}
                                     </span>
                                     
                                     {/* Dashboard Link for Admin/Seller */}
@@ -271,6 +244,46 @@ const Navbar = () => {
                                      >
                                          {t('logout')}
                                      </button>
+                                     
+                                    {/* Language Toggle Button */}
+                                    <button
+                                        onClick={toggleLanguage}
+                                        style={{
+                                            width: 'clamp(2.5rem, 5vw, 2.75rem)',
+                                            height: 'clamp(2.5rem, 5vw, 2.75rem)',
+                                            borderRadius: '0.75rem',
+                                            color: 'rgb(79 70 229)',
+                                            border: '2px solid rgba(79, 70, 229, 0.3)',
+                                            fontWeight: '600',
+                                            fontSize: 'clamp(1.25rem, 3vw, 1.5rem)',
+                                            transition: 'all 0.3s ease',
+                                            background: 'rgba(255, 255, 255, 0.9)',
+                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            boxShadow: '0 4px 12px rgba(79, 70, 229, 0.15)',
+                                            position: 'relative',
+                                            overflow: 'hidden',
+                                            backdropFilter: 'blur(10px)',
+                                            whiteSpace: 'nowrap'
+                                        }}
+                                        title={language === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.transform = 'translateY(-3px) scale(1.08)';
+                                            e.target.style.boxShadow = '0 12px 25px rgba(79, 70, 229, 0.25)';
+                                            e.target.style.borderColor = 'rgba(79, 70, 229, 0.6)';
+                                            e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.transform = 'translateY(0) scale(1)';
+                                            e.target.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.15)';
+                                            e.target.style.borderColor = 'rgba(79, 70, 229, 0.3)';
+                                            e.target.style.background = 'rgba(255, 255, 255, 0.9)';
+                                        }}
+                                    >
+                                        🌐
+                                    </button>
                                 </>
                             ) : (
                                 <Link to="/login" style={{
@@ -381,26 +394,33 @@ const Navbar = () => {
                             <button
                                 onClick={toggleLanguage}
                                     style={{
-                                        padding: 'clamp(0.5rem, 2vw, 0.75rem) clamp(1rem, 4vw, 1.5rem)',
-                                        borderRadius: '0.75rem',
+                                        padding: 'clamp(0.75rem, 3vw, 1rem) clamp(1.5rem, 5vw, 2rem)',
+                                        borderRadius: '1rem',
                                         color: 'rgb(79 70 229)',
-                                        border: '1px solid rgb(79 70 229)',
-                                        background: 'transparent',
+                                        border: '2px solid rgb(79 70 229)',
+                                        background: 'rgba(79, 70, 229, 0.05)',
                                         fontWeight: '600',
-                                        fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
-                                        transition: 'all 0.2s ease',
-                                        cursor: 'pointer'
+                                        fontSize: 'clamp(1rem, 3vw, 1.125rem)',
+                                        transition: 'all 0.3s ease',
+                                        cursor: 'pointer',
+                                        boxShadow: '0 4px 12px rgba(79, 70, 229, 0.15)',
+                                        position: 'relative',
+                                        overflow: 'hidden'
                                     }}
                                     onMouseEnter={(e) => {
+                                        e.target.style.transform = 'translateY(-2px) scale(1.02)';
                                         e.target.style.background = 'rgb(79 70 229)';
                                         e.target.style.color = 'white';
+                                        e.target.style.boxShadow = '0 8px 20px rgba(79, 70, 229, 0.3)';
                                     }}
                                     onMouseLeave={(e) => {
-                                        e.target.style.background = 'transparent';
+                                        e.target.style.transform = 'translateY(0) scale(1)';
+                                        e.target.style.background = 'rgba(79, 70, 229, 0.05)';
                                         e.target.style.color = 'rgb(79 70 229)';
+                                        e.target.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.15)';
                                     }}
                                 >
-                                    {language === 'ar' ? '🌐 Switch to English' : '🌐 التبديل إلى العربية'}
+                                    🌐 {language === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'}
                             </button>
                             </div>
 
@@ -425,7 +445,7 @@ const Navbar = () => {
                                                 fontWeight: '600',
                                                 marginBottom: '0.25rem'
                                             }}>
-                                                👋 مرحبا
+                                                👋 {t('hello')}
                                             </div>
                                             <div style={{
                                                 fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',

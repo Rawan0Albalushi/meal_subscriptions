@@ -28,6 +28,8 @@ class Meal extends Model
         'is_available' => 'boolean',
     ];
 
+    protected $appends = ['name', 'description', 'meal_type_text'];
+
     public function restaurant()
     {
         return $this->belongsTo(Restaurant::class);
