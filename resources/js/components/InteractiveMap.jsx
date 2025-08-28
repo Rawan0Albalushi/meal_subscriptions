@@ -330,7 +330,8 @@ const InteractiveMap = ({
         (error) => {
           console.error('خطأ في تحديد الموقع:', error);
           setIsLoading(false);
-          alert('تعذر تحديد موقعك الحالي. يرجى تحديد الموقع يدوياً على الخريطة.');
+          // You can add a state for showing error message here instead of alert
+          console.log('تعذر تحديد موقعك الحالي. يرجى تحديد الموقع يدوياً على الخريطة.');
         },
         {
           enableHighAccuracy: true,

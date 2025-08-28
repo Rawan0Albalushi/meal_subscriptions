@@ -230,12 +230,12 @@ const MySubscriptions = () => {
                         }}>
                             {subscriptions.map((subscription) => (
                                 <div key={subscription.id} style={{
-                                    background: 'rgba(255, 255, 255, 0.95)',
-                                    backdropFilter: 'blur(20px)',
+                                    background: 'rgba(255, 255, 255, 0.9)',
+                                    backdropFilter: 'blur(15px)',
                                     borderRadius: '1.25rem',
                                     padding: '2rem',
-                                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-                                    border: '1px solid rgba(229, 231, 235, 0.5)',
+                                    boxShadow: '0 15px 30px rgba(0, 0, 0, 0.08)',
+                                    border: '1px solid rgba(229, 231, 235, 0.3)',
                                     transition: 'transform 0.3s ease, box-shadow 0.3s ease'
                                 }}
                                 onMouseEnter={(e) => {

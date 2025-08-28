@@ -676,12 +676,12 @@ const SubscriptionDetail = () => {
                             }}>
                                 {subscription.subscription_items?.map((item, index) => (
                                     <div key={index} style={{
-                                        background: 'rgba(255, 255, 255, 0.95)',
-                                        backdropFilter: 'blur(20px)',
+                                        background: 'rgba(255, 255, 255, 0.9)',
+                                        backdropFilter: 'blur(15px)',
                                         borderRadius: '1rem',
                                         padding: '1.5rem',
-                                        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
-                                        border: '1px solid rgba(229, 231, 235, 0.5)',
+                                        boxShadow: '0 8px 20px rgba(0, 0, 0, 0.08)',
+                                        border: '1px solid rgba(229, 231, 235, 0.3)',
                                         transition: 'transform 0.3s ease, box-shadow 0.3s ease'
                                     }}
                                     onMouseEnter={(e) => {

@@ -75,13 +75,14 @@ const DeliveryAddresses = () => {
                 setEditingAddress(null);
                 resetForm();
                 fetchAddresses();
-                alert(language === 'ar' ? 'تم حفظ العنوان بنجاح' : 'Address saved successfully');
+                // You can add a success message state here instead of alert
+                console.log(language === 'ar' ? 'تم حفظ العنوان بنجاح' : 'Address saved successfully');
             } else {
-                alert(data.message || 'Failed to save address');
+                console.log(data.message || 'Failed to save address');
             }
         } catch (error) {
             console.error('Error saving address:', error);
-            alert('Error saving address');
+            console.log('Error saving address');
         } finally {
             setSubmitting(false);
         }
@@ -119,13 +120,14 @@ const DeliveryAddresses = () => {
             
             if (data.success) {
                 fetchAddresses();
-                alert(language === 'ar' ? 'تم حذف العنوان بنجاح' : 'Address deleted successfully');
+                // You can add a success message state here instead of alert
+                console.log(language === 'ar' ? 'تم حذف العنوان بنجاح' : 'Address deleted successfully');
             } else {
-                alert(data.message || 'Failed to delete address');
+                console.log(data.message || 'Failed to delete address');
             }
         } catch (error) {
             console.error('Error deleting address:', error);
-            alert('Error deleting address');
+            console.log('Error deleting address');
         }
     };
 

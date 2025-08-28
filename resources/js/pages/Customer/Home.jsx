@@ -960,24 +960,24 @@ const Home = () => {
               <div className="card card-hover" style={{ 
                 height: '100%', 
                 textAlign: 'center',
-                background: 'rgba(255, 255, 255, 0.9)',
+                background: 'rgba(255, 255, 255, 0.85)',
                 borderRadius: '1.5rem',
                 padding: '2rem',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.05)',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.04)',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer'
               }}
               onMouseEnter={(e) => {
                 e.target.style.transform = 'translateY(-5px)';
-                e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.1)';
-                e.target.style.background = 'rgba(255, 255, 255, 0.95)';
+                e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.08)';
+                e.target.style.background = 'rgba(255, 255, 255, 0.9)';
               }}
               onMouseLeave={(e) => {
                 e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.05)';
-                e.target.style.background = 'rgba(255, 255, 255, 0.9)';
+                e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.04)';
+                e.target.style.background = 'rgba(255, 255, 255, 0.85)';
               }}>
                 <div className="feature-icon" style={{ 
                   fontSize: '3.5rem', 
@@ -1006,12 +1006,12 @@ const Home = () => {
                           <div className="card card-hover" style={{ 
                 height: '100%', 
                 textAlign: 'center',
-                background: 'rgba(255, 255, 255, 0.9)',
+                background: 'rgba(255, 255, 255, 0.85)',
                 borderRadius: '1.5rem',
                 padding: '2rem',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.05)',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.04)',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer'
               }}
@@ -1052,12 +1052,12 @@ const Home = () => {
                           <div className="card card-hover" style={{ 
                 height: '100%', 
                 textAlign: 'center',
-                background: 'rgba(255, 255, 255, 0.9)',
+                background: 'rgba(255, 255, 255, 0.85)',
                 borderRadius: '1.5rem',
                 padding: '2rem',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.05)',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.04)',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer'
               }}

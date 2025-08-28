@@ -368,7 +368,7 @@ const SubscriptionForm = () => {
         <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
           
           {/* Summary Card */}
-          <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/30">
+          <div className="bg-white/85 backdrop-blur-lg rounded-3xl p-8 shadow-xl border border-white/20">
             <div className="text-center mb-8">
               <div className="text-5xl mb-4">📋</div>
               <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
@@ -454,7 +454,7 @@ const SubscriptionForm = () => {
           </div>
 
           {/* Form Card */}
-          <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/30">
+          <div className="bg-white/85 backdrop-blur-lg rounded-3xl p-8 shadow-xl border border-white/20">
             <div className="text-center mb-8">
               <div className="text-5xl mb-4">✏️</div>
               <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
