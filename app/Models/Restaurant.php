@@ -10,6 +10,7 @@ class Restaurant extends Model
     use HasFactory;
 
     protected $fillable = [
+        'seller_id',
         'name_ar',
         'name_en',
         'description_ar',
@@ -29,6 +30,11 @@ class Restaurant extends Model
     ];
 
     protected $appends = ['name', 'description', 'address', 'locations_text'];
+
+    public function seller()
+    {
+        return $this->belongsTo(User::class, 'seller_id');
+    }
 
     public function meals()
     {

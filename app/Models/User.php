@@ -57,4 +57,24 @@ class User extends Authenticatable
     {
         return $this->hasMany(DeliveryAddress::class);
     }
+
+    public function restaurants()
+    {
+        return $this->hasMany(Restaurant::class, 'seller_id');
+    }
+
+    public function isSeller()
+    {
+        return $this->role === 'seller';
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isCustomer()
+    {
+        return $this->role === 'customer';
+    }
 }

@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\SubscriptionTypeController;
 use App\Http\Controllers\Api\DeliveryAddressController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\Seller\RestaurantController as SellerRestaurantController;
+use App\Http\Controllers\Api\Seller\MealController as SellerMealController;
 
 // Authentication routes
 Route::post('/auth/login', [AuthController::class, 'login']);
@@ -65,8 +67,26 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
 
 // Seller routes
 Route::middleware(['auth:sanctum', 'role:seller'])->prefix('seller')->group(function () {
-    Route::get('/orders', function () {
-        return response()->json(['ok' => true]);
+    // Restaurant management
+    Route::apiResource('restaurants', SellerRestaurantController::class);
+    Route::put('restaurants/{id}/toggle-status', [SellerRestaurantController::class, 'toggleStatus']);
+    Route::get('restaurants/{id}/stats', [SellerRestaurantController::class, 'stats']);
+    
+    // Meal management
+    Route::get('restaurants/{restaurantId}/meals', [SellerMealController::class, 'index']);
+    Route::get('restaurants/{restaurantId}/meals/{mealId}', [SellerMealController::class, 'show']);
+    Route::post('restaurants/{restaurantId}/meals', [SellerMealController::class, 'store']);
+    Route::put('restaurants/{restaurantId}/meals/{mealId}', [SellerMealController::class, 'update']);
+    Route::delete('restaurants/{restaurantId}/meals/{mealId}', [SellerMealController::class, 'destroy']);
+    Route::put('restaurants/{restaurantId}/meals/{mealId}/toggle-availability', [SellerMealController::class, 'toggleAvailability']);
+    Route::get('restaurants/{restaurantId}/meals/stats', [SellerMealController::class, 'stats']);
+    
+    // Dashboard stats
+    Route::get('/dashboard', function () {
+        return response()->json([
+            'success' => true,
+            'message' => 'مرحباً بك في لوحة تحكم البائع'
+        ]);
     });
 });
 
