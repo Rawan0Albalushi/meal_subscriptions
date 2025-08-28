@@ -1,20 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { subscriptionsAPI } from '../../services/api';
+import { subscriptionsAPI, restaurantsAPI } from '../../services/api';
 import { useLanguage } from '../../contexts/LanguageContext';
 import OrderStatusBadge from '../../components/OrderStatusBadge';
 
 const SubscriptionDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { t, language } = useLanguage();
+    const { t, language, dir } = useLanguage();
     const [subscription, setSubscription] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [mealTypeFilter, setMealTypeFilter] = useState('');
+    const [showMealTypeDropdown, setShowMealTypeDropdown] = useState(false);
+
+    // أسماء أنواع الوجبات حسب اللغة
+    const mealTypeNames = {
+        ar: {
+            'breakfast': 'فطور',
+            'lunch': 'غداء',
+            'dinner': 'عشاء'
+        },
+        en: {
+            'breakfast': 'Breakfast',
+            'lunch': 'Lunch',
+            'dinner': 'Dinner'
+        }
+    };
+
+    // Fallback filters في حالة عدم وجود بيانات
+    const fallbackMealTypes = ['breakfast', 'lunch', 'dinner'];
 
     useEffect(() => {
         fetchSubscriptionDetails();
     }, [id]);
+
+    // إغلاق القوائم المنسدلة عند النقر خارجها
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            const mealTypeDropdown = document.getElementById('meal-type-dropdown');
+            const mealTypeButton = document.getElementById('meal-type-button');
+            
+            if (showMealTypeDropdown && 
+                mealTypeDropdown && 
+                !mealTypeDropdown.contains(event.target) &&
+                mealTypeButton &&
+                !mealTypeButton.contains(event.target)) {
+                setShowMealTypeDropdown(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showMealTypeDropdown]);
 
     const fetchSubscriptionDetails = async () => {
         try {
@@ -32,6 +72,28 @@ const SubscriptionDetail = () => {
             setLoading(false);
         }
     };
+
+    const handleMealTypeFilter = (mealType) => {
+        console.log('Meal type selected:', mealType);
+        setMealTypeFilter(prev => prev === mealType ? '' : mealType);
+        setShowMealTypeDropdown(false);
+    };
+
+    const clearMealTypeFilter = () => {
+        setMealTypeFilter('');
+        setShowMealTypeDropdown(false);
+    };
+
+    const getSelectedMealTypeText = () => {
+        if (!mealTypeFilter) return language === 'ar' ? 'جميع أنواع الوجبات' : 'All Meal Types';
+        return mealTypeNames[language][mealTypeFilter] || mealTypeFilter;
+    };
+
+    // فلترة الوجبات حسب النوع المختار
+    const filteredMeals = subscription?.subscription_items?.filter(item => {
+        if (!mealTypeFilter) return true;
+        return item.meal?.meal_type === mealTypeFilter;
+    }) || [];
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -667,14 +729,267 @@ const SubscriptionDetail = () => {
                                 textAlign: 'center'
                             }}>
                                 {language === 'ar' ? 'جدول الوجبات' : 'Meals Schedule'}
-                        </h2>
+                            </h2>
+
+                            {/* Meal Type Filter */}
+                            <div style={{
+                                background: 'rgba(255, 255, 255, 0.95)',
+                                backdropFilter: 'blur(20px)',
+                                borderRadius: '1rem',
+                                padding: '1.5rem',
+                                marginBottom: '2rem',
+                                boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+                                position: 'relative',
+                                zIndex: 10
+                            }}>
+                                <div style={{ 
+                                    display: 'flex', 
+                                    flexDirection: 'column',
+                                    gap: '1rem',
+                                    alignItems: 'center'
+                                }}>
+                                    <h3 style={{
+                                        fontSize: '1.125rem',
+                                        fontWeight: '600',
+                                        color: 'rgb(75 85 99)',
+                                        marginBottom: '0.5rem'
+                                    }}>
+                                        🍽️ {language === 'ar' ? 'فلتر أنواع الوجبات' : 'Meal Type Filter'}
+                                    </h3>
+                                    
+                                    {/* Meal Type Filter Dropdown */}
+                                    <div style={{ position: 'relative', width: '100%', maxWidth: '300px' }}>
+                                        <button
+                                            id="meal-type-button"
+                                            onClick={() => setShowMealTypeDropdown(!showMealTypeDropdown)}
+                                            style={{
+                                                width: '100%',
+                                                padding: '0.875rem 1rem',
+                                                borderRadius: '0.5rem',
+                                                border: '2px solid rgb(209 213 219)',
+                                                background: 'rgba(255, 255, 255, 0.9)',
+                                                color: mealTypeFilter ? 'rgb(34 197 94)' : 'rgb(75 85 99)',
+                                                fontSize: '0.875rem',
+                                                fontWeight: '500',
+                                                cursor: 'pointer',
+                                                transition: 'all 0.2s ease',
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                                textAlign: dir === 'rtl' ? 'right' : 'left'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.target.style.borderColor = 'rgb(34 197 94)';
+                                                e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.target.style.borderColor = 'rgb(209 213 219)';
+                                                e.target.style.boxShadow = 'none';
+                                            }}
+                                        >
+                                            <span style={{ 
+                                                color: mealTypeFilter ? 'rgb(34 197 94)' : 'rgb(75 85 99)',
+                                                fontWeight: mealTypeFilter ? '600' : '500'
+                                            }}>
+                                                {getSelectedMealTypeText()}
+                                            </span>
+                                            <span style={{ 
+                                                fontSize: '1rem',
+                                                transition: 'transform 0.2s ease',
+                                                transform: showMealTypeDropdown ? 'rotate(180deg)' : 'rotate(0deg)'
+                                            }}>
+                                                ▼
+                                            </span>
+                                        </button>
+
+                                        {showMealTypeDropdown && (
+                                            <div
+                                                id="meal-type-dropdown"
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: '100%',
+                                                    left: 0,
+                                                    right: 0,
+                                                    background: 'white',
+                                                    borderRadius: '0.5rem',
+                                                    border: '2px solid rgb(209 213 219)',
+                                                    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
+                                                    zIndex: 1000,
+                                                    maxHeight: '200px',
+                                                    overflowY: 'auto',
+                                                    marginTop: '0.25rem'
+                                                }}>
+                                                <div
+                                                    style={{
+                                                        padding: '0.5rem 1rem',
+                                                        cursor: 'pointer',
+                                                        transition: 'background-color 0.2s ease',
+                                                        borderBottom: '1px solid rgb(243 244 246)',
+                                                        fontSize: '0.875rem',
+                                                        color: 'rgb(75 85 99)',
+                                                        fontWeight: '500',
+                                                        textAlign: dir === 'rtl' ? 'right' : 'left'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        e.target.style.backgroundColor = 'rgb(249 250 251)';
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.target.style.backgroundColor = 'transparent';
+                                                    }}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        clearMealTypeFilter();
+                                                    }}
+                                                >
+                                                    {language === 'ar' ? 'عرض جميع الوجبات' : 'Show All Meals'}
+                                                </div>
+                                                {fallbackMealTypes.map(mealType => (
+                                                    <div
+                                                        key={mealType}
+                                                        style={{
+                                                            padding: '0.75rem 1rem',
+                                                            cursor: 'pointer',
+                                                            transition: 'background-color 0.2s ease',
+                                                            borderBottom: '1px solid rgb(243 244 246)',
+                                                            fontSize: '0.875rem',
+                                                            color: mealTypeFilter === mealType ? 'rgb(34 197 94)' : 'rgb(75 85 99)',
+                                                            fontWeight: mealTypeFilter === mealType ? '600' : '500',
+                                                            backgroundColor: mealTypeFilter === mealType ? 'rgb(240 253 244)' : 'transparent',
+                                                            textAlign: dir === 'rtl' ? 'right' : 'left'
+                                                        }}
+                                                        onMouseEnter={(e) => {
+                                                            if (mealTypeFilter !== mealType) {
+                                                                e.target.style.backgroundColor = 'rgb(249 250 251)';
+                                                            }
+                                                        }}
+                                                        onMouseLeave={(e) => {
+                                                            if (mealTypeFilter !== mealType) {
+                                                                e.target.style.backgroundColor = 'transparent';
+                                                            }
+                                                        }}
+                                                        onClick={(e) => {
+                                                            console.log('Clicked on meal type item:', mealType);
+                                                            e.stopPropagation();
+                                                            handleMealTypeFilter(mealType);
+                                                        }}
+                                                    >
+                                                        {mealTypeNames[language][mealType] || mealType}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Filter Status */}
+                                    {mealTypeFilter && (
+                                        <div style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '0.5rem',
+                                            padding: '0.5rem 1rem',
+                                            background: 'rgb(240 253 244)',
+                                            borderRadius: '0.5rem',
+                                            border: '1px solid rgb(34 197 94)',
+                                            fontSize: '0.875rem',
+                                            color: 'rgb(34 197 94)',
+                                            fontWeight: '500'
+                                        }}>
+                                            <span>✅</span>
+                                            <span>
+                                                {language === 'ar' 
+                                                    ? `عرض وجبات ${mealTypeNames[language][mealTypeFilter]} فقط` 
+                                                    : `Showing ${mealTypeNames[language][mealTypeFilter]} meals only`
+                                                }
+                                            </span>
+                                            <button
+                                                onClick={clearMealTypeFilter}
+                                                style={{
+                                                    background: 'none',
+                                                    border: 'none',
+                                                    color: 'rgb(34 197 94)',
+                                                    cursor: 'pointer',
+                                                    fontSize: '1rem',
+                                                    padding: '0.25rem',
+                                                    borderRadius: '0.25rem',
+                                                    transition: 'background-color 0.2s ease'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.target.style.backgroundColor = 'rgba(34, 197, 94, 0.1)';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.target.style.backgroundColor = 'transparent';
+                                                }}
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         
                             <div style={{ 
                                 display: 'grid', 
                                 gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
                                 gap: '1.5rem' 
                             }}>
-                                {subscription.subscription_items?.map((item, index) => (
+                                {filteredMeals.length === 0 ? (
+                                    <div style={{
+                                        gridColumn: '1 / -1',
+                                        textAlign: 'center',
+                                        padding: '3rem',
+                                        background: 'rgba(255, 255, 255, 0.9)',
+                                        borderRadius: '1rem',
+                                        border: '1px solid rgba(229, 231, 235, 0.3)'
+                                    }}>
+                                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🍽️</div>
+                                        <h3 style={{ 
+                                            fontSize: '1.25rem', 
+                                            fontWeight: '600', 
+                                            color: 'rgb(75 85 99)',
+                                            marginBottom: '0.5rem'
+                                        }}>
+                                            {language === 'ar' 
+                                                ? `لا توجد وجبات ${mealTypeFilter ? mealTypeNames[language][mealTypeFilter] : ''} في هذا الاشتراك` 
+                                                : `No ${mealTypeFilter ? mealTypeNames[language][mealTypeFilter] : ''} meals in this subscription`
+                                            }
+                                        </h3>
+                                        <p style={{ 
+                                            fontSize: '1rem', 
+                                            color: 'rgb(107 114 128)',
+                                            marginBottom: '1.5rem'
+                                        }}>
+                                            {language === 'ar' 
+                                                ? 'جرب اختيار نوع وجبة مختلف أو عرض جميع الوجبات' 
+                                                : 'Try selecting a different meal type or show all meals'
+                                            }
+                                        </p>
+                                        <button
+                                            onClick={clearMealTypeFilter}
+                                            style={{
+                                                padding: '0.75rem 1.5rem',
+                                                borderRadius: '0.75rem',
+                                                background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                                                color: 'white',
+                                                border: 'none',
+                                                fontSize: '1rem',
+                                                fontWeight: '600',
+                                                cursor: 'pointer',
+                                                transition: 'all 0.3s ease'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.target.style.transform = 'translateY(-2px)';
+                                                e.target.style.boxShadow = '0 8px 25px rgba(79, 70, 229, 0.3)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.target.style.transform = 'translateY(0)';
+                                                e.target.style.boxShadow = 'none';
+                                            }}
+                                        >
+                                            {language === 'ar' ? 'عرض جميع الوجبات' : 'Show All Meals'}
+                                        </button>
+                                    </div>
+                                ) : (
+                                    filteredMeals.map((item, index) => (
                                     <div key={index} style={{
                                         background: 'rgba(255, 255, 255, 0.9)',
                                         backdropFilter: 'blur(15px)',
@@ -754,7 +1069,8 @@ const SubscriptionDetail = () => {
                                         {/* Status */}
                                         <OrderStatusBadge status={item.status} language={language} />
                                     </div>
-                                ))}
+                                ))
+                                )}
                             </div>
                             </div>
                     </div>

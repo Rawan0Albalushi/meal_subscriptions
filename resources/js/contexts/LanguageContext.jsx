@@ -278,6 +278,11 @@ export const LanguageProvider = ({ children }) => {
             subscriptionCreatedMessage: 'تم إنشاء اشتراكك بنجاح. سيتم توجيهك إلى صفحة الاشتراكات لمتابعة طلبك.',
             subscriptionCreationFailed: 'فشل في إنشاء الاشتراك',
             subscriptionCreationError: 'حدث خطأ أثناء إنشاء الاشتراك',
+            
+            // Meal Type Filter
+            mealTypeFilter: 'فلتر أنواع الوجبات',
+            mealTypeFilterMessage: 'اختر نوع الوجبة لعرض الوجبات المتاحة فقط',
+            showingMealsOnly: 'عرض وجبات {type} فقط',
         },
         en: {
             // Navigation
@@ -543,6 +548,11 @@ export const LanguageProvider = ({ children }) => {
             subscriptionCreatedMessage: 'Your subscription has been created successfully. You will be redirected to the subscriptions page to track your order.',
             subscriptionCreationFailed: 'Failed to create subscription',
             subscriptionCreationError: 'An error occurred while creating the subscription',
+            
+            // Meal Type Filter
+            mealTypeFilter: 'Meal Type Filter',
+            mealTypeFilterMessage: 'Choose meal type to show available meals only',
+            showingMealsOnly: 'Showing {type} meals only',
         }
     };
 
