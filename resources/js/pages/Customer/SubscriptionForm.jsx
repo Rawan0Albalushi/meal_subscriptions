@@ -151,10 +151,16 @@ const SubscriptionForm = () => {
           setDeliveryAddresses(addressesResponse.data.data);
         }
 
-        // Fetch subscription type data
-        const subscriptionTypeResponse = await subscriptionTypesAPI.getByType(subscriptionType);
+        // Fetch subscription type data for this restaurant
+        const subscriptionTypeResponse = await subscriptionTypesAPI.getByRestaurant(restaurantId);
         if (subscriptionTypeResponse.data.success) {
-          setSubscriptionTypeData(subscriptionTypeResponse.data.data);
+          const restaurantSubscriptionTypes = subscriptionTypeResponse.data.data;
+          const matchingType = restaurantSubscriptionTypes.find(type => type.type === subscriptionType);
+          if (matchingType) {
+            setSubscriptionTypeData(matchingType);
+          } else {
+            setError('نوع الاشتراك غير متوفر لهذا المطعم');
+          }
         }
       } catch (e) {
         console.error('Error fetching data:', e);
@@ -267,8 +273,32 @@ const SubscriptionForm = () => {
         return;
       }
 
+      // Validate that the number of selected meals matches the subscription type meals_count
+      if (subscriptionTypeData && selectedMeals.length !== subscriptionTypeData.meals_count) {
+        setPopupTitle(t('mealsSelectionError'));
+        setPopupMessage(t('selectRequiredMealsCount', { count: subscriptionTypeData.meals_count }));
+        setShowErrorPopup(true);
+        return;
+      }
+
       // Get delivery days from selected meals
-      const deliveryDays = selectedMeals.map(m => m.dayKey).filter(Boolean);
+      const deliveryDays = selectedMeals.map(m => {
+        // Use baseDayKey if available, otherwise extract from dayKey
+        const dayKey = m.baseDayKey || m.dayKey.split('_')[0];
+        
+        // Ensure we're sending English day names to backend
+        const dayMapping = {
+          'الأحد': 'sunday',
+          'الاثنين': 'monday', 
+          'الثلاثاء': 'tuesday',
+          'الأربعاء': 'wednesday',
+          'الخميس': 'thursday',
+          'الجمعة': 'friday',
+          'السبت': 'saturday'
+        };
+        
+        return dayMapping[dayKey] || dayKey;
+      }).filter(Boolean);
 
       const subscriptionData = {
         restaurant_id: restaurantId,

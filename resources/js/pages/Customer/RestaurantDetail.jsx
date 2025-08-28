@@ -68,9 +68,9 @@ const RestaurantDetail = () => {
           setError(t('mealsLoadError'));
         }
 
-        // Fetch subscription types
-        console.log('📋 Fetching subscription types');
-        const subscriptionTypesResponse = await subscriptionTypesAPI.getAll();
+        // Fetch subscription types for this restaurant
+        console.log('📋 Fetching subscription types for restaurant:', id);
+        const subscriptionTypesResponse = await subscriptionTypesAPI.getByRestaurant(id);
         if (subscriptionTypesResponse.data.success) {
           console.log('📋 Fetched subscription types:', subscriptionTypesResponse.data.data);
           setSubscriptionTypes(subscriptionTypesResponse.data.data);
@@ -110,13 +110,13 @@ const RestaurantDetail = () => {
     setSelectedMeals({});
   }, [id]);
 
-  const handleSubscriptionTypeSelect = (type) => {
+  const handleSubscriptionTypeSelect = (subscriptionType) => {
     if (!isAuthenticated) {
       setShowLoginPopup(true);
       return;
     }
     
-    setSelectedSubscriptionType(type);
+    setSelectedSubscriptionType(subscriptionType);
     setSelectedMeals({}); // Reset selected meals when changing subscription type
     setStartDate(''); // Reset start date when changing subscription type
   };
@@ -149,10 +149,33 @@ const RestaurantDetail = () => {
 
 
   const handleMealSelection = (dayKey, meal) => {
-    setSelectedMeals(prev => ({
-      ...prev,
-      [dayKey]: meal
-    }));
+    const currentSelectedCount = Object.keys(selectedMeals).length;
+    const maxAllowed = selectedSubscriptionType?.meals_count || 0;
+    
+    // If this day is already selected, allow deselection
+    if (selectedMeals[dayKey]) {
+      setSelectedMeals(prev => {
+        const newSelected = { ...prev };
+        delete newSelected[dayKey];
+        return newSelected;
+      });
+    } else {
+      // Check if we can add more meals
+      if (currentSelectedCount >= maxAllowed) {
+        // Show error message
+        setErrors(prev => ({ 
+          ...prev, 
+          meals: t('maxMealsReached', { count: maxAllowed }) 
+        }));
+        return;
+      }
+      
+      setSelectedMeals(prev => ({
+        ...prev,
+        [dayKey]: meal
+      }));
+    }
+    
     // Clear meals error when user selects a meal
     if (errors.meals) {
       setErrors(prev => ({ ...prev, meals: '' }));
@@ -167,8 +190,14 @@ const RestaurantDetail = () => {
     }
     
     const selectedDays = Object.keys(selectedMeals);
+    const requiredMealsCount = selectedSubscriptionType?.meals_count || 0;
+    
     if (selectedDays.length === 0) {
       newErrors.meals = t('selectAtLeastOneMeal');
+    } else if (selectedDays.length < requiredMealsCount) {
+      newErrors.meals = t('selectRequiredMealsCount', { count: requiredMealsCount });
+    } else if (selectedDays.length > requiredMealsCount) {
+      newErrors.meals = t('selectRequiredMealsCount', { count: requiredMealsCount });
     }
     
     setErrors(newErrors);
@@ -180,10 +209,12 @@ const RestaurantDetail = () => {
     // Navigate to subscription form with selected meals, days, and start date
     const selectedMealsWithDays = Object.entries(selectedMeals).map(([dayKey, meal]) => ({
       dayKey,
-      mealId: meal.id
+      mealId: meal.id,
+      // Store the base day name for backend validation
+      baseDayKey: dayKey.split('_')[0]
     }));
     const mealsData = JSON.stringify(selectedMealsWithDays);
-    const subscriptionUrl = `/subscribe/${id}/${selectedSubscriptionType}/${startDate}/${encodeURIComponent(mealsData)}`;
+    const subscriptionUrl = `/subscribe/${id}/${selectedSubscriptionType.type}/${startDate}/${encodeURIComponent(mealsData)}`;
     navigate(subscriptionUrl);
   };
 
@@ -211,25 +242,54 @@ const RestaurantDetail = () => {
     setErrors(prev => ({ ...prev, startDate: '' })); // Clear error message
   };
 
-  // Generate meal days based on selected start date (only weekdays)
+  // Generate meal days based on selected start date and subscription type
   const getWeekDaysFromStartDate = () => {
-    if (!startDate) return [];
+    if (!startDate || !selectedSubscriptionType) return [];
     
     const start = new Date(startDate);
     const days = [];
-    const mealLabels = language === 'ar' 
-      ? ['الوجبة الأولى', 'الوجبة الثانية', 'الوجبة الثالثة', 'الوجبة الرابعة', 'الوجبة الخامسة']
-      : ['First Meal', 'Second Meal', 'Third Meal', 'Fourth Meal', 'Fifth Meal'];
-    const mealIcons = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣'];
-    const dayKeys = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday'];
+    const requiredMeals = selectedSubscriptionType.meals_count || 4;
+    
+    // Generate labels and icons based on required meals
+    const mealLabelsArray = language === 'ar' 
+      ? ['الوجبة الأولى', 'الوجبة الثانية', 'الوجبة الثالثة', 'الوجبة الرابعة', 'الوجبة الخامسة', 'الوجبة السادسة', 'الوجبة السابعة', 'الوجبة الثامنة', 'الوجبة التاسعة', 'الوجبة العاشرة', 'الوجبة الحادية عشر', 'الوجبة الثانية عشر', 'الوجبة الثالثة عشر', 'الوجبة الرابعة عشر', 'الوجبة الخامسة عشر', 'الوجبة السادسة عشر']
+      : ['Meal 1', 'Meal 2', 'Meal 3', 'Meal 4', 'Meal 5', 'Meal 6', 'Meal 7', 'Meal 8', 'Meal 9', 'Meal 10', 'Meal 11', 'Meal 12', 'Meal 13', 'Meal 14', 'Meal 15', 'Meal 16'];
+    
+    const dayIcons = ['🌅', '🌞', '☀️', '🌤️', '🍽️', '🥘', '🍲', '🥗', '🍜', '🍛', '🍱', '🥪', '🍕', '🍔', '🌮', '🥙'];
+    
+    const mealLabels = [];
+    const mealIcons = [];
+    const dayKeys = [];
+    
+    for (let i = 0; i < requiredMeals; i++) {
+      const weekIndex = Math.floor(i / 4); // 4 days per week
+      const dayIndex = i % 4; // 0-3 for each week
+      
+      mealLabels.push(mealLabelsArray[i]);
+      mealIcons.push(dayIcons[i]);
+      
+      // For monthly subscriptions, we need to repeat the same days
+      // So we'll use the same day key but with a unique identifier
+      const dayLabels = language === 'ar' 
+        ? ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء']
+        : ['Sunday', 'Monday', 'Tuesday', 'Wednesday'];
+      
+      // Always use English day names for backend compatibility
+      const englishDayLabels = ['sunday', 'monday', 'tuesday', 'wednesday'];
+      const baseDayKey = englishDayLabels[dayIndex];
+      const uniqueDayKey = selectedSubscriptionType.type === 'monthly' 
+        ? `${baseDayKey}_week${weekIndex + 1}` 
+        : baseDayKey;
+      dayKeys.push(uniqueDayKey);
+    }
     
     let currentDate = new Date(start);
     let mealIndex = 0;
     
-    // Generate 5 meal days, skipping weekends (Friday = 5, Saturday = 6)
-    while (mealIndex < 5) {
+    // Generate meal days based on subscription type
+    while (mealIndex < requiredMeals) {
       const dayOfWeek = currentDate.getDay();
-      if (dayOfWeek >= 0 && dayOfWeek <= 4) { // Sunday = 0, Thursday = 4
+      if (dayOfWeek >= 0 && dayOfWeek <= 3) { // Sunday = 0, Wednesday = 3 (only 4 days per week)
         days.push({
           key: dayKeys[mealIndex],
           label: mealLabels[mealIndex],
@@ -240,7 +300,9 @@ const RestaurantDetail = () => {
             year: 'numeric', 
             month: 'long', 
             day: 'numeric' 
-          })
+          }),
+          weekNumber: Math.floor(mealIndex / 4) + 1,
+          dayOfWeek: dayOfWeek
         });
         mealIndex++;
       }
@@ -651,17 +713,17 @@ const RestaurantDetail = () => {
               return (
               <div 
                 key={subscription.type}
-                onClick={() => handleSubscriptionTypeSelect(subscription.type)}
+                onClick={() => handleSubscriptionTypeSelect(subscriptionType)}
                 style={{
-                  background: selectedSubscriptionType === subscription.type 
+                  background: selectedSubscriptionType?.type === subscription.type 
                     ? subscription.bgGradient
                     : 'transparent',
                   borderRadius: '1.25rem',
                   padding: '1.5rem',
-                  boxShadow: selectedSubscriptionType === subscription.type 
+                  boxShadow: selectedSubscriptionType?.type === subscription.type 
                     ? `0 15px 30px ${subscription.borderColor}20` 
                     : '0 4px 15px rgba(0, 0, 0, 0.08)',
-                  border: selectedSubscriptionType === subscription.type 
+                  border: selectedSubscriptionType?.type === subscription.type 
                     ? `2px solid ${subscription.borderColor}` 
                     : '1px solid rgba(229, 231, 235, 0.6)',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -673,13 +735,13 @@ const RestaurantDetail = () => {
                   flexDirection: 'column'
                 }}
                                  onMouseEnter={(e) => {
-                   if (selectedSubscriptionType !== subscription.type) {
+                   if (selectedSubscriptionType?.type !== subscription.type) {
                      e.target.style.transform = 'translateY(-2px)';
                      e.target.style.boxShadow = `0 8px 25px ${subscription.borderColor}15`;
                    }
                  }}
                  onMouseLeave={(e) => {
-                   if (selectedSubscriptionType !== subscription.type) {
+                   if (selectedSubscriptionType?.type !== subscription.type) {
                      e.target.style.transform = 'translateY(0)';
                      e.target.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.08)';
                    }
@@ -704,7 +766,7 @@ const RestaurantDetail = () => {
                  )}
 
                 {/* Selection Indicator */}
-                {selectedSubscriptionType === subscription.type && (
+                {selectedSubscriptionType?.type === subscription.type && (
                   <div style={{
                     position: 'absolute',
                     top: '0.75rem',
@@ -841,9 +903,16 @@ const RestaurantDetail = () => {
               lineHeight: '1.6',
               padding: '0 clamp(0.5rem, 4vw, 2rem)'
             }}>
-              {selectedSubscriptionType === 'weekly' 
-                ? t('selectMealForEachDayWeekly') 
-                : t('selectMealForEachDayMonthly')}
+              {selectedSubscriptionType?.type === 'weekly' 
+                ? t('selectMealForEachDayWithCount', { 
+                    count: selectedSubscriptionType?.meals_count || 0,
+                    type: t('week')
+                  })
+                : t('selectMealForEachDayWithCount', { 
+                    count: selectedSubscriptionType?.meals_count || 0,
+                    type: t('month')
+                  }) + ` (${Math.ceil((selectedSubscriptionType?.meals_count || 0) / 4)} ${t('weeks')})`
+              }
             </p>
             
 
@@ -1124,6 +1193,30 @@ const RestaurantDetail = () => {
                   gap: '2rem'
                 }}
               >
+                {/* Meals Selection Counter */}
+                <div style={{
+                  background: 'linear-gradient(135deg, #f0fdf4, #dcfce7)',
+                  borderRadius: '1rem',
+                  padding: '1rem',
+                  border: '1px solid #10b981',
+                  textAlign: 'center',
+                  marginBottom: '1rem'
+                }}>
+                  <div style={{
+                    fontSize: '1rem',
+                    color: '#059669',
+                    fontWeight: '600',
+                    marginBottom: '0.25rem'
+                  }}>
+                    📊 {t('mealsSelectionProgress')}
+                  </div>
+                  <div style={{
+                    fontSize: '0.875rem',
+                    color: '#047857'
+                  }}>
+                    {Object.keys(selectedMeals).length} / {selectedSubscriptionType?.meals_count || 0} {t('mealsSelected')}
+                  </div>
+                </div>
                 {getWeekDaysFromStartDate().map((day, dayIndex) => (
                   <div 
                     key={day.key} 
@@ -1142,9 +1235,13 @@ const RestaurantDetail = () => {
                       gap: '0.75rem',
                       marginBottom: '1.5rem',
                       padding: '0.75rem',
-                      background: 'transparent',
+                      background: selectedSubscriptionType?.type === 'monthly' && day.weekNumber 
+                        ? `linear-gradient(135deg, ${day.weekNumber === 1 ? 'rgba(16, 185, 129, 0.1)' : day.weekNumber === 2 ? 'rgba(59, 130, 246, 0.1)' : day.weekNumber === 3 ? 'rgba(168, 85, 247, 0.1)' : 'rgba(236, 72, 153, 0.1)'}, ${day.weekNumber === 1 ? 'rgba(5, 150, 105, 0.05)' : day.weekNumber === 2 ? 'rgba(37, 99, 235, 0.05)' : day.weekNumber === 3 ? 'rgba(147, 51, 234, 0.05)' : 'rgba(219, 39, 119, 0.05)'})`
+                        : 'transparent',
                       borderRadius: '0.75rem',
-                      border: '1px solid rgba(229, 231, 235, 0.3)'
+                      border: selectedSubscriptionType?.type === 'monthly' && day.weekNumber
+                        ? `1px solid ${day.weekNumber === 1 ? 'rgba(16, 185, 129, 0.3)' : day.weekNumber === 2 ? 'rgba(59, 130, 246, 0.3)' : day.weekNumber === 3 ? 'rgba(168, 85, 247, 0.3)' : 'rgba(236, 72, 153, 0.3)'}`
+                        : '1px solid rgba(229, 231, 235, 0.3)'
                     }}>
                       <div style={{ fontSize: '1.5rem' }}>{day.icon}</div>
                       <div style={{ flex: 1 }}>
@@ -1164,6 +1261,16 @@ const RestaurantDetail = () => {
                         }}>
                           {day.displayDate}
                         </div>
+                        {selectedSubscriptionType?.type === 'monthly' && day.weekNumber && (
+                          <div style={{
+                            fontSize: '0.75rem',
+                            color: day.weekNumber === 1 ? '#059669' : day.weekNumber === 2 ? '#2563eb' : day.weekNumber === 3 ? '#7c3aed' : '#db2777',
+                            fontWeight: '600',
+                            marginTop: '0.25rem'
+                          }}>
+                            {language === 'ar' ? `الأسبوع ${day.weekNumber}` : `Week ${day.weekNumber}`}
+                          </div>
+                        )}
                       </div>
                       {getSelectedMealForDay(day.key) && (
                         <div style={{
@@ -1398,7 +1505,7 @@ const RestaurantDetail = () => {
             )}
 
             {/* Continue Button */}
-            {startDate && Object.keys(selectedMeals).length > 0 && (
+            {startDate && Object.keys(selectedMeals).length > 0 && Object.keys(selectedMeals).length === (selectedSubscriptionType?.meals_count || 0) ? (
               <div style={{ 
                 textAlign: 'center', 
                 marginTop: '2rem',
@@ -1485,7 +1592,41 @@ const RestaurantDetail = () => {
                   }}></div>
                 </button>
               </div>
-            )}
+            ) : startDate && Object.keys(selectedMeals).length > 0 && Object.keys(selectedMeals).length < (selectedSubscriptionType?.meals_count || 0) ? (
+              <div style={{ 
+                textAlign: 'center', 
+                marginTop: '2rem',
+                padding: '2rem',
+                background: 'linear-gradient(135deg, rgba(254, 242, 242, 0.95), rgba(254, 226, 226, 0.95))',
+                borderRadius: '1.5rem',
+                border: '1px solid rgba(254, 202, 202, 0.5)',
+                boxShadow: '0 10px 30px rgba(220, 38, 38, 0.1)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                <div style={{
+                  fontSize: '1.5rem',
+                  marginBottom: '1rem',
+                  color: '#dc2626'
+                }}>
+                  ⚠️
+                </div>
+                <div style={{
+                  fontSize: '1rem',
+                  color: '#dc2626',
+                  fontWeight: '600',
+                  marginBottom: '0.5rem'
+                }}>
+                  {t('selectRequiredMealsCount', { count: selectedSubscriptionType?.meals_count || 0 })}
+                </div>
+                <div style={{
+                  fontSize: '0.875rem',
+                  color: '#991b1b'
+                }}>
+                  {t('selectedMealsCount', { count: Object.keys(selectedMeals).length })} / {selectedSubscriptionType?.meals_count || 0}
+                </div>
+              </div>
+            ) : null}
           </div>
         )}
       </div>

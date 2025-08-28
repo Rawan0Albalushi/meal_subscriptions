@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('subscription_types', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('restaurant_id')->constrained()->onDelete('cascade');
             $table->string('name_ar');
             $table->string('name_en');
             $table->text('description_ar')->nullable();

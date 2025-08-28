@@ -40,6 +40,11 @@ class Restaurant extends Model
         return $this->hasMany(Subscription::class);
     }
 
+    public function subscriptionTypes()
+    {
+        return $this->hasMany(SubscriptionType::class);
+    }
+
     public function getNameAttribute()
     {
         return app()->getLocale() === 'ar' ? $this->name_ar : $this->name_en;

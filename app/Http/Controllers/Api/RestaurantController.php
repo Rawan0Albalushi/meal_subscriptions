@@ -62,6 +62,8 @@ class RestaurantController extends Controller
         $restaurant = Restaurant::where('is_active', true)
             ->with(['meals' => function ($query) {
                 $query->where('is_available', true);
+            }, 'subscriptionTypes' => function ($query) {
+                $query->where('is_active', true);
             }])
             ->findOrFail($id);
 

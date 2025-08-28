@@ -72,14 +72,23 @@ class SubscriptionController extends Controller
 
             // Get subscription type and calculate total amount
             $subscriptionType = SubscriptionType::where('type', $request->subscription_type)
+                ->where('restaurant_id', $request->restaurant_id)
                 ->where('is_active', true)
                 ->first();
 
             if (!$subscriptionType) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'نوع الاشتراك غير موجود'
+                    'message' => 'نوع الاشتراك غير موجود لهذا المطعم'
                 ], 404);
+            }
+
+            // Validate that the number of delivery days matches the subscription type meals_count
+            if (count($request->delivery_days) !== $subscriptionType->meals_count) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "يجب اختيار {$subscriptionType->meals_count} وجبة لاشتراك {$subscriptionType->name_ar}"
+                ], 422);
             }
 
             // Create subscription
@@ -98,16 +107,16 @@ class SubscriptionController extends Controller
                 'special_instructions' => $request->special_instructions,
             ]);
 
-            // Create subscription items for each delivery day (one meal per day)
+            // Create subscription items for each delivery day with selected meals
             $startDate = Carbon::parse($request->start_date);
             
-            // Create one subscription item per delivery day
-            foreach ($request->delivery_days as $dayOfWeek) {
+            // Create subscription items for each delivery day with its selected meal
+            foreach ($request->delivery_days as $index => $dayOfWeek) {
                 // Calculate delivery date for this day
                 $deliveryDate = $this->calculateDeliveryDate($startDate, $dayOfWeek);
                 
-                // Use the first meal for each day (since we have one meal per day)
-                $mealId = $request->meal_ids[0];
+                // Get the meal ID for this specific day
+                $mealId = $request->meal_ids[$index];
                 
                 SubscriptionItem::create([
                     'subscription_id' => $subscription->id,

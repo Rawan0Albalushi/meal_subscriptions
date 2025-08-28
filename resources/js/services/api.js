@@ -82,6 +82,10 @@ export const subscriptionTypesAPI = {
     getAll: () => api.get('/subscription-types'),
     getById: (id) => api.get(`/subscription-types/${id}`),
     getByType: (type) => api.get(`/subscription-types/type/${type}`),
+    getByRestaurant: (restaurantId) => api.get(`/restaurants/${restaurantId}/subscription-types`),
+    create: (typeData) => api.post('/subscription-types', typeData),
+    update: (id, typeData) => api.put(`/subscription-types/${id}`, typeData),
+    delete: (id) => api.delete(`/subscription-types/${id}`),
 };
 
 // Delivery Addresses API

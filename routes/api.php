@@ -27,9 +27,17 @@ Route::get('/restaurants/{restaurantId}/meals', [RestaurantController::class, 'm
 Route::get('/subscription-types', [SubscriptionTypeController::class, 'index']);
 Route::get('/subscription-types/{id}', [SubscriptionTypeController::class, 'show']);
 Route::get('/subscription-types/type/{type}', [SubscriptionTypeController::class, 'getByType']);
+Route::get('/restaurants/{restaurantId}/subscription-types', [SubscriptionTypeController::class, 'getByRestaurant']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
+    // Restaurant owner subscription type management
+    Route::middleware('role:restaurant_owner')->group(function () {
+        Route::post('/subscription-types', [SubscriptionTypeController::class, 'store']);
+        Route::put('/subscription-types/{id}', [SubscriptionTypeController::class, 'update']);
+        Route::delete('/subscription-types/{id}', [SubscriptionTypeController::class, 'destroy']);
+    });
+
     // Subscription routes
     Route::get('/subscriptions', [SubscriptionController::class, 'index']);
     Route::post('/subscriptions', [SubscriptionController::class, 'store']);

@@ -10,6 +10,7 @@ class SubscriptionType extends Model
     use HasFactory;
 
     protected $fillable = [
+        'restaurant_id',
         'name_ar',
         'name_en',
         'description_ar',
@@ -25,6 +26,11 @@ class SubscriptionType extends Model
         'meals_count' => 'integer',
         'is_active' => 'boolean',
     ];
+
+    public function restaurant()
+    {
+        return $this->belongsTo(Restaurant::class);
+    }
 
     public function subscriptions()
     {

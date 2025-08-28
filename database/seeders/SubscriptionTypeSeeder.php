@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\SubscriptionType;
+use App\Models\Restaurant;
 
 class SubscriptionTypeSeeder extends Seeder
 {
@@ -13,8 +14,13 @@ class SubscriptionTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        $subscriptionTypes = [
-            [
+        // Get all restaurants
+        $restaurants = Restaurant::all();
+
+        foreach ($restaurants as $restaurant) {
+            // Create weekly subscription type for this restaurant
+            SubscriptionType::create([
+                'restaurant_id' => $restaurant->id,
                 'name_ar' => 'اشتراك أسبوعي',
                 'name_en' => 'Weekly Subscription',
                 'description_ar' => '4 وجبات في الأسبوع - توصيل من الأحد إلى الخميس',
@@ -23,8 +29,11 @@ class SubscriptionTypeSeeder extends Seeder
                 'price' => 120.00,
                 'meals_count' => 4,
                 'is_active' => true,
-            ],
-            [
+            ]);
+
+            // Create monthly subscription type for this restaurant
+            SubscriptionType::create([
+                'restaurant_id' => $restaurant->id,
                 'name_ar' => 'اشتراك شهري',
                 'name_en' => 'Monthly Subscription',
                 'description_ar' => '16 وجبة في الشهر - توصيل من الأحد إلى الخميس مع خصم 15%',
@@ -33,11 +42,7 @@ class SubscriptionTypeSeeder extends Seeder
                 'price' => 400.00,
                 'meals_count' => 16,
                 'is_active' => true,
-            ],
-        ];
-
-        foreach ($subscriptionTypes as $subscriptionTypeData) {
-            SubscriptionType::create($subscriptionTypeData);
+            ]);
         }
     }
 }
