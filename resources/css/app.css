@@ -18,11 +18,11 @@ html {
 
 /* Font families for different languages */
 .font-arabic {
-  font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Calibri', 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .font-english {
-  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Calibri', 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* RTL specific adjustments */
@@ -148,7 +148,7 @@ body {
   color: rgb(17 24 39);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
 }
 
 /* RTL Support */
@@ -1434,7 +1434,7 @@ body.menu-open {
 
 /* Interactive Map Styles */
 .leaflet-container {
-  font-family: 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
   direction: rtl;
 }
 
@@ -1479,7 +1479,7 @@ body.menu-open {
 }
 
 .leaflet-popup-content {
-  font-family: 'Tajawal', ui-sans-serif, system-ui, sans-serif !important;
+  font-family: 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif !important;
   direction: rtl !important;
   text-align: center !important;
   margin: 12px !important;

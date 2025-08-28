@@ -119,7 +119,7 @@ const InteractiveMap = ({
              }).addTo(mapInstanceRef.current);
 
             markerRef.current.bindPopup(`
-              <div style="text-align: center; font-family: Arial, sans-serif;">
+              <div style="text-align: center; font-family: Calibri, Arial, sans-serif;">
                 <div style="font-weight: bold; margin-bottom: 5px;">الموقع المحدد</div>
                 <div style="font-size: 12px; color: #666;">
                   ${selectedLocation.lat.toFixed(6)}, ${selectedLocation.lng.toFixed(6)}
@@ -144,7 +144,7 @@ const InteractiveMap = ({
              }).addTo(mapInstanceRef.current);
 
             markerRef.current.bindPopup(`
-              <div style="text-align: center; font-family: Arial, sans-serif;">
+              <div style="text-align: center; font-family: Calibri, Arial, sans-serif;">
                 <div style="font-weight: bold; margin-bottom: 5px;">اسحب المؤشر لتحديد موقعك</div>
                 <div style="font-size: 12px; color: #666;">
                   ${initialLat.toFixed(6)}, ${initialLng.toFixed(6)}
@@ -380,7 +380,7 @@ const InteractiveMap = ({
       }).addTo(mapInstanceRef.current);
 
       markerRef.current.bindPopup(`
-        <div style="text-align: center; font-family: Arial, sans-serif;">
+        <div style="text-align: center; font-family: Calibri, Arial, sans-serif;">
           <div style="font-weight: bold; margin-bottom: 5px;">الموقع المحدد</div>
           <div style="font-size: 12px; color: #666;">
             ${lat.toFixed(6)}, ${lng.toFixed(6)}
