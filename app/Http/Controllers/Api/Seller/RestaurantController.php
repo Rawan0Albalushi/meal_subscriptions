@@ -56,8 +56,13 @@ class RestaurantController extends Controller
             'address_en' => 'nullable|string',
             'locations' => 'nullable|array',
             'locations.*' => 'string|in:bosher,khoudh,maabilah',
+            'delivery_price' => 'nullable|numeric|min:0|max:999999.99',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'boolean'
+        ], [
+            'delivery_price.numeric' => 'سعر التوصيل يجب أن يكون رقم',
+            'delivery_price.min' => 'سعر التوصيل يجب أن يكون أكبر من أو يساوي صفر',
+            'delivery_price.max' => 'سعر التوصيل يجب أن يكون أقل من 999999.99',
         ]);
 
         // رفع الصورة إذا تم توفيرها
@@ -96,8 +101,13 @@ class RestaurantController extends Controller
             'address_en' => 'nullable|string',
             'locations' => 'nullable|array',
             'locations.*' => 'string|in:bosher,khoudh,maabilah',
+            'delivery_price' => 'nullable|numeric|min:0|max:999999.99',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'boolean'
+        ], [
+            'delivery_price.numeric' => 'سعر التوصيل يجب أن يكون رقم',
+            'delivery_price.min' => 'سعر التوصيل يجب أن يكون أكبر من أو يساوي صفر',
+            'delivery_price.max' => 'سعر التوصيل يجب أن يكون أقل من 999999.99',
         ]);
 
         // رفع صورة جديدة إذا تم توفيرها

@@ -424,6 +424,159 @@ body {
   overflow: hidden;
 }
 
+/* Subscription Card Animations */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-8px);
+  }
+  60% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Subscription Card Hover Effects */
+.subscription-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Elegant Payment Button Styles */
+.payment-button-elegant {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  border: 2px solid #4f46e5;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+  backdrop-filter: blur(10px);
+  letter-spacing: 0.025em;
+}
+
+.payment-button-elegant::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.payment-button-elegant:hover::before {
+  left: 100%;
+}
+
+.payment-button-elegant:hover {
+  border-color: #4338ca;
+  background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+  color: white;
+  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
+  transform: translateY(-2px);
+  border-width: 2px;
+}
+
+.payment-button-elegant:focus {
+  outline: none;
+  border-color: #4338ca;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+.payment-button-elegant:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.2);
+}
+
+/* Button Icon Animation */
+.button-icon {
+  transition: transform 0.3s ease;
+  display: inline-block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.payment-button-elegant:hover .button-icon {
+  transform: scale(1.1) rotate(5deg);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Button Text Animation */
+.button-text {
+  transition: color 0.3s ease;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.payment-button-elegant:hover .button-text {
+  color: white;
+}
+
+/* Disabled State */
+.payment-button-elegant:disabled {
+  background: linear-gradient(135deg, #a5b4fc 0%, #c4b5fd 100%);
+  border-color: #a5b4fc;
+  color: #e0e7ff;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.1);
+}
+
+.payment-button-elegant:disabled:hover {
+  background: linear-gradient(135deg, #a5b4fc 0%, #c4b5fd 100%);
+  border-color: #a5b4fc;
+  color: #e0e7ff;
+  transform: none;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.1);
+}
+
+.subscription-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.subscription-card:hover::before {
+  left: 100%;
+}
+
+.subscription-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
 .card::before {
   content: '';
   position: absolute;

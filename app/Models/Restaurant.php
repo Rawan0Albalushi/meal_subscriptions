@@ -21,12 +21,14 @@ class Restaurant extends Model
         'address_ar',
         'address_en',
         'locations',
+        'delivery_price',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'locations' => 'array',
+        'delivery_price' => 'decimal:2',
     ];
 
     protected $appends = ['name', 'description', 'address', 'locations_text'];

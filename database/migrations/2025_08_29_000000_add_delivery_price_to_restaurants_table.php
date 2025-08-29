@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('subscription_types', function (Blueprint $table) {
-            $table->foreignId('restaurant_id')->after('id')->constrained()->onDelete('cascade');
+        Schema::table('restaurants', function (Blueprint $table) {
+            $table->decimal('delivery_price', 8, 2)->default(0.00)->after('locations');
         });
     }
 
@@ -21,9 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('subscription_types', function (Blueprint $table) {
-            $table->dropForeign(['restaurant_id']);
-            $table->dropColumn('restaurant_id');
+        Schema::table('restaurants', function (Blueprint $table) {
+            $table->dropColumn('delivery_price');
         });
     }
 };

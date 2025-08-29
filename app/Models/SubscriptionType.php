@@ -17,12 +17,14 @@ class SubscriptionType extends Model
         'description_en',
         'type',
         'price',
+        'delivery_price',
         'meals_count',
         'is_active',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
+        'delivery_price' => 'decimal:2',
         'meals_count' => 'integer',
         'is_active' => 'boolean',
     ];
@@ -55,5 +57,18 @@ class SubscriptionType extends Model
         ];
 
         return $types[$this->type][app()->getLocale()] ?? $this->type;
+    }
+
+    public function getTotalWithDeliveryAttribute()
+    {
+        return $this->price + $this->delivery_price;
+    }
+
+    public function getDeliveryPriceTextAttribute()
+    {
+        if ($this->delivery_price > 0) {
+            return $this->delivery_price . ' ' . (app()->getLocale() === 'ar' ? 'ريال' : 'SAR');
+        }
+        return app()->getLocale() === 'ar' ? 'مجاني' : 'Free';
     }
 }

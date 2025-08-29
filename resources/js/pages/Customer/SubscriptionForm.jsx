@@ -55,7 +55,17 @@ const SubscriptionForm = () => {
       'saturday': 6
     };
     
-    const targetDayIndex = dayIndex[dayKey];
+    // Handle monthly subscription format (e.g., "sunday_week1")
+    let baseDayKey = dayKey;
+    let weekOffset = 0;
+    
+    if (dayKey.includes('_week')) {
+      const parts = dayKey.split('_week');
+      baseDayKey = parts[0];
+      weekOffset = parseInt(parts[1]) - 1; // Convert to 0-based index
+    }
+    
+    const targetDayIndex = dayIndex[baseDayKey];
     if (targetDayIndex === undefined) return null;
     
     const startDayIndex = start.getDay();
@@ -66,15 +76,64 @@ const SubscriptionForm = () => {
       daysToAdd += 7;
     }
     
+    // Add weeks offset for monthly subscriptions
+    daysToAdd += (weekOffset * 7);
+    
     const targetDate = new Date(start);
     targetDate.setDate(start.getDate() + daysToAdd);
     
-    return targetDate.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
+    return targetDate.toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
+      calendar: 'gregory'
     });
+  };
+
+  // Function to get Date object for sorting
+  const getDateObjectForDayKey = (dayKey) => {
+    if (!startDate) return new Date();
+    
+    const start = new Date(startDate);
+    const dayIndex = {
+      'sunday': 0,
+      'monday': 1,
+      'tuesday': 2,
+      'wednesday': 3,
+      'thursday': 4,
+      'friday': 5,
+      'saturday': 6
+    };
+    
+    // Handle monthly subscription format (e.g., "sunday_week1")
+    let baseDayKey = dayKey;
+    let weekOffset = 0;
+    
+    if (dayKey.includes('_week')) {
+      const parts = dayKey.split('_week');
+      baseDayKey = parts[0];
+      weekOffset = parseInt(parts[1]) - 1; // Convert to 0-based index
+    }
+    
+    const targetDayIndex = dayIndex[baseDayKey];
+    if (targetDayIndex === undefined) return new Date();
+    
+    const startDayIndex = start.getDay();
+    let daysToAdd = targetDayIndex - startDayIndex;
+    
+    // If the target day is before the start day, add 7 days
+    if (daysToAdd < 0) {
+      daysToAdd += 7;
+    }
+    
+    // Add weeks offset for monthly subscriptions
+    daysToAdd += (weekOffset * 7);
+    
+    const targetDate = new Date(start);
+    targetDate.setDate(start.getDate() + daysToAdd);
+    
+    return targetDate;
   };
   
   // Form data
@@ -99,6 +158,33 @@ const SubscriptionForm = () => {
     return dayOfWeek >= 0 && dayOfWeek <= 4; // Sunday = 0, Thursday = 4
   };
 
+  // Helper function to format numbers with 2 decimal places
+  const formatPrice = (price) => {
+    return parseFloat(price || 0).toFixed(2);
+  };
+
+  const calculateTotalPrice = () => {
+    if (!subscriptionTypeData) return '0.00';
+    const subscriptionPrice = parseFloat(subscriptionTypeData.price || 0);
+    const deliveryPrice = parseFloat(subscriptionTypeData.delivery_price || 0);
+    return formatPrice(subscriptionPrice + deliveryPrice);
+  };
+
+  const calculateSubscriptionPrice = () => {
+    if (!subscriptionTypeData) return '0.00';
+    return formatPrice(subscriptionTypeData.price);
+  };
+
+  const calculateDeliveryPrice = () => {
+    if (!subscriptionTypeData) return '0.00';
+    return formatPrice(subscriptionTypeData.delivery_price);
+  };
+
+  const isDeliveryFree = () => {
+    if (!subscriptionTypeData) return true;
+    return parseFloat(subscriptionTypeData.delivery_price || 0) === 0;
+  };
+
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login');
@@ -120,14 +206,25 @@ const SubscriptionForm = () => {
         if (mealsResponse.data.success) {
           try {
             const mealsData = JSON.parse(decodeURIComponent(mealIds || '[]'));
-            const selectedMealsData = mealsData.map(({ dayKey, mealId }) => {
+            const selectedMealsData = mealsData.map(({ dayKey, mealId, baseDayKey }) => {
               const meal = mealsResponse.data.data.find(m => m.id == mealId);
               if (meal) {
-                const dayInfo = weekDays.find(day => day.key === dayKey);
+                // Use baseDayKey if available (for monthly subscriptions), otherwise use dayKey
+                const effectiveDayKey = baseDayKey || dayKey;
+                const dayInfo = weekDays.find(day => day.key === effectiveDayKey);
+                
+                // For monthly subscriptions, create a more descriptive label
+                let dayLabel = dayInfo?.label || effectiveDayKey;
+                if (dayKey.includes('_week')) {
+                  const weekNumber = dayKey.split('_week')[1];
+                  dayLabel = `${dayLabel} - الأسبوع ${weekNumber}`;
+                }
+                
                 return {
                   ...meal,
                   dayKey,
-                  dayLabel: dayInfo?.label || dayKey,
+                  baseDayKey: effectiveDayKey,
+                  dayLabel,
                   dayIcon: dayInfo?.icon || '📅'
                 };
               }
@@ -191,11 +288,6 @@ const SubscriptionForm = () => {
 
   const handleLocationSelect = (location) => {
     setSelectedLocation(location);
-  };
-
-  const calculateTotalPrice = () => {
-    if (!subscriptionTypeData) return 0;
-    return subscriptionTypeData.price;
   };
 
   const handleSubmit = async (e) => {
@@ -300,6 +392,11 @@ const SubscriptionForm = () => {
         return dayMapping[dayKey] || dayKey;
       }).filter(Boolean);
 
+      // Calculate total amount with proper precision
+      const subscriptionPrice = parseFloat(subscriptionTypeData.price || 0);
+      const deliveryPrice = parseFloat(subscriptionTypeData.delivery_price || 0);
+      const totalAmount = subscriptionPrice + deliveryPrice;
+
       const subscriptionData = {
         restaurant_id: restaurantId,
         meal_ids: selectedMeals.map(m => m.mealId || m.id),
@@ -308,7 +405,7 @@ const SubscriptionForm = () => {
         delivery_days: deliveryDays,
         start_date: formData.startDate,
         special_instructions: formData.specialInstructions,
-        total_amount: calculateTotalPrice()
+        total_amount: totalAmount
       };
 
       const response = await subscriptionsAPI.create(subscriptionData);
@@ -390,100 +487,14 @@ const SubscriptionForm = () => {
               {t('createNewSubscription')}
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              {t('completeSubscriptionDetails')} {language === 'ar' ? restaurant?.name_ar : restaurant?.name_en}
+              {t('completeSubscriptionDetails')} {restaurant?.name || (language === 'ar' ? restaurant?.name_ar : restaurant?.name_en)}
             </p>
           </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
           
-          {/* Summary Card */}
-          <div className="bg-white/85 backdrop-blur-lg rounded-3xl p-8 shadow-xl border border-white/20">
-            <div className="text-center mb-8">
-              <div className="text-5xl mb-4">📋</div>
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                {t('subscriptionSummary')}
-              </h2>
-            </div>
-
-            {/* Restaurant Info */}
-            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white mb-6 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
-              
-              <div className="flex items-center justify-center gap-3 mb-4 relative z-10">
-                <div className="bg-white/20 rounded-full p-3 backdrop-blur-sm">
-                  <span className="text-2xl">🏪</span>
-                </div>
-                <span className="text-xl font-bold">{language === 'ar' ? restaurant?.name_ar : restaurant?.name_en}</span>
-              </div>
-              <p className="text-center text-white/90 leading-relaxed relative z-10">
-                {language === 'ar' ? restaurant?.description_ar : restaurant?.description_en}
-              </p>
-            </div>
-
-            {/* Subscription Details */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-gradient-to-br from-emerald-50 to-green-100 border border-emerald-200 rounded-2xl p-4 text-center">
-                <div className="text-xs text-emerald-600 font-semibold uppercase tracking-wide mb-2">
-                  {t('subscriptionTypeLabel')}
-                </div>
-                <div className="text-lg font-bold text-gray-800">
-                  {formData.subscriptionType === 'weekly' ? t('weekly') : t('monthly')}
-                </div>
-              </div>
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 rounded-2xl p-4 text-center">
-                <div className="text-xs text-blue-600 font-semibold uppercase tracking-wide mb-2">
-                  {t('mealsCount')}
-                </div>
-                <div className="text-lg font-bold text-gray-800">
-                  {selectedMeals.length}
-                </div>
-              </div>
-            </div>
-
-            {/* Selected Meals */}
-            {selectedMeals.length > 0 && (
-              <div className="mb-6">
-                <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
-                  {t('selectedMeals')}
-                </h3>
-                <div className="space-y-3">
-                  {selectedMeals.map((meal, index) => (
-                    <div key={meal.mealId || meal.id} className="bg-gradient-to-r from-white to-gray-50 border border-gray-200 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-all duration-300">
-                      <div className="text-2xl">{meal.dayIcon}</div>
-                      <div className="flex-1">
-                        <div className="text-sm font-bold text-indigo-600 mb-1">
-                          {meal.dayLabel}
-                        </div>
-                        <div className="text-xs text-gray-500 mb-1">
-                          {getDateForDayKey(meal.dayKey)}
-                        </div>
-                        <div className="font-semibold text-gray-800">
-                          {language === 'ar' ? meal.name_ar : meal.name_en}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Total Price */}
-            <div className="bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl p-6 text-white text-center relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -translate-y-12 translate-x-12"></div>
-              <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/5 rounded-full translate-y-10 -translate-x-10"></div>
-              
-              <div className="text-sm opacity-90 mb-2 relative z-10">
-                {t('subscriptionPrice')}
-              </div>
-              <div className="text-3xl font-bold relative z-10">
-                {calculateTotalPrice()} {t('omaniRiyal')}
-              </div>
-            </div>
-          </div>
-
-          {/* Form Card */}
+          {/* Form Card - Subscription Details */}
           <div className="bg-white/85 backdrop-blur-lg rounded-3xl p-8 shadow-xl border border-white/20">
             <div className="text-center mb-8">
               <div className="text-5xl mb-4">✏️</div>
@@ -492,7 +503,7 @@ const SubscriptionForm = () => {
               </h2>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-6">
               
               {/* Start Date Display */}
               <div>
@@ -501,11 +512,12 @@ const SubscriptionForm = () => {
                 </label>
                 <div className="bg-gradient-to-r from-gray-50 to-blue-50 border-2 border-indigo-200 rounded-2xl p-4 text-center">
                   <div className="text-lg font-semibold text-gray-800">
-                    {formData.startDate ? new Date(formData.startDate).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
+                    {formData.startDate ? new Date(formData.startDate).toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', {
                       weekday: 'long',
                       year: 'numeric',
                       month: 'long',
-                      day: 'numeric'
+                      day: 'numeric',
+                      calendar: 'gregory'
                     }) : t('dateNotSelected')}
                   </div>
                 </div>
@@ -664,27 +676,190 @@ const SubscriptionForm = () => {
                   className="w-full p-4 bg-white border-2 border-gray-200 rounded-2xl text-lg focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300 outline-none resize-none"
                 />
               </div>
-
-              {/* Submit Button */}
-              <button 
-                type="submit" 
-                disabled={submitting}
-                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 px-6 rounded-2xl text-xl font-bold hover:shadow-xl transition-all duration-300 hover:-translate-y-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-              >
-                {submitting ? (
-                  <div className="flex items-center justify-center gap-3">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                    {t('creatingSubscription')}
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center gap-3">
-                    <span className="text-2xl">🚀</span>
-                    {t('createSubscription')}
-                  </div>
-                )}
-              </button>
-            </form>
+            </div>
           </div>
+
+          {/* Summary Card - Subscription Summary */}
+          <form onSubmit={handleSubmit}>
+            <div className="bg-white/85 backdrop-blur-lg rounded-3xl p-8 shadow-xl border border-white/20">
+            <div className="text-center mb-8">
+              <div className="text-5xl mb-4">📋</div>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                {t('subscriptionSummary')}
+              </h2>
+            </div>
+
+            {/* Restaurant Info */}
+            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white mb-6 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+              
+              <div className="flex items-center justify-center gap-3 mb-4 relative z-10">
+                <div className="bg-white/20 rounded-full p-3 backdrop-blur-sm">
+                  <span className="text-2xl">🏪</span>
+                </div>
+                <span className="text-xl font-bold">{restaurant?.name || (language === 'ar' ? restaurant?.name_ar : restaurant?.name_en)}</span>
+              </div>
+              <p className="text-center text-white/90 leading-relaxed relative z-10">
+                {restaurant?.description || (language === 'ar' ? restaurant?.description_ar : restaurant?.description_en)}
+              </p>
+            </div>
+
+            {/* Subscription Details */}
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="bg-gradient-to-br from-emerald-50 to-green-100 border border-emerald-200 rounded-2xl p-4 text-center">
+                <div className="text-xs text-emerald-600 font-semibold uppercase tracking-wide mb-2">
+                  {t('subscriptionTypeLabel')}
+                </div>
+                <div className="text-lg font-bold text-gray-800">
+                  {formData.subscriptionType === 'weekly' ? t('weekly') : t('monthly')}
+                </div>
+              </div>
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 rounded-2xl p-4 text-center">
+                <div className="text-xs text-blue-600 font-semibold uppercase tracking-wide mb-2">
+                  {t('mealsCount')}
+                </div>
+                <div className="text-lg font-bold text-gray-800">
+                  {selectedMeals.length}
+                </div>
+              </div>
+            </div>
+
+            {/* Selected Meals */}
+            {selectedMeals.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
+                  {t('selectedMeals')}
+                </h3>
+                <div className="space-y-3">
+                  {selectedMeals
+                    .sort((a, b) => {
+                      // Get Date objects for comparison
+                      const dateObjA = getDateObjectForDayKey(a.dayKey);
+                      const dateObjB = getDateObjectForDayKey(b.dayKey);
+                      
+                      return dateObjA - dateObjB;
+                    })
+                    .map((meal, index) => (
+                    <div key={meal.mealId || meal.id} className="bg-gradient-to-r from-white to-gray-50 border border-gray-200 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-all duration-300">
+                      <div className="text-2xl">{meal.dayIcon}</div>
+                      <div className="flex-1">
+                        <div className="text-sm font-bold text-indigo-600 mb-1">
+                          {meal.dayLabel}
+                        </div>
+                        <div className="text-xs text-gray-500 mb-1">
+                          {getDateForDayKey(meal.dayKey)}
+                        </div>
+                        <div className="font-semibold text-gray-800">
+                          {language === 'ar' ? meal.name_ar : meal.name_en}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Enhanced Price Details */}
+            <div className="bg-gradient-to-br from-white/90 to-blue-50/50 rounded-3xl p-6 border border-white/30 shadow-lg">
+              <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
+                💰 {t('priceBreakdown')}
+              </h3>
+              
+              <div className="space-y-3">
+                {/* Subscription Price */}
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-200">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-lg">
+                      📦
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-600 font-medium">{t('subscriptionPrice')}</div>
+                      <div className="text-xs text-gray-500">{t('basePrice')}</div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-blue-600">
+                      {calculateSubscriptionPrice()} {t('omaniRiyal')}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Delivery Price */}
+                <div className={`flex items-center justify-between p-3 rounded-2xl border ${
+                  isDeliveryFree() 
+                    ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200' 
+                    : 'bg-gradient-to-r from-orange-50 to-red-50 border-orange-200'
+                }`}>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-lg ${
+                      isDeliveryFree() 
+                        ? 'bg-gradient-to-r from-green-500 to-emerald-600' 
+                        : 'bg-gradient-to-r from-orange-500 to-red-600'
+                    }`}>
+                      🚚
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-600 font-medium">{t('deliveryPrice')}</div>
+                      <div className="text-xs text-gray-500">
+                        {isDeliveryFree() ? t('freeDelivery') : t('paidDelivery')}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className={`text-lg font-bold ${
+                      isDeliveryFree() ? 'text-green-600' : 'text-orange-600'
+                    }`}>
+                      {isDeliveryFree() ? t('free') : `${calculateDeliveryPrice()} ${t('omaniRiyal')}`}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Divider */}
+                <div className="border-t-2 border-gray-200 my-4"></div>
+
+                {/* Total Amount */}
+                <div className="flex items-center justify-between p-3 rounded-2xl border bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-200">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg bg-gradient-to-r from-indigo-500 to-purple-600">
+                      💰
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-600 font-medium">{t('totalAmount')}</div>
+                      <div className="text-xs text-gray-500">{t('finalPrice')}</div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-indigo-600">
+                      {calculateTotalPrice()} {t('omaniRiyal')}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button 
+              type="submit" 
+              disabled={submitting}
+              className="w-full payment-button-elegant py-4 px-6 rounded-xl text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-6"
+            >
+              {submitting ? (
+                <div className="flex items-center justify-center gap-3">
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-indigo-500 border-t-transparent"></div>
+                  <span className="text-indigo-600">{t('creatingSubscription')}</span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center gap-3">
+                  <span className="text-lg button-icon">💳</span>
+                  <span className="button-text">
+                    {language === 'ar' ? 'متابعة الدفع وإنشاء الاشتراك' : 'Proceed to Payment & Create Subscription'}
+                  </span>
+                </div>
+              )}
+            </button>
+            </div>
+          </form>
         </div>
 
         {/* Error Message */}

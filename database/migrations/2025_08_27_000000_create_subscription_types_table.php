@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('description_en')->nullable();
             $table->enum('type', ['weekly', 'monthly']);
             $table->decimal('price', 10, 2);
+            $table->decimal('delivery_price', 8, 2)->default(0.00);
             $table->integer('meals_count');
             $table->boolean('is_active')->default(true);
             $table->timestamps();

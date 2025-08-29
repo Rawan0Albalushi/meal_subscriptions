@@ -91,6 +91,12 @@ class SubscriptionController extends Controller
                 ], 422);
             }
 
+            // Use delivery price from subscription type (can be free or paid)
+            $deliveryPrice = $subscriptionType->delivery_price;
+
+            // Calculate total amount including delivery price
+            $totalAmount = $subscriptionType->price + $deliveryPrice;
+
             // Create subscription
             $subscription = Subscription::create([
                 'user_id' => auth()->id(),
@@ -100,10 +106,10 @@ class SubscriptionController extends Controller
                 'subscription_type' => $request->subscription_type,
                 'start_date' => $request->start_date,
                 'end_date' => $this->calculateEndDate($request->start_date, $request->subscription_type),
-                'total_amount' => $subscriptionType->price,
+                'total_amount' => $totalAmount,
+                'delivery_price' => $deliveryPrice,
                 'status' => 'pending',
                 'payment_status' => 'pending',
-
                 'special_instructions' => $request->special_instructions,
             ]);
 

@@ -63,10 +63,21 @@ const MySubscriptions = () => {
 
     if (loading) {
         return (
-            <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div style={{ 
+                minHeight: '100vh', 
+                background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)', 
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center',
+                padding: '1rem'
+            }}>
                 <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
-                    <p style={{ color: 'rgb(75 85 99)', fontSize: '1.125rem' }}>
+                    <div style={{ fontSize: 'clamp(2rem, 8vw, 3rem)', marginBottom: '1rem' }}>⏳</div>
+                    <p style={{ 
+                        color: 'rgb(75 85 99)', 
+                        fontSize: 'clamp(0.875rem, 4vw, 1.125rem)',
+                        padding: '0 1rem'
+                    }}>
                         {language === 'ar' ? 'جاري تحميل اشتراكاتك...' : 'Loading your subscriptions...'}
                     </p>
                 </div>
@@ -76,26 +87,38 @@ const MySubscriptions = () => {
 
     if (error) {
         return (
-            <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div style={{ 
+                minHeight: '100vh', 
+                background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)', 
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center',
+                padding: '1rem'
+            }}>
                 <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>❌</div>
-                    <p style={{ color: '#ef4444', fontSize: '1.125rem', marginBottom: '2rem' }}>{error}</p>
-                        <button 
-                            onClick={fetchSubscriptions}
+                    <div style={{ fontSize: 'clamp(2rem, 8vw, 3rem)', marginBottom: '1rem' }}>❌</div>
+                    <p style={{ 
+                        color: '#ef4444', 
+                        fontSize: 'clamp(0.875rem, 4vw, 1.125rem)', 
+                        marginBottom: '2rem',
+                        padding: '0 1rem'
+                    }}>{error}</p>
+                    <button 
+                        onClick={fetchSubscriptions}
                         style={{
-                            padding: '0.75rem 1.5rem',
+                            padding: 'clamp(0.5rem, 3vw, 0.75rem) clamp(1rem, 4vw, 1.5rem)',
                             borderRadius: '0.75rem',
                             background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
                             color: 'white',
                             border: 'none',
-                            fontSize: '1rem',
+                            fontSize: 'clamp(0.875rem, 4vw, 1rem)',
                             fontWeight: '600',
                             cursor: 'pointer',
                             transition: 'all 0.3s ease'
                         }}
-                        >
-                            {language === 'ar' ? 'إعادة المحاولة' : 'Retry'}
-                        </button>
+                    >
+                        {language === 'ar' ? 'إعادة المحاولة' : 'Retry'}
+                    </button>
                 </div>
             </div>
         );
@@ -108,10 +131,10 @@ const MySubscriptions = () => {
                 background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',
                 position: 'relative',
                 overflow: 'hidden',
-                padding: '2rem 0 3rem 0'
+                padding: 'clamp(1rem, 5vw, 2rem) 0 clamp(1.5rem, 6vw, 3rem) 0'
             }}>
-                {/* Floating decorative elements */}
-                <div>
+                {/* Floating decorative elements - Hidden on mobile */}
+                <div style={{ display: window.innerWidth > 768 ? 'block' : 'none' }}>
                     <div style={{
                         position: 'absolute',
                         top: '10%',
@@ -141,55 +164,54 @@ const MySubscriptions = () => {
                     }}></div>
                 </div>
                 
-                <div style={{ width: '100%', padding: '0 2rem' }}>
+                <div style={{ width: '100%', padding: '0 clamp(1rem, 4vw, 2rem)' }}>
                     <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
-
                         <h1 style={{ 
-                            fontSize: 'clamp(2rem, 5vw, 3.5rem)', 
+                            fontSize: 'clamp(1.75rem, 6vw, 3.5rem)', 
                             fontWeight: 'bold', 
                             lineHeight: '1.2', 
-                            marginBottom: '1.5rem',
+                            marginBottom: 'clamp(1rem, 4vw, 1.5rem)',
                             background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             backgroundClip: 'text'
                         }}>
-                                {language === 'ar' ? 'اشتراكاتي' : 'My Subscriptions'}
+                            {language === 'ar' ? 'اشتراكاتي' : 'My Subscriptions'}
                         </h1>
                         <p style={{ 
-                            marginTop: '1rem', 
                             color: 'rgb(75 85 99)', 
-                            marginBottom: '2rem', 
-                            fontSize: '1.125rem', 
+                            fontSize: 'clamp(0.875rem, 4vw, 1.125rem)', 
                             lineHeight: '1.7',
                             maxWidth: '600px',
-                            margin: '0 auto 2rem auto'
+                            margin: '0 auto clamp(1rem, 4vw, 2rem) auto',
+                            padding: '0 clamp(0.5rem, 2vw, 1rem)'
                         }}>
                             {language === 'ar' 
                                 ? 'تابع اشتراكاتك وإدارة وجباتك اليومية بسهولة' 
                                 : 'Track your subscriptions and manage your daily meals easily'
                             }
                         </p>
-                            </div>
-                        </div>
+                    </div>
+                </div>
             </section>
 
             {/* Subscriptions Section */}
-            <section style={{ padding: '3rem 0' }}>
-                <div style={{ width: '100%', padding: '0 2rem' }}>
+            <section style={{ padding: 'clamp(1.5rem, 6vw, 3rem) 0' }}>
+                <div style={{ width: '100%', padding: '0 clamp(1rem, 4vw, 2rem)' }}>
                     {subscriptions.length === 0 ? (
                         <div style={{ 
                             textAlign: 'center', 
-                            padding: '4rem 2rem',
+                            padding: 'clamp(2rem, 8vw, 4rem) clamp(1rem, 4vw, 2rem)',
                             background: 'rgba(255, 255, 255, 0.95)',
                             backdropFilter: 'blur(20px)',
-                            borderRadius: '1.25rem',
+                            borderRadius: 'clamp(0.75rem, 3vw, 1.25rem)',
                             boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-                            border: '1px solid rgba(229, 231, 235, 0.5)'
+                            border: '1px solid rgba(229, 231, 235, 0.5)',
+                            margin: '0 clamp(0.5rem, 2vw, 1rem)'
                         }}>
-                            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🍽️</div>
+                            <div style={{ fontSize: 'clamp(2.5rem, 10vw, 4rem)', marginBottom: '1rem' }}>🍽️</div>
                             <h2 style={{ 
-                                fontSize: '2rem', 
+                                fontSize: 'clamp(1.25rem, 5vw, 2rem)', 
                                 fontWeight: 'bold', 
                                 marginBottom: '1rem',
                                 color: 'rgb(79 70 229)'
@@ -197,150 +219,187 @@ const MySubscriptions = () => {
                                 {language === 'ar' ? 'لا توجد اشتراكات' : 'No Subscriptions'}
                             </h2>
                             <p style={{ 
-                                fontSize: '1.125rem', 
+                                fontSize: 'clamp(0.875rem, 4vw, 1.125rem)', 
                                 color: 'rgb(75 85 99)', 
                                 marginBottom: '2rem',
                                 maxWidth: '500px',
-                                margin: '0 auto 2rem auto'
+                                margin: '0 auto 2rem auto',
+                                padding: '0 clamp(0.5rem, 2vw, 1rem)'
                             }}>
-                                    {language === 'ar' 
+                                {language === 'ar' 
                                     ? 'ابدأ رحلتك مع اشتراكات الوجبات واكتشف المطاعم المميزة' 
                                     : 'Start your journey with meal subscriptions and discover amazing restaurants'
-                                    }
-                                </p>
+                                }
+                            </p>
                             <Link to="/restaurants" style={{
                                 display: 'inline-block',
-                                padding: '0.75rem 1.5rem',
+                                padding: 'clamp(0.5rem, 3vw, 0.75rem) clamp(1rem, 4vw, 1.5rem)',
                                 borderRadius: '0.75rem',
                                 background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
                                 color: 'white',
                                 textDecoration: 'none',
-                                fontSize: '1rem',
+                                fontSize: 'clamp(0.875rem, 4vw, 1rem)',
                                 fontWeight: '600',
                                 transition: 'all 0.3s ease'
                             }}>
                                 🚀 {language === 'ar' ? 'استكشف المطاعم' : 'Explore Restaurants'}
-                                </Link>
+                            </Link>
                         </div>
                     ) : (
                         <div style={{ 
                             display: 'grid', 
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', 
-                            gap: '2rem' 
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(clamp(280px, 90vw, 350px), 1fr))', 
+                            gap: 'clamp(1rem, 4vw, 2rem)',
+                            maxWidth: '1200px',
+                            margin: '0 auto'
                         }}>
                             {subscriptions.map((subscription) => (
                                 <div key={subscription.id} style={{
                                     background: 'rgba(255, 255, 255, 0.9)',
                                     backdropFilter: 'blur(15px)',
-                                    borderRadius: '1.25rem',
-                                    padding: '2rem',
+                                    borderRadius: 'clamp(0.75rem, 3vw, 1.25rem)',
+                                    padding: 'clamp(1rem, 4vw, 2rem)',
                                     boxShadow: '0 15px 30px rgba(0, 0, 0, 0.08)',
                                     border: '1px solid rgba(229, 231, 235, 0.3)',
                                     transition: 'transform 0.3s ease, box-shadow 0.3s ease'
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(-5px)';
-                                    e.currentTarget.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.15)';
+                                    if (window.innerWidth > 768) {
+                                        e.currentTarget.style.transform = 'translateY(-5px)';
+                                        e.currentTarget.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.15)';
+                                    }
                                 }}
                                 onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.1)';
+                                    if (window.innerWidth > 768) {
+                                        e.currentTarget.style.transform = 'translateY(0)';
+                                        e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.1)';
+                                    }
                                 }}>
                                     {/* Restaurant Info */}
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                                    <div style={{ 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        gap: 'clamp(0.5rem, 3vw, 1rem)', 
+                                        marginBottom: 'clamp(1rem, 4vw, 1.5rem)' 
+                                    }}>
                                         <div style={{
-                                            width: '3rem',
-                                            height: '3rem',
+                                            width: 'clamp(2.5rem, 8vw, 3rem)',
+                                            height: 'clamp(2.5rem, 8vw, 3rem)',
                                             background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
                                             borderRadius: '0.75rem',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             color: 'white',
-                                            fontSize: '1.5rem'
+                                            fontSize: 'clamp(1rem, 4vw, 1.5rem)',
+                                            flexShrink: 0
                                         }}>
                                             🍽️
-                                                </div>
-                                                <div>
+                                        </div>
+                                        <div style={{ minWidth: 0, flex: 1 }}>
                                             <h3 style={{ 
-                                                fontSize: '1.25rem', 
+                                                fontSize: 'clamp(1rem, 4vw, 1.25rem)', 
                                                 fontWeight: 'bold', 
                                                 marginBottom: '0.25rem',
-                                                color: 'rgb(31 41 55)'
+                                                color: 'rgb(31 41 55)',
+                                                wordBreak: 'break-word'
                                             }}>
-                                                        {language === 'ar' ? subscription.restaurant?.name_ar : subscription.restaurant?.name_en}
-                                                    </h3>
+                                                {language === 'ar' ? subscription.restaurant?.name_ar : subscription.restaurant?.name_en}
+                                            </h3>
                                             <p style={{ 
-                                                fontSize: '0.875rem', 
-                                                color: 'rgb(75 85 99)' 
+                                                fontSize: 'clamp(0.75rem, 3vw, 0.875rem)', 
+                                                color: 'rgb(75 85 99)',
+                                                wordBreak: 'break-word'
                                             }}>
-                                                        {subscription.subscription_type_text} • {subscription.subscription_items?.length || 0} {language === 'ar' ? 'وجبة' : 'meals'}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            
-
-                                        
+                                                {subscription.subscription_type_text} • {subscription.subscription_items?.length || 0} {language === 'ar' ? 'وجبة' : 'meals'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
                                     {/* Details Grid */}
                                     <div style={{ 
                                         display: 'grid', 
-                                        gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', 
-                                        gap: '1rem', 
-                                        marginBottom: '1.5rem' 
+                                        gridTemplateColumns: 'repeat(auto-fit, minmax(clamp(100px, 25vw, 120px), 1fr))', 
+                                        gap: 'clamp(0.5rem, 2vw, 1rem)', 
+                                        marginBottom: 'clamp(1rem, 4vw, 1.5rem)' 
                                     }}>
                                         <div style={{
-                                            padding: '1rem',
+                                            padding: 'clamp(0.75rem, 3vw, 1rem)',
                                             background: 'rgb(249 250 251)',
                                             borderRadius: '0.75rem',
                                             border: '1px solid rgb(229 231 235)'
                                         }}>
-                                            <div style={{ fontSize: '0.75rem', color: 'rgb(107 114 128)', marginBottom: '0.5rem' }}>
-                                                    {language === 'ar' ? 'تاريخ البداية' : 'Start Date'}
-                                                </div>
-                                            <div style={{ fontSize: '1rem', fontWeight: '600', color: 'rgb(31 41 55)' }}>
-                                                    {new Date(subscription.start_date).toLocaleDateString()}
-                                                </div>
+                                            <div style={{ 
+                                                fontSize: 'clamp(0.625rem, 2.5vw, 0.75rem)', 
+                                                color: 'rgb(107 114 128)', 
+                                                marginBottom: '0.5rem' 
+                                            }}>
+                                                {language === 'ar' ? 'تاريخ البداية' : 'Start Date'}
                                             </div>
-                                            
-                                        <div style={{
-                                            padding: '1rem',
-                                            background: 'rgb(249 250 251)',
-                                            borderRadius: '0.75rem',
-                                            border: '1px solid rgb(229 231 235)'
-                                        }}>
-                                            <div style={{ fontSize: '0.75rem', color: 'rgb(107 114 128)', marginBottom: '0.5rem' }}>
-                                                    {language === 'ar' ? 'تاريخ الانتهاء' : 'End Date'}
-                                                </div>
-                                            <div style={{ fontSize: '1rem', fontWeight: '600', color: 'rgb(31 41 55)' }}>
-                                                    {new Date(subscription.end_date).toLocaleDateString()}
-                                                </div>
-                                            </div>
-                                            
-                                        <div style={{
-                                            padding: '1rem',
-                                            background: 'rgb(249 250 251)',
-                                            borderRadius: '0.75rem',
-                                            border: '1px solid rgb(229 231 235)'
-                                        }}>
-                                            <div style={{ fontSize: '0.75rem', color: 'rgb(107 114 128)', marginBottom: '0.5rem' }}>
-                                                    {t('totalAmount')}
-                                                </div>
-                                            <div style={{ fontSize: '1rem', fontWeight: '600', color: 'rgb(79 70 229)' }}>
-                                                    {subscription.total_amount} {language === 'ar' ? 'ريال' : 'SAR'}
-                                                </div>
+                                            <div style={{ 
+                                                fontSize: 'clamp(0.875rem, 3vw, 1rem)', 
+                                                fontWeight: '600', 
+                                                color: 'rgb(31 41 55)' 
+                                            }}>
+                                                {new Date(subscription.start_date).toLocaleDateString()}
                                             </div>
                                         </div>
                                         
+                                        <div style={{
+                                            padding: 'clamp(0.75rem, 3vw, 1rem)',
+                                            background: 'rgb(249 250 251)',
+                                            borderRadius: '0.75rem',
+                                            border: '1px solid rgb(229 231 235)'
+                                        }}>
+                                            <div style={{ 
+                                                fontSize: 'clamp(0.625rem, 2.5vw, 0.75rem)', 
+                                                color: 'rgb(107 114 128)', 
+                                                marginBottom: '0.5rem' 
+                                            }}>
+                                                {language === 'ar' ? 'تاريخ الانتهاء' : 'End Date'}
+                                            </div>
+                                            <div style={{ 
+                                                fontSize: 'clamp(0.875rem, 3vw, 1rem)', 
+                                                fontWeight: '600', 
+                                                color: 'rgb(31 41 55)' 
+                                            }}>
+                                                {new Date(subscription.end_date).toLocaleDateString()}
+                                            </div>
+                                        </div>
+                                        
+                                        <div style={{
+                                            padding: 'clamp(0.75rem, 3vw, 1rem)',
+                                            background: 'rgb(249 250 251)',
+                                            borderRadius: '0.75rem',
+                                            border: '1px solid rgb(229 231 235)'
+                                        }}>
+                                            <div style={{ 
+                                                fontSize: 'clamp(0.625rem, 2.5vw, 0.75rem)', 
+                                                color: 'rgb(107 114 128)', 
+                                                marginBottom: '0.5rem' 
+                                            }}>
+                                                {t('totalAmount')}
+                                            </div>
+                                            <div style={{ 
+                                                fontSize: 'clamp(0.875rem, 3vw, 1rem)', 
+                                                fontWeight: '600', 
+                                                color: 'rgb(79 70 229)' 
+                                            }}>
+                                                {subscription.total_amount} {language === 'ar' ? 'ريال' : 'SAR'}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                     {/* Action Button */}
                                     <Link to={`/subscriptions/${subscription.id}`} style={{
                                         display: 'block',
                                         width: '100%',
-                                        padding: '0.75rem',
+                                        padding: 'clamp(0.5rem, 3vw, 0.75rem)',
                                         borderRadius: '0.75rem',
                                         background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
                                         color: 'white',
                                         textDecoration: 'none',
-                                        fontSize: '1rem',
+                                        fontSize: 'clamp(0.875rem, 4vw, 1rem)',
                                         fontWeight: '600',
                                         textAlign: 'center',
                                         transition: 'all 0.3s ease'

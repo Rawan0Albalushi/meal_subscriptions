@@ -18,9 +18,9 @@ class Subscription extends Model
         'start_date',
         'end_date',
         'total_amount',
+        'delivery_price',
         'status',
         'payment_status',
-
         'transaction_id',
         'special_instructions',
     ];
@@ -29,6 +29,7 @@ class Subscription extends Model
         'start_date' => 'date',
         'end_date' => 'date',
         'total_amount' => 'decimal:2',
+        'delivery_price' => 'decimal:2',
     ];
 
     public function user()
@@ -76,5 +77,10 @@ class Subscription extends Model
         ];
 
         return $statuses[$this->status][app()->getLocale()] ?? $this->status;
+    }
+
+    public function getTotalWithDeliveryAttribute()
+    {
+        return $this->total_amount + $this->delivery_price;
     }
 }

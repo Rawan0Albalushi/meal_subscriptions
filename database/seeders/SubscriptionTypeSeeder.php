@@ -27,6 +27,7 @@ class SubscriptionTypeSeeder extends Seeder
                 'description_en' => '4 meals per week - delivery from Sunday to Thursday',
                 'type' => 'weekly',
                 'price' => 120.00,
+                'delivery_price' => 10.00, // سعر التوصيل للأسبوعي
                 'meals_count' => 4,
                 'is_active' => true,
             ]);
@@ -40,6 +41,7 @@ class SubscriptionTypeSeeder extends Seeder
                 'description_en' => '16 meals per month - delivery from Sunday to Thursday with 15% discount',
                 'type' => 'monthly',
                 'price' => 400.00,
+                'delivery_price' => 0.00, // التوصيل مجاني للاشتراك الشهري
                 'meals_count' => 16,
                 'is_active' => true,
             ]);

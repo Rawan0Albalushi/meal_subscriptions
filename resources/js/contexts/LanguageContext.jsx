@@ -93,6 +93,13 @@ export const LanguageProvider = ({ children }) => {
             selectMeals: 'اختر الوجبات',
             deliveryAddress: 'عنوان التوصيل',
             totalAmount: 'المبلغ الإجمالي',
+            deliveryPrice: 'سعر التوصيل',
+            free: 'مجاني',
+            priceBreakdown: 'تفاصيل السعر',
+            basePrice: 'السعر الأساسي',
+            freeDelivery: 'توصيل مجاني',
+            paidDelivery: 'توصيل مدفوع',
+            finalPrice: 'السعر النهائي',
             confirmSubscription: 'تأكيد الاشتراك',
             subscriptionDetails: 'تفاصيل الاشتراك',
             status: 'الحالة',
@@ -363,6 +370,13 @@ export const LanguageProvider = ({ children }) => {
             selectMeals: 'Select Meals',
             deliveryAddress: 'Delivery Address',
             totalAmount: 'Total Amount',
+            deliveryPrice: 'Delivery Price',
+            free: 'Free',
+            priceBreakdown: 'Price Breakdown',
+            basePrice: 'Base Price',
+            freeDelivery: 'Free Delivery',
+            paidDelivery: 'Paid Delivery',
+            finalPrice: 'Final Price',
             confirmSubscription: 'Confirm Subscription',
             subscriptionDetails: 'Subscription Details',
             status: 'Status',
@@ -556,8 +570,15 @@ export const LanguageProvider = ({ children }) => {
         }
     };
 
-    const t = (key) => {
-        return translations[language][key] || key;
+    const t = (key, params = {}) => {
+        let text = translations[language][key] || key;
+        
+        // Replace parameters in the text
+        Object.keys(params).forEach(param => {
+            text = text.replace(new RegExp(`{${param}}`, 'g'), params[param]);
+        });
+        
+        return text;
     };
 
     const toggleLanguage = () => {
