@@ -80,20 +80,9 @@ const Home = () => {
     return (
     <div style={{ 
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #fafbfc 0%, #f1f5f9 25%, #e2e8f0 50%, #cbd5e1 75%, #94a3b8 100%)',
-      position: 'relative'
+      position: 'relative',
+      background: 'transparent'
     }}>
-      {/* Unified Background Overlay */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: 'radial-gradient(circle at 20% 80%, rgba(79, 70, 229, 0.02) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.02) 0%, transparent 50%)',
-        pointerEvents: 'none',
-        zIndex: 0
-      }}></div>
       {/* Hero Section */}
       <section className="hero-section-enhanced section-enhanced" style={{ 
         position: 'relative',

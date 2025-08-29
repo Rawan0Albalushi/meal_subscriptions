@@ -178,9 +178,9 @@ const Restaurants = () => {
   return (
     <div style={{ 
       minHeight: '100vh', 
-      background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',
       overflowX: 'hidden',
-      direction: dir
+      direction: dir,
+      background: 'transparent'
     }}>
       {/* Main Content */}
       <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '1rem' }}>

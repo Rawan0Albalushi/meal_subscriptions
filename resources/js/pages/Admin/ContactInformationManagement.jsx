@@ -74,10 +74,10 @@ const ContactInformationManagement = () => {
         return (
             <div style={{
                 minHeight: '100vh',
-                background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                background: 'transparent'
             }}>
                 <div style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
@@ -92,9 +92,9 @@ const ContactInformationManagement = () => {
     return (
         <div style={{
             minHeight: '100vh',
-            background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
             padding: 'clamp(1rem, 4vw, 2rem)',
-            direction: isRTL ? 'rtl' : 'ltr'
+            direction: isRTL ? 'rtl' : 'ltr',
+            background: 'transparent'
         }}>
             <div style={{
                 maxWidth: '600px',

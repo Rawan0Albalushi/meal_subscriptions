@@ -1003,50 +1003,11 @@ const RestaurantDetail = () => {
   return (
     <div className="restaurant-detail-container" style={{ 
       minHeight: '100vh', 
-      background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',
       direction: dir,
       overflowX: 'hidden',
-      position: 'relative'
+      position: 'relative',
+      background: 'transparent'
     }}>
-      {/* Subtle Background Elements */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        overflow: 'hidden',
-        pointerEvents: 'none',
-        zIndex: 0
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '10%',
-          left: '10%',
-          width: '100px',
-          height: '100px',
-          background: 'radial-gradient(circle, rgba(79, 70, 229, 0.05) 0%, transparent 70%)',
-          borderRadius: '50%'
-        }}></div>
-        <div style={{
-          position: 'absolute',
-          top: '60%',
-          right: '15%',
-          width: '80px',
-          height: '80px',
-          background: 'radial-gradient(circle, rgba(139, 92, 246, 0.03) 0%, transparent 70%)',
-          borderRadius: '50%'
-        }}></div>
-        <div style={{
-          position: 'absolute',
-          bottom: '20%',
-          left: '20%',
-          width: '120px',
-          height: '120px',
-          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.04) 0%, transparent 70%)',
-          borderRadius: '50%'
-        }}></div>
-      </div>
       {/* Restaurant Info */}
       <div style={{ 
         maxWidth: '80rem', 

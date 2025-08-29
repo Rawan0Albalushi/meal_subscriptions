@@ -26,12 +26,43 @@ function AppRoutes() {
 
     return (
         <>
+            {/* Global Background Wrapper */}
+            <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%, #f8fafc 100%)',
+                backgroundAttachment: 'fixed',
+                zIndex: -2
+            }}></div>
+            
+            {/* Background Overlay */}
+            <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundImage: `
+                    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%)
+                `,
+                pointerEvents: 'none',
+                zIndex: -1
+            }}></div>
+            
             {/* Show Navbar on all pages */}
             <Navbar />
             <main style={{ 
                 width: '100%', 
                 padding: (location.pathname === '/' && !isAuthenticated) ? '0' : '1rem',
-                paddingTop: (location.pathname === '/' && !isAuthenticated) ? '0' : '1rem'
+                paddingTop: (location.pathname === '/' && !isAuthenticated) ? '0' : '1rem',
+                position: 'relative',
+                zIndex: 1,
+                background: 'transparent'
             }}>
                 <Routes>
                     <Route path="/" element={<Home />} />

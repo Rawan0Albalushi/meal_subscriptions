@@ -65,11 +65,11 @@ const MySubscriptions = () => {
         return (
             <div style={{ 
                 minHeight: '100vh', 
-                background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)', 
                 display: 'flex', 
                 justifyContent: 'center', 
                 alignItems: 'center',
-                padding: '1rem'
+                padding: '1rem',
+                background: 'transparent'
             }}>
                 <div style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: 'clamp(2rem, 8vw, 3rem)', marginBottom: '1rem' }}>⏳</div>
@@ -89,11 +89,11 @@ const MySubscriptions = () => {
         return (
             <div style={{ 
                 minHeight: '100vh', 
-                background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)', 
                 display: 'flex', 
                 justifyContent: 'center', 
                 alignItems: 'center',
-                padding: '1rem'
+                padding: '1rem',
+                background: 'transparent'
             }}>
                 <div style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: 'clamp(2rem, 8vw, 3rem)', marginBottom: '1rem' }}>❌</div>
@@ -125,13 +125,13 @@ const MySubscriptions = () => {
     }
 
     return (
-        <div style={{ minHeight: '100vh' }}>
+        <div style={{ minHeight: '100vh', background: 'transparent' }}>
             {/* Hero Section */}
             <section style={{ 
-                background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',
                 position: 'relative',
                 overflow: 'hidden',
-                padding: 'clamp(1rem, 5vw, 2rem) 0 clamp(1.5rem, 6vw, 3rem) 0'
+                padding: 'clamp(1rem, 5vw, 2rem) 0 clamp(1.5rem, 6vw, 3rem) 0',
+                background: 'transparent'
             }}>
                 {/* Floating decorative elements - Hidden on mobile */}
                 <div style={{ display: window.innerWidth > 768 ? 'block' : 'none' }}>

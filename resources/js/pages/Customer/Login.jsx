@@ -234,12 +234,12 @@ const Login = () => {
       key={`login-${isLogin}`}
       style={{ 
         minHeight: '100vh', 
-        background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: '1rem',
-        direction: dir
+        direction: dir,
+        background: 'transparent'
       }}
     >
       {/* Success Message Overlay */}
