@@ -11,6 +11,11 @@ const OrderManagement = () => {
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('all');
 
+    // Scroll to top when component mounts
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     useEffect(() => {
         fetchSubscriptions();
     }, []);

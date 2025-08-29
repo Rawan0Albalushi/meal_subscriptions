@@ -19,6 +19,11 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Clear form on component mount and when switching between login/register
   useEffect(() => {
     setFormData({

@@ -31,6 +31,11 @@ const SubscriptionDetail = () => {
     // Fallback filters في حالة عدم وجود بيانات
     const fallbackMealTypes = ['breakfast', 'lunch', 'dinner'];
 
+    // Scroll to top when component mounts
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     useEffect(() => {
         fetchSubscriptionDetails();
     }, [id]);

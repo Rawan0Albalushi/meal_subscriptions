@@ -9,6 +9,11 @@ const Home = () => {
   const { user, isAuthenticated } = useAuth();
   const { t, language } = useLanguage();
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Redirect users based on their role
   useEffect(() => {
     if (isAuthenticated && user) {

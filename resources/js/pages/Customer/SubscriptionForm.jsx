@@ -185,6 +185,11 @@ const SubscriptionForm = () => {
     return parseFloat(subscriptionTypeData.delivery_price || 0) === 0;
   };
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login');
