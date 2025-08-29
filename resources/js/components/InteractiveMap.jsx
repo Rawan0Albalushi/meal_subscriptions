@@ -81,7 +81,18 @@ const InteractiveMap = ({
           };
 
                      // إضافة التحكم في الطبقات
-           L.control.layers(baseMaps).addTo(mapInstanceRef.current);
+          const layerControl = L.control.layers(baseMaps).addTo(mapInstanceRef.current);
+          
+          // تحسين التحكم في الطبقات للهاتف
+          if (window.innerWidth <= 768) {
+            const layerControlContainer = layerControl.getContainer();
+            if (layerControlContainer) {
+              layerControlContainer.style.fontSize = '14px';
+              layerControlContainer.style.padding = '8px';
+              layerControlContainer.style.borderRadius = '8px';
+              layerControlContainer.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            }
+          }
 
            // إضافة زر تحديد الموقع الحالي
            const locationButton = L.control({ position: 'topright' });
@@ -89,9 +100,26 @@ const InteractiveMap = ({
              const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
             div.innerHTML = `
               <button 
-                class="bg-white hover:bg-gray-100 text-gray-700 font-bold py-2 px-3 rounded shadow-lg border border-gray-300 transition-all duration-200 hover:shadow-xl"
                 title="تحديد موقعي الحالي"
-                style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"
+                style="
+                  width: 44px; 
+                  height: 44px; 
+                  background-color: white; 
+                  color: #374151; 
+                  font-weight: bold; 
+                  border: 2px solid #d1d5db; 
+                  border-radius: 8px; 
+                  box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+                  display: flex; 
+                  align-items: center; 
+                  justify-content: center; 
+                  font-size: 18px; 
+                  cursor: pointer;
+                  transition: all 0.2s ease;
+                  z-index: 1000;
+                "
+                onmouseover="this.style.backgroundColor='#f3f4f6'; this.style.transform='scale(1.05)'"
+                onmouseout="this.style.backgroundColor='white'; this.style.transform='scale(1)'"
               >
                 📍
               </button>
@@ -105,6 +133,31 @@ const InteractiveMap = ({
             return div;
           };
           locationButton.addTo(mapInstanceRef.current);
+
+          // تحسين الزر للهاتف
+          const buttonElement = div.querySelector('button');
+          if (buttonElement) {
+            // إضافة touch events للهاتف
+            buttonElement.addEventListener('touchstart', (e) => {
+              e.preventDefault();
+              buttonElement.style.backgroundColor = '#f3f4f6';
+              buttonElement.style.transform = 'scale(1.05)';
+            });
+            
+            buttonElement.addEventListener('touchend', (e) => {
+              e.preventDefault();
+              buttonElement.style.backgroundColor = 'white';
+              buttonElement.style.transform = 'scale(1)';
+            });
+            
+            // تحسين الحجم للهاتف
+            if (window.innerWidth <= 768) {
+              buttonElement.style.width = '48px';
+              buttonElement.style.height = '48px';
+              buttonElement.style.fontSize = '20px';
+              buttonElement.style.borderRadius = '10px';
+            }
+          }
 
                      // إضافة مؤشر الموقع المحدد
            if (selectedLocation) {
@@ -420,7 +473,12 @@ const InteractiveMap = ({
   };
 
   return (
-    <div className="relative">
+    <div className="relative" style={{
+      '@media (max-width: 768px)': {
+        position: 'relative',
+        zIndex: 1
+      }
+    }}>
       {isLoading && (
         <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10 rounded-lg">
           <div className="text-center">
@@ -433,14 +491,38 @@ const InteractiveMap = ({
       <div 
         ref={mapRef} 
         className="w-full h-80 rounded-2xl border-2 border-gray-200 shadow-lg"
-        style={{ minHeight: '320px' }}
+        style={{ 
+          minHeight: '320px',
+          position: 'relative',
+          '@media (max-width: 768px)': {
+            height: '300px',
+            minHeight: '300px',
+            borderRadius: '1rem',
+            borderWidth: '1px'
+          }
+        }}
       />
       
-      <div className="mt-3 text-center">
-        <p className="text-sm text-gray-600 mb-2">
+      <div className="mt-3 text-center" style={{
+        '@media (max-width: 768px)': {
+          marginTop: '0.75rem'
+        }
+      }}>
+        <p className="text-sm text-gray-600 mb-2" style={{
+          '@media (max-width: 768px)': {
+            fontSize: '0.875rem',
+            marginBottom: '0.75rem'
+          }
+        }}>
           💡 انقر على الخريطة أو اسحب المؤشر لتحديد موقعك بدقة
         </p>
-        <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
+        <div className="flex items-center justify-center gap-4 text-xs text-gray-500" style={{
+          '@media (max-width: 768px)': {
+            flexDirection: 'column',
+            gap: '0.5rem',
+            fontSize: '0.75rem'
+          }
+        }}>
           <div className="flex items-center gap-1">
             <div className="w-3 h-3 bg-blue-500 rounded-full border-2 border-white shadow-sm"></div>
             <span>الموقع المحدد</span>

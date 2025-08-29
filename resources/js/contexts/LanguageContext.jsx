@@ -66,7 +66,7 @@ export const LanguageProvider = ({ children }) => {
             // How it works
             howItWorks: 'كيف يعمل الاشتراك؟',
             howItWorksDesc: 'خطوات بسيطة لتبدأ رحلتك معنا',
-            step1: 'سجّل بالبريد أو Google أو Apple',
+            step1: 'سجّل بالبريد الإلكتروني',
             step2: 'اختر مطعمًا وخطتك (أسبوعي/شهري)',
             step3: 'حدّد وجبة كل يوم (أحد-أربعاء) وعنوانًا واحدًا',
             step4: 'ادفع واستلم في الموعد الثابت',
@@ -149,7 +149,6 @@ export const LanguageProvider = ({ children }) => {
             confirmPassword: 'تأكيد كلمة المرور',
             rememberMe: 'تذكرني',
             forgotPassword: 'نسيت كلمة المرور؟',
-            or: 'أو',
             backToHome: 'العودة للرئيسية',
             loginDescription: 'سجل دخولك للوصول إلى اشتراكاتك',
             registerDescription: 'أنشئ حساب جديد واستمتع بخدماتنا',
@@ -177,6 +176,8 @@ export const LanguageProvider = ({ children }) => {
             // Error messages
             loginError: 'حدث خطأ أثناء تسجيل الدخول',
             registrationError: 'حدث خطأ أثناء إنشاء الحساب',
+            emailAlreadyExists: 'البريد الإلكتروني مستخدم بالفعل',
+            invalidCredentials: 'البريد الإلكتروني أو كلمة المرور غير صحيحة',
             
             // Login popup
             loginRequired: 'تسجيل الدخول مطلوب',
@@ -343,7 +344,7 @@ export const LanguageProvider = ({ children }) => {
             // How it works
             howItWorks: 'How Does Subscription Work?',
             howItWorksDesc: 'Simple steps to start your journey with us',
-            step1: 'Register with email, Google, or Apple',
+            step1: 'Register with email',
             step2: 'Choose a restaurant and your plan (weekly/monthly)',
             step3: 'Select a meal every day (Sunday-Wednesday) with one address',
             step4: 'Pay and receive at the fixed time',
@@ -426,7 +427,6 @@ export const LanguageProvider = ({ children }) => {
             confirmPassword: 'Confirm Password',
             rememberMe: 'Remember Me',
             forgotPassword: 'Forgot Password?',
-            or: 'Or',
             backToHome: 'Back to Home',
             loginDescription: 'Log in to access your subscriptions',
             registerDescription: 'Create a new account and enjoy our services',
@@ -454,6 +454,8 @@ export const LanguageProvider = ({ children }) => {
             // Error messages
             loginError: 'An error occurred during login',
             registrationError: 'An error occurred during account creation',
+            emailAlreadyExists: 'Email is already in use',
+            invalidCredentials: 'Email or password is incorrect',
             
             // Login popup
             loginRequired: 'Login required',

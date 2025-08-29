@@ -53,7 +53,13 @@ const OrderStatusBadge = ({ status, language = 'ar' }) => {
             transition: 'all 0.3s ease',
             position: 'relative',
             overflow: 'hidden',
-            animation: config.pulse ? 'pulse 2s infinite' : 'none'
+            animation: config.pulse ? 'pulse 2s infinite' : 'none',
+            '@media (max-width: 768px)': {
+                padding: '0.5rem 0.75rem',
+                fontSize: '0.75rem',
+                borderRadius: '0.75rem',
+                gap: '0.4rem'
+            }
         }}>
             {/* Pulse animation for active statuses */}
             {config.pulse && (
@@ -73,13 +79,20 @@ const OrderStatusBadge = ({ status, language = 'ar' }) => {
             
             <span style={{ 
                 fontSize: '1rem',
-                filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))'
+                filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))',
+                '@media (max-width: 768px)': {
+                    fontSize: '0.9rem'
+                }
             }}>
                 {config.icon}
             </span>
             <span style={{ 
                 fontWeight: '700',
-                textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+                '@media (max-width: 768px)': {
+                    fontWeight: '600',
+                    fontSize: '0.7rem'
+                }
             }}>
                 {config.text}
             </span>

@@ -626,8 +626,19 @@ const SubscriptionForm = () => {
 
               {/* Interactive Map */}
               <div className="mt-6">
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200" style={{
+                  '@media (max-width: 768px)': {
+                    padding: '1rem',
+                    borderRadius: '1rem',
+                    marginTop: '1rem'
+                  }
+                }}>
+                  <h3 className="text-lg font-bold text-gray-800 mb-4 text-center" style={{
+                    '@media (max-width: 768px)': {
+                      fontSize: '1rem',
+                      marginBottom: '1rem'
+                    }
+                  }}>
                     {t('selectLocationOnMapTitle')}
                   </h3>
                   <InteractiveMap 
@@ -638,16 +649,41 @@ const SubscriptionForm = () => {
                   />
                   
                   {selectedLocation && (
-                    <div className="mt-4 p-4 bg-white rounded-xl border border-green-200">
-                      <div className="flex items-center justify-between">
+                    <div className="mt-4 p-4 bg-white rounded-xl border border-green-200" style={{
+                      '@media (max-width: 768px)': {
+                        padding: '0.75rem',
+                        borderRadius: '0.75rem',
+                        marginTop: '0.75rem'
+                      }
+                    }}>
+                      <div className="flex items-center justify-between" style={{
+                        '@media (max-width: 768px)': {
+                          flexDirection: 'column',
+                          alignItems: 'flex-start',
+                          gap: '0.5rem'
+                        }
+                      }}>
                         <div>
-                          <p className="text-sm font-semibold text-gray-700 mb-1">
+                          <p className="text-sm font-semibold text-gray-700 mb-1" style={{
+                            '@media (max-width: 768px)': {
+                              fontSize: '0.875rem',
+                              marginBottom: '0.25rem'
+                            }
+                          }}>
                             {t('selectedLocation')}
                           </p>
-                          <p className="text-xs text-gray-600">
+                          <p className="text-xs text-gray-600" style={{
+                            '@media (max-width: 768px)': {
+                              fontSize: '0.75rem'
+                            }
+                          }}>
                             {t('latitude')} {selectedLocation.lat.toFixed(6)}
                           </p>
-                          <p className="text-xs text-gray-600">
+                          <p className="text-xs text-gray-600" style={{
+                            '@media (max-width: 768px)': {
+                              fontSize: '0.75rem'
+                            }
+                          }}>
                             {t('longitude')} {selectedLocation.lng.toFixed(6)}
                           </p>
                         </div>
@@ -655,6 +691,13 @@ const SubscriptionForm = () => {
                           type="button"
                           onClick={() => setSelectedLocation(null)}
                           className="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600 transition-colors"
+                          style={{
+                            '@media (max-width: 768px)': {
+                              padding: '0.5rem 1rem',
+                              fontSize: '0.875rem',
+                              width: '100%'
+                            }
+                          }}
                         >
                           {t('cancel')}
                         </button>

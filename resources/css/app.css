@@ -2,9 +2,10 @@
 @import url('https://unpkg.com/leaflet@1.7.1/dist/leaflet.css');
 @import "./enhanced-components.css";
 @import "./special-effects.css";
+@import "./mobile-optimizations.css";
 
 html { 
-  scroll-behavior: smooth; 
+  /* scroll-behavior: smooth; */ /* Disabled to prevent auto-scroll */
 }
 
 /* RTL/LTR Support */
@@ -2021,10 +2022,10 @@ body::before {
   }
   
   /* Better scrolling */
-  .touch-scroll {
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
-  }
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
+  /* scroll-behavior: smooth; */ /* Disabled to prevent auto-scroll */
+}
 }
 
 /* Mobile Menu Improvements */
@@ -2595,7 +2596,7 @@ body.menu-open {
 
 /* Smooth Scroll Behavior */
 html {
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */ /* Disabled to prevent auto-scroll */
   scroll-padding-top: 80px;
 }
 
@@ -2617,6 +2618,179 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, rgb(67 56 202), rgb(124 58 237));
+}
+
+/* Hide scrollbar when button is pressed */
+body.button-pressed::-webkit-scrollbar,
+body.button-pressed *::-webkit-scrollbar,
+.container.button-pressed::-webkit-scrollbar,
+.container.button-pressed *::-webkit-scrollbar,
+.restaurant-detail-container.button-pressed::-webkit-scrollbar,
+.restaurant-detail-container.button-pressed *::-webkit-scrollbar,
+.subscription-grid.button-pressed::-webkit-scrollbar,
+.subscription-grid.button-pressed *::-webkit-scrollbar,
+.meals-grid.button-pressed::-webkit-scrollbar,
+.meals-grid.button-pressed *::-webkit-scrollbar,
+.navbar-glass.button-pressed::-webkit-scrollbar,
+.navbar-glass.button-pressed *::-webkit-scrollbar,
+.sidebar-enhanced.button-pressed::-webkit-scrollbar,
+.sidebar-enhanced.button-pressed *::-webkit-scrollbar {
+  width: 0 !important;
+  display: none !important;
+}
+
+/* Hide scrollbar for Firefox */
+body.button-pressed,
+body.button-pressed *,
+.container.button-pressed,
+.container.button-pressed *,
+.restaurant-detail-container.button-pressed,
+.restaurant-detail-container.button-pressed *,
+.subscription-grid.button-pressed,
+.subscription-grid.button-pressed *,
+.meals-grid.button-pressed,
+.meals-grid.button-pressed *,
+.navbar-glass.button-pressed,
+.navbar-glass.button-pressed *,
+.sidebar-enhanced.button-pressed,
+.sidebar-enhanced.button-pressed * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* Hide scrollbar for all browsers when button is pressed */
+body.button-pressed,
+body.button-pressed *,
+.container.button-pressed,
+.container.button-pressed *,
+.restaurant-detail-container.button-pressed,
+.restaurant-detail-container.button-pressed *,
+.subscription-grid.button-pressed,
+.subscription-grid.button-pressed *,
+.meals-grid.button-pressed,
+.meals-grid.button-pressed *,
+.navbar-glass.button-pressed,
+.navbar-glass.button-pressed *,
+.sidebar-enhanced.button-pressed,
+.sidebar-enhanced.button-pressed * {
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* Hide scrollbar for specific elements when button is pressed */
+button:active,
+.btn:active,
+.navbar-btn:active,
+.hero-btn:active,
+.feature-btn:active,
+.payment-button-elegant:active,
+.subscription-card:active,
+.card:active,
+.interactive-element:active,
+.mobile-menu-item:active,
+.sidebar-item:active,
+.dropdown-item:active,
+.nav-link:active,
+.status-badge:active,
+.order-status-badge:active,
+.map-control-button:active,
+.leaflet-control-zoom a:active {
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* Hide scrollbar for parent containers when button is pressed */
+button:active ~ *,
+.btn:active ~ *,
+.navbar-btn:active ~ *,
+.hero-btn:active ~ *,
+.feature-btn:active ~ *,
+.payment-button-elegant:active ~ *,
+.subscription-card:active ~ *,
+.card:active ~ *,
+.interactive-element:active ~ *,
+.mobile-menu-item:active ~ *,
+.sidebar-item:active ~ *,
+.dropdown-item:active ~ *,
+.nav-link:active ~ *,
+.status-badge:active ~ *,
+.order-status-badge:active ~ *,
+.map-control-button:active ~ *,
+.leaflet-control-zoom a:active ~ * {
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* Global scrollbar hiding for all pages */
+html.button-pressed,
+html.button-pressed *,
+body.button-pressed,
+body.button-pressed *,
+#app.button-pressed,
+#app.button-pressed *,
+.app.button-pressed,
+.app.button-pressed * {
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* Hide scrollbar for all containers when button is pressed */
+.button-pressed * {
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* Enhanced button press effect with scrollbar hiding */
+button:active,
+.btn:active,
+.navbar-btn:active,
+.hero-btn:active,
+.feature-btn:active,
+.payment-button-elegant:active,
+.subscription-card:active,
+.card:active,
+.interactive-element:active,
+.mobile-menu-item:active,
+.sidebar-item:active,
+.dropdown-item:active,
+.nav-link:active,
+.status-badge:active,
+.order-status-badge:active,
+.map-control-button:active,
+.leaflet-control-zoom a:active {
+  transform: scale(0.98) !important;
+  transition: transform 0.1s ease !important;
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* Hide scrollbar for all child elements when parent button is pressed */
+button:active *,
+.btn:active *,
+.navbar-btn:active *,
+.hero-btn:active *,
+.feature-btn:active *,
+.payment-button-elegant:active *,
+.subscription-card:active *,
+.card:active *,
+.interactive-element:active *,
+.mobile-menu-item:active *,
+.sidebar-item:active *,
+.dropdown-item:active *,
+.nav-link:active *,
+.status-badge:active *,
+.order-status-badge:active *,
+.map-control-button:active *,
+.leaflet-control-zoom a:active * {
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
 /* Selection Enhancement */
@@ -2691,6 +2865,693 @@ html {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Hide Scrollbar on Button Press */
+button:active,
+.btn:active,
+.navbar-btn:active,
+.hero-btn:active,
+.feature-btn:active,
+.payment-button-elegant:active,
+.subscription-card:active,
+.card:active,
+.interactive-element:active,
+.mobile-menu-item:active,
+.sidebar-item:active,
+.dropdown-item:active,
+.nav-link:active,
+.status-badge:active,
+.order-status-badge:active,
+.map-control-button:active,
+.leaflet-control-zoom a:active {
+  overflow: hidden !important;
+}
+
+/* Hide scrollbar on all interactive elements when pressed */
+button:active *,
+.btn:active *,
+.navbar-btn:active *,
+.hero-btn:active *,
+.feature-btn:active *,
+.payment-button-elegant:active *,
+.subscription-card:active *,
+.card:active *,
+.interactive-element:active *,
+.mobile-menu-item:active *,
+.sidebar-item:active *,
+.dropdown-item:active *,
+.nav-link:active *,
+.status-badge:active *,
+.order-status-badge:active *,
+.map-control-button:active *,
+.leaflet-control-zoom a:active * {
+  overflow: hidden !important;
+}
+
+/* Hide scrollbar on body when any button is pressed */
+body.button-pressed {
+  overflow: hidden !important;
+}
+
+/* Hide scrollbar on specific containers when buttons are pressed */
+.container.button-pressed,
+.restaurant-detail-container.button-pressed,
+.subscription-grid.button-pressed,
+.meals-grid.button-pressed,
+.navbar-glass.button-pressed,
+.sidebar-enhanced.button-pressed {
+  overflow: hidden !important;
+}
+
+/* Enhanced button press effect */
+button:active,
+.btn:active,
+.navbar-btn:active,
+.hero-btn:active,
+.feature-btn:active,
+.payment-button-elegant:active {
+  transform: scale(0.98) !important;
+  transition: transform 0.1s ease !important;
+}
+
+/* Prevent text selection on button press */
+button:active,
+.btn:active,
+.navbar-btn:active,
+.hero-btn:active,
+.feature-btn:active,
+.payment-button-elegant:active,
+.subscription-card:active,
+.card:active,
+.interactive-element:active {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+/* Prevent auto-scroll on all interactive elements */
+button,
+.btn,
+.navbar-btn,
+.hero-btn,
+.feature-btn,
+.payment-button-elegant,
+.subscription-card,
+.card,
+.interactive-element,
+.mobile-menu-item,
+.sidebar-item,
+.dropdown-item,
+.nav-link,
+.status-badge,
+.order-status-badge,
+.map-control-button,
+.leaflet-control-zoom a,
+[role="button"],
+[tabindex="0"] {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent auto-scroll on containers */
+.restaurant-detail-container,
+.subscription-grid,
+.meals-grid,
+.container,
+.navbar-glass,
+.sidebar-enhanced {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent auto-scroll on body and html */
+html,
+body {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent auto-scroll on meal type selection elements */
+.meal-type-button,
+.meal-type-dropdown,
+.meal-filter-buttons,
+.meal-filter-button,
+[data-meal-type],
+.meal-type-selection {
+  scroll-behavior: auto !important;
+  overflow: visible !important;
+}
+
+/* Prevent auto-scroll on meal selection containers */
+.meals-container,
+.meal-selection-container,
+.meal-type-container {
+  scroll-behavior: auto !important;
+  overflow: visible !important;
+}
+
+/* Prevent auto-scroll on subscription selection */
+.subscription-selection,
+.subscription-type-container {
+  scroll-behavior: auto !important;
+  overflow: visible !important;
+}
+
+/* Prevent auto-scroll on all elements */
+* {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent auto-scroll on specific meal elements */
+.meal-card,
+.meal-item,
+.meal-selection,
+.meal-type-filter,
+.meal-filter-container {
+  scroll-behavior: auto !important;
+  overflow: visible !important;
+}
+
+/* Prevent auto-scroll on dropdown elements */
+.dropdown,
+.dropdown-menu,
+.dropdown-content,
+.select-dropdown {
+  scroll-behavior: auto !important;
+  overflow: visible !important;
+}
+
+/* Prevent auto-scroll on form elements */
+input,
+select,
+textarea,
+.form-control,
+.form-select {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent auto-scroll on clickable elements */
+.clickable,
+.selectable,
+.interactive {
+  scroll-behavior: auto !important;
+}
+
+/* Completely disable smooth scrolling globally */
+html,
+body,
+* {
+  scroll-behavior: auto !important;
+  scroll-padding-top: 0 !important;
+  scroll-padding-bottom: 0 !important;
+  scroll-padding-left: 0 !important;
+  scroll-padding-right: 0 !important;
+}
+
+/* Prevent any automatic scrolling */
+.auto-scroll-disabled {
+  scroll-behavior: auto !important;
+  overflow: visible !important;
+}
+
+/* Prevent focus scrolling */
+*:focus {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent anchor scrolling */
+a[href^="#"] {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent form submission scrolling */
+form {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent button click scrolling */
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent div click scrolling */
+div[onclick],
+div[role="button"] {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent React auto-scroll */
+[data-reactroot],
+#root,
+#app,
+.app {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent any element with onClick from scrolling */
+[onclick],
+[onClick],
+[onmousedown],
+[onMouseDown],
+[onmouseup],
+[onMouseUp],
+[ontouchstart],
+[onTouchStart],
+[ontouchend],
+[onTouchEnd] {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent any element with role from scrolling */
+[role] {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent any element with tabindex from scrolling */
+[tabindex] {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent any element with data attributes from scrolling */
+[data-*] {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent any element with class from scrolling */
+[class] {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent any element with id from scrolling */
+[id] {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent any element with style from scrolling */
+[style] {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent any element with any attribute from scrolling */
+* {
+  scroll-behavior: auto !important;
+}
+
+/* Completely disable all scrolling behavior */
+html,
+body,
+*,
+*::before,
+*::after {
+  scroll-behavior: auto !important;
+  scroll-padding-top: 0 !important;
+  scroll-padding-bottom: 0 !important;
+  scroll-padding-left: 0 !important;
+  scroll-padding-right: 0 !important;
+  scroll-margin-top: 0 !important;
+  scroll-margin-bottom: 0 !important;
+  scroll-margin-left: 0 !important;
+  scroll-margin-right: 0 !important;
+}
+
+/* Prevent focus scrolling */
+*:focus,
+*:focus-within,
+*:focus-visible {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Prevent any automatic scrolling on state changes */
+.state-change,
+.state-update,
+.re-render {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent React state changes from causing scroll */
+[data-reactroot] *,
+#root *,
+#app *,
+.app * {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent any element with onClick from scrolling */
+[onclick],
+[onClick],
+[onmousedown],
+[onMouseDown],
+[onmouseup],
+[onMouseUp],
+[ontouchstart],
+[onTouchStart],
+[ontouchend],
+[onTouchEnd],
+[onchange],
+[onChange],
+[oninput],
+[onInput],
+[onsubmit],
+[onSubmit] {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Prevent any element with role from scrolling */
+[role] {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Prevent any element with tabindex from scrolling */
+[tabindex] {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Prevent any element with data attributes from scrolling */
+[data-*] {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Prevent any element with class from scrolling */
+[class] {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Prevent any element with id from scrolling */
+[id] {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Prevent any element with style from scrolling */
+[style] {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Prevent any element with any attribute from scrolling */
+* {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Completely disable all scrolling behavior globally */
+html,
+body,
+*,
+*::before,
+*::after,
+*:hover,
+*:active,
+*:focus,
+*:focus-within,
+*:focus-visible,
+*:target,
+*:visited,
+*:link,
+*:checked,
+*:disabled,
+*:enabled,
+*:required,
+*:optional,
+*:valid,
+*:invalid,
+*:in-range,
+*:out-of-range,
+*:read-only,
+*:read-write,
+*:first-child,
+*:last-child,
+*:only-child,
+*:first-of-type,
+*:last-of-type,
+*:only-of-type,
+*:nth-child,
+*:nth-last-child,
+*:nth-of-type,
+*:nth-last-of-type,
+*:empty,
+*:root {
+  scroll-behavior: auto !important;
+  scroll-padding-top: 0 !important;
+  scroll-padding-bottom: 0 !important;
+  scroll-padding-left: 0 !important;
+  scroll-padding-right: 0 !important;
+  scroll-margin-top: 0 !important;
+  scroll-margin-bottom: 0 !important;
+  scroll-margin-left: 0 !important;
+  scroll-margin-right: 0 !important;
+  outline: none !important;
+}
+
+/* Prevent any automatic scrolling on any event */
+*:hover,
+*:active,
+*:focus,
+*:focus-within,
+*:focus-visible,
+*:target,
+*:visited,
+*:link,
+*:checked,
+*:disabled,
+*:enabled,
+*:required,
+*:optional,
+*:valid,
+*:invalid,
+*:in-range,
+*:out-of-range,
+*:read-only,
+*:read-write {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Prevent any automatic scrolling on any pseudo-element */
+*::before,
+*::after,
+*::first-line,
+*::first-letter,
+*::selection,
+*::placeholder {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Prevent any automatic scrolling on any pseudo-class */
+*:first-child,
+*:last-child,
+*:only-child,
+*:first-of-type,
+*:last-of-type,
+*:only-of-type,
+*:nth-child,
+*:nth-last-child,
+*:nth-of-type,
+*:nth-last-of-type,
+*:empty,
+*:root {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Specific prevention for meal type selection */
+.meal-type-button,
+.meal-type-dropdown,
+.meal-filter-buttons,
+.meal-filter-button,
+[data-meal-type],
+.meal-type-selection,
+.meal-type-filter,
+.meal-type-container,
+.meal-selection-container,
+.meals-container {
+  scroll-behavior: auto !important;
+  scroll-padding-top: 0 !important;
+  scroll-padding-bottom: 0 !important;
+  scroll-padding-left: 0 !important;
+  scroll-padding-right: 0 !important;
+  scroll-margin-top: 0 !important;
+  scroll-margin-bottom: 0 !important;
+  scroll-margin-left: 0 !important;
+  scroll-margin-right: 0 !important;
+  outline: none !important;
+}
+
+/* Prevent auto-scroll on meal type button click */
+.meal-type-button:active,
+.meal-type-button:focus,
+.meal-type-button:hover,
+.meal-filter-button:active,
+.meal-filter-button:focus,
+.meal-filter-button:hover {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Prevent auto-scroll on meal type dropdown */
+.meal-type-dropdown:active,
+.meal-type-dropdown:focus,
+.meal-type-dropdown:hover {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Prevent auto-scroll on meal type selection */
+[data-meal-type]:active,
+[data-meal-type]:focus,
+[data-meal-type]:hover {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Prevent auto-scroll on any meal type related element */
+.meal-type-button,
+.meal-type-dropdown,
+.meal-filter-buttons,
+.meal-filter-button,
+[data-meal-type],
+.meal-type-selection,
+.meal-type-filter,
+.meal-type-container,
+.meal-selection-container,
+.meals-container,
+.meal-card,
+.meal-item,
+.meal-selection,
+.meal-type-filter,
+.meal-filter-container {
+  scroll-behavior: auto !important;
+  scroll-padding-top: 0 !important;
+  scroll-padding-bottom: 0 !important;
+  scroll-padding-left: 0 !important;
+  scroll-padding-right: 0 !important;
+  scroll-margin-top: 0 !important;
+  scroll-margin-bottom: 0 !important;
+  scroll-margin-left: 0 !important;
+  scroll-margin-right: 0 !important;
+  outline: none !important;
+}
+
+/* Prevent auto-scroll on any meal type related element state */
+.meal-type-button:active,
+.meal-type-button:focus,
+.meal-type-button:hover,
+.meal-type-dropdown:active,
+.meal-type-dropdown:focus,
+.meal-type-dropdown:hover,
+.meal-filter-buttons:active,
+.meal-filter-buttons:focus,
+.meal-filter-buttons:hover,
+.meal-filter-button:active,
+.meal-filter-button:focus,
+.meal-filter-button:hover,
+[data-meal-type]:active,
+[data-meal-type]:focus,
+[data-meal-type]:hover,
+.meal-type-selection:active,
+.meal-type-selection:focus,
+.meal-type-selection:hover,
+.meal-type-filter:active,
+.meal-type-filter:focus,
+.meal-type-filter:hover,
+.meal-type-container:active,
+.meal-type-container:focus,
+.meal-type-container:hover,
+.meal-selection-container:active,
+.meal-selection-container:focus,
+.meal-selection-container:hover,
+.meals-container:active,
+.meals-container:focus,
+.meals-container:hover {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Completely disable all scrolling behavior globally */
+html,
+body,
+*,
+*::before,
+*::after,
+*:hover,
+*:active,
+*:focus,
+*:focus-within,
+*:focus-visible,
+*:target,
+*:visited,
+*:link {
+  scroll-behavior: auto !important;
+  scroll-padding-top: 0 !important;
+  scroll-padding-bottom: 0 !important;
+  scroll-padding-left: 0 !important;
+  scroll-padding-right: 0 !important;
+  scroll-margin-top: 0 !important;
+  scroll-margin-bottom: 0 !important;
+  scroll-margin-left: 0 !important;
+  scroll-margin-right: 0 !important;
+  outline: none !important;
+}
+
+/* Prevent any automatic scrolling on any event */
+*:hover,
+*:active,
+*:focus,
+*:focus-within,
+*:focus-visible,
+*:target,
+*:visited,
+*:link,
+*:checked,
+*:disabled,
+*:enabled,
+*:required,
+*:optional,
+*:valid,
+*:invalid,
+*:in-range,
+*:out-of-range,
+*:read-only,
+*:read-write {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Prevent any automatic scrolling on any pseudo-element */
+*::before,
+*::after,
+*::first-line,
+*::first-letter,
+*::selection,
+*::placeholder {
+  scroll-behavior: auto !important;
+  outline: none !important;
+}
+
+/* Prevent any automatic scrolling on any pseudo-class */
+*:first-child,
+*:last-child,
+*:only-child,
+*:first-of-type,
+*:last-of-type,
+*:only-of-type,
+*:nth-child,
+*:nth-last-child,
+*:nth-of-type,
+*:nth-last-of-type,
+*:empty,
+*:root {
+  scroll-behavior: auto !important;
+  outline: none !important;
 }
 
 /* Skip Link */

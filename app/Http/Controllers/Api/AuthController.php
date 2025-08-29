@@ -33,7 +33,7 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'بيانات غير صحيحة',
+                'message' => 'يرجى تصحيح الأخطاء التالية',
                 'errors' => $validator->errors()
             ], 422);
         }

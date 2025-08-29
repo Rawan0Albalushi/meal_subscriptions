@@ -248,10 +248,13 @@ const MySubscriptions = () => {
                     ) : (
                         <div style={{ 
                             display: 'grid', 
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(clamp(280px, 90vw, 350px), 1fr))', 
+                            gridTemplateColumns: '1fr',
                             gap: 'clamp(1rem, 4vw, 2rem)',
                             maxWidth: '1200px',
-                            margin: '0 auto'
+                            margin: '0 auto',
+                            '@media (min-width: 640px)': {
+                                gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))'
+                            }
                         }}>
                             {subscriptions.map((subscription) => (
                                 <div key={subscription.id} style={{
@@ -316,12 +319,18 @@ const MySubscriptions = () => {
                                         </div>
                                     </div>
                                     
-                                    {/* Details Grid */}
+                                    {/* Details Grid - Improved for mobile */}
                                     <div style={{ 
                                         display: 'grid', 
-                                        gridTemplateColumns: 'repeat(auto-fit, minmax(clamp(100px, 25vw, 120px), 1fr))', 
+                                        gridTemplateColumns: '1fr',
                                         gap: 'clamp(0.5rem, 2vw, 1rem)', 
-                                        marginBottom: 'clamp(1rem, 4vw, 1.5rem)' 
+                                        marginBottom: 'clamp(1rem, 4vw, 1.5rem)',
+                                        '@media (min-width: 480px)': {
+                                            gridTemplateColumns: 'repeat(2, 1fr)'
+                                        },
+                                        '@media (min-width: 640px)': {
+                                            gridTemplateColumns: 'repeat(3, 1fr)'
+                                        }
                                     }}>
                                         <div style={{
                                             padding: 'clamp(0.75rem, 3vw, 1rem)',
@@ -371,7 +380,13 @@ const MySubscriptions = () => {
                                             padding: 'clamp(0.75rem, 3vw, 1rem)',
                                             background: 'rgb(249 250 251)',
                                             borderRadius: '0.75rem',
-                                            border: '1px solid rgb(229 231 235)'
+                                            border: '1px solid rgb(229 231 235)',
+                                            '@media (min-width: 480px)': {
+                                                gridColumn: 'span 2'
+                                            },
+                                            '@media (min-width: 640px)': {
+                                                gridColumn: 'span 1'
+                                            }
                                         }}>
                                             <div style={{ 
                                                 fontSize: 'clamp(0.625rem, 2.5vw, 0.75rem)', 
@@ -394,7 +409,7 @@ const MySubscriptions = () => {
                                     <Link to={`/subscriptions/${subscription.id}`} style={{
                                         display: 'block',
                                         width: '100%',
-                                        padding: 'clamp(0.5rem, 3vw, 0.75rem)',
+                                        padding: 'clamp(0.75rem, 3vw, 1rem)',
                                         borderRadius: '0.75rem',
                                         background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
                                         color: 'white',
@@ -402,7 +417,8 @@ const MySubscriptions = () => {
                                         fontSize: 'clamp(0.875rem, 4vw, 1rem)',
                                         fontWeight: '600',
                                         textAlign: 'center',
-                                        transition: 'all 0.3s ease'
+                                        transition: 'all 0.3s ease',
+                                        boxShadow: '0 4px 15px rgba(79, 70, 229, 0.3)'
                                     }}>
                                         {language === 'ar' ? 'عرض التفاصيل' : 'View Details'}
                                     </Link>

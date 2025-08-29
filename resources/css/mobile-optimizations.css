@@ -1,0 +1,368 @@
+/* Mobile Optimizations for Subscription Detail Page */
+
+/* Improve touch targets on mobile */
+@media (max-width: 768px) {
+    /* Ensure buttons are at least 44px tall for better touch */
+    button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Improve scrolling performance */
+    .subscription-detail-container {
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    }
+    
+    /* Optimize animations for mobile */
+    * {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+    
+    /* Reduce motion for users who prefer it */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+    
+    /* Improve text readability on mobile */
+    .meal-card h4 {
+        font-size: 1rem !important;
+        line-height: 1.3 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Optimize badge sizes for mobile */
+    .status-badge {
+        font-size: 0.75rem !important;
+        padding: 0.5rem 0.75rem !important;
+    }
+    
+    /* Enhanced status section */
+    .status-section {
+        border-top: 1px solid rgba(102, 126, 234, 0.2) !important;
+        padding-top: 0.75rem !important;
+    }
+    
+    .status-section .label {
+        font-size: 0.7rem !important;
+        margin-bottom: 0.4rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+    }
+    
+    /* Improve filter button layout */
+    .meal-filter-buttons {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+        justify-content: center !important;
+    }
+    
+    .meal-filter-buttons button {
+        flex: 1 1 auto !important;
+        min-width: 70px !important;
+        font-size: 0.8rem !important;
+        border-radius: 0.6rem !important;
+    }
+    
+    /* Optimize card spacing */
+    .meal-card {
+        padding: 1.25rem !important;
+        border-radius: 1rem !important;
+        margin-bottom: 0.75rem !important;
+        border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    }
+    
+    /* Improve header layout on mobile */
+    .meals-header {
+        flex-direction: column !important;
+        gap: 1rem !important;
+        margin-bottom: 1.5rem !important;
+        padding-bottom: 1rem !important;
+    }
+    
+    /* Optimize info row layout */
+    .meal-info-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.5rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    /* Improve delivery date section */
+    .delivery-date-section {
+        padding: 0.75rem !important;
+        border-radius: 0.75rem !important;
+    }
+    
+    .delivery-date-section .label {
+        font-size: 0.7rem !important;
+        margin-bottom: 0.4rem !important;
+    }
+    
+    .delivery-date-section .value {
+        font-size: 0.9rem !important;
+        line-height: 1.3 !important;
+    }
+    
+    /* Enhanced meal type badge */
+    .meal-type-badge {
+        font-size: 0.75rem !important;
+        padding: 0.5rem 0.8rem !important;
+        border-radius: 0.75rem !important;
+    }
+    
+    /* Enhanced info badges */
+    .info-badge {
+        font-size: 0.75rem !important;
+        padding: 0.2rem 0.4rem !important;
+        border-radius: 0.5rem !important;
+    }
+    
+    /* Improve title section */
+    .meals-title-section {
+        justify-content: center !important;
+    }
+    
+    .meals-title-icon {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+        font-size: 1.25rem !important;
+        border-radius: 0.75rem !important;
+    }
+    
+    .meals-title-text {
+        font-size: 1.25rem !important;
+    }
+    
+    .meals-count-text {
+        font-size: 0.8rem !important;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    .meal-card {
+        padding: 1rem !important;
+        border-radius: 0.75rem !important;
+    }
+    
+    .meal-filter-buttons button {
+        font-size: 0.75rem !important;
+        padding: 0.5rem 0.6rem !important;
+        min-width: 60px !important;
+    }
+    
+    .status-badge {
+        font-size: 0.7rem !important;
+        padding: 0.4rem 0.6rem !important;
+    }
+    
+    .meal-card h4 {
+        font-size: 0.95rem !important;
+    }
+    
+    .meals-title-icon {
+        width: 2rem !important;
+        height: 2rem !important;
+        font-size: 1rem !important;
+    }
+    
+    .meals-title-text {
+        font-size: 1.1rem !important;
+    }
+    
+    .meals-count-text {
+        font-size: 0.75rem !important;
+    }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .meals-header {
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 1rem !important;
+    }
+    
+    .meal-filter-buttons {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+    }
+    
+    .meal-filter-buttons button {
+        flex: none !important;
+        min-width: auto !important;
+    }
+    
+    .meals-title-section {
+        justify-content: flex-start !important;
+    }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .meal-card {
+        border-width: 0.5px !important;
+    }
+    
+    .status-badge {
+        border-width: 0.5px !important;
+    }
+    
+    .meal-filter-buttons button {
+        border-width: 1px !important;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .meal-card {
+        background: rgba(30, 30, 30, 0.95) !important;
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    .meal-card h4 {
+        color: #ffffff !important;
+    }
+    
+    .delivery-date-section {
+        background: rgba(102, 126, 234, 0.15) !important;
+        border-color: rgba(102, 126, 234, 0.2) !important;
+    }
+    
+    .info-badge {
+        background: rgba(102, 126, 234, 0.15) !important;
+    }
+    
+    .meal-filter-buttons button {
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+    }
+}
+
+/* Focus styles for accessibility */
+@media (max-width: 768px) {
+    button:focus,
+    .meal-card:focus {
+        outline: 2px solid #667eea !important;
+        outline-offset: 2px !important;
+    }
+    
+    /* Improve focus visibility */
+    .meal-card:focus-within {
+        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3) !important;
+    }
+    
+    /* Enhanced touch feedback */
+    .meal-card:active {
+        transform: scale(0.98) !important;
+        transition: transform 0.1s ease !important;
+    }
+    
+    button:active {
+        transform: scale(0.95) !important;
+        transition: transform 0.1s ease !important;
+    }
+}
+
+/* Loading states */
+@media (max-width: 768px) {
+    .loading-skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%) !important;
+        background-size: 200% 100% !important;
+        animation: loading 1.5s infinite !important;
+    }
+    
+    @keyframes loading {
+        0% {
+            background-position: 200% 0;
+        }
+        100% {
+            background-position: -200% 0;
+        }
+    }
+}
+
+/* Enhanced animations for mobile */
+@media (max-width: 768px) {
+    .meal-card {
+        animation: slideInUp 0.3s ease-out !important;
+    }
+    
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .meal-filter-buttons button {
+        animation: fadeInScale 0.2s ease-out !important;
+    }
+    
+    @keyframes fadeInScale {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+}
+
+/* Improved spacing for very small screens */
+@media (max-width: 360px) {
+    .meal-card {
+        padding: 0.875rem !important;
+        border-radius: 0.625rem !important;
+    }
+    
+    .meal-filter-buttons button {
+        font-size: 0.7rem !important;
+        padding: 0.4rem 0.5rem !important;
+        min-width: 50px !important;
+    }
+    
+    .meals-title-icon {
+        width: 1.75rem !important;
+        height: 1.75rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    .meals-title-text {
+        font-size: 1rem !important;
+    }
+    
+    .meals-count-text {
+        font-size: 0.7rem !important;
+    }
+}
+
+/* Enhanced hover effects for tablets */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .meal-card:hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    .meal-filter-buttons button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3) !important;
+    }
+}

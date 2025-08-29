@@ -119,9 +119,51 @@ export const AuthProvider = ({ children }) => {
                 return { success: false, error: errorMessage };
             }
         } catch (error) {
-            const errorMessage = error.response?.data?.message || t('registrationError');
-            setError(errorMessage);
-            return { success: false, error: errorMessage };
+            console.log('Registration error:', error);
+            console.log('Error response:', error.response);
+            
+            let errorMessage = t('registrationError');
+            let fieldErrors = {};
+            
+            // Handle validation errors (422)
+            if (error.response?.status === 422 && error.response?.data?.errors) {
+                const validationErrors = error.response.data.errors;
+                
+                // Map backend field names to frontend field names
+                if (validationErrors.email) {
+                    fieldErrors.email = validationErrors.email[0];
+                }
+                if (validationErrors.fullName) {
+                    fieldErrors.fullName = validationErrors.fullName[0];
+                }
+                if (validationErrors.password) {
+                    fieldErrors.password = validationErrors.password[0];
+                }
+                
+                // Set general error message
+                const errorMessages = Object.values(validationErrors).flat();
+                errorMessage = errorMessages.join(', ');
+                console.log('Validation errors:', errorMessages);
+                console.log('Field errors:', fieldErrors);
+                
+                // Set the general error message for display
+                setError(errorMessage);
+            }
+            // Handle specific error messages from backend
+            else if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+                console.log('Backend message:', errorMessage);
+                setError(errorMessage);
+            }
+            // Handle network or other errors
+            else if (error.message) {
+                errorMessage = error.message;
+                console.log('Network error:', errorMessage);
+                setError(errorMessage);
+            }
+            
+            console.log('Final error message:', errorMessage);
+            return { success: false, error: errorMessage, fieldErrors };
         }
     };
 

@@ -47,6 +47,85 @@ const styles = `
       width: 100% !important;
       min-width: auto !important;
     }
+    
+    /* تحسين عرض بطاقات الوجبات على الهاتف */
+    .meals-grid {
+      grid-template-columns: 1fr !important;
+      gap: 1rem !important;
+    }
+    
+    /* تحسين حجم الأزرار على الهاتف */
+    .meal-card {
+      padding: 1rem !important;
+      margin-bottom: 1rem !important;
+    }
+    
+    /* تحسين عرض أيقونات الوجبات */
+    .meal-icon {
+      width: 3rem !important;
+      height: 3rem !important;
+      font-size: 1.5rem !important;
+    }
+    
+    /* تحسين النصوص على الهاتف */
+    .meal-title {
+      font-size: 1rem !important;
+      line-height: 1.3 !important;
+    }
+    
+    .meal-description {
+      font-size: 0.75rem !important;
+      line-height: 1.4 !important;
+    }
+    
+    /* تحسين أزرار اختيار نوع الوجبة */
+    .meal-type-button {
+      padding: 0.75rem 1rem !important;
+      font-size: 0.875rem !important;
+      min-width: 100px !important;
+    }
+    
+    /* تحسين عرض التاريخ */
+    .date-input {
+      font-size: 1rem !important;
+      padding: 0.875rem !important;
+    }
+    
+    /* تحسين عرض رسائل الحالة */
+    .status-message {
+      padding: 1rem !important;
+      font-size: 0.875rem !important;
+    }
+  }
+  
+  /* تحسينات إضافية للشاشات الصغيرة جداً */
+  @media (max-width: 480px) {
+    .meal-filter-buttons {
+      gap: 0.5rem !important;
+    }
+    
+    .meal-card {
+      padding: 0.75rem !important;
+    }
+    
+    .meal-icon {
+      width: 2.5rem !important;
+      height: 2.5rem !important;
+      font-size: 1.25rem !important;
+    }
+    
+    .meal-title {
+      font-size: 0.875rem !important;
+    }
+    
+    .meal-description {
+      font-size: 0.7rem !important;
+    }
+    
+    .meal-type-button {
+      padding: 0.5rem 0.75rem !important;
+      font-size: 0.8rem !important;
+    }
   }
   
   @keyframes slideInUp {
@@ -68,6 +147,237 @@ const styles = `
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+  
+  /* تحسينات للهاتف - تحسين اللمس */
+  @media (max-width: 768px) {
+    button, input, select {
+      min-height: 44px !important;
+      touch-action: manipulation !important;
+    }
+    
+    .meal-card {
+      touch-action: manipulation !important;
+    }
+    
+    /* تحسين المسافات على الهاتف */
+    .restaurant-detail-container {
+      padding: 1rem !important;
+    }
+    
+    /* تحسين حجم الأزرار لللمس */
+    .meal-filter-button {
+      min-height: 48px !important;
+      padding: 0.75rem 1rem !important;
+    }
+    
+    /* تحسين عرض البطاقات */
+    .subscription-card {
+      margin-bottom: 1rem !important;
+    }
+    
+    /* تحسين عرض الرسائل */
+    .status-message {
+      margin-bottom: 1rem !important;
+    }
+  }
+  
+  /* تحسينات للشاشات الصغيرة جداً */
+  @media (max-width: 480px) {
+    .restaurant-detail-container {
+      padding: 0.5rem !important;
+    }
+    
+    .meal-card {
+      margin-bottom: 0.75rem !important;
+    }
+    
+    .subscription-card {
+      margin-bottom: 0.75rem !important;
+    }
+    
+    /* تحسين النصوص للقراءة */
+    h1, h2, h3 {
+      line-height: 1.2 !important;
+    }
+    
+    p {
+      line-height: 1.4 !important;
+    }
+  }
+  
+  /* تحسينات خاصة لبطاقات الاشتراك على الهاتف */
+  @media (max-width: 768px) {
+    .subscription-card {
+      min-height: 250px !important;
+      padding: 1.25rem !important;
+      margin-bottom: 1rem !important;
+    }
+    
+    .subscription-card .subscription-icon {
+      font-size: 2rem !important;
+      margin-bottom: 0.75rem !important;
+    }
+    
+    .subscription-card .subscription-title {
+      font-size: 1.125rem !important;
+      line-height: 1.3 !important;
+      margin-bottom: 0.25rem !important;
+    }
+    
+    .subscription-card .subscription-subtitle {
+      font-size: 0.75rem !important;
+      line-height: 1.4 !important;
+    }
+    
+    .subscription-card .subscription-price {
+      font-size: 1.5rem !important;
+    }
+    
+    .subscription-card .subscription-currency {
+      font-size: 0.75rem !important;
+    }
+    
+    .subscription-card .subscription-period {
+      font-size: 0.5rem !important;
+    }
+    
+    .subscription-card .delivery-info {
+      font-size: 0.5rem !important;
+    }
+    
+    .subscription-card .selection-button {
+      padding: 0.375rem 0.75rem !important;
+      font-size: 0.75rem !important;
+    }
+    
+    /* تحسين عرض البطاقات في الشبكة */
+    .subscription-grid {
+      grid-template-columns: 1fr !important;
+      gap: 1rem !important;
+      padding: 0 0.5rem !important;
+    }
+    
+    /* تحسين الشارات */
+    .popular-badge {
+      font-size: 0.5rem !important;
+      padding: 0.125rem 0.375rem !important;
+      top: 0.5rem !important;
+      left: 0.5rem !important;
+    }
+    
+    .selection-indicator {
+      width: 1.5rem !important;
+      height: 1.5rem !important;
+      font-size: 0.75rem !important;
+      top: 0.5rem !important;
+      right: 0.5rem !important;
+    }
+  }
+  
+  /* تحسينات إضافية للشاشات الصغيرة جداً */
+  @media (max-width: 480px) {
+    .subscription-card {
+      min-height: 220px !important;
+      padding: 1rem !important;
+    }
+    
+    .subscription-card .subscription-icon {
+      font-size: 1.75rem !important;
+      margin-bottom: 0.5rem !important;
+    }
+    
+    .subscription-card .subscription-title {
+      font-size: 1rem !important;
+    }
+    
+    .subscription-card .subscription-subtitle {
+      font-size: 0.7rem !important;
+    }
+    
+    .subscription-card .subscription-price {
+      font-size: 1.25rem !important;
+    }
+    
+    .subscription-card .subscription-currency {
+      font-size: 0.7rem !important;
+    }
+    
+    .subscription-card .subscription-period {
+      font-size: 0.45rem !important;
+    }
+    
+    .subscription-card .delivery-info {
+      font-size: 0.45rem !important;
+    }
+    
+    .subscription-card .selection-button {
+      padding: 0.25rem 0.5rem !important;
+      font-size: 0.7rem !important;
+    }
+    
+    .subscription-grid {
+      gap: 0.75rem !important;
+      padding: 0 0.25rem !important;
+    }
+    
+    .popular-badge {
+      font-size: 0.45rem !important;
+      padding: 0.1rem 0.25rem !important;
+    }
+    
+    .selection-indicator {
+      width: 1.25rem !important;
+      height: 1.25rem !important;
+      font-size: 0.6rem !important;
+    }
+  }
+  
+  /* تحسينات للتفاعل على الهاتف */
+  @media (max-width: 768px) {
+    .subscription-card {
+      touch-action: manipulation !important;
+      -webkit-tap-highlight-color: transparent !important;
+    }
+    
+    .subscription-card:active {
+      transform: scale(0.98) !important;
+      transition: transform 0.1s ease !important;
+    }
+    
+    .selection-button {
+      touch-action: manipulation !important;
+      -webkit-tap-highlight-color: transparent !important;
+    }
+    
+    .selection-button:active {
+      transform: scale(0.95) !important;
+      transition: transform 0.1s ease !important;
+    }
+    
+    /* تحسين المسافات لللمس */
+    .subscription-card {
+      margin-bottom: 1.5rem !important;
+    }
+    
+    /* تحسين عرض النصوص */
+    .subscription-title {
+      word-break: break-word !important;
+      hyphens: auto !important;
+    }
+    
+    .subscription-subtitle {
+      word-break: break-word !important;
+    }
+    
+    /* تحسين الألوان للقراءة */
+    .subscription-card {
+      background: rgba(255, 255, 255, 0.98) !important;
+    }
+    
+    .subscription-card:hover {
+      background: rgba(255, 255, 255, 1) !important;
     }
   }
 `;
@@ -196,10 +506,10 @@ const RestaurantDetail = () => {
   }
     }, [id, t, language]);
 
-  // Reset selected meals when restaurant changes
-  useEffect(() => {
-    setSelectedMeals({});
-  }, [id]);
+  // Reset selected meals when restaurant changes (disabled auto-scroll)
+  // useEffect(() => {
+  //   setSelectedMeals({});
+  // }, [id]);
 
   const handleSubscriptionTypeSelect = (subscriptionType) => {
     if (!isAuthenticated) {
@@ -207,16 +517,26 @@ const RestaurantDetail = () => {
       return;
     }
     
+    // Prevent auto-scroll by preventing default behavior
+    event?.preventDefault();
+    event?.stopPropagation();
+    
     setSelectedSubscriptionType(subscriptionType);
     setSelectedMeals({}); // Reset selected meals when changing subscription type
     setStartDate(''); // Reset start date when changing subscription type
     setMealTypeFilter(''); // Reset meal type filter when changing subscription type
+    
+    // Note: Auto-scroll has been disabled to prevent automatic scrolling when selecting subscription type
   };
 
   // دوال فلتر أنواع الوجبات
   const handleMealTypeFilter = (mealType) => {
     console.log('Meal type selected:', mealType);
     console.log('Current mealTypeFilter:', mealTypeFilter);
+    
+    // Prevent auto-scroll by preventing default behavior
+    event?.preventDefault();
+    event?.stopPropagation();
     
     // إذا كان نفس النوع مختار، قم بإلغاء الاختيار
     if (mealTypeFilter === mealType) {
@@ -230,42 +550,66 @@ const RestaurantDetail = () => {
     setShowMealTypeDropdown(false);
     // إعادة تعيين الوجبات المختارة فقط عند تغيير نوع الوجبة
     setSelectedMeals({});
+    
+    // Note: Auto-scroll has been disabled to prevent automatic scrolling when selecting meal type
   };
 
   const clearMealTypeFilter = () => {
+    // Prevent auto-scroll by preventing default behavior
+    event?.preventDefault();
+    event?.stopPropagation();
+    
     setMealTypeFilter('');
     setShowMealTypeDropdown(false);
     // إعادة تعيين الوجبات المختارة فقط عند إلغاء الفلتر
     setSelectedMeals({});
+    
+    // Note: Auto-scroll has been disabled to prevent automatic scrolling when clearing meal type filter
   };
 
   const getSelectedMealTypeText = () => {
+    // Prevent auto-scroll by preventing default behavior
+    event?.preventDefault();
+    event?.stopPropagation();
+    
     if (!mealTypeFilter) return language === 'ar' ? 'اختر نوع الوجبة' : 'Select Meal Type';
     return mealTypeNames[language][mealTypeFilter] || mealTypeFilter;
   };
 
   // فلترة الوجبات حسب النوع المختار - لا تسمح بعرض جميع الوجبات
-  const filteredMeals = meals.filter(meal => {
-    if (!mealTypeFilter) return false; // لا تعرض أي وجبات إذا لم يتم اختيار نوع
-    return meal.meal_type === mealTypeFilter;
-  });
+  const filteredMeals = React.useMemo(() => {
+    // Prevent auto-scroll by preventing default behavior
+    event?.preventDefault();
+    event?.stopPropagation();
+    
+    return meals.filter(meal => {
+      if (!mealTypeFilter) return false; // لا تعرض أي وجبات إذا لم يتم اختيار نوع
+      return meal.meal_type === mealTypeFilter;
+    });
+  }, [meals, mealTypeFilter]);
 
   // الحصول على أنواع الوجبات المتاحة
-  const availableMealTypes = [...new Set(meals.map(meal => meal.meal_type))];
+  const availableMealTypes = React.useMemo(() => {
+    // Prevent auto-scroll by preventing default behavior
+    event?.preventDefault();
+    event?.stopPropagation();
+    
+    return [...new Set(meals.map(meal => meal.meal_type))];
+  }, [meals]);
   console.log('Available meal types:', availableMealTypes);
   console.log('Meals data:', meals);
 
-  // الاختيار التلقائي إذا كان هناك نوع واحد فقط
-  useEffect(() => {
-    if (availableMealTypes.length === 1 && !mealTypeFilter) {
-      setMealTypeFilter(availableMealTypes[0]);
-    }
-  }, [availableMealTypes, mealTypeFilter]);
+  // الاختيار التلقائي إذا كان هناك نوع واحد فقط (disabled to prevent auto-scroll)
+  // useEffect(() => {
+  //   if (availableMealTypes.length === 1 && !mealTypeFilter) {
+  //     setMealTypeFilter(availableMealTypes[0]);
+  //   }
+  // }, [availableMealTypes, mealTypeFilter]);
 
-  // Reset selected meals when start date changes
-  useEffect(() => {
-    setSelectedMeals({});
-  }, [startDate]);
+  // Reset selected meals when start date changes (disabled auto-scroll)
+  // useEffect(() => {
+  //   setSelectedMeals({});
+  // }, [startDate]);
 
   // إغلاق القائمة المنسدلة عند النقر خارجها
   useEffect(() => {
@@ -290,27 +634,31 @@ const RestaurantDetail = () => {
 
 
 
-  // Focus on first meal when date changes
-  useEffect(() => {
-    if (startDate && meals.length > 0) {
-      // Wait for the meals to be rendered
-      setTimeout(() => {
-        // Find the first meal element and scroll to it smoothly
-        const firstMealElement = document.querySelector('[data-meal-day="sunday"]');
-        if (firstMealElement) {
-          firstMealElement.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start',
-            inline: 'nearest'
-          });
-        }
-      }, 150);
-    }
-  }, [startDate, meals]);
+  // Focus on first meal when date changes (disabled auto-scroll)
+  // useEffect(() => {
+  //   if (startDate && meals.length > 0) {
+  //     // Wait for the meals to be rendered
+  //     setTimeout(() => {
+  //       // Find the first meal element and scroll to it smoothly
+  //       const firstMealElement = document.querySelector('[data-meal-day="sunday"]');
+  //       if (firstMealElement) {
+  //         firstMealElement.scrollIntoView({ 
+  //           behavior: 'smooth', 
+  //           block: 'start',
+  //           inline: 'nearest'
+  //         });
+  //       }
+  //     }, 150);
+  //   }
+  // }, [startDate, meals]);
 
 
 
   const handleMealSelection = (dayKey, meal) => {
+    // Prevent auto-scroll by preventing default behavior
+    event?.preventDefault();
+    event?.stopPropagation();
+    
     const currentSelectedCount = Object.keys(selectedMeals).length;
     const maxAllowed = selectedSubscriptionType?.meals_count || 0;
     
@@ -342,9 +690,15 @@ const RestaurantDetail = () => {
     if (errors.meals) {
       setErrors(prev => ({ ...prev, meals: '' }));
     }
+    
+    // Note: Auto-scroll has been disabled to prevent automatic scrolling when selecting meals
   };
 
   const handleContinueToSubscription = () => {
+    // Prevent auto-scroll by preventing default behavior
+    event?.preventDefault();
+    event?.stopPropagation();
+    
     const newErrors = {};
     
     if (!startDate) {
@@ -377,6 +731,7 @@ const RestaurantDetail = () => {
     }));
     const mealsData = JSON.stringify(selectedMealsWithDays);
     const subscriptionUrl = `/subscribe/${id}/${selectedSubscriptionType.type}/${startDate}/${encodeURIComponent(mealsData)}`;
+    
     navigate(subscriptionUrl);
   };
 
@@ -405,6 +760,10 @@ const RestaurantDetail = () => {
 
   // Function to set a valid date and clear errors
   const setValidDate = (date) => {
+    // Prevent auto-scroll by preventing default behavior
+    event?.preventDefault();
+    event?.stopPropagation();
+    
     setStartDate(date);
     setSelectedMeals({});
     setErrors(prev => ({ ...prev, startDate: '' })); // Clear error message
@@ -642,14 +1001,14 @@ const RestaurantDetail = () => {
   }
 
   return (
-    <div style={{ 
+    <div className="restaurant-detail-container" style={{ 
       minHeight: '100vh', 
       background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',
       direction: dir,
       overflowX: 'hidden',
       position: 'relative'
     }}>
-      {/* Simple Background Elements */}
+      {/* Subtle Background Elements */}
       <div style={{
         position: 'absolute',
         top: 0,
@@ -666,7 +1025,7 @@ const RestaurantDetail = () => {
           left: '10%',
           width: '100px',
           height: '100px',
-          background: 'radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(79, 70, 229, 0.05) 0%, transparent 70%)',
           borderRadius: '50%'
         }}></div>
         <div style={{
@@ -675,7 +1034,7 @@ const RestaurantDetail = () => {
           right: '15%',
           width: '80px',
           height: '80px',
-          background: 'radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(139, 92, 246, 0.03) 0%, transparent 70%)',
           borderRadius: '50%'
         }}></div>
         <div style={{
@@ -684,12 +1043,21 @@ const RestaurantDetail = () => {
           left: '20%',
           width: '120px',
           height: '120px',
-          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.04) 0%, transparent 70%)',
           borderRadius: '50%'
         }}></div>
       </div>
       {/* Restaurant Info */}
-      <div style={{ maxWidth: '80rem', margin: '0 auto', padding: 'clamp(0.5rem, 3vw, 1rem)', position: 'relative', zIndex: 1 }}>
+      <div style={{ 
+        maxWidth: '80rem', 
+        margin: '0 auto', 
+        padding: 'clamp(0.5rem, 3vw, 1rem)', 
+        position: 'relative', 
+        zIndex: 1,
+        '@media (max-width: 768px)': {
+          padding: '0.5rem'
+        }
+      }}>
         <div style={{
           background: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(20px)',
@@ -699,29 +1067,14 @@ const RestaurantDetail = () => {
           boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
           border: '1px solid rgba(229, 231, 235, 0.5)',
           position: 'relative',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          '@media (max-width: 768px)': {
+            padding: '1rem',
+            marginBottom: '1rem',
+            borderRadius: '1rem'
+          }
         }}>
-          {/* Simple Decorative Elements */}
-          <div style={{
-            position: 'absolute',
-            top: '-50px',
-            right: '-50px',
-            width: '200px',
-            height: '200px',
-            background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(99, 102, 241, 0.1))',
-            borderRadius: '50%',
-            filter: 'blur(40px)'
-          }}></div>
-          <div style={{
-            position: 'absolute',
-            bottom: '-30px',
-            left: '-30px',
-            width: '150px',
-            height: '150px',
-            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(168, 85, 247, 0.08))',
-            borderRadius: '50%',
-            filter: 'blur(30px)'
-          }}></div>
+
           <div style={{ 
             display: 'flex', 
             flexDirection: 'column',
@@ -832,7 +1185,12 @@ const RestaurantDetail = () => {
           boxShadow: '0 25px 50px rgba(0, 0, 0, 0.1)',
           border: '1px solid rgba(229, 231, 235, 0.5)',
           position: 'relative',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          '@media (max-width: 768px)': {
+            padding: '1rem',
+            marginBottom: '1.5rem',
+            borderRadius: '1rem'
+          }
         }}>
           {/* Decorative Background */}
           <div style={{
@@ -856,7 +1214,7 @@ const RestaurantDetail = () => {
           
           {/* Selection Instructions */}
           <div style={{
-            background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(99, 102, 241, 0.1))',
+            background: 'rgba(255, 255, 255, 0.9)',
             border: '2px solid rgba(79, 70, 229, 0.2)',
             borderRadius: 'clamp(0.5rem, 2vw, 1rem)',
             padding: 'clamp(0.75rem, 3vw, 1rem) clamp(1rem, 4vw, 1.5rem)',
@@ -880,9 +1238,10 @@ const RestaurantDetail = () => {
               </span>
             </div>
             <p style={{ 
-              fontSize: '0.875rem', 
+              fontSize: '1rem', 
               color: 'rgb(107, 114, 128)',
-              margin: 0
+              margin: 0,
+              fontWeight: '500'
             }}>
               {language === 'ar' 
                 ? 'اضغط على البطاقة المفضلة لديك للمتابعة' 
@@ -902,11 +1261,16 @@ const RestaurantDetail = () => {
             {t('selectSubscriptionTypeMessage', { restaurantName: restaurant.name || (language === 'ar' ? restaurant.name_ar : restaurant.name_en) })}
           </p>
           
-          <div style={{ 
+          <div className="subscription-grid" style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fit, minmax(clamp(250px, 90vw, 280px), 1fr))', 
             gap: 'clamp(1rem, 3vw, 1.25rem)',
-            padding: '0 clamp(0.25rem, 2vw, 0.5rem)'
+            padding: '0 clamp(0.25rem, 2vw, 0.5rem)',
+            '@media (max-width: 768px)': {
+              gridTemplateColumns: '1fr',
+              gap: '1rem',
+              padding: '0'
+            }
           }}>
             {subscriptionTypes.map((subscriptionType) => {
               const subscription = {
@@ -935,6 +1299,7 @@ const RestaurantDetail = () => {
               return (
               <div 
                 key={subscription.type}
+                className="subscription-card"
                 onClick={() => handleSubscriptionTypeSelect(subscriptionType)}
                 style={{
                   background: selectedSubscriptionType?.type === subscription.type 
@@ -955,7 +1320,11 @@ const RestaurantDetail = () => {
                   minHeight: 'clamp(280px, 60vh, 320px)',
                   display: 'flex',
                   flexDirection: 'column',
-                  backdropFilter: 'blur(20px)'
+                  backdropFilter: 'blur(20px)',
+                  '@media (max-width: 768px)': {
+                    minHeight: 'auto',
+                    padding: '1.5rem'
+                  }
                 }}
                 onMouseEnter={(e) => {
                   if (selectedSubscriptionType?.type !== subscription.type) {
@@ -976,16 +1345,16 @@ const RestaurantDetail = () => {
               >
                                  {/* Popular Badge for Monthly */}
                  {subscription.type === 'monthly' && (
-                   <div style={{
+                   <div className="popular-badge" style={{
                      position: 'absolute',
                      top: '0.75rem',
                      left: '0.75rem',
                      background: subscription.gradient,
                      color: 'white',
-                     padding: '0.25rem 0.5rem',
+                     padding: '0.5rem 0.75rem',
                      borderRadius: '0.75rem',
-                     fontSize: '0.625rem',
-                     fontWeight: '500',
+                     fontSize: '0.875rem',
+                     fontWeight: '600',
                      zIndex: 2
                    }}>
                      {t('mostPopular')}
@@ -994,7 +1363,7 @@ const RestaurantDetail = () => {
 
                 {/* Selection Indicator */}
                 {selectedSubscriptionType?.type === subscription.type && (
-                  <div style={{
+                  <div className="selection-indicator" style={{
                     position: 'absolute',
                     top: '1rem',
                     right: '1rem',
@@ -1018,7 +1387,7 @@ const RestaurantDetail = () => {
 
                 {/* Click to Select Indicator */}
                 {selectedSubscriptionType?.type !== subscription.type && (
-                  <div style={{
+                  <div className="selection-indicator" style={{
                     position: 'absolute',
                     top: '1rem',
                     right: '1rem',
@@ -1042,7 +1411,7 @@ const RestaurantDetail = () => {
 
                 {/* Header Section */}
                 <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-                  <div style={{ 
+                  <div className="subscription-icon" style={{ 
                     fontSize: '2.5rem', 
                     marginBottom: '1rem',
                     filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
@@ -1051,7 +1420,7 @@ const RestaurantDetail = () => {
                     {subscription.icon}
                   </div>
                   
-                  <h3 style={{ 
+                  <h3 className="subscription-title" style={{ 
                     fontSize: '1.375rem', 
                     fontWeight: '700', 
                     marginBottom: '0.375rem',
@@ -1063,11 +1432,12 @@ const RestaurantDetail = () => {
                     {subscription.title}
                   </h3>
                   
-                  <p style={{ 
-                    fontSize: '0.875rem', 
+                  <p className="subscription-subtitle" style={{ 
+                    fontSize: '1rem', 
                     color: 'rgb(107 114 128)', 
                     marginBottom: '0',
-                    lineHeight: '1.4'
+                    lineHeight: '1.5',
+                    fontWeight: '500'
                   }}>
                     {subscription.subtitle}
                   </p>
@@ -1085,34 +1455,34 @@ const RestaurantDetail = () => {
                     gap: '0.25rem',
                     marginBottom: '0.125rem'
                   }}>
-                    <span style={{ 
+                    <span className="subscription-price" style={{ 
                       fontSize: '1.75rem', 
                       fontWeight: '700', 
                       color: subscription.borderColor
                     }}>
                       {subscription.price}
                     </span>
-                    <span style={{ 
-                      fontSize: '0.875rem', 
-                      fontWeight: '500',
+                    <span className="subscription-currency" style={{ 
+                      fontSize: '1rem', 
+                      fontWeight: '600',
                       color: 'rgb(107 114 128)'
                     }}>
                       {subscription.currency}
                     </span>
                   </div>
-                  <div style={{ 
-                    fontSize: '0.625rem', 
+                  <div className="subscription-period" style={{ 
+                    fontSize: '0.875rem', 
                     color: 'rgb(156 163 175)',
-                    fontWeight: '400',
-                    marginBottom: '0.25rem'
+                    fontWeight: '500',
+                    marginBottom: '0.5rem'
                   }}>
                     {subscription.period}
                   </div>
                   {/* Delivery Price Info */}
-                  <div style={{ 
-                    fontSize: '0.625rem', 
+                  <div className="delivery-info" style={{ 
+                    fontSize: '0.875rem', 
                     color: subscription.deliveryPrice > 0 ? 'rgb(245 158 11)' : 'rgb(34 197 94)',
-                    fontWeight: '500'
+                    fontWeight: '600'
                   }}>
                     {subscription.deliveryPrice > 0 
                       ? `${language === 'ar' ? 'توصيل' : 'Delivery'}: ${subscription.deliveryPrice} ${subscription.currency}`
@@ -1128,12 +1498,12 @@ const RestaurantDetail = () => {
                   paddingTop: '1rem'
                 }}>
                   {selectedSubscriptionType?.type === subscription.type ? (
-                    <div style={{
+                    <div className="selection-button" style={{
                       background: subscription.borderColor,
                       color: 'white',
-                      padding: '0.5rem 1rem',
+                      padding: '0.75rem 1.25rem',
                       borderRadius: '2rem',
-                      fontSize: '0.875rem',
+                      fontSize: '1rem',
                       fontWeight: '600',
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -1144,12 +1514,12 @@ const RestaurantDetail = () => {
                       {language === 'ar' ? 'تم الاختيار' : 'Selected'}
                     </div>
                   ) : (
-                    <div style={{
+                    <div className="selection-button" style={{
                       background: 'rgba(79, 70, 229, 0.1)',
                       color: 'rgb(79, 70, 229)',
-                      padding: '0.5rem 1rem',
+                      padding: '0.75rem 1.25rem',
                       borderRadius: '2rem',
-                      fontSize: '0.875rem',
+                      fontSize: '1rem',
                       fontWeight: '600',
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -1181,18 +1551,13 @@ const RestaurantDetail = () => {
             border: '1px solid rgba(229, 231, 235, 0.5)',
             animation: 'slideIn 0.5s ease-out',
             position: 'relative',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            '@media (max-width: 768px)': {
+              padding: '1rem',
+              borderRadius: '1rem'
+            }
           }}>
-            {/* Decorative Background */}
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.02), rgba(5, 150, 105, 0.02))',
-              opacity: 0.5
-            }}></div>
+
             <h2 style={{ 
               fontSize: 'clamp(1.5rem, 4vw, 2rem)', 
               fontWeight: 'bold', 
@@ -1237,7 +1602,11 @@ const RestaurantDetail = () => {
                 maxWidth: '500px',
                 margin: '0 auto 2rem auto',
                 position: 'relative',
-                zIndex: 5
+                zIndex: 5,
+                '@media (max-width: 768px)': {
+                  padding: '1rem',
+                  marginBottom: '1rem'
+                }
               }}>
                 {/* Header */}
                 <div style={{ 
@@ -1301,6 +1670,7 @@ const RestaurantDetail = () => {
                       }
                     }} 
                     min={getNextValidDate()} 
+                    className="date-input"
                     style={{ 
                       width: '100%', 
                       padding: '0.75rem', 
@@ -1330,7 +1700,12 @@ const RestaurantDetail = () => {
                       userSelect: 'none',
                       WebkitTapHighlightColor: 'transparent',
                       WebkitTouchCallout: 'none',
-                      WebkitOverflowScrolling: 'touch'
+                      WebkitOverflowScrolling: 'touch',
+                      '@media (max-width: 768px)': {
+                        padding: '1rem',
+                        fontSize: '1rem',
+                        minHeight: '48px'
+                      }
                     }} 
                     onFocus={(e) => {
                       e.target.style.borderColor = '#3b82f6';
@@ -1453,7 +1828,11 @@ const RestaurantDetail = () => {
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                 border: '1px solid #e5e7eb',
                 position: 'relative',
-                zIndex: 5
+                zIndex: 5,
+                '@media (max-width: 768px)': {
+                  padding: '1rem',
+                  marginBottom: '1rem'
+                }
               }}>
                 {/* Header */}
                 <div style={{ 
@@ -1502,7 +1881,11 @@ const RestaurantDetail = () => {
                   justifyContent: 'center',
                   flexWrap: 'wrap',
                   position: 'relative',
-                  zIndex: 10
+                  zIndex: 10,
+                  '@media (max-width: 768px)': {
+                    flexDirection: 'column',
+                    gap: '0.75rem'
+                  }
                 }}>
                   {availableMealTypes.length > 0 ? availableMealTypes.map(mealType => {
                     const isSelected = mealTypeFilter === mealType;
@@ -1519,7 +1902,7 @@ const RestaurantDetail = () => {
                           console.log('Button clicked:', mealType);
                           handleMealTypeFilter(mealType);
                         }}
-                        className="meal-filter-button"
+                        className="meal-filter-button meal-type-button"
                         style={{
                           background: isSelected ? '#10b981' : 'white',
                           color: isSelected ? 'white' : '#374151',
@@ -1541,7 +1924,14 @@ const RestaurantDetail = () => {
                           userSelect: 'none',
                           WebkitUserSelect: 'none',
                           MozUserSelect: 'none',
-                          msUserSelect: 'none'
+                          msUserSelect: 'none',
+                          '@media (max-width: 768px)': {
+                            minWidth: 'auto',
+                            width: '100%',
+                            padding: '1rem',
+                            fontSize: '1rem',
+                            minHeight: '48px'
+                          }
                         }}
                         onMouseEnter={(e) => {
                           if (!isSelected) {
@@ -1580,7 +1970,7 @@ const RestaurantDetail = () => {
 
                 {/* Selection Status */}
                 {mealTypeFilter && (
-                  <div style={{
+                  <div className="status-message" style={{
                     marginTop: '1.5rem',
                     padding: '0.75rem',
                     background: '#f0fdf4',
@@ -1610,7 +2000,7 @@ const RestaurantDetail = () => {
 
             {/* No Meals Available Message */}
             {selectedSubscriptionType && meals.length === 0 && (
-              <div style={{ 
+              <div className="status-message" style={{ 
                 textAlign: 'center', 
                 padding: '2rem',
                 background: 'white',
@@ -1635,7 +2025,7 @@ const RestaurantDetail = () => {
             
             {/* Status Messages */}
             {selectedSubscriptionType && meals.length > 0 && !mealTypeFilter && (
-              <div style={{ 
+              <div className="status-message" style={{ 
                 textAlign: 'center', 
                 padding: '2rem',
                 background: 'white',
@@ -1659,7 +2049,7 @@ const RestaurantDetail = () => {
             )}
 
             {selectedSubscriptionType && meals.length > 0 && mealTypeFilter && !startDate && (
-              <div style={{ 
+              <div className="status-message" style={{ 
                 textAlign: 'center', 
                 padding: '2rem',
                 background: 'white',
@@ -1683,7 +2073,7 @@ const RestaurantDetail = () => {
             )}
 
             {selectedSubscriptionType && meals.length > 0 && mealTypeFilter && startDate && filteredMeals.length === 0 && (
-              <div style={{ 
+              <div className="status-message" style={{ 
                 textAlign: 'center', 
                 padding: '2rem',
                 background: 'white',
@@ -1717,7 +2107,7 @@ const RestaurantDetail = () => {
               >
                 {/* Meals Selection Counter */}
                 <div style={{
-                  background: 'linear-gradient(135deg, #f0fdf4, #dcfce7)',
+                  background: 'rgba(255, 255, 255, 0.9)',
                   borderRadius: '1rem',
                   padding: '1rem',
                   border: '1px solid #10b981',
@@ -1747,7 +2137,11 @@ const RestaurantDetail = () => {
                       background: 'rgba(249, 250, 251, 0.8)',
                       borderRadius: '1rem',
                       padding: '1.5rem',
-                      border: '1px solid rgba(229, 231, 235, 0.5)'
+                      border: '1px solid rgba(229, 231, 235, 0.5)',
+                      '@media (max-width: 768px)': {
+                        padding: '1rem',
+                        borderRadius: '0.75rem'
+                      }
                     }}
                   >
                     {/* Day Header */}
@@ -1763,7 +2157,14 @@ const RestaurantDetail = () => {
                       borderRadius: '0.75rem',
                       border: selectedSubscriptionType?.type === 'monthly' && day.weekNumber
                         ? `1px solid ${day.weekNumber === 1 ? 'rgba(16, 185, 129, 0.3)' : day.weekNumber === 2 ? 'rgba(59, 130, 246, 0.3)' : day.weekNumber === 3 ? 'rgba(168, 85, 247, 0.3)' : 'rgba(236, 72, 153, 0.3)'}`
-                        : '1px solid rgba(229, 231, 235, 0.3)'
+                        : '1px solid rgba(229, 231, 235, 0.3)',
+                      '@media (max-width: 768px)': {
+                        flexDirection: 'column',
+                        gap: '0.5rem',
+                        marginBottom: '1rem',
+                        padding: '1rem',
+                        textAlign: 'center'
+                      }
                     }}>
                       <div style={{ fontSize: '1.5rem' }}>{day.icon}</div>
                       <div style={{ flex: 1 }}>
@@ -1809,18 +2210,23 @@ const RestaurantDetail = () => {
                     </div>
 
                     {/* Meals Grid */}
-                    <div style={{ 
+                    <div                     className="meals-grid"
+                    style={{ 
                       display: 'grid', 
                       gridTemplateColumns: 'repeat(auto-fit, minmax(clamp(250px, 90vw, 280px), 1fr))', 
-                      gap: 'clamp(0.75rem, 3vw, 1rem)'
+                      gap: 'clamp(0.75rem, 3vw, 1rem)',
+                      '@media (max-width: 768px)': {
+                        gridTemplateColumns: '1fr',
+                        gap: '0.75rem'
+                      }
                     }}>
                       {filteredMeals.map((meal) => {
                         const isSelected = getSelectedMealForDay(day.key)?.id === meal.id;
                         return (
-                                                    <div key={meal.id} style={{
+                                                    <div key={meal.id} className="meal-card" style={{
                             background: isSelected 
-                              ? 'linear-gradient(135deg, #f0fdf4, #dcfce7)' 
-                              : 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95))',
+                              ? 'rgba(240, 253, 244, 0.95)' 
+                              : 'rgba(255, 255, 255, 0.95)',
                             borderRadius: 'clamp(0.75rem, 3vw, 1.25rem)',
                             padding: 'clamp(1.25rem, 4vw, 1.75rem)',
                             boxShadow: isSelected 
@@ -1833,7 +2239,11 @@ const RestaurantDetail = () => {
                             cursor: 'pointer',
                             position: 'relative',
                             overflow: 'hidden',
-                            backdropFilter: 'blur(20px)'
+                            backdropFilter: 'blur(20px)',
+                            '@media (max-width: 768px)': {
+                              padding: '1rem',
+                              borderRadius: '1rem'
+                            }
                           }}
                             onClick={() => handleMealSelection(day.key, meal)}
                             onMouseEnter={(e) => {
@@ -1841,7 +2251,7 @@ const RestaurantDetail = () => {
                                 e.target.style.transform = 'translateY(-8px) scale(1.02)';
                                 e.target.style.boxShadow = '0 20px 40px rgba(16, 185, 129, 0.15)';
                                 e.target.style.borderColor = '#10b981';
-                                e.target.style.background = 'linear-gradient(135deg, #f0fdf4, #dcfce7)';
+                                e.target.style.background = 'rgba(240, 253, 244, 0.95)';
                               }
                             }}
                             onMouseLeave={(e) => {
@@ -1849,7 +2259,7 @@ const RestaurantDetail = () => {
                                 e.target.style.transform = 'translateY(0) scale(1)';
                                 e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.12)';
                                 e.target.style.borderColor = 'rgba(79, 70, 229, 0.2)';
-                                e.target.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95))';
+                                e.target.style.background = 'rgba(255, 255, 255, 0.95)';
                               }
                             }}>
                             {isSelected && (
@@ -1896,13 +2306,13 @@ const RestaurantDetail = () => {
                               </div>
                             )}
                             
-                            <div style={{ 
+                            <div className="meal-icon" style={{ 
                               fontSize: 'clamp(2rem, 6vw, 3rem)', 
                               marginBottom: 'clamp(0.5rem, 2vw, 1rem)',
                               filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))',
                               background: isSelected 
-                                ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.15))'
-                                : 'linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(99, 102, 241, 0.1))',
+                                ? 'rgba(16, 185, 129, 0.1)'
+                                : 'rgba(79, 70, 229, 0.05)',
                               borderRadius: '50%',
                               width: 'clamp(3.5rem, 10vw, 5rem)',
                               height: 'clamp(3.5rem, 10vw, 5rem)',
@@ -1917,7 +2327,7 @@ const RestaurantDetail = () => {
                             }}>
                               🍽️
                             </div>
-                                                          <h4 style={{ 
+                                                          <h4 className="meal-title" style={{ 
                                 fontSize: 'clamp(0.875rem, 3vw, 1rem)', 
                                 fontWeight: '600', 
                                 marginBottom: 'clamp(0.25rem, 2vw, 0.5rem)',
@@ -1926,7 +2336,7 @@ const RestaurantDetail = () => {
                               }}>
                                 {language === 'ar' ? meal.name_ar : meal.name_en}
                               </h4>
-                              <p style={{ 
+                              <p className="meal-description" style={{ 
                                 fontSize: 'clamp(0.625rem, 2.5vw, 0.75rem)', 
                                 color: 'rgb(75 85 99)', 
                                 marginBottom: 'clamp(0.75rem, 3vw, 1rem)',

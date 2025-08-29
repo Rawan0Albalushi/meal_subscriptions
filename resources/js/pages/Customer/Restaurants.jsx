@@ -215,7 +215,12 @@ const Restaurants = () => {
           marginBottom: '2rem',
           boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
           position: 'relative',
-          zIndex: 10
+          zIndex: 10,
+          '@media (max-width: 768px)': {
+            padding: '1rem',
+            marginBottom: '1.5rem',
+            zIndex: 9997
+          }
         }}>
           <div style={{ 
             display: 'flex', 
@@ -223,7 +228,13 @@ const Restaurants = () => {
             alignItems: 'center', 
             marginBottom: '1.5rem',
             flexWrap: 'wrap',
-            gap: '1rem'
+            gap: '1rem',
+            '@media (max-width: 768px)': {
+              flexDirection: 'column',
+              alignItems: 'stretch',
+              gap: '0.75rem',
+              marginBottom: '1rem'
+            }
           }}>
             <h2 style={{
               fontSize: '1.25rem',
@@ -262,10 +273,19 @@ const Restaurants = () => {
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: '1.5rem'
+            gap: '1.5rem',
+            '@media (max-width: 768px)': {
+              gridTemplateColumns: '1fr',
+              gap: '1rem'
+            }
           }}>
             {/* Location Filter Dropdown */}
-            <div style={{ position: 'relative' }}>
+            <div style={{ 
+              position: 'relative',
+              '@media (max-width: 768px)': {
+                marginBottom: showLocationDropdown ? '3rem' : '0'
+              }
+            }}>
               <h3 style={{
                 fontSize: '1rem',
                 fontWeight: '600',
@@ -277,7 +297,12 @@ const Restaurants = () => {
               <div style={{ position: 'relative' }}>
                 <button
                   id="location-button"
-                  onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+                  onClick={() => {
+                    setShowLocationDropdown(!showLocationDropdown);
+                    if (showMealTypeDropdown) {
+                      setShowMealTypeDropdown(false);
+                    }
+                  }}
                   style={{
                     width: '100%',
                     padding: '0.875rem 1rem',
@@ -292,7 +317,12 @@ const Restaurants = () => {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    textAlign: dir === 'rtl' ? 'right' : 'left'
+                    textAlign: dir === 'rtl' ? 'right' : 'left',
+                    '@media (max-width: 768px)': {
+                      padding: '1rem',
+                      fontSize: '1rem',
+                      minHeight: '48px'
+                    }
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.borderColor = 'rgb(79 70 229)';
@@ -337,7 +367,19 @@ const Restaurants = () => {
                       zIndex: 1001,
                       maxHeight: '200px',
                       overflowY: 'auto',
-                      marginTop: '0.25rem'
+                      marginTop: '0.25rem',
+                      '@media (max-width: 768px)': {
+                        zIndex: 9999,
+                        maxHeight: '150px',
+                        position: 'fixed',
+                        top: '50%',
+                        left: '1rem',
+                        right: '1rem',
+                        transform: 'translateY(-50%)',
+                        marginTop: '0',
+                        marginBottom: '0',
+                        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
+                      }
                     }}>
                     <div
                       style={{
@@ -348,7 +390,14 @@ const Restaurants = () => {
                         fontSize: '0.875rem',
                         color: 'rgb(75 85 99)',
                         fontWeight: '500',
-                        textAlign: dir === 'rtl' ? 'right' : 'left'
+                        textAlign: dir === 'rtl' ? 'right' : 'left',
+                        '@media (max-width: 768px)': {
+                          padding: '0.75rem 1rem',
+                          fontSize: '1rem',
+                          minHeight: '44px',
+                          display: 'flex',
+                          alignItems: 'center'
+                        }
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.backgroundColor = 'rgb(249 250 251)';
@@ -375,7 +424,14 @@ const Restaurants = () => {
                           color: filters.locations === location ? 'rgb(79 70 229)' : 'rgb(75 85 99)',
                           fontWeight: filters.locations === location ? '600' : '500',
                           backgroundColor: filters.locations === location ? 'rgb(238 242 255)' : 'transparent',
-                          textAlign: dir === 'rtl' ? 'right' : 'left'
+                          textAlign: dir === 'rtl' ? 'right' : 'left',
+                          '@media (max-width: 768px)': {
+                            padding: '0.875rem 1rem',
+                            fontSize: '1rem',
+                            minHeight: '48px',
+                            display: 'flex',
+                            alignItems: 'center'
+                          }
                         }}
                         onMouseEnter={(e) => {
                           if (filters.locations !== location) {
@@ -402,7 +458,12 @@ const Restaurants = () => {
             </div>
 
             {/* Meal Type Filter Dropdown */}
-            <div style={{ position: 'relative' }}>
+            <div style={{ 
+              position: 'relative',
+              '@media (max-width: 768px)': {
+                marginBottom: showMealTypeDropdown ? '3rem' : '0'
+              }
+            }}>
               <h3 style={{
                 fontSize: '1rem',
                 fontWeight: '600',
@@ -414,7 +475,12 @@ const Restaurants = () => {
               <div style={{ position: 'relative' }}>
                 <button
                   id="meal-type-button"
-                  onClick={() => setShowMealTypeDropdown(!showMealTypeDropdown)}
+                  onClick={() => {
+                    setShowMealTypeDropdown(!showMealTypeDropdown);
+                    if (showLocationDropdown) {
+                      setShowLocationDropdown(false);
+                    }
+                  }}
                   style={{
                     width: '100%',
                     padding: '0.875rem 1rem',
@@ -429,7 +495,12 @@ const Restaurants = () => {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    textAlign: dir === 'rtl' ? 'right' : 'left'
+                    textAlign: dir === 'rtl' ? 'right' : 'left',
+                    '@media (max-width: 768px)': {
+                      padding: '1rem',
+                      fontSize: '1rem',
+                      minHeight: '48px'
+                    }
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.borderColor = 'rgb(34 197 94)';
@@ -471,10 +542,22 @@ const Restaurants = () => {
                       borderRadius: '0.5rem',
                       border: '2px solid rgb(209 213 219)',
                       boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
-                      zIndex: 1001,
+                      zIndex: 1002,
                       maxHeight: '200px',
                       overflowY: 'auto',
-                      marginTop: '0.25rem'
+                      marginTop: '0.25rem',
+                      '@media (max-width: 768px)': {
+                        zIndex: 9998,
+                        maxHeight: '150px',
+                        position: 'fixed',
+                        top: '50%',
+                        left: '1rem',
+                        right: '1rem',
+                        transform: 'translateY(-50%)',
+                        marginTop: '0',
+                        marginBottom: '0',
+                        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
+                      }
                     }}>
                     <div
                       style={{
@@ -485,7 +568,14 @@ const Restaurants = () => {
                         fontSize: '0.875rem',
                         color: 'rgb(75 85 99)',
                         fontWeight: '500',
-                        textAlign: dir === 'rtl' ? 'right' : 'left'
+                        textAlign: dir === 'rtl' ? 'right' : 'left',
+                        '@media (max-width: 768px)': {
+                          padding: '0.75rem 1rem',
+                          fontSize: '1rem',
+                          minHeight: '44px',
+                          display: 'flex',
+                          alignItems: 'center'
+                        }
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.backgroundColor = 'rgb(249 250 251)';
@@ -512,7 +602,14 @@ const Restaurants = () => {
                           color: filters.meal_types === mealType ? 'rgb(34 197 94)' : 'rgb(75 85 99)',
                           fontWeight: filters.meal_types === mealType ? '600' : '500',
                           backgroundColor: filters.meal_types === mealType ? 'rgb(240 253 244)' : 'transparent',
-                          textAlign: dir === 'rtl' ? 'right' : 'left'
+                          textAlign: dir === 'rtl' ? 'right' : 'left',
+                          '@media (max-width: 768px)': {
+                            padding: '0.875rem 1rem',
+                            fontSize: '1rem',
+                            minHeight: '48px',
+                            display: 'flex',
+                            alignItems: 'center'
+                          }
                         }}
                         onMouseEnter={(e) => {
                           if (filters.meal_types !== mealType) {
@@ -600,7 +697,12 @@ const Restaurants = () => {
             gap: '1.5rem',
             padding: '0 0.5rem',
             position: 'relative',
-            zIndex: 1
+            zIndex: 1,
+            '@media (max-width: 768px)': {
+              gridTemplateColumns: '1fr',
+              gap: '1rem',
+              padding: '0'
+            }
           }}>
             {restaurants.map((restaurant) => (
               <div key={restaurant.id} style={{
@@ -613,7 +715,12 @@ const Restaurants = () => {
                 cursor: 'pointer',
                 display: 'flex',
                 flexDirection: 'column',
-                height: '400px'
+                height: '420px',
+                '@media (max-width: 768px)': {
+                  padding: '1rem',
+                  height: 'auto',
+                  minHeight: '380px'
+                }
               }}
               onClick={() => navigate(`/restaurants/${restaurant.id}`)}
               onMouseEnter={(e) => {
@@ -696,9 +803,19 @@ const Restaurants = () => {
                   flexDirection: 'column',
                   gap: '0.5rem',
                   marginBottom: '1rem',
-                  height: '60px',
+                  height: '80px',
                   justifyContent: 'center'
                 }}>
+                  {restaurant.address && (
+                    <div style={{ 
+                      fontSize: '0.75rem', 
+                      color: 'rgb(107 114 128)',
+                      textAlign: 'center',
+                      lineHeight: '1.3'
+                    }}>
+                      🏠 {restaurant.address}
+                    </div>
+                  )}
                   {restaurant.locations && restaurant.locations.length > 0 && (
                     <div style={{ 
                       fontSize: '0.875rem', 

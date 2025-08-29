@@ -56,6 +56,7 @@ const Login = () => {
 
   // Clear auth error when switching forms
   useEffect(() => {
+    // Clear error when switching between login/register
     clearError();
     setShowSuccessMessage(false);
   }, [isLogin, clearError]);
@@ -138,9 +139,22 @@ const Login = () => {
         }
       } else {
         console.log('Auth failed:', result.error);
+        
+        // Handle field-specific errors
+        if (result.fieldErrors) {
+          console.log('Field errors:', result.fieldErrors);
+          setErrors(prev => ({ ...prev, ...result.fieldErrors }));
+        }
+        
+        // Error is already set in AuthContext and will be displayed
+        // Force re-render to show error
+        setTimeout(() => {
+          console.log('Current error state:', error);
+        }, 100);
       }
     } catch (error) {
       console.error('Auth error:', error);
+      // Error is already handled by AuthContext and will be displayed
     } finally {
       setIsSubmitting(false);
     }
@@ -151,6 +165,10 @@ const Login = () => {
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+    // Clear general error when user starts typing
+    if (error) {
+      clearError();
     }
     // Validate field immediately if it has been touched
     if (touched[field]) {
@@ -466,7 +484,7 @@ const Login = () => {
             {isLogin ? t('loginDescription') : t('registerDescription')}
           </p>
 
-          {/* Backend Error Message */}
+          {/* General Error Message */}
           {error && (
             <div style={{
               background: '#fef2f2',
@@ -476,11 +494,18 @@ const Login = () => {
               borderRadius: '0.5rem',
               marginBottom: '1rem',
               textAlign: 'center',
-              fontSize: '0.875rem'
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
             }}>
-              {error}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                <span style={{ fontSize: '1rem' }}>⚠️</span>
+                <span>{error}</span>
+              </div>
             </div>
           )}
+          
+
 
           <form 
             key={`form-${isLogin}`}
@@ -510,7 +535,7 @@ const Login = () => {
                     width: '100%',
                     padding: '0.75rem 0.875rem',
                     borderRadius: '0.625rem',
-                    border: touched.fullName && errors.fullName ? '1px solid #ef4444' : '1px solid rgb(209 213 219)',
+                    border: errors.fullName ? '1px solid #ef4444' : '1px solid rgb(209 213 219)',
                     fontSize: '0.875rem',
                     outline: 'none',
                     transition: 'all 0.3s ease',
@@ -519,7 +544,7 @@ const Login = () => {
                   }}
                   placeholder={t('enterFullName')}
                 />
-                {touched.fullName && errors.fullName && (
+                {errors.fullName && (
                   <div style={{ 
                     color: '#ef4444', 
                     fontSize: '0.75rem', 
@@ -553,7 +578,7 @@ const Login = () => {
                   width: '100%',
                   padding: '0.75rem 0.875rem',
                   borderRadius: '0.625rem',
-                  border: touched.email && errors.email ? '1px solid #ef4444' : '1px solid rgb(209 213 219)',
+                  border: errors.email ? '1px solid #ef4444' : '1px solid rgb(209 213 219)',
                   fontSize: '0.875rem',
                   outline: 'none',
                   transition: 'all 0.3s ease',
@@ -562,7 +587,7 @@ const Login = () => {
                 }}
                 placeholder={t('enterEmail')}
               />
-              {touched.email && errors.email && (
+              {errors.email && (
                 <div style={{ 
                   color: '#ef4444', 
                   fontSize: '0.75rem', 
@@ -595,7 +620,7 @@ const Login = () => {
                   width: '100%',
                   padding: '0.75rem 0.875rem',
                   borderRadius: '0.625rem',
-                  border: touched.password && errors.password ? '1px solid #ef4444' : '1px solid rgb(209 213 219)',
+                  border: errors.password ? '1px solid #ef4444' : '1px solid rgb(209 213 219)',
                   fontSize: '0.875rem',
                   outline: 'none',
                   transition: 'all 0.3s ease',
@@ -604,7 +629,7 @@ const Login = () => {
                 }}
                 placeholder={t('enterPassword')}
               />
-              {touched.password && errors.password && (
+              {errors.password && (
                 <div style={{ 
                   color: '#ef4444', 
                   fontSize: '0.75rem', 
@@ -638,7 +663,7 @@ const Login = () => {
                     width: '100%',
                     padding: '0.75rem 0.875rem',
                     borderRadius: '0.625rem',
-                    border: touched.confirmPassword && errors.confirmPassword ? '1px solid #ef4444' : '1px solid rgb(209 213 219)',
+                    border: errors.confirmPassword ? '1px solid #ef4444' : '1px solid rgb(209 213 219)',
                     fontSize: '0.875rem',
                     outline: 'none',
                     transition: 'all 0.3s ease',
@@ -647,7 +672,7 @@ const Login = () => {
                   }}
                   placeholder={t('confirmPasswordPlaceholder')}
                 />
-                {touched.confirmPassword && errors.confirmPassword && (
+                {errors.confirmPassword && (
                   <div style={{ 
                     color: '#ef4444', 
                     fontSize: '0.75rem', 
@@ -698,63 +723,6 @@ const Login = () => {
               }
             </button>
           </form>
-
-          {/* Social Login */}
-          <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '0.75rem',
-              marginBottom: '1.25rem'
-            }}>
-              <div style={{ flex: 1, height: '1px', background: 'rgb(209 213 219)' }}></div>
-              <span style={{ color: 'rgb(75 85 99)', fontSize: '0.75rem' }}>{t('or')}</span>
-              <div style={{ flex: 1, height: '1px', background: 'rgb(209 213 219)' }}></div>
-            </div>
-            
-            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <button style={{
-                flex: 1,
-                minWidth: '120px',
-                padding: '0.625rem',
-                borderRadius: '0.625rem',
-                border: '1px solid rgb(209 213 219)',
-                background: 'white',
-                color: 'rgb(55 65 81)',
-                fontWeight: '500',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.375rem',
-                fontSize: '0.75rem'
-              }}>
-                <span style={{ fontSize: '1rem' }}>🔍</span>
-                Google
-              </button>
-              <button style={{
-                flex: 1,
-                minWidth: '120px',
-                padding: '0.625rem',
-                borderRadius: '0.625rem',
-                border: '1px solid rgb(209 213 219)',
-                background: 'white',
-                color: 'rgb(55 65 81)',
-                fontWeight: '500',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.375rem',
-                fontSize: '0.75rem'
-              }}>
-                <span style={{ fontSize: '1rem' }}>🍎</span>
-                Apple
-              </button>
-            </div>
-          </div>
 
           {/* Back to Home */}
           <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>

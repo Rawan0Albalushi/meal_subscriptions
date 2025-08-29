@@ -408,42 +408,7 @@ const SubscriptionDetail = () => {
                             paddingBottom: '2rem'
                         }
                     }}>
-                        <div style={{
-                            width: '4rem',
-                            height: '4rem',
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                            borderRadius: '1.5rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: 'white',
-                            fontSize: '2rem',
-                            boxShadow: '0 10px 30px rgba(102, 126, 234, 0.4)',
-                            position: 'relative',
-                            '@media (max-width: 768px)': {
-                                width: '3.5rem',
-                                height: '3.5rem',
-                                fontSize: '1.75rem',
-                                borderRadius: '1.25rem'
-                            }
-                        }}>
-                            <div style={{
-                                position: 'absolute',
-                                top: '-2px',
-                                left: '-2px',
-                                right: '-2px',
-                                bottom: '-2px',
-                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                borderRadius: '1.5rem',
-                                zIndex: -1,
-                                opacity: 0.7,
-                                filter: 'blur(8px)',
-                                '@media (max-width: 768px)': {
-                                    borderRadius: '1.25rem'
-                                }
-                            }}></div>
-                            🍽️
-                        </div>
+
                         <div style={{ flex: 1, position: 'relative', zIndex: 1 }}>
                             <h2 style={{ 
                                 fontSize: '1.75rem', 
@@ -459,24 +424,7 @@ const SubscriptionDetail = () => {
                             }}>
                                 {language === 'ar' ? subscription.restaurant?.name_ar : subscription.restaurant?.name_en}
                             </h2>
-                            <div style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '0.5rem',
-                                padding: '0.75rem 1.25rem',
-                                borderRadius: '9999px',
-                                background: 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)',
-                                color: 'white',
-                                fontSize: '0.875rem', 
-                                fontWeight: '700',
-                                boxShadow: '0 4px 15px rgba(74, 222, 128, 0.4)',
-                                '@media (max-width: 768px)': {
-                                    padding: '0.5rem 1rem',
-                                    fontSize: '0.8rem'
-                                }
-                            }}>
-                                ✨ {subscription.subscription_type_text}
-                            </div>
+
                         </div>
                     </div>
 
@@ -529,7 +477,7 @@ const SubscriptionDetail = () => {
                                     marginBottom: '0.75rem'
                                 }
                             }}>
-                                🏪 {language === 'ar' ? 'معلومات المطعم' : 'Restaurant Info'}
+                                📋 {language === 'ar' ? 'معلومات الاشتراك' : 'Subscription Info'}
                             </h3>
                             
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -655,22 +603,7 @@ const SubscriptionDetail = () => {
                                         {(parseFloat(subscription.total_amount) + parseFloat(subscription.delivery_price)).toFixed(2)} {language === 'ar' ? 'ريال' : 'SAR'}
                                     </span>
                                 </div>
-                                <div style={{
-                                    background: 'rgba(255, 255, 255, 0.7)',
-                                    borderRadius: '0.75rem',
-                                    padding: '0.75rem 1rem',
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    border: '1px solid rgba(74, 222, 128, 0.1)'
-                                }}>
-                                    <span style={{ fontSize: '0.875rem', color: '#6b7280', fontWeight: '600' }}>
-                                        {language === 'ar' ? 'طريقة الدفع' : 'Payment Method'}
-                                    </span>
-                                    <span style={{ fontSize: '0.875rem', fontWeight: '700', color: '#1f2937' }}>
-                                        {getPaymentMethodText(subscription.payment_method)}
-                                    </span>
-                                </div>
+
                             </div>
                         </div>
 
@@ -797,191 +730,186 @@ const SubscriptionDetail = () => {
                     )}
                 </div>
 
-                {/* Meals Section */}
+                {/* Meals Section - Redesigned for Mobile */}
                 <div style={{
-                    background: 'rgba(255, 255, 255, 0.95)',
-                    borderRadius: '2rem',
-                    padding: '2rem',
-                    boxShadow: '0 25px 50px rgba(0, 0, 0, 0.15)',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    background: 'rgba(255, 255, 255, 0.98)',
+                    borderRadius: '1.5rem',
+                    padding: '1.5rem',
+                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.4)',
                     backdropFilter: 'blur(20px)',
                     position: 'relative',
                     overflow: 'hidden',
                     '@media (max-width: 768px)': {
-                        borderRadius: '1.5rem',
-                        padding: '1.5rem'
+                        borderRadius: '1rem',
+                        padding: '1rem',
+                        margin: '0 -0.5rem'
                     }
                 }}>
-                    {/* Card Background Pattern */}
+                    {/* Enhanced Background Pattern */}
                     <div style={{
                         position: 'absolute',
                         top: '0',
                         left: '0',
                         width: '100%',
                         height: '100%',
-                        background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%)',
-                        opacity: 0.5,
+                        background: `
+                            radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.08) 0%, transparent 50%),
+                            radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.06) 0%, transparent 50%),
+                            linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.03) 100%)
+                        `,
+                        opacity: 1,
                         zIndex: 0
                     }}></div>
                     
-                    {/* Meals Header */}
+                    {/* Redesigned Header */}
                     <div style={{
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: '1.5rem',
-                        marginBottom: '2rem',
-                        paddingBottom: '1.5rem',
-                        borderBottom: '2px solid rgba(102, 126, 234, 0.2)',
+                        gap: '1rem',
+                        marginBottom: '1.5rem',
+                        paddingBottom: '1rem',
+                        borderBottom: '2px solid rgba(102, 126, 234, 0.15)',
                         position: 'relative',
                         zIndex: 1,
                         '@media (min-width: 768px)': {
                             flexDirection: 'row',
                             justifyContent: 'space-between',
                             alignItems: 'center',
-                            marginBottom: '2.5rem',
-                            paddingBottom: '2rem'
+                            marginBottom: '2rem',
+                            paddingBottom: '1.5rem'
                         }
                     }}>
-                        <h3 style={{
-                            fontSize: '1.75rem',
-                            fontWeight: '800',
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            backgroundClip: 'text',
+                        {/* Title with Enhanced Design */}
+                        <div style={{
                             display: 'flex',
                             alignItems: 'center',
                             gap: '0.75rem',
                             '@media (max-width: 768px)': {
-                                fontSize: '1.5rem'
+                                justifyContent: 'center'
                             }
                         }}>
-                            🍽️ {language === 'ar' ? 'الوجبات' : 'Meals'} ({filteredMeals.length})
-                        </h3>
-                        
-                        {/* Meal Type Filter */}
-                        <div style={{ 
-                            display: 'flex', 
-                            gap: '0.5rem', 
-                            flexWrap: 'wrap',
-                            justifyContent: 'center',
-                            '@media (min-width: 768px)': {
-                                justifyContent: 'flex-end'
-                            }
-                        }}>
-                            <button
-                                onClick={clearMealTypeFilter}
-                                style={{
-                                    padding: '0.75rem 1.25rem',
-                                    borderRadius: '0.75rem',
-                                    border: '1px solid',
-                                    background: mealTypeFilter === '' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'rgba(255, 255, 255, 0.8)',
-                                    color: mealTypeFilter === '' ? 'white' : '#667eea',
-                                    borderColor: '#667eea',
-                                    fontSize: '0.875rem',
-                                    fontWeight: '600',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.3s ease',
-                                    boxShadow: mealTypeFilter === '' ? '0 4px 15px rgba(102, 126, 234, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.1)',
+                            <div style={{
+                                width: '3rem',
+                                height: '3rem',
+                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                borderRadius: '1rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '1.5rem',
+                                boxShadow: '0 8px 20px rgba(102, 126, 234, 0.3)',
+                                '@media (max-width: 768px)': {
+                                    width: '2.5rem',
+                                    height: '2.5rem',
+                                    fontSize: '1.25rem',
+                                    borderRadius: '0.75rem'
+                                }
+                            }}>
+                            </div>
+                            <div>
+                                <h3 style={{
+                                    fontSize: '1.5rem',
+                                    fontWeight: '800',
+                                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                    WebkitBackgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent',
+                                    backgroundClip: 'text',
+                                    margin: 0,
                                     '@media (max-width: 768px)': {
-                                        padding: '0.5rem 1rem',
+                                        fontSize: '1.25rem'
+                                    }
+                                }}>
+                                    {language === 'ar' ? 'الوجبات' : 'Meals'}
+                                </h3>
+                                <p style={{
+                                    fontSize: '0.875rem',
+                                    color: '#6b7280',
+                                    margin: '0.25rem 0 0 0',
+                                    fontWeight: '500',
+                                    '@media (max-width: 768px)': {
                                         fontSize: '0.8rem'
                                     }
-                                }}
-                            >
-                                {language === 'ar' ? 'الكل' : 'All'}
-                            </button>
-                            {fallbackMealTypes.map(mealType => (
-                                <button
-                                    key={mealType}
-                                    onClick={() => handleMealTypeFilter(mealType)}
-                                    style={{
-                                        padding: '0.75rem 1.25rem',
-                                        borderRadius: '0.75rem',
-                                        border: '1px solid',
-                                        background: mealTypeFilter === mealType ? 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)' : 'rgba(255, 255, 255, 0.8)',
-                                        color: mealTypeFilter === mealType ? 'white' : '#22c55e',
-                                        borderColor: '#22c55e',
-                                        fontSize: '0.875rem',
-                                        fontWeight: '600',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.3s ease',
-                                        boxShadow: mealTypeFilter === mealType ? '0 4px 15px rgba(74, 222, 128, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.1)',
-                                        '@media (max-width: 768px)': {
-                                            padding: '0.5rem 1rem',
-                                            fontSize: '0.8rem'
-                                        }
-                                    }}
-                                >
-                                    {mealTypeNames[language][mealType] || mealType}
-                                </button>
-                            ))}
+                                }}>
+                                    {filteredMeals.length} {language === 'ar' ? 'وجبة' : 'meal'}
+                                </p>
+                            </div>
                         </div>
+                        
+
                     </div>
                     
-                    {/* Meals List */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative', zIndex: 1 }}>
+                    {/* Redesigned Meals List */}
+                    <div style={{ 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        gap: '1rem', 
+                        position: 'relative', 
+                        zIndex: 1,
+                        '@media (max-width: 768px)': {
+                            gap: '0.75rem'
+                        }
+                    }}>
                         {filteredMeals.length === 0 ? (
                             <div style={{
-                                background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
-                                borderRadius: '1.5rem',
-                                padding: '3rem 2rem',
+                                background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%)',
+                                borderRadius: '1.25rem',
+                                padding: '2.5rem 1.5rem',
                                 textAlign: 'center',
-                                border: '1px solid rgba(102, 126, 234, 0.2)',
+                                border: '2px solid rgba(102, 126, 234, 0.15)',
                                 '@media (max-width: 768px)': {
-                                    borderRadius: '1.25rem',
+                                    borderRadius: '1rem',
                                     padding: '2rem 1rem'
                                 }
                             }}>
                                 <div style={{ 
-                                    fontSize: '4rem', 
-                                    marginBottom: '1.5rem',
+                                    fontSize: '3.5rem', 
+                                    marginBottom: '1rem',
                                     filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1))',
                                     '@media (max-width: 768px)': {
-                                        fontSize: '3rem',
-                                        marginBottom: '1rem'
+                                        fontSize: '2.5rem',
+                                        marginBottom: '0.75rem'
                                     }
                                 }}>
-                                    {mealTypeFilter ? 
-                                        (mealTypeFilter === 'breakfast' ? '🌅' : 
-                                         mealTypeFilter === 'lunch' ? '☀️' : '🌙') : '🍽️'
-                                    }
                                 </div>
                                 <p style={{ 
-                                    fontSize: '1.125rem',
+                                    fontSize: '1rem',
                                     color: '#6b7280',
-                                    marginBottom: '2rem',
+                                    marginBottom: '1.5rem',
                                     fontWeight: '500',
+                                    lineHeight: '1.5',
                                     '@media (max-width: 768px)': {
-                                        fontSize: '1rem',
-                                        marginBottom: '1.5rem'
+                                        fontSize: '0.9rem',
+                                        marginBottom: '1.25rem'
                                     }
                                 }}>
                                     {language === 'ar' 
-                                        ? `لا توجد وجبات ${mealTypeFilter ? mealTypeNames[language][mealTypeFilter] : ''} في هذا الاشتراك` 
-                                        : `No ${mealTypeFilter ? mealTypeNames[language][mealTypeFilter] : ''} meals in this subscription`
+                                        ? 'لا توجد وجبات في هذا الاشتراك' 
+                                        : 'No meals in this subscription'
                                     }
                                 </p>
                                 <button
-                                    onClick={clearMealTypeFilter}
+                                    onClick={() => window.location.reload()}
                                     style={{
-                                        padding: '1rem 2rem',
-                                        borderRadius: '1rem',
+                                        padding: '0.875rem 1.5rem',
+                                        borderRadius: '0.875rem',
                                         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                                         color: 'white',
                                         border: 'none',
-                                        fontSize: '1rem',
-                                        fontWeight: '700',
+                                        fontSize: '0.9rem',
+                                        fontWeight: '600',
                                         cursor: 'pointer',
                                         transition: 'all 0.3s ease',
                                         boxShadow: '0 8px 25px rgba(102, 126, 234, 0.4)',
+                                        minHeight: '44px',
                                         '@media (max-width: 768px)': {
-                                            padding: '0.75rem 1.5rem',
-                                            fontSize: '0.9rem'
+                                            padding: '0.75rem 1.25rem',
+                                            fontSize: '0.85rem',
+                                            borderRadius: '0.75rem'
                                         }
                                     }}
                                 >
-                                    {language === 'ar' ? 'عرض جميع الوجبات' : 'Show All Meals'}
+                                    {language === 'ar' ? 'إعادة تحميل' : 'Reload'}
                                 </button>
                             </div>
                         ) : (
@@ -990,80 +918,56 @@ const SubscriptionDetail = () => {
                                 gridTemplateColumns: '1fr',
                                 gap: '1rem',
                                 '@media (min-width: 640px)': {
-                                    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                                    gap: '1.5rem'
+                                    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+                                    gap: '1.25rem'
+                                },
+                                '@media (max-width: 768px)': {
+                                    gap: '0.75rem'
                                 }
                             }}>
                                 {filteredMeals.map((item, index) => (
                                     <div key={index} style={{
-                                        background: 'rgba(255, 255, 255, 0.9)',
+                                        background: 'rgba(255, 255, 255, 0.95)',
                                         borderRadius: '1.25rem',
                                         padding: '1.5rem',
-                                        boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
-                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 8px 25px rgba(0, 0, 0, 0.08)',
+                                        border: '2px solid rgba(255, 255, 255, 0.6)',
                                         transition: 'all 0.3s ease',
                                         position: 'relative',
                                         overflow: 'hidden',
+                                        cursor: 'pointer',
                                         '@media (max-width: 768px)': {
-                                            padding: '1.25rem'
+                                            padding: '1.25rem',
+                                            borderRadius: '1rem',
+                                            border: '1px solid rgba(255, 255, 255, 0.4)'
                                         }
                                     }}
                                     onMouseEnter={(e) => {
-                                        e.currentTarget.style.transform = 'translateY(-4px)';
-                                        e.currentTarget.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.15)';
+                                        e.currentTarget.style.transform = 'translateY(-2px)';
+                                        e.currentTarget.style.boxShadow = '0 12px 30px rgba(0, 0, 0, 0.12)';
                                     }}
                                     onMouseLeave={(e) => {
                                         e.currentTarget.style.transform = 'translateY(0)';
-                                        e.currentTarget.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.1)';
+                                        e.currentTarget.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.08)';
                                     }}>
-                                        {/* Card Background Pattern */}
+                                        {/* Enhanced Card Background */}
                                         <div style={{
                                             position: 'absolute',
                                             top: '0',
                                             left: '0',
                                             width: '100%',
                                             height: '100%',
-                                            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%)',
-                                            opacity: 0.3,
+                                            background: `
+                                                radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.05) 0%, transparent 50%),
+                                                radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.05) 0%, transparent 50%)
+                                            `,
+                                            opacity: 1,
                                             zIndex: 0
                                         }}></div>
                                         
-                                        {/* Header Row - Compact */}
-                                        <div style={{ 
-                                            display: 'flex', 
-                                            justifyContent: 'space-between', 
-                                            alignItems: 'flex-start', 
-                                            marginBottom: '1rem',
-                                            position: 'relative',
-                                            zIndex: 1
-                                        }}>
-                                            {/* Meal Type Badge */}
-                                            <div style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '0.5rem',
-                                                padding: '0.5rem 1rem',
-                                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                                borderRadius: '0.75rem',
-                                                color: 'white',
-                                                fontSize: '0.75rem',
-                                                fontWeight: '700',
-                                                boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
-                                            }}>
-                                                <span style={{ fontSize: '1rem' }}>
-                                                    {item.meal?.meal_type === 'breakfast' ? '🌅' : 
-                                                     item.meal?.meal_type === 'lunch' ? '☀️' : '🌙'}
-                                                </span>
-                                                <span style={{ textTransform: 'uppercase' }}>
-                                                    {item.meal?.meal_type_text}
-                                                </span>
-                                            </div>
-                                            
-                                            {/* Status Badge */}
-                                            <OrderStatusBadge status={item.status} language={language} />
-                                        </div>
+
                                         
-                                        {/* Meal Name */}
+                                        {/* Enhanced Meal Name */}
                                         <h4 style={{
                                             fontSize: '1.125rem',
                                             fontWeight: '700',
@@ -1073,13 +977,15 @@ const SubscriptionDetail = () => {
                                             position: 'relative',
                                             zIndex: 1,
                                             '@media (max-width: 768px)': {
-                                                fontSize: '1rem'
+                                                fontSize: '1rem',
+                                                lineHeight: '1.3',
+                                                marginBottom: '0.5rem'
                                             }
                                         }}>
                                             {language === 'ar' ? item.meal?.name_ar : item.meal?.name_en}
                                         </h4>
                                         
-                                        {/* Compact Info Row */}
+                                        {/* Simplified Info Row - Only Time and Day */}
                                         <div style={{
                                             display: 'flex',
                                             justifyContent: 'space-between',
@@ -1088,48 +994,117 @@ const SubscriptionDetail = () => {
                                             color: '#6b7280',
                                             marginBottom: '1rem',
                                             position: 'relative',
-                                            zIndex: 1
+                                            zIndex: 1,
+                                            '@media (max-width: 768px)': {
+                                                flexDirection: 'column',
+                                                alignItems: 'flex-start',
+                                                gap: '0.5rem',
+                                                fontSize: '0.8rem'
+                                            }
                                         }}>
                                             <span style={{ 
                                                 display: 'flex', 
                                                 alignItems: 'center', 
                                                 gap: '0.5rem',
-                                                fontWeight: '600'
+                                                fontWeight: '600',
+                                                padding: '0.25rem 0.5rem',
+                                                background: 'rgba(102, 126, 234, 0.1)',
+                                                borderRadius: '0.5rem',
+                                                '@media (max-width: 768px)': {
+                                                    fontSize: '0.75rem',
+                                                    padding: '0.2rem 0.4rem'
+                                                }
                                             }}>
                                                 🕐 {formatTime(item.meal?.delivery_time)}
                                             </span>
                                             <span style={{ 
-                                                fontSize: '0.75rem', 
+                                                fontSize: '0.8rem', 
                                                 opacity: '0.8',
-                                                fontWeight: '500'
+                                                fontWeight: '500',
+                                                padding: '0.25rem 0.5rem',
+                                                background: 'rgba(118, 75, 162, 0.1)',
+                                                borderRadius: '0.5rem',
+                                                '@media (max-width: 768px)': {
+                                                    fontSize: '0.75rem',
+                                                    padding: '0.2rem 0.4rem'
+                                                }
                                             }}>
                                                 {item.day_of_week_text}
                                             </span>
                                         </div>
                                         
-                                        {/* Delivery Date - Compact */}
+                                        {/* Enhanced Delivery Date Section */}
                                         <div style={{
-                                            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
-                                            borderRadius: '0.75rem',
+                                            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%)',
+                                            borderRadius: '0.875rem',
                                             padding: '1rem',
-                                            border: '1px solid rgba(102, 126, 234, 0.2)',
+                                            border: '1px solid rgba(102, 126, 234, 0.15)',
                                             position: 'relative',
-                                            zIndex: 1
+                                            zIndex: 1,
+                                            '@media (max-width: 768px)': {
+                                                padding: '0.75rem',
+                                                borderRadius: '0.75rem'
+                                            }
                                         }}>
                                             <div style={{ 
                                                 fontSize: '0.75rem', 
                                                 color: '#6b7280', 
                                                 marginBottom: '0.5rem',
-                                                fontWeight: '600'
+                                                fontWeight: '600',
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '0.5px',
+                                                '@media (max-width: 768px)': {
+                                                    fontSize: '0.7rem',
+                                                    marginBottom: '0.4rem'
+                                                }
                                             }}>
                                                 {language === 'ar' ? 'تاريخ التوصيل' : 'Delivery Date'}
                                             </div>
                                             <div style={{ 
                                                 fontSize: '1rem', 
                                                 fontWeight: '700', 
-                                                color: '#1f2937'
+                                                color: '#1f2937',
+                                                marginBottom: '1rem',
+                                                '@media (max-width: 768px)': {
+                                                    fontSize: '0.9rem',
+                                                    lineHeight: '1.3',
+                                                    marginBottom: '0.75rem'
+                                                }
                                             }}>
-                                                {formatDate(item.delivery_date) || (language === 'ar' ? 'غير محدد' : 'Not specified')}
+                                                {formatDate(item.delivery_date)}
+                                            </div>
+                                            
+                                            {/* Enhanced Status Section */}
+                                            <div style={{
+                                                borderTop: '1px solid rgba(102, 126, 234, 0.2)',
+                                                paddingTop: '0.75rem',
+                                                '@media (max-width: 768px)': {
+                                                    paddingTop: '0.5rem'
+                                                }
+                                            }}>
+                                                <div style={{ 
+                                                    fontSize: '0.75rem', 
+                                                    color: '#6b7280', 
+                                                    marginBottom: '0.5rem',
+                                                    fontWeight: '600',
+                                                    textTransform: 'uppercase',
+                                                    letterSpacing: '0.5px',
+                                                    '@media (max-width: 768px)': {
+                                                        fontSize: '0.7rem',
+                                                        marginBottom: '0.4rem'
+                                                    }
+                                                }}>
+                                                    {language === 'ar' ? 'حالة الطلب' : 'Order Status'}
+                                                </div>
+                                                <div style={{
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    '@media (max-width: 768px)': {
+                                                        justifyContent: 'center'
+                                                    }
+                                                }}>
+                                                    <OrderStatusBadge status={item.status} language={language} />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
