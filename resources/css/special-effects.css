@@ -1,0 +1,566 @@
+/* Special Effects - Additional Visual Enhancements */
+
+/* Particle Background Effect */
+.particle-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(79, 70, 229, 0.3);
+  border-radius: 50%;
+  animation: particle-float 20s infinite linear;
+}
+
+.particle:nth-child(1) {
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+  animation-duration: 25s;
+}
+
+.particle:nth-child(2) {
+  top: 20%;
+  left: 80%;
+  animation-delay: 5s;
+  animation-duration: 30s;
+}
+
+.particle:nth-child(3) {
+  top: 60%;
+  left: 20%;
+  animation-delay: 10s;
+  animation-duration: 20s;
+}
+
+.particle:nth-child(4) {
+  top: 80%;
+  left: 70%;
+  animation-delay: 15s;
+  animation-duration: 35s;
+}
+
+.particle:nth-child(5) {
+  top: 40%;
+  left: 90%;
+  animation-delay: 8s;
+  animation-duration: 28s;
+}
+
+@keyframes particle-float {
+  0% {
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Gradient Border Animation */
+.gradient-border-animated {
+  position: relative;
+  background: linear-gradient(45deg, 
+    rgb(79 70 229), 
+    rgb(99 102 241), 
+    rgb(139 92 246), 
+    rgb(168 85 247), 
+    rgb(79 70 229));
+  background-size: 400% 400%;
+  animation: gradient-shift 3s ease infinite;
+  padding: 2px;
+  border-radius: 1rem;
+}
+
+.gradient-border-animated > div {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 0.875rem;
+  padding: 1.5rem;
+}
+
+/* Magnetic Effect */
+.magnetic-effect {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.magnetic-effect:hover {
+  transform: scale(1.05);
+}
+
+/* Parallax Effect */
+.parallax-element {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Glitch Effect */
+.glitch-effect {
+  position: relative;
+  animation: glitch 2s infinite;
+}
+
+.glitch-effect::before,
+.glitch-effect::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch-effect::before {
+  animation: glitch-1 0.5s infinite;
+  color: rgb(255, 0, 0);
+  z-index: -1;
+}
+
+.glitch-effect::after {
+  animation: glitch-2 0.5s infinite;
+  color: rgb(0, 255, 255);
+  z-index: -2;
+}
+
+@keyframes glitch {
+  0%, 100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+}
+
+@keyframes glitch-1 {
+  0%, 100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+}
+
+@keyframes glitch-2 {
+  0%, 100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(2px, -2px);
+  }
+  40% {
+    transform: translate(2px, 2px);
+  }
+  60% {
+    transform: translate(-2px, -2px);
+  }
+  80% {
+    transform: translate(-2px, 2px);
+  }
+}
+
+/* Neon Text Effect */
+.neon-text {
+  color: rgb(79 70 229);
+  text-shadow: 
+    0 0 8px rgb(79 70 229),
+    0 0 15px rgb(79 70 229),
+    0 0 25px rgb(79 70 229),
+    0 0 35px rgb(79 70 229),
+    0 0 45px rgba(79, 70, 229, 0.8);
+  animation: neon-pulse 2s ease-in-out infinite alternate;
+  font-weight: bold;
+}
+
+@keyframes neon-pulse {
+  from {
+    text-shadow: 
+      0 0 8px rgb(79 70 229),
+      0 0 15px rgb(79 70 229),
+      0 0 25px rgb(79 70 229),
+      0 0 35px rgb(79 70 229),
+      0 0 45px rgba(79, 70, 229, 0.8);
+  }
+  to {
+    text-shadow: 
+      0 0 4px rgb(79 70 229),
+      0 0 8px rgb(79 70 229),
+      0 0 15px rgb(79 70 229),
+      0 0 25px rgb(79 70 229),
+      0 0 35px rgba(79, 70, 229, 0.6);
+  }
+}
+
+/* Holographic Effect */
+.holographic {
+  background: linear-gradient(45deg, 
+    rgba(255, 255, 255, 0.1),
+    rgba(79, 70, 229, 0.1),
+    rgba(139, 92, 246, 0.1),
+    rgba(168, 85, 247, 0.1),
+    rgba(255, 255, 255, 0.1));
+  background-size: 400% 400%;
+  animation: holographic-shift 3s ease infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.holographic::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.4), 
+    transparent);
+  animation: holographic-shine 2s ease-in-out infinite;
+}
+
+@keyframes holographic-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes holographic-shine {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Liquid Button Effect */
+.liquid-button {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgb(79 70 229), rgb(139 92 246));
+  border: none;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.liquid-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.liquid-button:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.liquid-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+}
+
+/* Morphing Background */
+.morphing-bg {
+  background: linear-gradient(45deg, 
+    rgb(79 70 229), 
+    rgb(99 102 241), 
+    rgb(139 92 246), 
+    rgb(168 85 247));
+  background-size: 400% 400%;
+  animation: morphing-shift 8s ease infinite;
+  position: relative;
+}
+
+.morphing-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.3;
+  animation: grain-move 20s linear infinite;
+}
+
+@keyframes morphing-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 50%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
+}
+
+@keyframes grain-move {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(100px, 100px);
+  }
+}
+
+/* Floating Action Button */
+.fab-enhanced {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, rgb(79 70 229), rgb(139 92 246));
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 
+    0 8px 25px rgba(79, 70, 229, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  animation: fab-float 3s ease-in-out infinite;
+}
+
+.fab-enhanced:hover {
+  transform: scale(1.1) translateY(-5px);
+  box-shadow: 
+    0 15px 35px rgba(79, 70, 229, 0.4),
+    0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes fab-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Progress Ring */
+.progress-ring {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.progress-ring svg {
+  transform: rotate(-90deg);
+}
+
+.progress-ring circle {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
+.progress-ring .bg {
+  stroke: rgba(79, 70, 229, 0.2);
+}
+
+.progress-ring .progress {
+  stroke: url(#gradient);
+  stroke-dasharray: 283;
+  stroke-dashoffset: 283;
+  animation: progress-fill 2s ease-in-out forwards;
+}
+
+.progress-ring .gradient {
+  --color-1: rgb(79 70 229);
+  --color-2: rgb(139 92 246);
+}
+
+@keyframes progress-fill {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Tilt Effect */
+.tilt-effect {
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+.tilt-effect:hover {
+  transform: perspective(1000px) rotateX(10deg) rotateY(10deg);
+}
+
+/* Ripple Effect */
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.ripple-effect:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(79, 70, 229, 0.2);
+  z-index: 10000;
+}
+
+.scroll-indicator .progress {
+  height: 100%;
+  background: linear-gradient(90deg, rgb(79 70 229), rgb(139 92 246));
+  width: 0%;
+  transition: width 0.1s ease;
+}
+
+/* Loading Dots */
+.loading-dots {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-dots .dot {
+  width: 8px;
+  height: 8px;
+  background: rgb(79 70 229);
+  border-radius: 50%;
+  animation: loading-dots 1.4s ease-in-out infinite both;
+}
+
+.loading-dots .dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dots .dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes loading-dots {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+/* Responsive Special Effects */
+@media (max-width: 768px) {
+  .particle {
+    display: none;
+  }
+  
+  .fab-enhanced {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
+    bottom: 1rem;
+    right: 1rem;
+  }
+  
+  .progress-ring {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .neon-text {
+    text-shadow: 
+      0 0 3px rgb(79 70 229),
+      0 0 6px rgb(79 70 229),
+      0 0 9px rgb(79 70 229);
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .particle,
+  .glitch-effect,
+  .neon-text,
+  .holographic,
+  .morphing-bg,
+  .fab-enhanced,
+  .progress-ring,
+  .loading-dots {
+    animation: none;
+  }
+  
+  .tilt-effect:hover {
+    transform: none;
+  }
+  
+  .liquid-button::before,
+  .ripple-effect::before {
+    display: none;
+  }
+}

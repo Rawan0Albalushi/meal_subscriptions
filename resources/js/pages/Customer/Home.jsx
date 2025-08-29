@@ -78,16 +78,31 @@ const Home = () => {
   }, [language]);
 
     return (
-    <div style={{ minHeight: '100vh' }}>
+    <div style={{ 
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #fafbfc 0%, #f1f5f9 25%, #e2e8f0 50%, #cbd5e1 75%, #94a3b8 100%)',
+      position: 'relative'
+    }}>
+      {/* Unified Background Overlay */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'radial-gradient(circle at 20% 80%, rgba(79, 70, 229, 0.02) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.02) 0%, transparent 50%)',
+        pointerEvents: 'none',
+        zIndex: 0
+      }}></div>
       {/* Hero Section */}
-      <section className="section-enhanced" style={{ 
-        background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',
+      <section className="hero-section-enhanced section-enhanced" style={{ 
         position: 'relative',
         overflow: 'hidden',
         padding: '2rem 0 3rem 0',
         minHeight: '100vh',
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        zIndex: 1
       }}>
         {/* Floating decorative elements */}
         <div className="floating-elements">
@@ -286,10 +301,9 @@ const Home = () => {
                 {t('heroDescription')}
               </p>
               <div className="hero-buttons" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                <a href="/restaurants" className="hero-btn hero-btn-primary" style={{
+                <a href="/restaurants" className="hero-btn hero-btn-primary liquid-button" style={{
                   position: 'relative',
                   overflow: 'hidden',
-                  background: 'linear-gradient(135deg, rgb(79 70 229) 0%, rgb(99 102 241) 100%)',
                   border: 'none',
                   color: 'white',
                   padding: '1rem 2rem',
@@ -297,17 +311,7 @@ const Home = () => {
                   fontSize: '1rem',
                   fontWeight: '600',
                   textDecoration: 'none',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  boxShadow: '0 4px 15px rgba(79, 70, 229, 0.3)'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'translateY(-3px)';
-                  e.target.style.boxShadow = '0 8px 25px rgba(79, 70, 229, 0.4)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 4px 15px rgba(79, 70, 229, 0.3)';
+                  cursor: 'pointer'
                 }}>
                   <span style={{ position: 'relative', zIndex: '1' }}>🚀 {t('getStarted')}</span>
                 </a>
@@ -917,22 +921,21 @@ const Home = () => {
                 </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="section-enhanced" style={{ 
-        padding: '3rem 0',
-        background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-        position: 'relative'
-      }}>
+              {/* Features Section */}
+        <section id="features" className="section-enhanced" style={{ 
+          padding: '3rem 0',
+          position: 'relative',
+          zIndex: 1
+        }}>
         <div style={{ width: '100%', padding: '0 2rem' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 className="gradient-text" style={{ 
+            <h2 className="gradient-text neon-text" style={{ 
               fontSize: 'clamp(2rem, 4vw, 2.5rem)', 
               fontWeight: 'bold', 
               marginBottom: '1rem',
-              background: 'linear-gradient(135deg, rgb(79 70 229) 0%, rgb(139 92 246) 100%)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
+              textAlign: 'center',
+              letterSpacing: '0.5px',
+              textShadow: '0 0 20px rgba(79, 70, 229, 0.5)'
             }}>
               {t('whySubscribe')}
                         </h2>
@@ -957,27 +960,11 @@ const Home = () => {
               maxWidth: '1200px',
               margin: '0 auto'
             }}>
-              <div className="card card-hover" style={{ 
+              <div className="card card-hover restaurant-card-enhanced" style={{ 
                 height: '100%', 
                 textAlign: 'center',
-                background: 'rgba(255, 255, 255, 0.85)',
-                borderRadius: '1.5rem',
                 padding: '2rem',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.04)',
-                transition: 'all 0.3s ease',
                 cursor: 'pointer'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-5px)';
-                e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.08)';
-                e.target.style.background = 'rgba(255, 255, 255, 0.9)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.04)';
-                e.target.style.background = 'rgba(255, 255, 255, 0.85)';
               }}>
                 <div className="feature-icon" style={{ 
                   fontSize: '3.5rem', 
@@ -990,40 +977,51 @@ const Home = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: '0 auto 1rem',
-                  boxShadow: '0 4px 15px rgba(255, 107, 107, 0.3)'
+                  boxShadow: '0 4px 15px rgba(255, 107, 107, 0.3)',
+                  animation: 'pulse 2s ease-in-out infinite',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'scale(1.1) rotate(5deg)';
+                  e.target.style.boxShadow = '0 8px 25px rgba(255, 107, 107, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1) rotate(0deg)';
+                  e.target.style.boxShadow = '0 4px 15px rgba(255, 107, 107, 0.3)';
                 }}>🍽️</div>
-                <h3 style={{ 
+                <h3 className="gradient-text" style={{ 
                   fontSize: '1.25rem', 
                   fontWeight: '600', 
-                  marginBottom: '0.75rem', 
-                  background: 'linear-gradient(135deg, rgb(79 70 229) 0%, rgb(99 102 241) 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
+                  marginBottom: '0.75rem'
                 }}>{t('diverseMeals')}</h3>
-              <p style={{ fontSize: '1rem', color: 'rgb(75 85 99)', lineHeight: '1.7' }}>{t('diverseMealsDesc')}</p>
-                            </div>
-                          <div className="card card-hover" style={{ 
-                height: '100%', 
-                textAlign: 'center',
-                background: 'rgba(255, 255, 255, 0.85)',
-                borderRadius: '1.5rem',
-                padding: '2rem',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.04)',
-                transition: 'all 0.3s ease',
-                cursor: 'pointer'
+              <p style={{ 
+                fontSize: '1rem', 
+                color: 'rgb(75 85 99)', 
+                lineHeight: '1.7',
+                background: 'rgba(255, 255, 255, 0.1)',
+                padding: '0.75rem',
+                borderRadius: '0.5rem',
+                backdropFilter: 'blur(5px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                transition: 'all 0.3s ease'
               }}
               onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-5px)';
-                e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.1)';
-                e.target.style.background = 'rgba(255, 255, 255, 0.95)';
+                e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                e.target.style.borderColor = 'rgba(79, 70, 229, 0.3)';
+                e.target.style.transform = 'scale(1.02)';
               }}
               onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.05)';
-                e.target.style.background = 'rgba(255, 255, 255, 0.9)';
+                e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                e.target.style.transform = 'scale(1)';
+              }}>{t('diverseMealsDesc')}</p>
+                            </div>
+                          <div className="card card-hover restaurant-card-enhanced" style={{ 
+                height: '100%', 
+                textAlign: 'center',
+                padding: '2rem',
+                cursor: 'pointer'
               }}>
                 <div className="feature-icon" style={{ 
                   fontSize: '3.5rem', 
@@ -1036,40 +1034,51 @@ const Home = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: '0 auto 1rem',
-                  boxShadow: '0 4px 15px rgba(84, 160, 255, 0.3)'
+                  boxShadow: '0 4px 15px rgba(84, 160, 255, 0.3)',
+                  animation: 'pulse 2s ease-in-out infinite 0.5s',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'scale(1.1) rotate(5deg)';
+                  e.target.style.boxShadow = '0 8px 25px rgba(84, 160, 255, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1) rotate(0deg)';
+                  e.target.style.boxShadow = '0 4px 15px rgba(84, 160, 255, 0.3)';
                 }}>⏰</div>
-                <h3 style={{ 
+                <h3 className="gradient-text" style={{ 
                   fontSize: '1.25rem', 
                   fontWeight: '600', 
-                  marginBottom: '0.75rem', 
-                  background: 'linear-gradient(135deg, rgb(79 70 229) 0%, rgb(99 102 241) 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
+                  marginBottom: '0.75rem'
                 }}>{t('fixedDelivery')}</h3>
-              <p style={{ fontSize: '1rem', color: 'rgb(75 85 99)', lineHeight: '1.7' }}>{t('fixedDeliveryDesc')}</p>
+                              <p style={{ 
+                  fontSize: '1rem', 
+                  color: 'rgb(75 85 99)', 
+                  lineHeight: '1.7',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  padding: '0.75rem',
+                  borderRadius: '0.5rem',
+                  backdropFilter: 'blur(5px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                  e.target.style.borderColor = 'rgba(79, 70, 229, 0.3)';
+                  e.target.style.transform = 'scale(1.02)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                  e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                  e.target.style.transform = 'scale(1)';
+                }}>{t('fixedDeliveryDesc')}</p>
                             </div>
-                          <div className="card card-hover" style={{ 
+                          <div className="card card-hover restaurant-card-enhanced" style={{ 
                 height: '100%', 
                 textAlign: 'center',
-                background: 'rgba(255, 255, 255, 0.85)',
-                borderRadius: '1.5rem',
                 padding: '2rem',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.04)',
-                transition: 'all 0.3s ease',
                 cursor: 'pointer'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-5px)';
-                e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.1)';
-                e.target.style.background = 'rgba(255, 255, 255, 0.95)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.05)';
-                e.target.style.background = 'rgba(255, 255, 255, 0.9)';
               }}>
                 <div className="feature-icon" style={{ 
                   fontSize: '3.5rem', 
@@ -1082,18 +1091,45 @@ const Home = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: '0 auto 1rem',
-                  boxShadow: '0 4px 15px rgba(102, 187, 106, 0.3)'
+                  boxShadow: '0 4px 15px rgba(102, 187, 106, 0.3)',
+                  animation: 'pulse 2s ease-in-out infinite 1s',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'scale(1.1) rotate(5deg)';
+                  e.target.style.boxShadow = '0 8px 25px rgba(102, 187, 106, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1) rotate(0deg)';
+                  e.target.style.boxShadow = '0 4px 15px rgba(102, 187, 106, 0.3)';
                 }}>💳</div>
-                <h3 style={{ 
+                <h3 className="gradient-text" style={{ 
                   fontSize: '1.25rem', 
                   fontWeight: '600', 
-                  marginBottom: '0.75rem', 
-                  background: 'linear-gradient(135deg, rgb(79 70 229) 0%, rgb(99 102 241) 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
+                  marginBottom: '0.75rem'
                 }}>{t('securePayment')}</h3>
-              <p style={{ fontSize: '1rem', color: 'rgb(75 85 99)', lineHeight: '1.7' }}>{t('securePaymentDesc')}</p>
+                              <p style={{ 
+                  fontSize: '1rem', 
+                  color: 'rgb(75 85 99)', 
+                  lineHeight: '1.7',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  padding: '0.75rem',
+                  borderRadius: '0.5rem',
+                  backdropFilter: 'blur(5px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                  e.target.style.borderColor = 'rgba(79, 70, 229, 0.3)';
+                  e.target.style.transform = 'scale(1.02)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                  e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                  e.target.style.transform = 'scale(1)';
+                }}>{t('securePaymentDesc')}</p>
                             </div>
                             </div>
                         </div>
@@ -1101,12 +1137,20 @@ const Home = () => {
 
       {/* Featured Restaurants Section */}
       <section id="restaurants" className="section-enhanced" style={{ 
-        background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-        padding: '3rem 0'
+        padding: '3rem 0',
+        position: 'relative',
+        zIndex: 1
       }}>
         <div style={{ width: '100%', padding: '0 2rem' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 className="gradient-text" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', fontWeight: 'bold', marginBottom: '1rem' }}>
+            <h2 className="gradient-text neon-text" style={{ 
+              fontSize: 'clamp(2rem, 4vw, 2.5rem)', 
+              fontWeight: 'bold', 
+              marginBottom: '1rem',
+              textAlign: 'center',
+              letterSpacing: '0.5px',
+              textShadow: '0 0 20px rgba(79, 70, 229, 0.5)'
+            }}>
               {t('featuredRestaurants')}
             </h2>
             <p style={{ fontSize: '1.125rem', color: 'rgb(75 85 99)', maxWidth: '600px', margin: '0 auto' }}>
@@ -1123,13 +1167,8 @@ const Home = () => {
             {loading ? (
               // Loading skeleton
               Array.from({ length: 3 }).map((_, index) => (
-                <div key={index} style={{
-                  background: 'rgba(255, 255, 255, 0.95)',
-                  backdropFilter: 'blur(20px)',
-                  borderRadius: '1.25rem',
+                <div key={index} className="loading-state-enhanced" style={{
                   padding: '2rem',
-                  boxShadow: '0 20px 40px rgba(0, 0, 0, 0.08)',
-                  border: '1px solid rgba(229, 231, 235, 0.3)',
                   height: '400px',
                   display: 'flex',
                   flexDirection: 'column',
@@ -1158,64 +1197,27 @@ const Home = () => {
                   </div>
                   
                   {/* Loading dots */}
-                  <div style={{ 
-                    display: 'flex', 
-                    gap: '0.25rem',
+                  <div className="loading-dots" style={{ 
                     marginTop: '0.5rem'
                   }}>
-                    <div style={{
-                      width: '8px',
-                      height: '8px',
-                      borderRadius: '50%',
-                      background: 'rgb(79 70 229)',
-                      animation: 'bounce 1.4s infinite ease-in-out both',
-                      animationDelay: '0s'
-                    }}></div>
-                    <div style={{
-                      width: '8px',
-                      height: '8px',
-                      borderRadius: '50%',
-                      background: 'rgb(79 70 229)',
-                      animation: 'bounce 1.4s infinite ease-in-out both',
-                      animationDelay: '0.16s'
-                    }}></div>
-                    <div style={{
-                      width: '8px',
-                      height: '8px',
-                      borderRadius: '50%',
-                      background: 'rgb(79 70 229)',
-                      animation: 'bounce 1.4s infinite ease-in-out both',
-                      animationDelay: '0.32s'
-                    }}></div>
+                    <div className="dot"></div>
+                    <div className="dot"></div>
+                    <div className="dot"></div>
                   </div>
                 </div>
               ))
             ) : (
               featuredRestaurants.map((restaurant) => (
-              <div key={restaurant.id} style={{
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(20px)',
-                borderRadius: '1.25rem',
-                padding: '2rem',
-                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.08)',
-                transition: 'all 0.3s ease',
+              <div key={restaurant.id} className="restaurant-card-enhanced" style={{
+                padding: '1.5rem',
                 cursor: 'pointer',
-                border: '1px solid rgba(229, 231, 235, 0.3)',
                 position: 'relative',
                 overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column',
-                height: '400px' // Fixed height for consistency
+                height: '320px' // Reduced height to match feature cards
               }}
               onClick={() => navigate(`/restaurants/${restaurant.id}`)}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-8px)';
-                e.currentTarget.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.15)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.08)';
-              }}
               >
                 {/* Header Section - Icon and Name */}
                 <div style={{ 
@@ -1225,25 +1227,35 @@ const Home = () => {
                 }}>
                   {/* Restaurant Icon */}
                   <div style={{ 
-                    fontSize: '3.5rem', 
-                    marginBottom: '1.25rem',
+                    fontSize: '3rem', 
+                    marginBottom: '1rem',
                     filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1))',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    height: '4rem'
+                    height: '3.5rem',
+                    animation: 'pulse 2s ease-in-out infinite',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'scale(1.1) rotate(5deg)';
+                    e.target.style.filter = 'drop-shadow(0 6px 12px rgba(79, 70, 229, 0.3))';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'scale(1) rotate(0deg)';
+                    e.target.style.filter = 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1))';
                   }}>
                     {restaurant.image}
                   </div>
                   
                   {/* Restaurant Name */}
-                  <h3 style={{ 
-                    fontSize: '1.375rem', 
-                    fontWeight: '700', 
-                    color: 'rgb(79 70 229)', 
+                  <h3 className="gradient-text" style={{ 
+                    fontSize: '1.25rem', 
+                    fontWeight: '600', 
                     marginBottom: '0.75rem',
                     lineHeight: '1.3',
-                    minHeight: '2.5rem',
+                    minHeight: '2rem',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center'
@@ -1258,71 +1270,51 @@ const Home = () => {
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',
-                  marginBottom: '1.5rem'
+                  marginBottom: '1rem'
                 }}>
                   {/* Restaurant Description */}
                   <p style={{ 
-                    fontSize: '0.95rem', 
+                    fontSize: '0.9rem', 
                     color: 'rgb(75 85 99)', 
                     lineHeight: '1.6',
                     marginBottom: '0',
                     textAlign: 'center',
-                    minHeight: '3.2em',
-                    maxHeight: '3.2em',
+                    minHeight: '2.8em',
+                    maxHeight: '2.8em',
                     overflow: 'hidden',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    padding: '0.75rem',
+                    borderRadius: '0.5rem',
+                    backdropFilter: 'blur(5px)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                    e.target.style.borderColor = 'rgba(79, 70, 229, 0.3)';
+                    e.target.style.transform = 'scale(1.02)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    e.target.style.transform = 'scale(1)';
                   }}>
                     {restaurant.description}
                   </p>
                 </div>
                 
-                {/* Footer Section - Rating, Delivery Time, and Button */}
+                {/* Footer Section - Subscribe Button */}
                 <div style={{ 
                   flex: '0 0 auto',
                   display: 'flex',
-                  flexDirection: 'column',
-                  gap: '1rem'
+                  flexDirection: 'column'
                 }}>
-                  {/* Rating and Delivery Time */}
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
-                    alignItems: 'center', 
-                    padding: '0.75rem 1rem',
-                    background: 'rgba(79, 70, 229, 0.05)',
-                    borderRadius: '0.75rem',
-                    border: '1px solid rgba(79, 70, 229, 0.1)',
-                    minHeight: '3rem'
-                  }}>
-                    <div style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '0.5rem',
-                      flex: '1'
-                    }}>
-                      <span style={{ color: 'rgb(34 197 94)', fontSize: '1.1rem' }}>⭐</span>
-                      <span style={{ fontWeight: '600', color: 'rgb(79 70 229)' }}>
-                        {restaurant.rating}
-                      </span>
-                    </div>
-                    <div style={{ 
-                      fontSize: '0.875rem', 
-                      color: 'rgb(75 85 99)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.25rem',
-                      flex: '1',
-                      justifyContent: 'flex-end'
-                    }}>
-                      <span style={{ fontSize: '1rem' }}>⏰</span>
-                      <span>{restaurant.deliveryTime}</span>
-                    </div>
-                  </div>
-                  
                   {/* Subscribe Button */}
                   <button 
+                    className="liquid-button"
                     onClick={(e) => {
                       e.stopPropagation();
                       navigate(`/restaurants/${restaurant.id}`);
@@ -1331,25 +1323,14 @@ const Home = () => {
                       width: '100%',
                       padding: '0.875rem',
                       borderRadius: '0.75rem',
-                      background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
                       color: 'white',
                       border: 'none',
-                      fontSize: '1rem',
+                      fontSize: '0.95rem',
                       fontWeight: '600',
                       cursor: 'pointer',
-                      transition: 'all 0.3s ease',
-                      boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)',
                       position: 'relative',
                       overflow: 'hidden',
                       minHeight: '3rem'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 6px 16px rgba(79, 70, 229, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
                     }}
                   >
                     {t('subscribe')}
@@ -1361,7 +1342,7 @@ const Home = () => {
                         </div>
 
           <div style={{ textAlign: 'center' }}>
-            <a href="/restaurants" className="feature-btn feature-btn-primary">
+            <a href="/restaurants" className="feature-btn feature-btn-primary liquid-button">
               🍕 {t('viewAllRestaurants')}
             </a>
                     </div>
@@ -1370,10 +1351,10 @@ const Home = () => {
 
       {/* How it works Section */}
       <section id="how" className="section-enhanced" style={{ 
-        background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',
         padding: '4rem 0',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        zIndex: 1
       }}>
         {/* Background decorative elements */}
         <div style={{
@@ -1389,37 +1370,14 @@ const Home = () => {
         
         <div style={{ width: '100%', padding: '0 2rem', position: 'relative', zIndex: '1' }}>
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              padding: '0.75rem 1.5rem',
-              borderRadius: '9999px',
-              background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)',
-              border: '1px solid rgba(79, 70, 229, 0.2)',
-              marginBottom: '1.5rem',
-              backdropFilter: 'blur(10px)'
-            }}>
-              <span style={{ fontSize: '1.25rem' }}>🚀</span>
-              <span style={{ 
-                fontSize: '0.875rem', 
-                fontWeight: '600', 
-                color: 'rgb(79 70 229)',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em'
-              }}>
-                {t('howItWorks')}
-              </span>
-            </div>
-            <h2 style={{ 
-              fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', 
-              fontWeight: '800', 
-              marginBottom: '1.5rem',
-              background: 'linear-gradient(135deg, rgb(79 70 229) 0%, rgb(139 92 246) 100%)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              lineHeight: '1.2'
+
+            <h2 className="gradient-text neon-text" style={{ 
+              fontSize: 'clamp(2rem, 4vw, 2.5rem)', 
+              fontWeight: 'bold', 
+              marginBottom: '1rem',
+              textAlign: 'center',
+              letterSpacing: '0.5px',
+              textShadow: '0 0 20px rgba(79, 70, 229, 0.5)'
             }}>
               {t('howItWorks')}
             </h2>
@@ -1467,14 +1425,8 @@ const Home = () => {
                 zIndex: '1',
                 animation: `fadeInUp 0.6s ease-out ${item.delay} both`
               }}>
-                <div className="card card-hover step-card" style={{
-                  background: 'rgba(255, 255, 255, 0.95)',
-                  backdropFilter: 'blur(20px)',
-                  borderRadius: '1.5rem',
+                <div className="card card-hover step-card subscription-card-enhanced" style={{
                   padding: '2rem 1.5rem',
-                  border: '1px solid rgba(255, 255, 255, 0.3)',
-                  boxShadow: '0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(79, 70, 229, 0.1)',
-                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                   cursor: 'pointer',
                   position: 'relative',
                   overflow: 'hidden',
@@ -1484,16 +1436,6 @@ const Home = () => {
                   flexDirection: 'column',
                   justifyContent: 'center',
                   alignItems: 'center'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-12px) scale(1.02)';
-                  e.currentTarget.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.12), 0 12px 24px rgba(79, 70, 229, 0.15)';
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.98)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(79, 70, 229, 0.1)';
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.95)';
                 }}>
                   
                   {/* Step number with enhanced design - Smaller */}
@@ -1563,11 +1505,10 @@ const Home = () => {
                     justifyContent: 'center',
                     alignItems: 'center'
                   }}>
-                    <h3 style={{
+                    <h3 className="gradient-text" style={{
                       fontSize: '1.125rem',
                       fontWeight: '700',
                       marginBottom: '0.75rem',
-                      color: 'rgb(31 41 55)',
                       lineHeight: '1.3'
                     }}>
                       {item.title}
@@ -1604,7 +1545,7 @@ const Home = () => {
             marginTop: '4rem',
             animation: 'fadeInUp 0.6s ease-out 0.4s both'
           }}>
-            <a href="/restaurants" style={{
+            <a href="/restaurants" className="liquid-button" style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.75rem',
@@ -1612,21 +1553,10 @@ const Home = () => {
               fontSize: '1.125rem',
               fontWeight: '600',
               color: 'white',
-              background: 'linear-gradient(135deg, rgb(79 70 229) 0%, rgb(139 92 246) 100%)',
               borderRadius: '1rem',
               textDecoration: 'none',
-              boxShadow: '0 8px 25px rgba(79, 70, 229, 0.3)',
-              transition: 'all 0.3s ease',
               position: 'relative',
               overflow: 'hidden'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-3px)';
-              e.target.style.boxShadow = '0 12px 35px rgba(79, 70, 229, 0.4)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 8px 25px rgba(79, 70, 229, 0.3)';
             }}>
               <span>🚀</span>
               <span>{t('getStarted')}</span>
