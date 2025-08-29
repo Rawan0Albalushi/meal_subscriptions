@@ -204,10 +204,21 @@ const SubscriptionDetail = () => {
 
     if (loading) {
         return (
-            <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ 
+                minHeight: '100vh', 
+                background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                padding: '1rem'
+            }}>
                 <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
-                    <p style={{ color: 'rgb(75 85 99)', fontSize: '1.125rem' }}>
+                    <div style={{ fontSize: 'clamp(2rem, 8vw, 3rem)', marginBottom: '1rem' }}>⏳</div>
+                    <p style={{ 
+                        color: 'rgb(75 85 99)', 
+                        fontSize: 'clamp(0.875rem, 4vw, 1.125rem)',
+                        padding: '0 1rem'
+                    }}>
                         {language === 'ar' ? 'جاري تحميل تفاصيل الاشتراك...' : 'Loading subscription details...'}
                     </p>
                 </div>
@@ -217,19 +228,31 @@ const SubscriptionDetail = () => {
 
     if (error || !subscription) {
         return (
-            <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ 
+                minHeight: '100vh', 
+                background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                padding: '1rem'
+            }}>
                 <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>❌</div>
-                    <p style={{ color: '#ef4444', fontSize: '1.125rem', marginBottom: '2rem' }}>{error}</p>
+                    <div style={{ fontSize: 'clamp(2rem, 8vw, 3rem)', marginBottom: '1rem' }}>❌</div>
+                    <p style={{ 
+                        color: '#ef4444', 
+                        fontSize: 'clamp(0.875rem, 4vw, 1.125rem)', 
+                        marginBottom: '2rem',
+                        padding: '0 1rem'
+                    }}>{error}</p>
                     <button 
                         onClick={() => navigate('/my-subscriptions')}
                         style={{
-                            padding: '0.75rem 1.5rem',
+                            padding: 'clamp(0.5rem, 3vw, 0.75rem) clamp(1rem, 4vw, 1.5rem)',
                             borderRadius: '0.75rem',
                             background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
                             color: 'white',
                             border: 'none',
-                            fontSize: '1rem',
+                            fontSize: 'clamp(0.875rem, 4vw, 1rem)',
                             fontWeight: '600',
                             cursor: 'pointer',
                             transition: 'all 0.3s ease'
@@ -245,86 +268,67 @@ const SubscriptionDetail = () => {
     return (
         <div style={{ 
             minHeight: '100vh',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            position: 'relative',
-            overflow: 'hidden'
+            background: 'linear-gradient(135deg, #fafbfc 0%, #f1f5f9 25%, #e2e8f0 50%, #cbd5e1 75%, #94a3b8 100%)',
+            position: 'relative'
         }}>
-            {/* Animated Background Elements */}
+            {/* Unified Background Overlay */}
             <div style={{
                 position: 'absolute',
-                top: '0',
-                left: '0',
-                width: '100%',
-                height: '100%',
-                overflow: 'hidden',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'radial-gradient(circle at 20% 80%, rgba(79, 70, 229, 0.02) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.02) 0%, transparent 50%)',
+                pointerEvents: 'none',
                 zIndex: 0
-            }}>
-                <div style={{
-                    position: 'absolute',
-                    top: '-50%',
-                    left: '-50%',
-                    width: '200%',
-                    height: '200%',
-                    background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
-                    animation: 'float 20s ease-in-out infinite'
-                }}></div>
-                <div style={{
-                    position: 'absolute',
-                    top: '20%',
-                    right: '-20%',
-                    width: '300px',
-                    height: '300px',
-                    background: 'radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)',
-                    borderRadius: '50%',
-                    animation: 'pulse 15s ease-in-out infinite'
-                }}></div>
-                <div style={{
-                    position: 'absolute',
-                    bottom: '10%',
-                    left: '10%',
-                    width: '200px',
-                    height: '200px',
-                    background: 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%)',
-                    borderRadius: '50%',
-                    animation: 'float 25s ease-in-out infinite reverse'
-                }}></div>
-            </div>
+            }}></div>
 
             {/* Hero Section */}
             <section style={{ 
+                background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',
                 position: 'relative',
-                zIndex: 1,
-                padding: '2rem 0 3rem 0',
-                background: 'rgba(255, 255, 255, 0.1)',
-                backdropFilter: 'blur(20px)',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.2)'
+                overflow: 'hidden',
+                padding: 'clamp(1rem, 5vw, 2rem) 0 clamp(1.5rem, 6vw, 3rem) 0'
             }}>
-                <div style={{ width: '100%', padding: '0 1rem' }}>
+                {/* Floating decorative elements - Hidden on mobile */}
+                <div style={{ display: window.innerWidth > 768 ? 'block' : 'none' }}>
+                    <div style={{
+                        position: 'absolute',
+                        top: '10%',
+                        left: '10%',
+                        width: '100px',
+                        height: '100px',
+                        background: 'radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, transparent 70%)',
+                        borderRadius: '50%'
+                    }}></div>
+                    <div style={{
+                        position: 'absolute',
+                        top: '20%',
+                        right: '15%',
+                        width: '80px',
+                        height: '80px',
+                        background: 'radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%)',
+                        borderRadius: '50%'
+                    }}></div>
+                    <div style={{
+                        position: 'absolute',
+                        bottom: '20%',
+                        left: '20%',
+                        width: '120px',
+                        height: '120px',
+                        background: 'radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 70%)',
+                        borderRadius: '50%'
+                    }}></div>
+                </div>
+                
+                <div style={{ width: '100%', padding: '0 clamp(1rem, 4vw, 2rem)' }}>
                     <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
-                        <div style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '0.5rem',
-                            borderRadius: '9999px',
-                            padding: '0.75rem 1.5rem',
-                            fontSize: '0.875rem',
-                            color: 'white',
-                            marginBottom: '1.5rem',
-                            background: 'rgba(255, 255, 255, 0.2)',
-                            backdropFilter: 'blur(10px)',
-                            border: '1px solid rgba(255, 255, 255, 0.3)',
-                            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
-                        }}>
-                            ✨ {language === 'ar' ? 'تفاصيل الاشتراك' : 'Subscription Details'}
-                        </div>
                         <h1 style={{ 
-                            fontSize: 'clamp(2rem, 5vw, 3.5rem)', 
-                            fontWeight: '800', 
+                            fontSize: 'clamp(1.75rem, 6vw, 3.5rem)', 
+                            fontWeight: 'bold', 
                             lineHeight: '1.2', 
-                            marginBottom: '1.5rem',
-                            color: 'white',
-                            textShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
-                            background: 'linear-gradient(135deg, #fff 0%, #f0f0f0 100%)',
+                            marginBottom: 'clamp(1rem, 4vw, 1.5rem)',
+                            background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             backgroundClip: 'text'
@@ -332,13 +336,12 @@ const SubscriptionDetail = () => {
                             {language === 'ar' ? 'تفاصيل الاشتراك' : 'Subscription Details'}
                         </h1>
                         <p style={{ 
-                            color: 'rgba(255, 255, 255, 0.9)', 
-                            marginBottom: '2rem', 
-                            fontSize: '1.125rem', 
+                            color: 'rgb(75 85 99)', 
+                            fontSize: 'clamp(0.875rem, 4vw, 1.125rem)', 
                             lineHeight: '1.7',
                             maxWidth: '600px',
-                            margin: '0 auto 2rem auto',
-                            textShadow: '0 2px 10px rgba(0, 0, 0, 0.2)'
+                            margin: '0 auto',
+                            padding: '0 1rem'
                         }}>
                             {language === 'ar' 
                                 ? 'تابع تفاصيل اشتراكك ووجباتك المخططة' 
@@ -1137,17 +1140,7 @@ const SubscriptionDetail = () => {
                 </div>
             </div>
 
-            {/* CSS Animations */}
-            <style>{`
-                @keyframes float {
-                    0%, 100% { transform: translateY(0px) rotate(0deg); }
-                    50% { transform: translateY(-20px) rotate(180deg); }
-                }
-                @keyframes pulse {
-                    0%, 100% { transform: scale(1); opacity: 0.5; }
-                    50% { transform: scale(1.1); opacity: 0.8; }
-                }
-            `}</style>
+
         </div>
     );
 };
