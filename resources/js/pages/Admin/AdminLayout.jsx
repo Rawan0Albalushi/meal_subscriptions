@@ -1,31 +1,161 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import ContactInformationManagement from './ContactInformationManagement';
 
 const AdminLayout = () => {
+    const location = useLocation();
+
+    const isActive = (path) => {
+        return location.pathname === path;
+    };
+
     return (
-        <div className="min-h-screen bg-gray-50">
-            <div className="bg-white shadow">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16">
-                        <div className="flex items-center">
-                            <h1 className="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
+        <div style={{
+            minHeight: '100vh',
+            background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
+        }}>
+            {/* Admin Header */}
+            <div style={{
+                background: 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(20px)',
+                borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)'
+            }}>
+                <div style={{
+                    maxWidth: '1200px',
+                    margin: '0 auto',
+                    padding: '0 1rem'
+                }}>
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        height: '4rem'
+                    }}>
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '2rem'
+                        }}>
+                            <h1 style={{
+                                fontSize: '1.5rem',
+                                fontWeight: 'bold',
+                                color: 'rgb(79 70 229)'
+                            }}>
+                                لوحة تحكم المدير
+                            </h1>
+                            
+                            {/* Navigation Links */}
+                            <nav style={{
+                                display: 'flex',
+                                gap: '1rem'
+                            }}>
+                                <Link
+                                    to="/admin/contact-information"
+                                    style={{
+                                        padding: '0.5rem 1rem',
+                                        borderRadius: '0.5rem',
+                                        textDecoration: 'none',
+                                        color: isActive('/admin/contact-information') ? 'white' : 'rgb(79 70 229)',
+                                        backgroundColor: isActive('/admin/contact-information') ? 'rgb(79 70 229)' : 'transparent',
+                                        fontWeight: isActive('/admin/contact-information') ? '600' : '500',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        if (!isActive('/admin/contact-information')) {
+                                            e.target.style.backgroundColor = 'rgba(79, 70, 229, 0.1)';
+                                        }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        if (!isActive('/admin/contact-information')) {
+                                            e.target.style.backgroundColor = 'transparent';
+                                        }
+                                    }}
+                                >
+                                    معلومات التواصل
+                                </Link>
+                            </nav>
                         </div>
-                        <div className="flex items-center">
-                            <span className="text-sm text-gray-500">Admin Panel</span>
+                        
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center'
+                        }}>
+                            <span style={{
+                                fontSize: '0.875rem',
+                                color: 'rgb(107 114 128)'
+                            }}>
+                                لوحة تحكم المدير
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                <div className="px-4 py-6 sm:px-0">
-                    <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 flex items-center justify-center">
-                        <div className="text-center">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-4">Admin Dashboard</h2>
-                            <p className="text-gray-600">Welcome to the admin panel. This is a placeholder for admin functionality.</p>
+            {/* Main Content */}
+            <main style={{
+                maxWidth: '1200px',
+                margin: '0 auto',
+                padding: '1rem'
+            }}>
+                <Routes>
+                    <Route path="/contact-information" element={<ContactInformationManagement />} />
+                    <Route path="/" element={
+                        <div style={{
+                            background: 'rgba(255, 255, 255, 0.9)',
+                            backdropFilter: 'blur(20px)',
+                            borderRadius: '1rem',
+                            padding: '3rem',
+                            textAlign: 'center',
+                            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+                            border: '1px solid rgba(255, 255, 255, 0.2)'
+                        }}>
+                            <h2 style={{
+                                fontSize: '2rem',
+                                fontWeight: 'bold',
+                                color: 'rgb(79 70 229)',
+                                marginBottom: '1rem'
+                            }}>
+                                لوحة تحكم المدير
+                            </h2>
+                            <p style={{
+                                color: 'rgb(107 114 128)',
+                                fontSize: '1.125rem',
+                                marginBottom: '2rem'
+                            }}>
+                                مرحباً بك في لوحة تحكم المدير. اختر من القائمة أعلاه للوصول إلى الميزات المختلفة.
+                            </p>
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                gap: '1rem'
+                            }}>
+                                <Link
+                                    to="/admin/contact-information"
+                                    style={{
+                                        padding: '0.75rem 1.5rem',
+                                        backgroundColor: 'rgb(79 70 229)',
+                                        color: 'white',
+                                        textDecoration: 'none',
+                                        borderRadius: '0.5rem',
+                                        fontWeight: '600',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.backgroundColor = 'rgb(67 56 202)';
+                                        e.target.style.transform = 'translateY(-2px)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.backgroundColor = 'rgb(79 70 229)';
+                                        e.target.style.transform = 'translateY(0)';
+                                    }}
+                                >
+                                    إدارة معلومات التواصل
+                                </Link>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    } />
+                </Routes>
             </main>
         </div>
     );

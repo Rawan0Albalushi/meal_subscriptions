@@ -354,7 +354,8 @@ const OrderManagement = () => {
                                         <p style={{ 
                                             fontSize: '0.75rem', 
                                             color: 'rgb(75 85 99)',
-                                            marginBottom: '0.25rem'
+                                            marginBottom: '0.25rem',
+                                            direction: 'ltr'
                                         }}>
                                             {language === 'ar' ? 'الهاتف:' : 'Phone:'} {subscription.delivery_address?.phone}
                                         </p>

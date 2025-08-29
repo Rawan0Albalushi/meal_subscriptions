@@ -607,6 +607,7 @@ const SubscriptionForm = () => {
                           placeholder={t('phonePlaceholder')} 
                           className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-300 outline-none"
                           required 
+                          style={{ direction: 'ltr', textAlign: 'left' }}
                         />
                       </div>
                     </div>

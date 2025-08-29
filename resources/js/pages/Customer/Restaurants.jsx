@@ -712,7 +712,8 @@ const Restaurants = () => {
                   <div style={{ 
                     fontSize: '0.875rem', 
                     color: 'rgb(75 85 99)',
-                    textAlign: 'center'
+                    textAlign: 'center',
+                    direction: 'ltr'
                   }}>
                     📞 {restaurant.phone}
                   </div>

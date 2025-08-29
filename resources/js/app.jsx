@@ -12,6 +12,8 @@ import SubscriptionForm from './pages/Customer/SubscriptionForm';
 import MySubscriptions from './pages/Customer/MySubscriptions';
 import SubscriptionDetail from './pages/Customer/SubscriptionDetail';
 import DeliveryAddresses from './pages/Customer/DeliveryAddresses';
+import ContactUs from './pages/Customer/ContactUs';
+import ContactInformationManagement from './pages/Admin/ContactInformationManagement';
 import AdminLayout from './pages/Admin/AdminLayout';
 import SellerLayout from './pages/Seller/SellerLayout';
 
@@ -76,6 +78,7 @@ function AppRoutes() {
                             <Navigate to="/login" replace />
                         } 
                     />
+                    <Route path="/contact-us" element={<ContactUs />} />
                     
                     {/* Admin routes */}
                     <Route 

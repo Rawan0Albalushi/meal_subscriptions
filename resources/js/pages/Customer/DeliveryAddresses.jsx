@@ -298,7 +298,8 @@ const DeliveryAddresses = () => {
                                         onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
                                         required
-                                        placeholder="+966501234567"
+                                        placeholder="+96899999999"
+                                        style={{ direction: 'ltr', textAlign: 'left' }}
                                     />
                                 </div>
                             </div>
@@ -313,7 +314,7 @@ const DeliveryAddresses = () => {
                                     rows={3}
                                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
                                     required
-                                    placeholder={language === 'ar' ? 'الشارع، الحي، المدينة' : 'Street, District, City'}
+                                    placeholder={language === 'ar' ? 'الشارع، الحي، المدينة، مسقط' : 'Street, District, City, Muscat'}
                                 />
                             </div>
                             
@@ -328,7 +329,7 @@ const DeliveryAddresses = () => {
                                         onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
                                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
                                         required
-                                        placeholder={language === 'ar' ? 'الرياض، جدة، الدمام' : 'Riyadh, Jeddah, Dammam'}
+                                        placeholder={language === 'ar' ? 'مسقط، صلالة، صحار' : 'Muscat, Salalah, Sohar'}
                                     />
                                 </div>
                                 
@@ -355,7 +356,7 @@ const DeliveryAddresses = () => {
                                     onChange={(e) => setFormData(prev => ({ ...prev, additional_notes: e.target.value }))}
                                     rows={2}
                                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
-                                    placeholder={language === 'ar' ? 'مثال: بجانب المسجد، الطابق الثاني' : 'Example: Next to mosque, 2nd floor'}
+                                    placeholder={language === 'ar' ? 'مثال: بجانب مسجد السلطان قابوس، الطابق الثالث' : 'Example: Next to Sultan Qaboos Mosque, 3rd floor'}
                                 />
                             </div>
                             
@@ -463,7 +464,7 @@ const DeliveryAddresses = () => {
                                                 </div>
                                                 <div>
                                                     <div className="text-sm text-gray-500 font-medium">{t('phone')}</div>
-                                                    <div className="font-bold text-gray-900">{address.phone}</div>
+                                                    <div className="font-bold text-gray-900" style={{ direction: 'ltr' }}>{address.phone}</div>
                                                 </div>
                                             </div>
                                             

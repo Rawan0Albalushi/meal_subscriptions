@@ -797,7 +797,8 @@ const RestaurantDetail = () => {
                     background: 'rgba(255, 255, 255, 0.5)',
                     borderRadius: '0.5rem',
                     border: '1px solid rgba(229, 231, 235, 0.3)',
-                    textAlign: 'center'
+                    textAlign: 'center',
+                    direction: 'ltr'
                   }}>
                     📞 {restaurant.phone}
                   </div>

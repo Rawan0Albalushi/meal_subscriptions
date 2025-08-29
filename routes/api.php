@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\DeliveryAddressController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Seller\RestaurantController as SellerRestaurantController;
 use App\Http\Controllers\Api\Seller\MealController as SellerMealController;
+use App\Http\Controllers\Api\ContactInformationController;
 
 // Authentication routes
 Route::post('/auth/login', [AuthController::class, 'login']);
@@ -24,6 +25,9 @@ Route::get('/restaurants', [RestaurantController::class, 'index']);
 Route::get('/restaurants/filters', [RestaurantController::class, 'getFilters']);
 Route::get('/restaurants/{id}', [RestaurantController::class, 'show']);
 Route::get('/restaurants/{restaurantId}/meals', [RestaurantController::class, 'meals']);
+
+// Contact information routes
+Route::get('/contact-information', [ContactInformationController::class, 'index']);
 
 // Subscription type routes
 Route::get('/subscription-types', [SubscriptionTypeController::class, 'index']);
@@ -63,6 +67,9 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
     
     // Subscription type management
     Route::apiResource('subscription-types', \App\Http\Controllers\Api\Admin\SubscriptionTypeController::class);
+    
+    // Contact information management
+    Route::put('/contact-information', [ContactInformationController::class, 'update']);
 });
 
 // Seller routes

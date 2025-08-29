@@ -143,6 +143,25 @@ const Navbar = () => {
                                         {t('mySubscriptions')}
                                     </Link>
 
+                            <Link to="/contact-us" style={{
+                                padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
+                                borderRadius: '0.5rem',
+                                color: 'rgb(79 70 229)',
+                                textDecoration: 'none',
+                                fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
+                                fontWeight: '500',
+                                transition: 'all 0.2s',
+                                whiteSpace: 'nowrap'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.background = 'transparent';
+                            }}
+                            >
+                                {language === 'ar' ? 'تواصل معنا' : 'Contact Us'}
+                            </Link>
 
                         </div>
 
@@ -383,6 +402,32 @@ const Navbar = () => {
                                 >
                                     📋 {t('mySubscriptions')}
                                     </Link>
+
+                                <Link to="/contact-us" 
+                                    style={{
+                                        padding: 'clamp(0.75rem, 3vw, 1rem)',
+                                        borderRadius: '0.75rem',
+                                        color: 'rgb(79 70 229)',
+                                        textDecoration: 'none',
+                                        fontSize: 'clamp(1rem, 3vw, 1.125rem)',
+                                        fontWeight: '600',
+                                        background: 'rgba(79, 70, 229, 0.05)',
+                                        border: '1px solid rgba(79, 70, 229, 0.1)',
+                                        transition: 'all 0.2s ease',
+                                        textAlign: 'center'
+                                    }}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                                        e.target.style.transform = 'translateX(-5px)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.background = 'rgba(79, 70, 229, 0.05)';
+                                        e.target.style.transform = 'translateX(0)';
+                                    }}
+                                >
+                                    📞 {language === 'ar' ? 'تواصل معنا' : 'Contact Us'}
+                                </Link>
                             </div>
 
                             {/* Language Toggle */}

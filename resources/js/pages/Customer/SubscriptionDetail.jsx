@@ -720,13 +720,14 @@ const SubscriptionDetail = () => {
                                 <div style={{ fontSize: '0.875rem', color: '#6b7280', lineHeight: '1.5', marginBottom: '0.75rem' }}>
                                     {subscription.delivery_address?.address}
                                 </div>
-                                <div style={{ 
-                                    fontSize: '0.875rem', 
+                                                                <div style={{
+                                    fontSize: '0.875rem',
                                     color: '#6b7280',
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '0.5rem',
-                                    fontWeight: '600'
+                                    fontWeight: '600',
+                                    direction: 'ltr'
                                 }}>
                                     📞 {subscription.delivery_address?.phone}
                                 </div>
