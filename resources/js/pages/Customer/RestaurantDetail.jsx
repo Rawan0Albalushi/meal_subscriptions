@@ -4,22 +4,52 @@ import { restaurantsAPI, subscriptionTypesAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 
-// Add CSS animations
+// Simple CSS styles
 const styles = `
-  @keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-10px) rotate(1deg); }
+  .meal-filter-buttons {
+    pointer-events: auto !important;
   }
   
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.05); opacity: 0.8; }
+  .meal-filter-button {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
+  
+  input[type="date"] {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
+  
+  /* Ensure date picker is clickable */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+  }
+  
+  input[type="date"]::-webkit-inner-spin-button {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+  }
+  
+  input[type="date"]::-webkit-clear-button {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+  }
+  
+  @media (max-width: 768px) {
+    .meal-filter-buttons {
+      flex-direction: column !important;
+    }
+    
+    .meal-filter-button {
+      flex: none !important;
+    }
   }
   
   @keyframes slideInUp {
     from {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(20px);
     }
     to {
       opacity: 1;
@@ -27,13 +57,16 @@ const styles = `
     }
   }
   
-  .meal-filter-card {
-    animation: slideInUp 0.6s ease-out;
+  @keyframes slideInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-  
-  .meal-filter-card:nth-child(1) { animation-delay: 0.1s; }
-  .meal-filter-card:nth-child(2) { animation-delay: 0.2s; }
-  .meal-filter-card:nth-child(3) { animation-delay: 0.3s; }
 `;
 
 // Inject styles
@@ -180,7 +213,17 @@ const RestaurantDetail = () => {
   // دوال فلتر أنواع الوجبات
   const handleMealTypeFilter = (mealType) => {
     console.log('Meal type selected:', mealType);
-    setMealTypeFilter(mealType);
+    console.log('Current mealTypeFilter:', mealTypeFilter);
+    
+    // إذا كان نفس النوع مختار، قم بإلغاء الاختيار
+    if (mealTypeFilter === mealType) {
+      console.log('Deselecting meal type');
+      setMealTypeFilter('');
+    } else {
+      console.log('Selecting meal type');
+      setMealTypeFilter(mealType);
+    }
+    
     setShowMealTypeDropdown(false);
     // إعادة تعيين الوجبات المختارة فقط عند تغيير نوع الوجبة
     setSelectedMeals({});
@@ -206,6 +249,8 @@ const RestaurantDetail = () => {
 
   // الحصول على أنواع الوجبات المتاحة
   const availableMealTypes = [...new Set(meals.map(meal => meal.meal_type))];
+  console.log('Available meal types:', availableMealTypes);
+  console.log('Meals data:', meals);
 
   // الاختيار التلقائي إذا كان هناك نوع واحد فقط
   useEffect(() => {
@@ -342,11 +387,17 @@ const RestaurantDetail = () => {
     let nextDate = new Date(today);
     
     // Find the next valid weekday (Sunday to Thursday)
-    while (nextDate.getDay() === 5 || nextDate.getDay() === 6) { // Friday = 5, Saturday = 6
+    // Friday = 5, Saturday = 6
+    while (nextDate.getDay() === 5 || nextDate.getDay() === 6) {
       nextDate.setDate(nextDate.getDate() + 1);
     }
     
-    return nextDate.toISOString().split('T')[0];
+    // Format date as YYYY-MM-DD
+    const year = nextDate.getFullYear();
+    const month = String(nextDate.getMonth() + 1).padStart(2, '0');
+    const day = String(nextDate.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
   };
 
   // Function to set a valid date and clear errors
@@ -430,9 +481,13 @@ const RestaurantDetail = () => {
 
   // Check if a date is a valid weekday (Sunday to Thursday)
   const isValidWeekday = (dateString) => {
+    if (!dateString) return false;
     const date = new Date(dateString);
     const dayOfWeek = date.getDay();
-    return dayOfWeek >= 0 && dayOfWeek <= 4; // Sunday = 0, Thursday = 4
+    console.log('Checking date:', dateString, 'Day of week:', dayOfWeek);
+    // Sunday = 0, Monday = 1, Tuesday = 2, Wednesday = 3, Thursday = 4
+    // Friday = 5, Saturday = 6
+    return dayOfWeek >= 0 && dayOfWeek <= 4;
   };
 
   if (loading) {
@@ -1036,609 +1091,486 @@ const RestaurantDetail = () => {
             {/* Start Date Selection - Only show if subscription type is selected */}
             {selectedSubscriptionType && (
               <div style={{
-                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9))',
-                backdropFilter: 'blur(20px)',
-                borderRadius: '2rem',
-                padding: 'clamp(2.5rem, 5vw, 3.5rem)',
-                marginBottom: '3rem',
-                boxShadow: '0 25px 50px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.2)',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                maxWidth: '600px',
-                margin: '0 auto 3rem auto',
+                background: 'white',
+                borderRadius: '1rem',
+                padding: '2rem',
+                marginBottom: '2rem',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                border: '1px solid #e5e7eb',
+                maxWidth: '500px',
+                margin: '0 auto 2rem auto',
                 position: 'relative',
-                overflow: 'hidden'
+                zIndex: 5
               }}>
-                {/* Animated Background Elements */}
-                <div style={{
-                  position: 'absolute',
-                  top: '-50%',
-                  left: '-50%',
-                  width: '200%',
-                  height: '200%',
-                  background: 'radial-gradient(circle at 20% 30%, rgba(79, 70, 229, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(99, 102, 241, 0.03) 0%, transparent 50%)',
-                  animation: 'float 8s ease-in-out infinite'
-                }}></div>
-                
-                <div style={{ position: 'relative', zIndex: 1 }}>
-                  {/* Header Section */}
-                  <div style={{ 
-                    textAlign: 'center', 
-                    marginBottom: '2.5rem',
-                    position: 'relative'
+                {/* Header */}
+                <div style={{ 
+                  textAlign: 'center', 
+                  marginBottom: '1.5rem'
+                }}>
+                  <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '3rem',
+                    height: '3rem',
+                    background: '#3b82f6',
+                    borderRadius: '50%',
+                    marginBottom: '1rem'
+                  }}>
+                    <span style={{ fontSize: '1.25rem', color: 'white' }}>📅</span>
+                  </div>
+                  
+                  <h3 style={{ 
+                    fontSize: '1.5rem', 
+                    fontWeight: '700', 
+                    marginBottom: '0.5rem',
+                    color: '#1f2937'
+                  }}>
+                    {t('startSubscriptionDate')}
+                  </h3>
+                  
+                  <p style={{ 
+                    fontSize: '0.875rem', 
+                    color: '#6b7280', 
+                    lineHeight: '1.5'
+                  }}>
+                    {t('selectStartDateMessage')}
+                  </p>
+                </div>
+
+                {/* Date Input */}
+                <div style={{ marginBottom: '1rem', position: 'relative', zIndex: 10 }}>
+                  <input 
+                    type="date" 
+                    value={startDate} 
+                    onChange={(e) => {
+                      const selectedDate = e.target.value;
+                      console.log('Date selected:', selectedDate);
+                      
+                      if (!selectedDate) {
+                        setStartDate('');
+                        setSelectedMeals({});
+                        setErrors(prev => ({ ...prev, startDate: '' }));
+                        return;
+                      }
+                      
+                      if (isValidWeekday(selectedDate)) {
+                        setStartDate(selectedDate);
+                        setSelectedMeals({});
+                        setErrors(prev => ({ ...prev, startDate: '' }));
+                      } else {
+                        setErrors(prev => ({ ...prev, startDate: t('selectWeekdayOnly') }));
+                        // Don't reset the input value, let user see their selection
+                      }
+                    }} 
+                    min={getNextValidDate()} 
+                    style={{ 
+                      width: '100%', 
+                      padding: '0.75rem', 
+                      borderRadius: '0.5rem', 
+                      border: '1px solid #d1d5db', 
+                      fontSize: '1rem',
+                      background: 'white',
+                      transition: 'all 0.2s ease',
+                      outline: 'none',
+                      cursor: 'pointer',
+                      position: 'relative',
+                      zIndex: 10,
+                      WebkitAppearance: 'none',
+                      MozAppearance: 'none',
+                      appearance: 'none',
+                      color: '#374151',
+                      fontFamily: 'inherit',
+                      boxSizing: 'border-box',
+                      display: 'block',
+                      opacity: 1,
+                      visibility: 'visible',
+                      pointerEvents: 'auto',
+                      touchAction: 'manipulation',
+                      WebkitUserSelect: 'none',
+                      MozUserSelect: 'none',
+                      msUserSelect: 'none',
+                      userSelect: 'none',
+                      WebkitTapHighlightColor: 'transparent',
+                      WebkitTouchCallout: 'none',
+                      WebkitOverflowScrolling: 'touch'
+                    }} 
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#3b82f6';
+                      e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#d1d5db';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                    onClick={(e) => {
+                      console.log('Date input clicked');
+                    }}
+
+                    required 
+                  />
+                </div>
+
+                {/* Success Message */}
+                {startDate && isValidWeekday(startDate) && (
+                  <div style={{
+                    padding: '0.75rem',
+                    background: '#f0fdf4',
+                    borderRadius: '0.5rem',
+                    border: '1px solid #bbf7d0',
+                    textAlign: 'center',
+                    marginBottom: '1rem'
                   }}>
                     <div style={{
-                      display: 'inline-flex',
+                      fontSize: '0.875rem',
+                      color: '#166534',
+                      fontWeight: '600',
+                      display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      width: '5rem',
-                      height: '5rem',
-                      background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
-                      borderRadius: '50%',
-                      marginBottom: '1.5rem',
-                      boxShadow: '0 15px 35px rgba(79, 70, 229, 0.3)',
-                      animation: 'pulse 3s infinite'
+                      gap: '0.5rem'
                     }}>
-                      <span style={{ fontSize: '2rem', color: 'white' }}>📅</span>
+                      <span>✓</span>
+                      {t('dateSelected')}
                     </div>
-                    
-                    <h3 style={{ 
-                      fontSize: 'clamp(1.75rem, 4vw, 2.25rem)', 
-                      fontWeight: '800', 
-                      marginBottom: '1rem',
-                      background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
-                      backgroundClip: 'text',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      textAlign: 'center'
-                    }}>
-                      {t('startSubscriptionDate')}
-                    </h3>
-                    
-                    <p style={{ 
-                      fontSize: 'clamp(1rem, 2.5vw, 1.125rem)', 
-                      color: 'rgb(75 85 99)', 
-                      textAlign: 'center',
-                      lineHeight: '1.6',
-                      maxWidth: '500px',
-                      margin: '0 auto'
-                    }}>
-                      {t('selectStartDateMessage')}
-                    </p>
-                  </div>
-
-                  {/* Date Input Section */}
-                  <div style={{ position: 'relative', marginBottom: '2rem' }}>
-                    <input 
-                      type="date" 
-                      value={startDate} 
-                      onChange={(e) => {
-                        const selectedDate = e.target.value;
-                        if (!selectedDate) {
-                          setStartDate('');
-                          setSelectedMeals({});
-                          return;
-                        }
-                        
-                        if (isValidWeekday(selectedDate)) {
-                          setStartDate(selectedDate);
-                          setSelectedMeals({}); // Reset selected meals when changing start date
-                          // Clear error message when a valid date is selected
-                          setErrors(prev => ({ ...prev, startDate: '' }));
-                        } else {
-                          setErrors(prev => ({ ...prev, startDate: t('selectWeekdayOnly') }));
-                          e.target.value = startDate; // Reset to previous value
-                        }
-                      }} 
-                      min={getNextValidDate()} 
-                      style={{ 
-                        width: '100%', 
-                        padding: '1.5rem', 
-                        borderRadius: '1.5rem', 
-                        border: '2px solid rgba(79, 70, 229, 0.15)', 
-                        fontSize: '1.125rem', 
-                        background: 'rgba(255, 255, 255, 0.8)',
-                        backdropFilter: 'blur(10px)',
-                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                        outline: 'none',
-                        boxShadow: '0 8px 25px rgba(0, 0, 0, 0.08)',
-                        cursor: 'pointer',
-                        scrollBehavior: 'auto',
-                        fontWeight: '500'
-                      }} 
-                      onFocus={(e) => {
-                        e.target.style.borderColor = 'rgb(79, 70, 229)';
-                        e.target.style.boxShadow = '0 15px 40px rgba(79, 70, 229, 0.2)';
-                        e.target.style.transform = 'translateY(-2px) scale(1.02)';
-                        e.target.style.background = 'rgba(255, 255, 255, 0.95)';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = 'rgba(79, 70, 229, 0.15)';
-                        e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.08)';
-                        e.target.style.transform = 'translateY(0) scale(1)';
-                        e.target.style.background = 'rgba(255, 255, 255, 0.8)';
-                      }}
-                      required 
-                    />
-                  </div>
-
-                  {/* Success Message */}
-                  {startDate && isValidWeekday(startDate) && (
                     <div style={{
-                      padding: '1.5rem',
-                      background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1))',
-                      borderRadius: '1.5rem',
-                      border: '2px solid rgba(16, 185, 129, 0.2)',
-                      textAlign: 'center',
-                      marginBottom: '1.5rem',
-                      backdropFilter: 'blur(10px)',
-                      animation: 'slideInUp 0.5s ease-out'
+                      fontSize: '1rem',
+                      color: '#15803d',
+                      fontWeight: '600',
+                      marginTop: '0.25rem'
                     }}>
-                      <div style={{
-                        fontSize: '1rem',
-                        color: '#059669',
-                        fontWeight: '700',
-                        marginBottom: '0.5rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.5rem'
-                      }}>
-                        <div style={{
-                          width: '1.5rem',
-                          height: '1.5rem',
-                          background: 'linear-gradient(135deg, #10b981, #059669)',
-                          borderRadius: '50%',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '0.75rem',
-                          color: 'white',
-                          fontWeight: 'bold'
-                        }}>
-                          ✓
-                        </div>
-                        {t('dateSelected')}
-                      </div>
-                      <div style={{
-                        fontSize: '1.125rem',
-                        color: '#047857',
-                        fontWeight: '800',
-                        lineHeight: '1.4'
-                      }}>
-                        {new Date(startDate).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
-                          weekday: 'long',
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
-                      </div>
+                      {new Date(startDate).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {/* Error Message */}
-                  {errors.startDate && (
-                    <div 
-                      style={{
-                        padding: '1.5rem',
-                        background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(239, 68, 68, 0.1))',
-                        border: '2px solid rgba(220, 38, 38, 0.2)',
-                        borderRadius: '1.5rem',
-                        boxShadow: '0 8px 25px rgba(220, 38, 38, 0.1)',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        animation: 'slideInDown 0.4s ease-out',
-                        backdropFilter: 'blur(10px)',
-                        marginBottom: '1.5rem'
-                      }}
-                    >
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.75rem',
-                        color: '#dc2626',
-                        fontSize: '1rem',
-                        fontWeight: '600',
-                        position: 'relative',
-                        zIndex: 1
-                      }}>
-                        <div style={{
-                          width: '2rem',
-                          height: '2rem',
-                          borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #dc2626, #ef4444)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '1rem',
-                          color: 'white',
-                          fontWeight: 'bold',
-                          flexShrink: 0,
-                          boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)',
-                          animation: 'pulse 2s infinite'
-                        }}>
-                          ⚠️
-                        </div>
-                        <span style={{ lineHeight: '1.4' }}>{errors.startDate}</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Info Message */}
+                {/* Error Message */}
+                {errors.startDate && (
                   <div style={{
-                    padding: '1rem',
-                    background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.1))',
-                    borderRadius: '1rem',
-                    border: '1px solid rgba(59, 130, 246, 0.2)',
-                    textAlign: 'center',
-                    backdropFilter: 'blur(10px)'
+                    padding: '0.75rem',
+                    background: '#fef2f2',
+                    border: '1px solid #fecaca',
+                    borderRadius: '0.5rem',
+                    marginBottom: '1rem'
                   }}>
-                    <p style={{
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      color: '#dc2626',
                       fontSize: '0.875rem',
-                      color: 'rgb(59 130 246)',
-                      lineHeight: '1.5',
-                      fontWeight: '500',
-                      margin: 0
+                      fontWeight: '600'
                     }}>
-                      ⚠️ {t('selectWeekdayOnlyMessage')}
+                      <span>⚠️</span>
+                      {errors.startDate}
+                    </div>
+                    <p style={{
+                      fontSize: '0.75rem',
+                      color: '#dc2626',
+                      marginTop: '0.25rem',
+                      marginBottom: 0
+                    }}>
+                      {language === 'ar' 
+                        ? 'يرجى اختيار يوم من الأحد إلى الخميس فقط'
+                        : 'Please select a day from Sunday to Thursday only'
+                      }
                     </p>
                   </div>
+                )}
+
+                {/* Info Message */}
+                <div style={{
+                  padding: '0.75rem',
+                  background: '#eff6ff',
+                  borderRadius: '0.5rem',
+                  border: '1px solid #bfdbfe',
+                  textAlign: 'center'
+                }}>
+                  <p style={{
+                    fontSize: '0.75rem',
+                    color: '#1d4ed8',
+                    lineHeight: '1.4',
+                    margin: 0
+                  }}>
+                    ⚠️ {language === 'ar' 
+                      ? 'يمكنك اختيار أيام العمل فقط (الأحد - الخميس)'
+                      : 'You can only select working days (Sunday - Thursday)'
+                    }
+                  </p>
                 </div>
               </div>
             )}
 
             {/* Meal Type Filter - Only show if subscription type is selected */}
-            {selectedSubscriptionType && (
+            {selectedSubscriptionType && meals.length > 0 && (
               <div style={{
-                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9))',
-                backdropFilter: 'blur(20px)',
-                borderRadius: '2rem',
-                padding: 'clamp(2.5rem, 5vw, 3.5rem)',
-                marginBottom: '3rem',
-                boxShadow: '0 25px 50px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.2)',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
+                background: 'white',
+                borderRadius: '1rem',
+                padding: '2rem',
+                marginBottom: '2rem',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                border: '1px solid #e5e7eb',
                 position: 'relative',
-                overflow: 'hidden'
+                zIndex: 5
               }}>
-                {/* Animated Background Elements */}
-                <div style={{
-                  position: 'absolute',
-                  top: '-50%',
-                  left: '-50%',
-                  width: '200%',
-                  height: '200%',
-                  background: 'radial-gradient(circle at 20% 30%, rgba(34, 197, 94, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(16, 185, 129, 0.03) 0%, transparent 50%)',
-                  animation: 'float 8s ease-in-out infinite'
-                }}></div>
-                
-                <div style={{ position: 'relative', zIndex: 1 }}>
-                  {/* Header Section */}
-                  <div style={{ 
-                    textAlign: 'center', 
-                    marginBottom: '3rem',
-                    position: 'relative'
+                {/* Header */}
+                <div style={{ 
+                  textAlign: 'center', 
+                  marginBottom: '1.5rem'
+                }}>
+                  <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '3rem',
+                    height: '3rem',
+                    background: '#10b981',
+                    borderRadius: '50%',
+                    marginBottom: '1rem'
                   }}>
-                    <div style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '5rem',
-                      height: '5rem',
-                      background: 'linear-gradient(135deg, rgb(34 197 94), rgb(16 185 129))',
-                      borderRadius: '50%',
-                      marginBottom: '1.5rem',
-                      boxShadow: '0 15px 35px rgba(34, 197, 94, 0.3)',
-                      animation: 'pulse 3s infinite'
-                    }}>
-                      <span style={{ fontSize: '2rem', color: 'white' }}>🍽️</span>
-                    </div>
-                    
-                    <h3 style={{ 
-                      fontSize: 'clamp(1.75rem, 4vw, 2.25rem)', 
-                      fontWeight: '800', 
-                      marginBottom: '1rem',
-                      background: 'linear-gradient(135deg, rgb(34 197 94), rgb(16 185 129))',
-                      backgroundClip: 'text',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      textAlign: 'center'
-                    }}>
-                      {t('mealTypeFilter')}
-                    </h3>
-                    
-                    <p style={{ 
-                      fontSize: 'clamp(1rem, 2.5vw, 1.125rem)', 
-                      color: 'rgb(75 85 99)', 
-                      textAlign: 'center',
-                      lineHeight: '1.6',
-                      maxWidth: '600px',
-                      margin: '0 auto'
-                    }}>
-                      {language === 'ar' 
-                        ? 'اختر نوع الوجبة التي تريد الاشتراك فيها لعرض الوجبات المتاحة' 
-                        : 'Choose the meal type you want to subscribe to show available meals'
-                      }
-                    </p>
+                    <span style={{ fontSize: '1.25rem', color: 'white' }}>🍽️</span>
                   </div>
-
-                  {/* Meal Type Cards */}
-                  <div style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                    gap: '1.5rem',
-                    maxWidth: '900px',
-                    margin: '0 auto'
+                  
+                  <h3 style={{ 
+                    fontSize: '1.5rem', 
+                    fontWeight: '700', 
+                    marginBottom: '0.5rem',
+                    color: '#1f2937'
                   }}>
-                    {availableMealTypes.map(mealType => {
-                      const isSelected = mealTypeFilter === mealType;
-                      const mealTypeIcon = {
-                        'breakfast': '🌅',
-                        'lunch': '☀️',
-                        'dinner': '🌙'
-                      }[mealType] || '🍽️';
-                      
-                      return (
-                        <div
-                          key={mealType}
-                          className="meal-filter-card"
-                          onClick={() => handleMealTypeFilter(mealType)}
-                          style={{
-                            background: isSelected 
-                              ? 'linear-gradient(135deg, rgb(34 197 94), rgb(16 185 129))'
-                              : 'linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(248, 250, 252, 0.8))',
-                            borderRadius: '2rem',
-                            padding: '2rem',
-                            cursor: 'pointer',
-                            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                            border: isSelected 
-                              ? '3px solid rgb(34 197 94)'
-                              : '2px solid rgba(229, 231, 235, 0.3)',
-                            boxShadow: isSelected 
-                              ? '0 25px 50px rgba(34, 197, 94, 0.3)'
-                              : '0 15px 35px rgba(0, 0, 0, 0.1)',
-                            position: 'relative',
-                            overflow: 'hidden',
-                            transform: isSelected ? 'translateY(-8px) scale(1.03)' : 'translateY(0) scale(1)',
-                            backdropFilter: 'blur(20px)',
-                            minHeight: '200px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                          }}
-                          onMouseEnter={(e) => {
-                            if (!isSelected) {
-                              e.target.style.transform = 'translateY(-5px) scale(1.02)';
-                              e.target.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.15)';
-                              e.target.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9))';
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (!isSelected) {
-                              e.target.style.transform = 'translateY(0) scale(1)';
-                              e.target.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.1)';
-                              e.target.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(248, 250, 252, 0.8))';
-                            }
-                          }}
-                        >
-                          {/* Selection Indicator */}
-                          {isSelected && (
-                            <div style={{
-                              position: 'absolute',
-                              top: '1rem',
-                              right: '1rem',
-                              background: 'rgba(255, 255, 255, 0.95)',
-                              color: 'rgb(34 197 94)',
-                              borderRadius: '50%',
-                              width: '2rem',
-                              height: '2rem',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              fontSize: '1rem',
-                              fontWeight: 'bold',
-                              boxShadow: '0 6px 20px rgba(0, 0, 0, 0.2)',
-                              backdropFilter: 'blur(10px)',
-                              animation: 'pulse 2s infinite'
-                            }}>
-                              ✓
-                            </div>
-                          )}
+                    {t('mealTypeFilter')}
+                  </h3>
+                  
+                  <p style={{ 
+                    fontSize: '0.875rem', 
+                    color: '#6b7280', 
+                    lineHeight: '1.5'
+                  }}>
+                    {language === 'ar' 
+                      ? 'اختر نوع الوجبة لعرض الوجبات المتاحة' 
+                      : 'Choose meal type to show available meals'
+                    }
+                  </p>
+                </div>
 
-                          {/* Content */}
-                          <div style={{ 
-                            textAlign: 'center',
-                            width: '100%'
-                          }}>
-                            <div style={{
-                              fontSize: '3.5rem',
-                              marginBottom: '1.5rem',
-                              filter: isSelected ? 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))' : 'none',
-                              transition: 'all 0.3s ease'
-                            }}>
-                              {mealTypeIcon}
-                            </div>
-                            
-                            <h4 style={{
-                              fontSize: '1.5rem',
-                              fontWeight: '800',
-                              marginBottom: '0.75rem',
-                              color: isSelected ? 'white' : 'rgb(79 70 229)',
-                              transition: 'all 0.3s ease'
-                            }}>
-                              {mealTypeNames[language][mealType] || mealType}
-                            </h4>
-                            
-                            <p style={{
-                              fontSize: '1rem',
-                              color: isSelected ? 'rgba(255, 255, 255, 0.9)' : 'rgb(107 114 128)',
-                              lineHeight: '1.5',
-                              fontWeight: '500',
-                              transition: 'all 0.3s ease'
-                            }}>
-                              {language === 'ar' 
-                                ? `وجبات ${mealTypeNames[language][mealType]}` 
-                                : `${mealTypeNames[language][mealType]} meals`
-                              }
-                            </p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Selection Status */}
-                  {mealTypeFilter && (
-                    <div style={{
-                      marginTop: '2rem',
-                      padding: '1.5rem',
-                      background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1))',
-                      borderRadius: '1.5rem',
-                      border: '2px solid rgba(34, 197, 94, 0.2)',
-                      textAlign: 'center',
-                      backdropFilter: 'blur(10px)',
-                      animation: 'slideInUp 0.5s ease-out'
-                    }}>
-                      <div style={{
-                        fontSize: '1.125rem',
-                        color: '#059669',
-                        fontWeight: '700',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.75rem'
-                      }}>
-                        <div style={{
-                          width: '1.5rem',
-                          height: '1.5rem',
-                          background: 'linear-gradient(135deg, #10b981, #059669)',
-                          borderRadius: '50%',
+                {/* Meal Type Buttons */}
+                <div className="meal-filter-buttons" style={{ 
+                  display: 'flex', 
+                  flexDirection: 'row',
+                  gap: '1rem',
+                  justifyContent: 'center',
+                  flexWrap: 'wrap',
+                  position: 'relative',
+                  zIndex: 10
+                }}>
+                  {availableMealTypes.length > 0 ? availableMealTypes.map(mealType => {
+                    const isSelected = mealTypeFilter === mealType;
+                    const mealTypeIcon = {
+                      'breakfast': '🌅',
+                      'lunch': '☀️',
+                      'dinner': '🌙'
+                    }[mealType] || '🍽️';
+                    
+                    return (
+                      <button
+                        key={mealType}
+                        onClick={(e) => {
+                          console.log('Button clicked:', mealType);
+                          handleMealTypeFilter(mealType);
+                        }}
+                        className="meal-filter-button"
+                        style={{
+                          background: isSelected ? '#10b981' : 'white',
+                          color: isSelected ? 'white' : '#374151',
+                          border: isSelected ? '2px solid #10b981' : '2px solid #d1d5db',
+                          borderRadius: '0.75rem',
+                          padding: '1rem 1.5rem',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
                           display: 'flex',
                           alignItems: 'center',
+                          gap: '0.5rem',
+                          fontSize: '1rem',
+                          fontWeight: '600',
                           justifyContent: 'center',
-                          fontSize: '0.75rem',
-                          color: 'white',
-                          fontWeight: 'bold'
-                        }}>
-                          ✓
-                        </div>
-                        {language === 'ar' 
-                          ? `تم اختيار ${mealTypeNames[language][mealTypeFilter]}`
-                          : `${mealTypeNames[language][mealTypeFilter]} selected`
-                        }
-                      </div>
+                          flex: '1',
+                          minWidth: '120px',
+                          position: 'relative',
+                          zIndex: 10,
+                          userSelect: 'none',
+                          WebkitUserSelect: 'none',
+                          MozUserSelect: 'none',
+                          msUserSelect: 'none'
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!isSelected) {
+                            e.target.style.borderColor = '#10b981';
+                            e.target.style.background = '#f0fdf4';
+                            e.target.style.transform = 'translateY(-2px)';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isSelected) {
+                            e.target.style.borderColor = '#d1d5db';
+                            e.target.style.background = 'white';
+                            e.target.style.transform = 'translateY(0)';
+                          }
+                        }}
+                      >
+                        <span style={{ fontSize: '1.25rem' }}>{mealTypeIcon}</span>
+                        <span>{mealTypeNames[language][mealType] || mealType}</span>
+                        {isSelected && <span style={{ fontSize: '0.875rem' }}>✓</span>}
+                      </button>
+                    );
+                  }) : (
+                    <div style={{ 
+                      textAlign: 'center', 
+                      padding: '1rem',
+                      color: '#6b7280',
+                      fontSize: '0.875rem'
+                    }}>
+                      {language === 'ar' 
+                        ? 'لا توجد أنواع وجبات متاحة' 
+                        : 'No meal types available'
+                      }
                     </div>
                   )}
                 </div>
+
+                {/* Selection Status */}
+                {mealTypeFilter && (
+                  <div style={{
+                    marginTop: '1.5rem',
+                    padding: '0.75rem',
+                    background: '#f0fdf4',
+                    borderRadius: '0.5rem',
+                    border: '1px solid #bbf7d0',
+                    textAlign: 'center'
+                  }}>
+                    <div style={{
+                      fontSize: '0.875rem',
+                      color: '#166534',
+                      fontWeight: '600',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      <span>✓</span>
+                      {language === 'ar' 
+                        ? `تم اختيار ${mealTypeNames[language][mealTypeFilter]}`
+                        : `${mealTypeNames[language][mealTypeFilter]} selected`
+                      }
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* No Meals Available Message */}
+            {selectedSubscriptionType && meals.length === 0 && (
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '2rem',
+                background: 'white',
+                borderRadius: '1rem',
+                border: '1px solid #e5e7eb',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+              }}>
+                <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🍽️</div>
+                <p style={{ 
+                  color: '#6b7280', 
+                  fontSize: '1rem',
+                  lineHeight: '1.5',
+                  marginBottom: '0.5rem'
+                }}>
+                  {language === 'ar' 
+                    ? 'لا توجد وجبات متاحة في هذا المطعم' 
+                    : 'No meals available in this restaurant'
+                  }
+                </p>
               </div>
             )}
             
-            {!mealTypeFilter ? (
-              <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
-                <div style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '1rem' }}>🍽️</div>
+            {/* Status Messages */}
+            {selectedSubscriptionType && meals.length > 0 && !mealTypeFilter && (
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '2rem',
+                background: 'white',
+                borderRadius: '1rem',
+                border: '1px solid #e5e7eb',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+              }}>
+                <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🍽️</div>
                 <p style={{ 
-                  color: 'rgb(75 85 99)', 
-                  fontSize: 'clamp(0.875rem, 3vw, 1.125rem)',
-                  lineHeight: '1.6',
-                  marginBottom: '1rem'
+                  color: '#6b7280', 
+                  fontSize: '1rem',
+                  lineHeight: '1.5',
+                  marginBottom: '0.5rem'
                 }}>
                   {language === 'ar' 
                     ? 'يرجى اختيار نوع الوجبة لعرض الوجبات المتاحة' 
                     : 'Please select a meal type to show available meals'
                   }
                 </p>
-                <p style={{ 
-                  color: 'rgb(107 114 128)', 
-                  fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
-                  lineHeight: '1.5',
-                  marginBottom: '1.5rem'
-                }}>
-                  {language === 'ar' 
-                    ? 'اختر نوع الوجبة من القائمة أعلاه لعرض الوجبات المتاحة' 
-                    : 'Choose a meal type from the menu above to show available meals'
-                  }
-                </p>
               </div>
-            ) : !startDate ? (
+            )}
+
+            {selectedSubscriptionType && meals.length > 0 && mealTypeFilter && !startDate && (
               <div style={{ 
                 textAlign: 'center', 
-                padding: '2rem 1rem',
-                background: 'rgba(255, 255, 255, 0.95)',
+                padding: '2rem',
+                background: 'white',
                 borderRadius: '1rem',
-                border: '1px solid rgba(229, 231, 235, 0.5)',
-                boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)'
+                border: '1px solid #e5e7eb',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
               }}>
-                <div style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '1rem' }}>📅</div>
+                <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📅</div>
                 <p style={{ 
-                  color: 'rgb(75 85 99)', 
-                  fontSize: 'clamp(0.875rem, 3vw, 1.125rem)',
-                  lineHeight: '1.6',
-                  marginBottom: '1rem'
+                  color: '#6b7280', 
+                  fontSize: '1rem',
+                  lineHeight: '1.5',
+                  marginBottom: '0.5rem'
                 }}>
                   {language === 'ar' 
                     ? 'يرجى اختيار تاريخ بدء الاشتراك أولاً' 
                     : 'Please select a subscription start date first'
                   }
                 </p>
-                <p style={{ 
-                  color: 'rgb(107 114 128)', 
-                  fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
-                  lineHeight: '1.5'
-                }}>
-                  {language === 'ar' 
-                    ? 'سيتم عرض الأيام المتاحة بناءً على التاريخ المختار' 
-                    : 'Available days will be displayed based on the selected date'
-                  }
-                </p>
               </div>
-            ) : filteredMeals.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
-                <div style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '1rem' }}>🍽️</div>
+            )}
+
+            {selectedSubscriptionType && meals.length > 0 && mealTypeFilter && startDate && filteredMeals.length === 0 && (
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '2rem',
+                background: 'white',
+                borderRadius: '1rem',
+                border: '1px solid #e5e7eb',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+              }}>
+                <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🍽️</div>
                 <p style={{ 
-                  color: 'rgb(75 85 99)', 
-                  fontSize: 'clamp(0.875rem, 3vw, 1.125rem)',
-                  lineHeight: '1.6',
-                  marginBottom: '1rem'
+                  color: '#6b7280', 
+                  fontSize: '1rem',
+                  lineHeight: '1.5',
+                  marginBottom: '0.5rem'
                 }}>
                   {language === 'ar' 
                     ? `لا توجد وجبات ${mealTypeNames[language][mealTypeFilter]} متاحة` 
                     : `No ${mealTypeNames[language][mealTypeFilter]} meals available`
                   }
                 </p>
-                <p style={{ 
-                  color: 'rgb(107 114 128)', 
-                  fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
-                  lineHeight: '1.5',
-                  marginBottom: '1.5rem'
-                }}>
-                  {t('pleaseTryAgainLater')}
-                </p>
-                <button 
-                  onClick={() => window.location.reload()}
-                  style={{
-                    padding: '0.75rem 1.5rem',
-                    borderRadius: '0.5rem',
-                    background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
-                    color: 'white',
-                    border: 'none',
-                    fontSize: '0.875rem',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 6px 16px rgba(79, 70, 229, 0.4)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
-                  }}
-                >
-                  🔄 {t('reload')}
-                </button>
               </div>
-            ) : (
+            )}
+
+            {/* Meals Selection Section */}
+            {selectedSubscriptionType && meals.length > 0 && mealTypeFilter && startDate && filteredMeals.length > 0 && (
               <div 
                 style={{ 
                   display: 'flex', 
