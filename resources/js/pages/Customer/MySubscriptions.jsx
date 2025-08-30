@@ -355,7 +355,7 @@ const MySubscriptions = () => {
                                                 fontWeight: '600', 
                                                 color: 'rgb(31 41 55)' 
                                             }}>
-                                                {new Date(subscription.start_date).toLocaleDateString()}
+                                                {new Date(subscription.start_date).toLocaleDateString('en-US')}
                                             </div>
                                         </div>
                                         
@@ -377,7 +377,7 @@ const MySubscriptions = () => {
                                                 fontWeight: '600', 
                                                 color: 'rgb(31 41 55)' 
                                             }}>
-                                                {new Date(subscription.end_date).toLocaleDateString()}
+                                                {new Date(subscription.end_date).toLocaleDateString('en-US')}
                                             </div>
                                         </div>
                                         

@@ -186,7 +186,7 @@ const SubscriptionDetail = () => {
                 return '';
             }
             
-            const formattedDate = date.toLocaleDateString('ar-EG', {
+            const formattedDate = date.toLocaleDateString('en-US', {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',

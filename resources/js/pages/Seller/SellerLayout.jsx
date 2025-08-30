@@ -6,6 +6,7 @@ import SellerDashboard from './SellerDashboard';
 import SellerRestaurants from './SellerRestaurants';
 import SellerMeals from './SellerMeals';
 import SellerSubscriptionTypes from './SellerSubscriptionTypes';
+import SellerSubscriptions from './SellerSubscriptions';
 import SellerProfile from './SellerProfile';
 
 const SellerLayout = () => {
@@ -49,6 +50,12 @@ const SellerLayout = () => {
             icon: '📋',
             label: language === 'ar' ? 'أنواع الاشتراكات' : 'Subscription Types',
             description: language === 'ar' ? 'إدارة أنواع الاشتراكات والأسعار' : 'Manage subscription types and prices'
+        },
+        {
+            path: '/seller/subscriptions',
+            icon: '📦',
+            label: language === 'ar' ? 'طلبات الاشتراك' : 'Subscription Requests',
+            description: language === 'ar' ? 'إدارة طلبات الاشتراك للعملاء' : 'Manage customer subscription requests'
         },
         {
             path: '/seller/meals',
@@ -381,6 +388,7 @@ const SellerLayout = () => {
                         <Route path="/restaurants" element={<SellerRestaurants />} />
                         <Route path="/meals" element={<SellerMeals />} />
                         <Route path="/subscription-types" element={<SellerSubscriptionTypes />} />
+                        <Route path="/subscriptions" element={<SellerSubscriptions />} />
                         <Route path="/profile" element={<SellerProfile />} />
                     </Routes>
                 </div>

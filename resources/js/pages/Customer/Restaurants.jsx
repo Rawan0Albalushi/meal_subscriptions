@@ -880,16 +880,6 @@ const Restaurants = () => {
                   height: '80px',
                   justifyContent: 'center'
                 }}>
-                  {restaurant.address && (
-                    <div style={{ 
-                      fontSize: '0.75rem', 
-                      color: 'rgb(107 114 128)',
-                      textAlign: 'center',
-                      lineHeight: '1.3'
-                    }}>
-                      🏠 {restaurant.address}
-                    </div>
-                  )}
                   {restaurant.locations && restaurant.locations.length > 0 && (
                     <div style={{ 
                       fontSize: '0.875rem', 

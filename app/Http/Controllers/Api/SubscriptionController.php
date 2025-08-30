@@ -246,4 +246,86 @@ class SubscriptionController extends Controller
         
         return $startDate->copy()->addDays($daysToAdd);
     }
+
+    // Seller subscription management methods
+    public function getSellerSubscriptions(Request $request, $restaurantId)
+    {
+        // Check if the restaurant belongs to the seller
+        $restaurant = auth()->user()->restaurants()->findOrFail($restaurantId);
+        
+        $subscriptions = Subscription::where('restaurant_id', $restaurantId)
+            ->with(['user', 'deliveryAddress', 'subscriptionItems.meal'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $subscriptions
+        ]);
+    }
+
+    public function getSellerSubscription(Request $request, $restaurantId, $subscriptionId)
+    {
+        // Check if the restaurant belongs to the seller
+        $restaurant = auth()->user()->restaurants()->findOrFail($restaurantId);
+        
+        $subscription = Subscription::where('restaurant_id', $restaurantId)
+            ->where('id', $subscriptionId)
+            ->with(['user', 'deliveryAddress', 'subscriptionItems.meal'])
+            ->firstOrFail();
+
+        return response()->json([
+            'success' => true,
+            'data' => $subscription
+        ]);
+    }
+
+    public function updateSellerSubscriptionStatus(Request $request, $restaurantId, $subscriptionId)
+    {
+        // Check if the restaurant belongs to the seller
+        $restaurant = auth()->user()->restaurants()->findOrFail($restaurantId);
+        
+        $request->validate([
+            'status' => 'required|in:pending,active,completed,cancelled'
+        ]);
+
+        $subscription = Subscription::where('restaurant_id', $restaurantId)
+            ->where('id', $subscriptionId)
+            ->firstOrFail();
+
+        $subscription->update([
+            'status' => $request->status
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم تحديث حالة الاشتراك بنجاح',
+            'data' => $subscription->load(['user', 'deliveryAddress', 'subscriptionItems.meal'])
+        ]);
+    }
+
+    public function updateSellerItemStatus(Request $request, $restaurantId, $subscriptionId, $itemId)
+    {
+        // Check if the restaurant belongs to the seller
+        $restaurant = auth()->user()->restaurants()->findOrFail($restaurantId);
+        
+        $request->validate([
+            'status' => 'required|in:pending,preparing,delivered,cancelled'
+        ]);
+
+        $subscriptionItem = SubscriptionItem::whereHas('subscription', function($query) use ($restaurantId, $subscriptionId) {
+            $query->where('restaurant_id', $restaurantId)
+                  ->where('id', $subscriptionId);
+        })->findOrFail($itemId);
+
+        $subscriptionItem->update([
+            'status' => $request->status
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم تحديث حالة الوجبة بنجاح',
+            'data' => $subscriptionItem->load(['meal', 'subscription'])
+        ]);
+    }
 }
