@@ -85,7 +85,16 @@ class SubscriptionTypeController extends Controller
 
         // Check if user owns the restaurant
         $user = auth()->user();
-        if ($user->role !== 'restaurant_owner' || $user->restaurant_id != $request->restaurant_id) {
+        if ($user->role !== 'seller') {
+            return response()->json([
+                'success' => false,
+                'message' => 'غير مصرح لك بإنشاء أنواع اشتراكات'
+            ], 403);
+        }
+        
+        // Check if the restaurant belongs to the seller
+        $restaurant = $user->restaurants()->find($request->restaurant_id);
+        if (!$restaurant) {
             return response()->json([
                 'success' => false,
                 'message' => 'غير مصرح لك بإنشاء أنواع اشتراكات لهذا المطعم'
@@ -107,7 +116,16 @@ class SubscriptionTypeController extends Controller
         
         // Check if user owns the restaurant
         $user = auth()->user();
-        if ($user->role !== 'restaurant_owner' || $user->restaurant_id != $subscriptionType->restaurant_id) {
+        if ($user->role !== 'seller') {
+            return response()->json([
+                'success' => false,
+                'message' => 'غير مصرح لك بتعديل أنواع الاشتراكات'
+            ], 403);
+        }
+        
+        // Check if the restaurant belongs to the seller
+        $restaurant = $user->restaurants()->find($subscriptionType->restaurant_id);
+        if (!$restaurant) {
             return response()->json([
                 'success' => false,
                 'message' => 'غير مصرح لك بتعديل هذا النوع من الاشتراك'
@@ -140,7 +158,16 @@ class SubscriptionTypeController extends Controller
         
         // Check if user owns the restaurant
         $user = auth()->user();
-        if ($user->role !== 'restaurant_owner' || $user->restaurant_id != $subscriptionType->restaurant_id) {
+        if ($user->role !== 'seller') {
+            return response()->json([
+                'success' => false,
+                'message' => 'غير مصرح لك بحذف أنواع الاشتراكات'
+            ], 403);
+        }
+        
+        // Check if the restaurant belongs to the seller
+        $restaurant = $user->restaurants()->find($subscriptionType->restaurant_id);
+        if (!$restaurant) {
             return response()->json([
                 'success' => false,
                 'message' => 'غير مصرح لك بحذف هذا النوع من الاشتراك'

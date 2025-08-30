@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import SellerDashboard from './SellerDashboard';
 import SellerRestaurants from './SellerRestaurants';
 import SellerMeals from './SellerMeals';
+import SellerSubscriptionTypes from './SellerSubscriptionTypes';
 import SellerProfile from './SellerProfile';
 
 const SellerLayout = () => {
@@ -48,6 +49,12 @@ const SellerLayout = () => {
             icon: '🍽️',
             label: t('meals'),
             description: t('mealsDescription')
+        },
+        {
+            path: '/seller/subscription-types',
+            icon: '📋',
+            label: language === 'ar' ? 'أنواع الاشتراكات' : 'Subscription Types',
+            description: language === 'ar' ? 'إدارة أنواع الاشتراكات والأسعار' : 'Manage subscription types and prices'
         },
         {
             path: '/seller/profile',
@@ -368,6 +375,7 @@ const SellerLayout = () => {
                         <Route path="/" element={<SellerDashboard />} />
                         <Route path="/restaurants" element={<SellerRestaurants />} />
                         <Route path="/meals" element={<SellerMeals />} />
+                        <Route path="/subscription-types" element={<SellerSubscriptionTypes />} />
                         <Route path="/profile" element={<SellerProfile />} />
                     </Routes>
                 </div>

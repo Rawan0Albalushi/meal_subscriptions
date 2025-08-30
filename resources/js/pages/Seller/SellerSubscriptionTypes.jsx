@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 
-const SellerMeals = () => {
+const SellerSubscriptionTypes = () => {
     const { t, dir, language } = useLanguage();
     const [restaurants, setRestaurants] = useState([]);
     const [selectedRestaurant, setSelectedRestaurant] = useState('');
-    const [meals, setMeals] = useState([]);
+    const [subscriptionTypes, setSubscriptionTypes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
-    const [editingMeal, setEditingMeal] = useState(null);
+    const [editingType, setEditingType] = useState(null);
     const [formData, setFormData] = useState({
         name_ar: '',
         name_en: '',
         description_ar: '',
         description_en: '',
+        type: 'weekly',
         price: '',
-        meal_type: 'lunch',
-        delivery_time: '',
-        is_available: true
+        delivery_price: '0',
+        meals_count: '',
+        is_active: true
     });
-    const [selectedImage, setSelectedImage] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
 
     useEffect(() => {
         fetchRestaurants();
@@ -28,7 +27,7 @@ const SellerMeals = () => {
 
     useEffect(() => {
         if (selectedRestaurant) {
-            fetchMeals(selectedRestaurant);
+            fetchSubscriptionTypes(selectedRestaurant);
         }
     }, [selectedRestaurant]);
 
@@ -55,9 +54,9 @@ const SellerMeals = () => {
         }
     };
 
-    const fetchMeals = async (restaurantId) => {
+    const fetchSubscriptionTypes = async (restaurantId) => {
         try {
-            const response = await fetch(`/api/seller/restaurants/${restaurantId}/meals`, {
+            const response = await fetch(`/api/seller/restaurants/${restaurantId}/subscription-types`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
                     'Content-Type': 'application/json'
@@ -66,118 +65,77 @@ const SellerMeals = () => {
             
             if (response.ok) {
                 const data = await response.json();
-                setMeals(data.data || []);
+                setSubscriptionTypes(data.data || []);
             }
         } catch (error) {
-            console.error('Error fetching meals:', error);
+            console.error('Error fetching subscription types:', error);
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            console.log('🔍 [Frontend] بدء عملية حفظ الوجبة:', {
-                isEditing: !!editingMeal,
-                restaurantId: selectedRestaurant,
-                mealId: editingMeal?.id,
-                formData: formData,
-                hasImage: !!selectedImage,
-                imageName: selectedImage?.name,
-                imageSize: selectedImage?.size
-            });
+            const submitData = {
+                ...formData,
+                restaurant_id: selectedRestaurant,
+                price: parseFloat(formData.price),
+                delivery_price: parseFloat(formData.delivery_price),
+                meals_count: parseInt(formData.meals_count),
+            };
 
-            const formDataToSend = new FormData();
+            const url = editingType 
+                ? `/api/seller/subscription-types/${editingType.id}`
+                : '/api/seller/subscription-types';
             
-            // إضافة البيانات النصية
-            formDataToSend.append('name_ar', formData.name_ar);
-            formDataToSend.append('name_en', formData.name_en);
-            formDataToSend.append('description_ar', formData.description_ar);
-            formDataToSend.append('description_en', formData.description_en);
-            formDataToSend.append('price', parseFloat(formData.price));
-            formDataToSend.append('meal_type', formData.meal_type);
-            formDataToSend.append('delivery_time', formData.delivery_time);
-            formDataToSend.append('is_available', formData.is_available ? '1' : '0');
-            
-            // إضافة الصورة إذا تم اختيارها
-            if (selectedImage) {
-                formDataToSend.append('image', selectedImage);
-                console.log('📸 [Frontend] تم إضافة الصورة للطلب:', {
-                    name: selectedImage.name,
-                    size: selectedImage.size,
-                    type: selectedImage.type
-                });
-            }
-
-            const url = editingMeal 
-                ? `/api/seller/restaurants/${selectedRestaurant}/meals/${editingMeal.id}`
-                : `/api/seller/restaurants/${selectedRestaurant}/meals`;
-            
-            const method = editingMeal ? 'PUT' : 'POST';
-
-            console.log('🌐 [Frontend] إرسال الطلب:', {
-                url: url,
-                method: method,
-                hasAuthToken: !!localStorage.getItem('auth_token')
-            });
+            const method = editingType ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
                 method,
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-                    // لا نضع Content-Type هنا لأن FormData يضعه تلقائياً مع boundary
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+                    'Content-Type': 'application/json'
                 },
-                body: formDataToSend
-            });
-
-            console.log('📡 [Frontend] استلام الرد:', {
-                status: response.status,
-                statusText: response.statusText,
-                ok: response.ok
+                body: JSON.stringify(submitData)
             });
 
             if (response.ok) {
-                const result = await response.json();
-                console.log('✅ [Frontend] تم حفظ الوجبة بنجاح:', result);
-                
                 setShowAddModal(false);
-                setEditingMeal(null);
+                setEditingType(null);
                 resetForm();
-                fetchMeals(selectedRestaurant);
+                fetchSubscriptionTypes(selectedRestaurant);
             } else {
                 const errorData = await response.json();
-                console.error('❌ [Frontend] خطأ في حفظ الوجبة:', errorData);
-                alert(errorData.message || 'حدث خطأ في حفظ الوجبة');
+                alert(errorData.message || 'حدث خطأ في حفظ نوع الاشتراك');
             }
         } catch (error) {
-            console.error('💥 [Frontend] خطأ غير متوقع في حفظ الوجبة:', error);
-            alert('حدث خطأ في حفظ الوجبة');
+            console.error('Error saving subscription type:', error);
+            alert('حدث خطأ في حفظ نوع الاشتراك');
         }
     };
 
-    const handleEdit = (meal) => {
-        setEditingMeal(meal);
+    const handleEdit = (type) => {
+        setEditingType(type);
         setFormData({
-            name_ar: meal.name_ar,
-            name_en: meal.name_en,
-            description_ar: meal.description_ar || '',
-            description_en: meal.description_en || '',
-            price: meal.price.toString(),
-            meal_type: meal.meal_type,
-            delivery_time: meal.delivery_time ? meal.delivery_time.substring(0, 5) : '',
-            is_available: meal.is_available,
+            name_ar: type.name_ar,
+            name_en: type.name_en,
+            description_ar: type.description_ar || '',
+            description_en: type.description_en || '',
+            type: type.type,
+            price: type.price.toString(),
+            delivery_price: type.delivery_price.toString(),
+            meals_count: type.meals_count.toString(),
+            is_active: type.is_active,
         });
-        setSelectedImage(null);
-        setImagePreview(meal.image ? `/storage/${meal.image}` : null);
         setShowAddModal(true);
     };
 
     const handleDelete = async (id) => {
-        if (!confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذه الوجبة؟' : 'Are you sure you want to delete this meal?')) {
+        if (!confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذا النوع من الاشتراك؟' : 'Are you sure you want to delete this subscription type?')) {
             return;
         }
 
         try {
-            const response = await fetch(`/api/seller/restaurants/${selectedRestaurant}/meals/${id}`, {
+            const response = await fetch(`/api/seller/subscription-types/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
@@ -186,14 +144,14 @@ const SellerMeals = () => {
             });
 
             if (response.ok) {
-                fetchMeals(selectedRestaurant);
+                fetchSubscriptionTypes(selectedRestaurant);
             } else {
                 const errorData = await response.json();
-                alert(errorData.message || 'حدث خطأ في حذف الوجبة');
+                alert(errorData.message || 'حدث خطأ في حذف نوع الاشتراك');
             }
         } catch (error) {
-            console.error('Error deleting meal:', error);
-            alert('حدث خطأ في حذف الوجبة');
+            console.error('Error deleting subscription type:', error);
+            alert('حدث خطأ في حذف نوع الاشتراك');
         }
     };
 
@@ -203,63 +161,18 @@ const SellerMeals = () => {
             name_en: '',
             description_ar: '',
             description_en: '',
+            type: 'weekly',
             price: '',
-            meal_type: 'lunch',
-            delivery_time: '',
-            is_available: true
+            delivery_price: '0',
+            meals_count: '',
+            is_active: true
         });
-        setSelectedImage(null);
-        setImagePreview(null);
     };
 
     const openAddModal = () => {
-        setEditingMeal(null);
+        setEditingType(null);
         resetForm();
         setShowAddModal(true);
-    };
-
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            console.log('📸 [Frontend] تم اختيار صورة جديدة:', {
-                name: file.name,
-                size: file.size,
-                type: file.type,
-                lastModified: new Date(file.lastModified).toISOString()
-            });
-
-            // التحقق من حجم الملف
-            if (file.size > 2 * 1024 * 1024) { // 2MB
-                console.warn('⚠️ [Frontend] حجم الصورة كبير جداً:', {
-                    size: file.size,
-                    maxSize: 2 * 1024 * 1024
-                });
-                alert('حجم الصورة يجب أن يكون أقل من 2MB');
-                return;
-            }
-
-            // التحقق من نوع الملف
-            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-            if (!allowedTypes.includes(file.type)) {
-                console.warn('⚠️ [Frontend] نوع الملف غير مدعوم:', {
-                    type: file.type,
-                    allowedTypes: allowedTypes
-                });
-                alert('نوع الملف غير مدعوم. يرجى اختيار صورة بصيغة JPG, PNG, أو GIF');
-                return;
-            }
-
-            setSelectedImage(file);
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setImagePreview(e.target.result);
-                console.log('🖼️ [Frontend] تم إنشاء معاينة الصورة');
-            };
-            reader.onerror = (error) => {
-                console.error('❌ [Frontend] خطأ في قراءة الصورة:', error);
-            };
-            reader.readAsDataURL(file);
-        }
     };
 
     if (loading) {
@@ -291,9 +204,7 @@ const SellerMeals = () => {
     }
 
     return (
-        <div style={{
-            direction: dir
-        }}>
+        <div style={{ direction: dir }}>
             {/* Header */}
             <div style={{
                 background: 'rgba(255, 255, 255, 0.9)',
@@ -318,7 +229,7 @@ const SellerMeals = () => {
                             margin: 0,
                             marginBottom: '0.5rem'
                         }}>
-                            {language === 'ar' ? 'إدارة الوجبات' : 'Meals Management'}
+                            {language === 'ar' ? 'إدارة أنواع الاشتراكات' : 'Subscription Types Management'}
                         </h1>
                         <p style={{
                             color: 'rgb(107 114 128)',
@@ -326,8 +237,8 @@ const SellerMeals = () => {
                             fontSize: '0.875rem'
                         }}>
                             {language === 'ar' 
-                                ? 'إدارة وجبات مطاعمك وإضافة وجبات جديدة'
-                                : 'Manage your restaurant meals and add new ones'
+                                ? 'إدارة أنواع الاشتراكات لمطاعمك وتحديد الأسعار'
+                                : 'Manage subscription types for your restaurants and set prices'
                             }
                         </p>
                     </div>
@@ -351,7 +262,7 @@ const SellerMeals = () => {
                             e.target.style.transform = 'translateY(0)';
                         }}
                     >
-                        ➕ {language === 'ar' ? 'إضافة وجبة جديدة' : 'Add New Meal'}
+                        ➕ {language === 'ar' ? 'إضافة نوع اشتراك' : 'Add Subscription Type'}
                     </button>
                 </div>
 
@@ -391,16 +302,16 @@ const SellerMeals = () => {
                 </div>
             </div>
 
-            {/* Meals Display */}
+            {/* Subscription Types Display */}
             {selectedRestaurant && (
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
                     gap: '1.5rem'
                 }}>
-                    {meals.map((meal) => (
+                    {subscriptionTypes.map((type) => (
                         <div
-                            key={meal.id}
+                            key={type.id}
                             style={{
                                 background: 'rgba(255, 255, 255, 0.9)',
                                 backdropFilter: 'blur(20px)',
@@ -419,27 +330,19 @@ const SellerMeals = () => {
                         >
                             <div style={{
                                 display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.75rem',
+                                justifyContent: 'space-between',
+                                alignItems: 'flex-start',
                                 marginBottom: '1rem'
                             }}>
-                                {meal.image ? (
-                                    <img 
-                                        src={`/storage/${meal.image}`}
-                                        alt={language === 'ar' ? meal.name_ar : meal.name_en}
-                                        style={{
-                                            width: '3rem',
-                                            height: '3rem',
-                                            borderRadius: '0.75rem',
-                                            objectFit: 'cover',
-                                            border: '2px solid rgba(0, 0, 0, 0.1)'
-                                        }}
-                                    />
-                                ) : (
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.75rem'
+                                }}>
                                     <div style={{
                                         width: '3rem',
                                         height: '3rem',
-                                        background: meal.is_available 
+                                        background: type.is_active 
                                             ? 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
                                             : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
                                         borderRadius: '0.75rem',
@@ -449,42 +352,88 @@ const SellerMeals = () => {
                                         fontSize: '1.5rem',
                                         color: 'white'
                                     }}>
-                                        🍽️
+                                        📋
                                     </div>
-                                )}
-                                <div>
-                                    <h3 style={{
-                                        fontSize: '1.125rem',
-                                        fontWeight: '600',
-                                        color: 'rgb(55 65 81)',
-                                        margin: 0,
-                                        marginBottom: '0.25rem'
-                                    }}>
-                                        {language === 'ar' ? meal.name_ar : meal.name_en}
-                                    </h3>
-                                    <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '0.5rem'
-                                    }}>
-                                        <span style={{
-                                            padding: '0.25rem 0.5rem',
-                                            background: meal.is_available 
-                                                ? 'rgba(34, 197, 94, 0.1)' 
-                                                : 'rgba(239, 68, 68, 0.1)',
-                                            color: meal.is_available 
-                                                ? 'rgb(34 197 94)' 
-                                                : 'rgb(239 68 68)',
-                                            borderRadius: '0.375rem',
-                                            fontSize: '0.75rem',
-                                            fontWeight: '500'
+                                    <div>
+                                        <h3 style={{
+                                            fontSize: '1.125rem',
+                                            fontWeight: '600',
+                                            color: 'rgb(55 65 81)',
+                                            margin: 0,
+                                            marginBottom: '0.25rem'
                                         }}>
-                                            {meal.is_available 
-                                                ? (language === 'ar' ? 'متاح' : 'Available')
-                                                : (language === 'ar' ? 'غير متاح' : 'Unavailable')
-                                            }
-                                        </span>
+                                            {language === 'ar' ? type.name_ar : type.name_en}
+                                        </h3>
+                                        <div style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '0.5rem'
+                                        }}>
+                                            <span style={{
+                                                padding: '0.25rem 0.5rem',
+                                                background: type.is_active 
+                                                    ? 'rgba(34, 197, 94, 0.1)' 
+                                                    : 'rgba(239, 68, 68, 0.1)',
+                                                color: type.is_active 
+                                                    ? 'rgb(34 197 94)' 
+                                                    : 'rgb(239 68 68)',
+                                                borderRadius: '0.375rem',
+                                                fontSize: '0.75rem',
+                                                fontWeight: '500'
+                                            }}>
+                                                {type.is_active 
+                                                    ? (language === 'ar' ? 'نشط' : 'Active')
+                                                    : (language === 'ar' ? 'غير نشط' : 'Inactive')
+                                                }
+                                            </span>
+                                            <span style={{
+                                                padding: '0.25rem 0.5rem',
+                                                background: 'rgba(79, 70, 229, 0.1)',
+                                                color: 'rgb(79 70 229)',
+                                                borderRadius: '0.375rem',
+                                                fontSize: '0.75rem',
+                                                fontWeight: '500'
+                                            }}>
+                                                {type.type === 'weekly' 
+                                                    ? (language === 'ar' ? 'أسبوعي' : 'Weekly')
+                                                    : (language === 'ar' ? 'شهري' : 'Monthly')
+                                                }
+                                            </span>
+                                        </div>
                                     </div>
+                                </div>
+                                <div style={{
+                                    display: 'flex',
+                                    gap: '0.5rem'
+                                }}>
+                                    <button
+                                        onClick={() => handleEdit(type)}
+                                        style={{
+                                            padding: '0.5rem',
+                                            background: 'rgba(79, 70, 229, 0.1)',
+                                            border: 'none',
+                                            borderRadius: '0.5rem',
+                                            cursor: 'pointer',
+                                            fontSize: '1rem'
+                                        }}
+                                        title={language === 'ar' ? 'تعديل' : 'Edit'}
+                                    >
+                                        ✏️
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(type.id)}
+                                        style={{
+                                            padding: '0.5rem',
+                                            background: 'rgba(239, 68, 68, 0.1)',
+                                            border: 'none',
+                                            borderRadius: '0.5rem',
+                                            cursor: 'pointer',
+                                            fontSize: '1rem'
+                                        }}
+                                        title={language === 'ar' ? 'حذف' : 'Delete'}
+                                    >
+                                        🗑️
+                                    </button>
                                 </div>
                             </div>
 
@@ -495,35 +444,28 @@ const SellerMeals = () => {
                                 marginBottom: '1rem',
                                 lineHeight: 1.5
                             }}>
-                                {language === 'ar' ? meal.description_ar : meal.description_en}
+                                {language === 'ar' ? type.description_ar : type.description_en}
                             </p>
                             
                             <div style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'flex-end',
-                                marginBottom: '1rem'
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr',
+                                gap: '0.75rem',
+                                fontSize: '0.75rem'
                             }}>
-                                <div style={{
-                                    display: 'grid',
-                                    gridTemplateColumns: '1fr 1fr',
-                                    gap: '0.75rem',
-                                    fontSize: '0.75rem',
-                                    flex: 1
-                                }}>
                                 <div>
                                     <span style={{
                                         color: 'rgb(107 114 128)',
                                         fontWeight: '500'
                                     }}>
-                                        💰 {language === 'ar' ? 'السعر' : 'Price'}:
+                                        💰 {language === 'ar' ? 'سعر الاشتراك' : 'Subscription Price'}:
                                     </span>
                                     <div style={{
                                         color: 'rgb(55 65 81)',
                                         marginTop: '0.25rem',
                                         fontWeight: '600'
                                     }}>
-                                        {meal.price} {language === 'ar' ? 'ريال' : 'OMR'}
+                                        {type.price} {language === 'ar' ? 'ريال' : 'OMR'}
                                     </div>
                                 </div>
                                 <div>
@@ -531,57 +473,55 @@ const SellerMeals = () => {
                                         color: 'rgb(107 114 128)',
                                         fontWeight: '500'
                                     }}>
-                                        ⏰ {language === 'ar' ? 'وقت التوصيل' : 'Delivery Time'}:
+                                        🚚 {language === 'ar' ? 'سعر التوصيل' : 'Delivery Price'}:
                                     </span>
                                     <div style={{
                                         color: 'rgb(55 65 81)',
                                         marginTop: '0.25rem'
                                     }}>
-                                        {meal.delivery_time ? meal.delivery_time.substring(0, 5) : (language === 'ar' ? 'غير محدد' : 'Not specified')}
+                                        {type.delivery_price > 0 
+                                            ? `${type.delivery_price} ${language === 'ar' ? 'ريال' : 'OMR'}`
+                                            : (language === 'ar' ? 'مجاني' : 'Free')
+                                        }
+                                    </div>
+                                </div>
+                                <div>
+                                    <span style={{
+                                        color: 'rgb(107 114 128)',
+                                        fontWeight: '500'
+                                    }}>
+                                        🍽️ {language === 'ar' ? 'عدد الوجبات' : 'Meals Count'}:
+                                    </span>
+                                    <div style={{
+                                        color: 'rgb(55 65 81)',
+                                        marginTop: '0.25rem'
+                                    }}>
+                                        {type.meals_count} {language === 'ar' ? 'وجبة' : 'meals'}
+                                    </div>
+                                </div>
+                                <div>
+                                    <span style={{
+                                        color: 'rgb(107 114 128)',
+                                        fontWeight: '500'
+                                    }}>
+                                        💵 {language === 'ar' ? 'السعر الإجمالي' : 'Total Price'}:
+                                    </span>
+                                    <div style={{
+                                        color: 'rgb(55 65 81)',
+                                        marginTop: '0.25rem',
+                                        fontWeight: '600'
+                                    }}>
+                                        {(parseFloat(type.price) + parseFloat(type.delivery_price)).toFixed(2)} {language === 'ar' ? 'ريال' : 'OMR'}
                                     </div>
                                 </div>
                             </div>
-                            <div style={{
-                                display: 'flex',
-                                gap: '0.5rem'
-                            }}>
-                                <button
-                                    onClick={() => handleEdit(meal)}
-                                    style={{
-                                        padding: '0.5rem',
-                                        background: 'rgba(79, 70, 229, 0.1)',
-                                        border: 'none',
-                                        borderRadius: '0.5rem',
-                                        cursor: 'pointer',
-                                        fontSize: '1rem'
-                                    }}
-                                    title={language === 'ar' ? 'تعديل' : 'Edit'}
-                                >
-                                    ✏️
-                                </button>
-                                <button
-                                    onClick={() => handleDelete(meal.id)}
-                                    style={{
-                                        padding: '0.5rem',
-                                        background: 'rgba(239, 68, 68, 0.1)',
-                                        border: 'none',
-                                        borderRadius: '0.5rem',
-                                        cursor: 'pointer',
-                                        fontSize: '1rem'
-                                    }}
-                                    title={language === 'ar' ? 'حذف' : 'Delete'}
-                                >
-                                    🗑️
-                                </button>
-                            </div>
-                        </div>
                         </div>
                     ))}
                 </div>
             )}
 
             {/* Empty State */}
-            {selectedRestaurant && meals.length === 0 && (
+            {selectedRestaurant && subscriptionTypes.length === 0 && (
                 <div style={{
                     textAlign: 'center',
                     padding: '3rem',
@@ -595,7 +535,7 @@ const SellerMeals = () => {
                         fontSize: '3rem',
                         marginBottom: '1rem'
                     }}>
-                        🍽️
+                        📋
                     </div>
                     <h3 style={{
                         fontSize: '1.25rem',
@@ -604,52 +544,15 @@ const SellerMeals = () => {
                         margin: 0,
                         marginBottom: '0.5rem'
                     }}>
-                        {language === 'ar' ? 'لا توجد وجبات' : 'No Meals'}
+                        {language === 'ar' ? 'لا توجد أنواع اشتراكات' : 'No Subscription Types'}
                     </h3>
                     <p style={{
                         color: 'rgb(107 114 128)',
                         margin: 0
                     }}>
                         {language === 'ar' 
-                            ? 'لا توجد وجبات لهذا المطعم بعد'
-                            : 'No meals available for this restaurant yet'
-                        }
-                    </p>
-                </div>
-            )}
-
-            {!selectedRestaurant && restaurants.length === 0 && (
-                <div style={{
-                    textAlign: 'center',
-                    padding: '3rem',
-                    background: 'rgba(255, 255, 255, 0.9)',
-                    backdropFilter: 'blur(20px)',
-                    borderRadius: '1rem',
-                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)'
-                }}>
-                    <div style={{
-                        fontSize: '3rem',
-                        marginBottom: '1rem'
-                    }}>
-                        🏪
-                    </div>
-                    <h3 style={{
-                        fontSize: '1.25rem',
-                        fontWeight: '600',
-                        color: 'rgb(55 65 81)',
-                        margin: 0,
-                        marginBottom: '0.5rem'
-                    }}>
-                        {language === 'ar' ? 'لا توجد مطاعم' : 'No Restaurants'}
-                    </h3>
-                    <p style={{
-                        color: 'rgb(107 114 128)',
-                        margin: 0
-                    }}>
-                        {language === 'ar' 
-                            ? 'يجب عليك إضافة مطعم أولاً قبل إضافة الوجبات'
-                            : 'You need to add a restaurant first before adding meals'
+                            ? 'لا توجد أنواع اشتراكات لهذا المطعم بعد'
+                            : 'No subscription types available for this restaurant yet'
                         }
                     </p>
                 </div>
@@ -691,9 +594,9 @@ const SellerMeals = () => {
                                 color: 'rgb(55 65 81)',
                                 margin: 0
                             }}>
-                                {editingMeal 
-                                    ? (language === 'ar' ? 'تعديل الوجبة' : 'Edit Meal')
-                                    : (language === 'ar' ? 'إضافة وجبة جديدة' : 'Add New Meal')
+                                {editingType 
+                                    ? (language === 'ar' ? 'تعديل نوع الاشتراك' : 'Edit Subscription Type')
+                                    : (language === 'ar' ? 'إضافة نوع اشتراك جديد' : 'Add New Subscription Type')
                                 }
                             </h2>
                             <button
@@ -823,127 +726,6 @@ const SellerMeals = () => {
                                 </div>
                             </div>
 
-                            {/* Image Upload Section */}
-                            <div style={{
-                                marginBottom: '1rem'
-                            }}>
-                                <label style={{
-                                    display: 'block',
-                                    marginBottom: '0.5rem',
-                                    fontSize: '0.875rem',
-                                    fontWeight: '500',
-                                    color: 'rgb(55 65 81)'
-                                }}>
-                                    📸 {language === 'ar' ? 'صورة الوجبة' : 'Meal Image'}
-                                </label>
-                                
-                                {/* Image Preview */}
-                                {imagePreview && (
-                                    <div style={{
-                                        marginBottom: '1rem',
-                                        textAlign: 'center'
-                                    }}>
-                                        <img 
-                                            src={imagePreview} 
-                                            alt={language === 'ar' ? 'معاينة الصورة' : 'Image Preview'}
-                                            style={{
-                                                maxWidth: '200px',
-                                                maxHeight: '200px',
-                                                borderRadius: '0.5rem',
-                                                border: '2px solid rgba(0, 0, 0, 0.1)'
-                                            }}
-                                        />
-                                    </div>
-                                )}
-                                
-                                {/* File Input */}
-                                <div style={{
-                                    border: '2px dashed rgba(0, 0, 0, 0.1)',
-                                    borderRadius: '0.5rem',
-                                    padding: '1rem',
-                                    textAlign: 'center',
-                                    background: 'rgba(0, 0, 0, 0.02)',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s'
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.target.style.borderColor = 'rgba(0, 0, 0, 0.3)';
-                                    e.target.style.background = 'rgba(0, 0, 0, 0.05)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.target.style.borderColor = 'rgba(0, 0, 0, 0.1)';
-                                    e.target.style.background = 'rgba(0, 0, 0, 0.02)';
-                                }}
-                                >
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageChange}
-                                        style={{
-                                            display: 'none'
-                                        }}
-                                        id="meal-image-input"
-                                    />
-                                    <label 
-                                        htmlFor="meal-image-input"
-                                        style={{
-                                            cursor: 'pointer',
-                                            display: 'block'
-                                        }}
-                                    >
-                                        <div style={{
-                                            fontSize: '2rem',
-                                            marginBottom: '0.5rem'
-                                        }}>
-                                            📷
-                                        </div>
-                                        <div style={{
-                                            fontSize: '0.875rem',
-                                            color: 'rgb(107 114 128)',
-                                            marginBottom: '0.25rem'
-                                        }}>
-                                            {language === 'ar' 
-                                                ? 'انقر لاختيار صورة أو اسحب الصورة هنا'
-                                                : 'Click to select image or drag image here'
-                                            }
-                                        </div>
-                                        <div style={{
-                                            fontSize: '0.75rem',
-                                            color: 'rgb(156 163 175)'
-                                        }}>
-                                            {language === 'ar' 
-                                                ? 'JPG, PNG, GIF حتى 2MB'
-                                                : 'JPG, PNG, GIF up to 2MB'
-                                            }
-                                        </div>
-                                    </label>
-                                </div>
-                                
-                                {/* Remove Image Button */}
-                                {(selectedImage || imagePreview) && (
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setSelectedImage(null);
-                                            setImagePreview(null);
-                                        }}
-                                        style={{
-                                            marginTop: '0.5rem',
-                                            padding: '0.5rem 1rem',
-                                            background: 'rgba(239, 68, 68, 0.1)',
-                                            color: 'rgb(239 68 68)',
-                                            border: 'none',
-                                            borderRadius: '0.375rem',
-                                            fontSize: '0.75rem',
-                                            fontWeight: '500',
-                                            cursor: 'pointer'
-                                        }}
-                                    >
-                                        🗑️ {language === 'ar' ? 'إزالة الصورة' : 'Remove Image'}
-                                    </button>
-                                )}
-                            </div>
-
                             <div style={{
                                 display: 'grid',
                                 gridTemplateColumns: '1fr 1fr 1fr',
@@ -958,11 +740,11 @@ const SellerMeals = () => {
                                         fontWeight: '500',
                                         color: 'rgb(55 65 81)'
                                     }}>
-                                        {language === 'ar' ? 'نوع الوجبة' : 'Meal Type'} *
+                                        {language === 'ar' ? 'نوع الاشتراك' : 'Subscription Type'} *
                                     </label>
                                     <select
-                                        value={formData.meal_type}
-                                        onChange={(e) => setFormData({...formData, meal_type: e.target.value})}
+                                        value={formData.type}
+                                        onChange={(e) => setFormData({...formData, type: e.target.value})}
                                         required
                                         style={{
                                             width: '100%',
@@ -973,9 +755,8 @@ const SellerMeals = () => {
                                             background: 'white'
                                         }}
                                     >
-                                        <option value="breakfast">{language === 'ar' ? 'فطور' : 'Breakfast'}</option>
-                                        <option value="lunch">{language === 'ar' ? 'غداء' : 'Lunch'}</option>
-                                        <option value="dinner">{language === 'ar' ? 'عشاء' : 'Dinner'}</option>
+                                        <option value="weekly">{language === 'ar' ? 'أسبوعي' : 'Weekly'}</option>
+                                        <option value="monthly">{language === 'ar' ? 'شهري' : 'Monthly'}</option>
                                     </select>
                                 </div>
                                 <div>
@@ -986,7 +767,7 @@ const SellerMeals = () => {
                                         fontWeight: '500',
                                         color: 'rgb(55 65 81)'
                                     }}>
-                                        {language === 'ar' ? 'السعر' : 'Price'} *
+                                        {language === 'ar' ? 'سعر الاشتراك' : 'Subscription Price'} *
                                     </label>
                                     <input
                                         type="number"
@@ -1012,12 +793,14 @@ const SellerMeals = () => {
                                         fontWeight: '500',
                                         color: 'rgb(55 65 81)'
                                     }}>
-                                        {language === 'ar' ? 'وقت التوصيل' : 'Delivery Time'} *
+                                        {language === 'ar' ? 'سعر التوصيل' : 'Delivery Price'} *
                                     </label>
                                     <input
-                                        type="time"
-                                        value={formData.delivery_time}
-                                        onChange={(e) => setFormData({...formData, delivery_time: e.target.value})}
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        value={formData.delivery_price}
+                                        onChange={(e) => setFormData({...formData, delivery_price: e.target.value})}
                                         required
                                         style={{
                                             width: '100%',
@@ -1031,37 +814,67 @@ const SellerMeals = () => {
                             </div>
 
                             <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr',
+                                gap: '1rem',
                                 marginBottom: '2rem'
                             }}>
-                                <label style={{
-                                    display: 'block',
-                                    marginBottom: '0.5rem',
-                                    fontSize: '0.875rem',
-                                    fontWeight: '500',
-                                    color: 'rgb(55 65 81)'
-                                }}>
-                                    {language === 'ar' ? 'الحالة' : 'Status'}
-                                </label>
-                                <div style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem'
-                                }}>
-                                    <input
-                                        type="checkbox"
-                                        checked={formData.is_available}
-                                        onChange={(e) => setFormData({...formData, is_available: e.target.checked})}
-                                        style={{
-                                            width: '1rem',
-                                            height: '1rem'
-                                        }}
-                                    />
-                                    <span style={{
+                                <div>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
                                         fontSize: '0.875rem',
+                                        fontWeight: '500',
                                         color: 'rgb(55 65 81)'
                                     }}>
-                                        {language === 'ar' ? 'متاح' : 'Available'}
-                                    </span>
+                                        {language === 'ar' ? 'عدد الوجبات' : 'Meals Count'} *
+                                    </label>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        value={formData.meals_count}
+                                        onChange={(e) => setFormData({...formData, meals_count: e.target.value})}
+                                        required
+                                        style={{
+                                            width: '100%',
+                                            padding: '0.75rem',
+                                            border: '1px solid rgba(0, 0, 0, 0.1)',
+                                            borderRadius: '0.5rem',
+                                            fontSize: '0.875rem'
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    <label style={{
+                                        display: 'block',
+                                        marginBottom: '0.5rem',
+                                        fontSize: '0.875rem',
+                                        fontWeight: '500',
+                                        color: 'rgb(55 65 81)'
+                                    }}>
+                                        {language === 'ar' ? 'الحالة' : 'Status'}
+                                    </label>
+                                    <div style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.5rem'
+                                    }}>
+                                        <input
+                                            type="checkbox"
+                                            checked={formData.is_active}
+                                            onChange={(e) => setFormData({...formData, is_active: e.target.checked})}
+                                            style={{
+                                                width: '1rem',
+                                                height: '1rem'
+                                            }}
+                                        />
+                                        <span style={{
+                                            fontSize: '0.875rem',
+                                            color: 'rgb(55 65 81)'
+                                        }}>
+                                            {language === 'ar' ? 'نشط' : 'Active'}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -1099,7 +912,7 @@ const SellerMeals = () => {
                                         cursor: 'pointer'
                                     }}
                                 >
-                                    {editingMeal 
+                                    {editingType 
                                         ? (language === 'ar' ? 'تحديث' : 'Update')
                                         : (language === 'ar' ? 'إضافة' : 'Add')
                                     }
@@ -1109,8 +922,45 @@ const SellerMeals = () => {
                     </div>
                 </div>
             )}
+
+            {!selectedRestaurant && restaurants.length === 0 && (
+                <div style={{
+                    textAlign: 'center',
+                    padding: '3rem',
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    backdropFilter: 'blur(20px)',
+                    borderRadius: '1rem',
+                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)'
+                }}>
+                    <div style={{
+                        fontSize: '3rem',
+                        marginBottom: '1rem'
+                    }}>
+                        🏪
+                    </div>
+                    <h3 style={{
+                        fontSize: '1.25rem',
+                        fontWeight: '600',
+                        color: 'rgb(55 65 81)',
+                        margin: 0,
+                        marginBottom: '0.5rem'
+                    }}>
+                        {language === 'ar' ? 'لا توجد مطاعم' : 'No Restaurants'}
+                    </h3>
+                    <p style={{
+                        color: 'rgb(107 114 128)',
+                        margin: 0
+                    }}>
+                        {language === 'ar' 
+                            ? 'يجب عليك إضافة مطعم أولاً قبل إضافة أنواع الاشتراكات'
+                            : 'You need to add a restaurant first before adding subscription types'
+                        }
+                    </p>
+                </div>
+            )}
         </div>
     );
 };
 
-export default SellerMeals;
+export default SellerSubscriptionTypes;

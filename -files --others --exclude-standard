@@ -1,0 +1,5 @@
+[33m0e7ba90[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix seller restaurant filtering and add comprehensive tests
+[33maac8e70[m Fix navigation design in seller dashboard - unified styling and improved UX
+[33m6b4e148[m Complete Seller Dashboard redesign with mobile responsiveness and bilingual support
+[33ma1ad2b9[m Fix: Add scroll to top functionality for all pages to ensure pages open at the beginning instead of the end when navigating
+[33m019752f[m  Fix double background issue with unified global background

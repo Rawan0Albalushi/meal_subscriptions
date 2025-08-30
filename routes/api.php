@@ -100,6 +100,12 @@ Route::middleware(['auth:sanctum', 'role:seller', 'log.auth'])->prefix('seller')
     Route::delete('restaurants/{restaurantId}/addresses/{addressId}', [RestaurantAddressController::class, 'destroy']);
     Route::put('restaurants/{restaurantId}/addresses/{addressId}/set-primary', [RestaurantAddressController::class, 'setPrimary']);
     
+    // Subscription types management for sellers
+    Route::get('restaurants/{restaurantId}/subscription-types', [SubscriptionTypeController::class, 'getByRestaurant']);
+    Route::post('subscription-types', [SubscriptionTypeController::class, 'store']);
+    Route::put('subscription-types/{id}', [SubscriptionTypeController::class, 'update']);
+    Route::delete('subscription-types/{id}', [SubscriptionTypeController::class, 'destroy']);
+    
     // Dashboard stats
     Route::get('/dashboard', function () {
         return response()->json([
