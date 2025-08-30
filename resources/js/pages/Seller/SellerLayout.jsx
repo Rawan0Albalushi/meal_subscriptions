@@ -45,16 +45,16 @@ const SellerLayout = () => {
             description: t('sellerRestaurantsDescription')
         },
         {
-            path: '/seller/meals',
-            icon: '🍽️',
-            label: t('meals'),
-            description: t('mealsDescription')
-        },
-        {
             path: '/seller/subscription-types',
             icon: '📋',
             label: language === 'ar' ? 'أنواع الاشتراكات' : 'Subscription Types',
             description: language === 'ar' ? 'إدارة أنواع الاشتراكات والأسعار' : 'Manage subscription types and prices'
+        },
+        {
+            path: '/seller/meals',
+            icon: '🍽️',
+            label: t('meals'),
+            description: t('mealsDescription')
         },
         {
             path: '/seller/profile',
