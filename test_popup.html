@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار Popup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 1rem;
+        }
+        .popup.show {
+            display: flex;
+        }
+        .popup-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: popupSlideIn 0.3s ease-out;
+        }
+        @keyframes popupSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        .popup-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .popup-icon {
+            font-size: 2rem;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .popup-success {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        .popup-error {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .popup-warning {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+        .popup-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .popup-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .popup-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 120px;
+        }
+        .popup-btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+        .popup-btn-secondary {
+            background: rgba(107, 114, 128, 0.1);
+            color: rgb(107 114 128);
+            border: 1px solid rgba(107, 114, 128, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 اختبار Popup</h1>
+        <p>اضغط على الأزرار لاختبار أنواع مختلفة من الـ popup:</p>
+        
+        <button onclick="showPopup('success', 'تم إنشاء المطعم بنجاح!')">✅ نجاح</button>
+        <button onclick="showPopup('error', 'حدث خطأ في حفظ المطعم')">❌ خطأ</button>
+        <button onclick="showPopup('warning', 'هل أنت متأكد من حذف هذا المطعم؟')">⚠️ تحذير</button>
+        <button onclick="showPopup('info', 'معلومات مهمة للمستخدم')">ℹ️ معلومات</button>
+    </div>
+
+    <!-- Popup -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <div id="popup-icon" class="popup-icon">ℹ️</div>
+                <div>
+                    <h3 id="popup-title" style="margin: 0; color: rgb(55 65 81);">عنوان</h3>
+                    <div id="popup-subtitle" style="font-size: 0.875rem; color: rgb(107 114 128);">نوع الرسالة</div>
+                </div>
+            </div>
+            <div id="popup-message" style="margin-bottom: 2rem; line-height: 1.6; color: rgb(55 65 81);">
+                رسالة
+            </div>
+            <div class="popup-buttons">
+                <button id="popup-cancel" class="popup-btn popup-btn-secondary" onclick="closePopup()" style="display: none;">إلغاء</button>
+                <button id="popup-confirm" class="popup-btn popup-btn-primary" onclick="closePopup()">حسناً</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPopup(type, message) {
+            const popup = document.getElementById('popup');
+            const icon = document.getElementById('popup-icon');
+            const title = document.getElementById('popup-title');
+            const subtitle = document.getElementById('popup-subtitle');
+            const messageEl = document.getElementById('popup-message');
+            const cancelBtn = document.getElementById('popup-cancel');
+            const confirmBtn = document.getElementById('popup-confirm');
+
+            // إزالة جميع الأنواع السابقة
+            icon.className = 'popup-icon';
+
+            // تعيين النوع الجديد
+            switch (type) {
+                case 'success':
+                    icon.textContent = '✅';
+                    icon.classList.add('popup-success');
+                    title.textContent = 'تم بنجاح';
+                    subtitle.textContent = 'تم بنجاح';
+                    break;
+                case 'error':
+                    icon.textContent = '❌';
+                    icon.classList.add('popup-error');
+                    title.textContent = 'خطأ';
+                    subtitle.textContent = 'حدث خطأ';
+                    break;
+                case 'warning':
+                    icon.textContent = '⚠️';
+                    icon.classList.add('popup-warning');
+                    title.textContent = 'تحذير';
+                    subtitle.textContent = 'تحذير';
+                    cancelBtn.style.display = 'inline-block';
+                    break;
+                case 'info':
+                    icon.textContent = 'ℹ️';
+                    icon.classList.add('popup-info');
+                    title.textContent = 'معلومات';
+                    subtitle.textContent = 'معلومات';
+                    break;
+            }
+
+            messageEl.textContent = message;
+            popup.classList.add('show');
+        }
+
+        function closePopup() {
+            const popup = document.getElementById('popup');
+            const cancelBtn = document.getElementById('popup-cancel');
+            
+            popup.classList.remove('show');
+            cancelBtn.style.display = 'none';
+        }
+
+        // إغلاق الـ popup عند النقر خارجه
+        document.getElementById('popup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
+    </script>
+</body>
+</html>

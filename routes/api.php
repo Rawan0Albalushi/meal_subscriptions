@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Seller\RestaurantController as SellerRestaurantController;
 use App\Http\Controllers\Api\Seller\MealController as SellerMealController;
 use App\Http\Controllers\Api\ContactInformationController;
+use App\Http\Controllers\RestaurantAddressController;
 
 // Authentication routes
 Route::post('/auth/login', [AuthController::class, 'login']);
@@ -28,6 +29,9 @@ Route::get('/restaurants/{restaurantId}/meals', [RestaurantController::class, 'm
 
 // Contact information routes
 Route::get('/contact-information', [ContactInformationController::class, 'index']);
+
+// Restaurant addresses routes (public)
+Route::get('/restaurant-addresses/areas', [RestaurantAddressController::class, 'getAvailableAreas']);
 
 // Subscription type routes
 Route::get('/subscription-types', [SubscriptionTypeController::class, 'index']);
@@ -73,7 +77,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
 });
 
 // Seller routes
-Route::middleware(['auth:sanctum', 'role:seller'])->prefix('seller')->group(function () {
+Route::middleware(['auth:sanctum', 'role:seller', 'log.auth'])->prefix('seller')->group(function () {
     // Restaurant management
     Route::apiResource('restaurants', SellerRestaurantController::class);
     Route::put('restaurants/{id}/toggle-status', [SellerRestaurantController::class, 'toggleStatus']);
@@ -87,6 +91,14 @@ Route::middleware(['auth:sanctum', 'role:seller'])->prefix('seller')->group(func
     Route::delete('restaurants/{restaurantId}/meals/{mealId}', [SellerMealController::class, 'destroy']);
     Route::put('restaurants/{restaurantId}/meals/{mealId}/toggle-availability', [SellerMealController::class, 'toggleAvailability']);
     Route::get('restaurants/{restaurantId}/meals/stats', [SellerMealController::class, 'stats']);
+    
+    // Restaurant addresses management
+    Route::get('restaurants/{restaurantId}/addresses', [RestaurantAddressController::class, 'index']);
+    Route::get('restaurants/{restaurantId}/addresses/{addressId}', [RestaurantAddressController::class, 'show']);
+    Route::post('restaurants/{restaurantId}/addresses', [RestaurantAddressController::class, 'store']);
+    Route::put('restaurants/{restaurantId}/addresses/{addressId}', [RestaurantAddressController::class, 'update']);
+    Route::delete('restaurants/{restaurantId}/addresses/{addressId}', [RestaurantAddressController::class, 'destroy']);
+    Route::put('restaurants/{restaurantId}/addresses/{addressId}/set-primary', [RestaurantAddressController::class, 'setPrimary']);
     
     // Dashboard stats
     Route::get('/dashboard', function () {

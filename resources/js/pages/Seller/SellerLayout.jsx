@@ -256,14 +256,14 @@ const SellerLayout = () => {
                                         textDecoration: 'none',
                                         transition: 'all 0.2s ease',
                                         background: isActive(item.path) 
-                                            ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+                                            ? 'rgba(79, 70, 229, 0.1)' 
                                             : 'rgba(255, 255, 255, 0.8)',
-                                        color: isActive(item.path) ? 'white' : 'rgb(55 65 81)',
+                                        color: isActive(item.path) ? 'rgb(79 70 229)' : 'rgb(55 65 81)',
                                         border: isActive(item.path) 
-                                            ? 'none' 
+                                            ? '2px solid rgba(79, 70, 229, 0.3)' 
                                             : '1px solid rgba(0, 0, 0, 0.08)',
                                         boxShadow: isActive(item.path)
-                                            ? '0 6px 15px rgba(102, 126, 234, 0.3)'
+                                            ? '0 4px 12px rgba(79, 70, 229, 0.15)'
                                             : '0 2px 6px rgba(0, 0, 0, 0.06)',
                                         transform: isActive(item.path) ? 'translateY(-1px)' : 'translateY(0)',
                                         position: 'relative',
@@ -286,18 +286,16 @@ const SellerLayout = () => {
                                         }
                                     }}
                                 >
-                                    {/* Active Indicator Dot */}
+                                    {/* Active Indicator - Subtle border instead of dot */}
                                     {isActive(item.path) && (
                                         <div style={{
                                             position: 'absolute',
-                                            [dir === 'rtl' ? 'left' : 'right']: window.innerWidth <= 768 ? '0.5rem' : '0.75rem',
-                                            top: window.innerWidth <= 768 ? '0.5rem' : '50%',
-                                            transform: window.innerWidth <= 768 ? 'none' : 'translateY(-50%)',
-                                            width: '6px',
-                                            height: '6px',
-                                            background: 'white',
-                                            borderRadius: '50%',
-                                            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)'
+                                            left: 0,
+                                            top: 0,
+                                            bottom: 0,
+                                            width: '3px',
+                                            background: 'rgb(79 70 229)',
+                                            borderRadius: '0 2px 2px 0'
                                         }}></div>
                                     )}
                                     
@@ -306,7 +304,7 @@ const SellerLayout = () => {
                                         width: window.innerWidth <= 768 ? '2.5rem' : '2.25rem',
                                         height: window.innerWidth <= 768 ? '2.5rem' : '2.25rem',
                                         background: isActive(item.path)
-                                            ? 'rgba(255, 255, 255, 0.15)'
+                                            ? 'rgba(79, 70, 229, 0.15)'
                                             : 'rgba(79, 70, 229, 0.08)',
                                         borderRadius: window.innerWidth <= 768 ? '0.5rem' : '0.5rem',
                                         display: 'flex',
@@ -323,12 +321,12 @@ const SellerLayout = () => {
                                     <div style={{
                                         flex: 1,
                                         minWidth: 0,
-                                        paddingRight: isActive(item.path) ? (window.innerWidth <= 768 ? '0.5rem' : '1rem') : '0',
+                                        paddingRight: window.innerWidth <= 768 ? '0.5rem' : '1rem',
                                         paddingTop: window.innerWidth <= 768 ? '0.25rem' : '0'
                                     }}>
                                         <div style={{
                                             fontSize: window.innerWidth <= 768 ? '0.875rem' : '0.875rem',
-                                            fontWeight: '600',
+                                            fontWeight: isActive(item.path) ? '700' : '600',
                                             marginBottom: window.innerWidth <= 768 ? '0.25rem' : '0.25rem',
                                             lineHeight: 1.2,
                                             whiteSpace: 'nowrap',
@@ -341,7 +339,7 @@ const SellerLayout = () => {
                                         </div>
                                         <div style={{
                                             fontSize: window.innerWidth <= 768 ? '0.75rem' : '0.75rem',
-                                            opacity: isActive(item.path) ? 0.85 : 0.65,
+                                            opacity: isActive(item.path) ? 0.8 : 0.65,
                                             lineHeight: 1.3,
                                             whiteSpace: 'nowrap',
                                             overflow: 'hidden',

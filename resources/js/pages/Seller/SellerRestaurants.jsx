@@ -1,12 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import Popup from '../../components/Popup';
+import RestaurantAddressManager from '../../components/RestaurantAddressManager';
 
 const SellerRestaurants = () => {
     const { t, dir, language } = useLanguage();
+
+    // دالة لعرض الـ popup
+    const showPopup = (title, message, type = 'info', onConfirm = null) => {
+        setPopup({
+            isOpen: true,
+            title,
+            message,
+            type,
+            onConfirm: onConfirm ? () => {
+                onConfirm();
+                setPopup(prev => ({ ...prev, isOpen: false }));
+            } : null
+        });
+    };
+
+    // دالة لإغلاق الـ popup
+    const closePopup = () => {
+        setPopup(prev => ({ ...prev, isOpen: false }));
+    };
     const [restaurants, setRestaurants] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
     const [editingRestaurant, setEditingRestaurant] = useState(null);
+    const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+    const [activeTab, setActiveTab] = useState('list');
+    
+    // Popup states
+    const [popup, setPopup] = useState({
+        isOpen: false,
+        title: '',
+        message: '',
+        type: 'info',
+        onConfirm: null
+    }); // 'list', 'addresses'
     const [formData, setFormData] = useState({
         name_ar: '',
         name_en: '',
@@ -17,7 +49,7 @@ const SellerRestaurants = () => {
         address_ar: '',
         address_en: '',
         locations: [],
-        delivery_price: '',
+        logo: null,
         is_active: true
     });
 
@@ -30,7 +62,7 @@ const SellerRestaurants = () => {
             setLoading(true);
             const response = await fetch('/api/seller/restaurants', {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
                     'Content-Type': 'application/json'
                 }
             });
@@ -38,9 +70,22 @@ const SellerRestaurants = () => {
             if (response.ok) {
                 const data = await response.json();
                 setRestaurants(data.data || []);
+            } else {
+                const errorData = await response.json();
+                console.error('Error fetching restaurants:', errorData);
+                showPopup(
+                    language === 'ar' ? 'خطأ في التحميل' : 'Loading Error',
+                    language === 'ar' ? 'حدث خطأ في تحميل المطاعم' : 'Error loading restaurants',
+                    'error'
+                );
             }
         } catch (error) {
             console.error('Error fetching restaurants:', error);
+            showPopup(
+                language === 'ar' ? 'خطأ في التحميل' : 'Loading Error',
+                language === 'ar' ? 'حدث خطأ في تحميل المطاعم' : 'Error loading restaurants',
+                'error'
+            );
         } finally {
             setLoading(false);
         }
@@ -50,16 +95,55 @@ const SellerRestaurants = () => {
         e.preventDefault();
         
         try {
-            const formDataToSend = new FormData();
-            Object.keys(formData).forEach(key => {
-                if (key === 'locations') {
-                    formData.locations.forEach(location => {
-                        formDataToSend.append('locations[]', location);
-                    });
-                } else {
-                    formDataToSend.append(key, formData[key]);
-                }
+            // إعداد البيانات للإرسال
+            const requestData = {
+                name_ar: formData.name_ar,
+                name_en: formData.name_en,
+                description_ar: formData.description_ar,
+                description_en: formData.description_en,
+                phone: formData.phone,
+                email: formData.email,
+                address_ar: formData.address_ar,
+                address_en: formData.address_en,
+                locations: formData.locations,
+                is_active: Boolean(formData.is_active) // تأكد من أن القيمة boolean
+            };
+
+            console.log('🔍 بيانات النموذج قبل الإرسال:', {
+                original_is_active: formData.is_active,
+                processed_is_active: requestData.is_active,
+                requestData: requestData
             });
+
+            // إذا كان هناك ملف شعار، استخدم FormData
+            let body, headers;
+            if (formData.logo) {
+                const formDataToSend = new FormData();
+                Object.keys(requestData).forEach(key => {
+                    if (key === 'locations') {
+                        requestData.locations.forEach(location => {
+                            formDataToSend.append('locations[]', location);
+                        });
+                    } else if (key === 'is_active') {
+                        // إرسال is_active كـ "1" أو "0" بدلاً من true/false
+                        formDataToSend.append(key, requestData[key] ? '1' : '0');
+                    } else {
+                        formDataToSend.append(key, requestData[key]);
+                    }
+                });
+                formDataToSend.append('logo', formData.logo);
+                body = formDataToSend;
+                headers = {
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+                };
+            } else {
+                // بدون ملف، استخدم JSON
+                body = JSON.stringify(requestData);
+                headers = {
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+                    'Content-Type': 'application/json'
+                };
+            }
 
             const url = editingRestaurant 
                 ? `/api/seller/restaurants/${editingRestaurant.id}`
@@ -69,21 +153,59 @@ const SellerRestaurants = () => {
 
             const response = await fetch(url, {
                 method,
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: formDataToSend
+                headers,
+                body
             });
 
             if (response.ok) {
-                setShowAddModal(false);
-                setEditingRestaurant(null);
-                resetForm();
-                fetchRestaurants();
+                const data = await response.json();
+                showPopup(
+                    language === 'ar' ? 'تم بنجاح' : 'Success',
+                    language === 'ar' ? data.message || 'تم حفظ المطعم بنجاح' : data.message || 'Restaurant saved successfully',
+                    'success',
+                    () => {
+                        setShowAddModal(false);
+                        setEditingRestaurant(null);
+                        resetForm();
+                        fetchRestaurants();
+                    }
+                );
+            } else {
+                const errorData = await response.json();
+                console.error('Error saving restaurant:', errorData);
+                if (errorData.errors) {
+                    const errorMessages = Object.values(errorData.errors).flat().join('\n');
+                    showPopup(
+                        language === 'ar' ? 'أخطاء في النموذج' : 'Form Errors',
+                        language === 'ar' ? `أخطاء في النموذج:\n${errorMessages}` : `Form errors:\n${errorMessages}`,
+                        'error'
+                    );
+                } else {
+                    showPopup(
+                        language === 'ar' ? 'خطأ في الحفظ' : 'Save Error',
+                        language === 'ar' ? 'حدث خطأ في حفظ المطعم' : 'Error saving restaurant',
+                        'error'
+                    );
+                }
             }
         } catch (error) {
             console.error('Error saving restaurant:', error);
+            showPopup(
+                language === 'ar' ? 'خطأ في الحفظ' : 'Save Error',
+                language === 'ar' ? 'حدث خطأ في حفظ المطعم' : 'Error saving restaurant',
+                'error'
+            );
         }
+    };
+
+    const handleManageAddresses = (restaurant) => {
+        setSelectedRestaurant(restaurant);
+        setActiveTab('addresses');
+    };
+
+    const handleBackToList = () => {
+        setActiveTab('list');
+        setSelectedRestaurant(null);
     };
 
     const handleEdit = (restaurant) => {
@@ -98,32 +220,55 @@ const SellerRestaurants = () => {
             address_ar: restaurant.address_ar || '',
             address_en: restaurant.address_en || '',
             locations: restaurant.locations || [],
-            delivery_price: restaurant.delivery_price || '',
+            logo: null,
             is_active: restaurant.is_active
         });
         setShowAddModal(true);
     };
 
     const handleDelete = async (restaurantId) => {
-        if (!confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذا المطعم؟' : 'Are you sure you want to delete this restaurant?')) {
-            return;
-        }
+        setPopup({
+            isOpen: true,
+            title: language === 'ar' ? 'تأكيد الحذف' : 'Confirm Delete',
+            message: language === 'ar' ? 'هل أنت متأكد من حذف هذا المطعم؟' : 'Are you sure you want to delete this restaurant?',
+            type: 'warning',
+            onConfirm: async () => {
+                try {
+                    const response = await fetch(`/api/seller/restaurants/${restaurantId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
 
-        try {
-            const response = await fetch(`/api/seller/restaurants/${restaurantId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
+                    if (response.ok) {
+                        const data = await response.json();
+                        showPopup(
+                            language === 'ar' ? 'تم بنجاح' : 'Success',
+                            language === 'ar' ? data.message || 'تم حذف المطعم بنجاح' : data.message || 'Restaurant deleted successfully',
+                            'success',
+                            () => fetchRestaurants()
+                        );
+                    } else {
+                        const errorData = await response.json();
+                        console.error('Error deleting restaurant:', errorData);
+                        showPopup(
+                            language === 'ar' ? 'خطأ في الحذف' : 'Delete Error',
+                            language === 'ar' ? 'حدث خطأ في حذف المطعم' : 'Error deleting restaurant',
+                            'error'
+                        );
+                    }
+                } catch (error) {
+                    console.error('Error deleting restaurant:', error);
+                    showPopup(
+                        language === 'ar' ? 'خطأ في الحذف' : 'Delete Error',
+                        language === 'ar' ? 'حدث خطأ في حذف المطعم' : 'Error deleting restaurant',
+                        'error'
+                    );
                 }
-            });
-
-            if (response.ok) {
-                fetchRestaurants();
             }
-        } catch (error) {
-            console.error('Error deleting restaurant:', error);
-        }
+        });
     };
 
     const handleToggleStatus = async (restaurantId) => {
@@ -131,16 +276,35 @@ const SellerRestaurants = () => {
             const response = await fetch(`/api/seller/restaurants/${restaurantId}/toggle-status`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
                     'Content-Type': 'application/json'
                 }
             });
 
             if (response.ok) {
-                fetchRestaurants();
+                const data = await response.json();
+                showPopup(
+                    language === 'ar' ? 'تم بنجاح' : 'Success',
+                    language === 'ar' ? data.message || 'تم تغيير حالة المطعم' : data.message || 'Restaurant status updated',
+                    'success',
+                    () => fetchRestaurants()
+                );
+            } else {
+                const errorData = await response.json();
+                console.error('Error toggling restaurant status:', errorData);
+                showPopup(
+                    language === 'ar' ? 'خطأ في التحديث' : 'Update Error',
+                    language === 'ar' ? 'حدث خطأ في تغيير حالة المطعم' : 'Error updating restaurant status',
+                    'error'
+                );
             }
         } catch (error) {
             console.error('Error toggling restaurant status:', error);
+            showPopup(
+                language === 'ar' ? 'خطأ في التحديث' : 'Update Error',
+                language === 'ar' ? 'حدث خطأ في تغيير حالة المطعم' : 'Error updating restaurant status',
+                'error'
+            );
         }
     };
 
@@ -155,7 +319,7 @@ const SellerRestaurants = () => {
             address_ar: '',
             address_en: '',
             locations: [],
-            delivery_price: '',
+            logo: null,
             is_active: true
         });
     };
@@ -165,6 +329,13 @@ const SellerRestaurants = () => {
         { value: 'khoudh', labelAr: 'الخوض', labelEn: 'Khoudh' },
         { value: 'maabilah', labelAr: 'معبيلة', labelEn: 'Maabilah' }
     ];
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setFormData({...formData, logo: file});
+        }
+    };
 
     if (loading) {
         return (
@@ -198,8 +369,97 @@ const SellerRestaurants = () => {
         <div style={{
             direction: dir
         }}>
-            {/* Header */}
+            {/* Tab Navigation */}
             <div style={{
+                display: 'flex',
+                gap: '1rem',
+                marginBottom: '2rem',
+                borderBottom: '2px solid #e5e7eb',
+                paddingBottom: '1rem'
+            }}>
+                <button
+                    onClick={() => setActiveTab('list')}
+                    style={{
+                        padding: '0.75rem 1.5rem',
+                        background: activeTab === 'list' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'transparent',
+                        color: activeTab === 'list' ? 'white' : '#6b7280',
+                        border: 'none',
+                        borderRadius: '0.5rem',
+                        fontSize: '0.875rem',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                    }}
+                >
+                    {language === 'ar' ? 'قائمة المطاعم' : 'Restaurants List'}
+                </button>
+                {selectedRestaurant && (
+                    <button
+                        onClick={() => setActiveTab('addresses')}
+                        style={{
+                            padding: '0.75rem 1.5rem',
+                            background: activeTab === 'addresses' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'transparent',
+                            color: activeTab === 'addresses' ? 'white' : '#6b7280',
+                            border: 'none',
+                            borderRadius: '0.5rem',
+                            fontSize: '0.875rem',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                        }}
+                    >
+                        {language === 'ar' ? 'إدارة العناوين' : 'Manage Addresses'}
+                    </button>
+                )}
+            </div>
+
+            {/* Addresses Management Tab */}
+            {activeTab === 'addresses' && selectedRestaurant && (
+                <div>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        marginBottom: '2rem'
+                    }}>
+                        <button
+                            onClick={handleBackToList}
+                            style={{
+                                padding: '0.5rem 1rem',
+                                background: '#6b7280',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '0.5rem',
+                                fontSize: '0.875rem',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s'
+                            }}
+                        >
+                            ← {language === 'ar' ? 'العودة للقائمة' : 'Back to List'}
+                        </button>
+                        <h2 style={{
+                            fontSize: '1.5rem',
+                            fontWeight: '700',
+                            color: '#1f2937',
+                            margin: 0
+                        }}>
+                            {language === 'ar' ? 'إدارة عناوين' : 'Manage Addresses'}: {selectedRestaurant.name}
+                        </h2>
+                    </div>
+                    <RestaurantAddressManager 
+                        restaurantId={selectedRestaurant.id}
+                        onAddressesChange={() => {
+                            // يمكن إضافة أي منطق إضافي هنا عند تغيير العناوين
+                        }}
+                    />
+                </div>
+            )}
+
+            {/* Restaurants List Tab */}
+            {activeTab === 'list' && (
+                <>
+                {/* Header */}
+                <div style={{
                 background: 'rgba(255, 255, 255, 0.9)',
                 backdropFilter: 'blur(20px)',
                 borderRadius: '1rem',
@@ -301,21 +561,36 @@ const SellerRestaurants = () => {
                                 alignItems: 'center',
                                 gap: '0.75rem'
                             }}>
-                                <div style={{
-                                    width: '3rem',
-                                    height: '3rem',
-                                    background: restaurant.is_active 
-                                        ? 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
-                                        : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                                    borderRadius: '0.75rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontSize: '1.5rem',
-                                    color: 'white'
-                                }}>
-                                    🏪
-                                </div>
+                                                                 <div style={{
+                                     width: '3rem',
+                                     height: '3rem',
+                                     background: restaurant.logo 
+                                         ? 'transparent'
+                                         : (restaurant.is_active 
+                                             ? 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+                                             : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'),
+                                     borderRadius: '0.75rem',
+                                     display: 'flex',
+                                     alignItems: 'center',
+                                     justifyContent: 'center',
+                                     fontSize: '1.5rem',
+                                     color: 'white',
+                                     overflow: 'hidden'
+                                 }}>
+                                     {restaurant.logo ? (
+                                         <img 
+                                             src={`/storage/${restaurant.logo}`}
+                                             alt={language === 'ar' ? 'شعار المطعم' : 'Restaurant Logo'}
+                                             style={{
+                                                 width: '100%',
+                                                 height: '100%',
+                                                 objectFit: 'cover'
+                                             }}
+                                         />
+                                     ) : (
+                                         '🏪'
+                                     )}
+                                 </div>
                                 <div>
                                     <h3 style={{
                                         fontSize: '1.125rem',
@@ -415,23 +690,35 @@ const SellerRestaurants = () => {
                                         {restaurant.meals?.length || 0} {language === 'ar' ? 'وجبة' : 'meals'}
                                     </div>
                                 </div>
-                                <div>
-                                    <span style={{
-                                        color: 'rgb(107 114 128)',
-                                        fontWeight: '500'
-                                    }}>
-                                        💰 {language === 'ar' ? 'سعر التوصيل' : 'Delivery Price'}:
-                                    </span>
-                                    <div style={{
-                                        color: 'rgb(55 65 81)',
-                                        marginTop: '0.25rem'
-                                    }}>
-                                        {restaurant.delivery_price 
-                                            ? `${restaurant.delivery_price} ${language === 'ar' ? 'ريال' : 'OMR'}`
-                                            : (language === 'ar' ? 'مجاني' : 'Free')
-                                        }
-                                    </div>
-                                </div>
+                                                                 <div>
+                                     <span style={{
+                                         color: 'rgb(107 114 128)',
+                                         fontWeight: '500'
+                                     }}>
+                                         🖼️ {language === 'ar' ? 'الشعار' : 'Logo'}:
+                                     </span>
+                                     <div style={{
+                                         color: 'rgb(55 65 81)',
+                                         marginTop: '0.25rem'
+                                     }}>
+                                         {restaurant.logo ? (
+                                             <img 
+                                                 src={`/storage/${restaurant.logo}`}
+                                                 alt={language === 'ar' ? 'شعار المطعم' : 'Restaurant Logo'}
+                                                 style={{
+                                                     width: '40px',
+                                                     height: '40px',
+                                                     borderRadius: '8px',
+                                                     objectFit: 'cover'
+                                                 }}
+                                             />
+                                         ) : (
+                                             <span style={{ color: 'rgb(156 163 175)' }}>
+                                                 {language === 'ar' ? 'غير متوفر' : 'Not available'}
+                                             </span>
+                                         )}
+                                     </div>
+                                 </div>
                             </div>
                         </div>
 
@@ -499,6 +786,29 @@ const SellerRestaurants = () => {
                                     ? `❌ ${language === 'ar' ? 'إلغاء التفعيل' : 'Deactivate'}`
                                     : `✅ ${language === 'ar' ? 'تفعيل' : 'Activate'}`
                                 }
+                            </button>
+                            
+                            <button
+                                onClick={() => handleManageAddresses(restaurant)}
+                                style={{
+                                    padding: '0.5rem 1rem',
+                                    background: 'rgba(59, 130, 246, 0.1)',
+                                    color: 'rgb(59 130 246)',
+                                    border: '1px solid rgba(59, 130, 246, 0.2)',
+                                    borderRadius: '0.5rem',
+                                    fontSize: '0.75rem',
+                                    fontWeight: '500',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.background = 'rgba(59, 130, 246, 0.2)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.background = 'rgba(59, 130, 246, 0.1)';
+                                }}
+                            >
+                                🏠
                             </button>
                             
                             <button
@@ -892,28 +1202,58 @@ const SellerRestaurants = () => {
                                     }}>
                                         🗺️ {language === 'ar' ? 'المناطق' : 'Locations'}
                                     </label>
-                                    <select
-                                        multiple
-                                        value={formData.locations}
-                                        onChange={(e) => {
-                                            const selected = Array.from(e.target.selectedOptions, option => option.value);
-                                            setFormData({...formData, locations: selected});
-                                        }}
-                                        style={{
-                                            width: '100%',
-                                            padding: '0.75rem',
-                                            border: '1px solid rgba(0, 0, 0, 0.1)',
-                                            borderRadius: '0.5rem',
-                                            fontSize: '0.875rem',
-                                            minHeight: '100px'
-                                        }}
-                                    >
+                                    <div style={{
+                                        width: '100%',
+                                        padding: '0.75rem',
+                                        border: '1px solid rgba(0, 0, 0, 0.1)',
+                                        borderRadius: '0.5rem',
+                                        fontSize: '0.875rem',
+                                        minHeight: '100px',
+                                        backgroundColor: 'white'
+                                    }}>
                                         {locationOptions.map(option => (
-                                            <option key={option.value} value={option.value}>
-                                                {language === 'ar' ? option.labelAr : option.labelEn}
-                                            </option>
+                                            <label key={option.value} style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.5rem',
+                                                padding: '0.5rem',
+                                                cursor: 'pointer',
+                                                borderRadius: '0.25rem',
+                                                transition: 'background-color 0.2s'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.target.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.target.style.backgroundColor = 'transparent';
+                                            }}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    value={option.value}
+                                                    checked={formData.locations.includes(option.value)}
+                                                    onChange={(e) => {
+                                                        const isChecked = e.target.checked;
+                                                        const newLocations = isChecked
+                                                            ? [...formData.locations, option.value]
+                                                            : formData.locations.filter(loc => loc !== option.value);
+                                                        setFormData({...formData, locations: newLocations});
+                                                    }}
+                                                    style={{
+                                                        width: '1rem',
+                                                        height: '1rem',
+                                                        accentColor: 'rgb(59 130 246)'
+                                                    }}
+                                                />
+                                                <span style={{
+                                                    fontSize: '0.875rem',
+                                                    color: 'rgb(55 65 81)'
+                                                }}>
+                                                    {language === 'ar' ? option.labelAr : option.labelEn}
+                                                </span>
+                                            </label>
                                         ))}
-                                    </select>
+                                    </div>
                                 </div>
                                 <div>
                                     <label style={{
@@ -923,23 +1263,88 @@ const SellerRestaurants = () => {
                                         fontWeight: '500',
                                         color: 'rgb(55 65 81)'
                                     }}>
-                                        💰 {language === 'ar' ? 'سعر التوصيل' : 'Delivery Price'}
+                                        🖼️ {language === 'ar' ? 'شعار المطعم' : 'Restaurant Logo'}
                                     </label>
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        min="0"
-                                        value={formData.delivery_price}
-                                        onChange={(e) => setFormData({...formData, delivery_price: e.target.value})}
-                                        placeholder={language === 'ar' ? '0.00' : '0.00'}
-                                        style={{
-                                            width: '100%',
-                                            padding: '0.75rem',
-                                            border: '1px solid rgba(0, 0, 0, 0.1)',
-                                            borderRadius: '0.5rem',
-                                            fontSize: '0.875rem'
-                                        }}
-                                    />
+                                    <div style={{
+                                        width: '100%',
+                                        padding: '0.75rem',
+                                        border: '2px dashed rgba(0, 0, 0, 0.1)',
+                                        borderRadius: '0.5rem',
+                                        fontSize: '0.875rem',
+                                        backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                                        textAlign: 'center',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.borderColor = 'rgba(59, 130, 246, 0.5)';
+                                        e.target.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+                                        e.target.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
+                                    }}
+                                    >
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleFileChange}
+                                            style={{
+                                                display: 'none'
+                                            }}
+                                            id="logo-upload"
+                                        />
+                                        <label htmlFor="logo-upload" style={{
+                                            cursor: 'pointer',
+                                            display: 'block'
+                                        }}>
+                                            {formData.logo ? (
+                                                <div>
+                                                    <div style={{
+                                                        fontSize: '2rem',
+                                                        marginBottom: '0.5rem'
+                                                    }}>
+                                                        ✅
+                                                    </div>
+                                                    <div style={{
+                                                        color: 'rgb(34 197 94)',
+                                                        fontWeight: '500',
+                                                        marginBottom: '0.25rem'
+                                                    }}>
+                                                        {language === 'ar' ? 'تم اختيار الملف' : 'File Selected'}
+                                                    </div>
+                                                    <div style={{
+                                                        color: 'rgb(107 114 128)',
+                                                        fontSize: '0.75rem'
+                                                    }}>
+                                                        {formData.logo.name}
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div>
+                                                    <div style={{
+                                                        fontSize: '2rem',
+                                                        marginBottom: '0.5rem'
+                                                    }}>
+                                                        📁
+                                                    </div>
+                                                    <div style={{
+                                                        color: 'rgb(59 130 246)',
+                                                        fontWeight: '500',
+                                                        marginBottom: '0.25rem'
+                                                    }}>
+                                                        {language === 'ar' ? 'اختر شعار المطعم' : 'Choose Restaurant Logo'}
+                                                    </div>
+                                                    <div style={{
+                                                        color: 'rgb(107 114 128)',
+                                                        fontSize: '0.75rem'
+                                                    }}>
+                                                        {language === 'ar' ? 'PNG, JPG, JPEG حتى 5MB' : 'PNG, JPG, JPEG up to 5MB'}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
 
@@ -1030,6 +1435,21 @@ const SellerRestaurants = () => {
                     </div>
                 </div>
             )}
+                </>
+            )}
+
+            {/* Popup Component */}
+            <Popup
+                isOpen={popup.isOpen}
+                onClose={closePopup}
+                title={popup.title}
+                message={popup.message}
+                type={popup.type}
+                onConfirm={popup.onConfirm}
+                confirmText={language === 'ar' ? 'حسناً' : 'OK'}
+                showCancel={popup.type === 'warning'}
+                cancelText={language === 'ar' ? 'إلغاء' : 'Cancel'}
+            />
         </div>
     );
 };

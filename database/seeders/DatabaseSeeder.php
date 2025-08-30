@@ -525,6 +525,7 @@ class DatabaseSeeder extends Seeder
         // Call RestaurantSeeder for additional restaurant data
         $this->call([
             RestaurantSeeder::class,
+            RestaurantAddressSeeder::class,
         ]);
     }
 }

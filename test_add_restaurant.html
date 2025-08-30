@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار إضافة مطعم جديد</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .checkbox-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .checkbox-item input {
+            width: auto;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .login-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏪 اختبار إضافة مطعم جديد</h1>
+        
+        <!-- قسم تسجيل الدخول -->
+        <div class="login-section">
+            <h3>🔐 تسجيل الدخول أولاً</h3>
+            <div class="form-group">
+                <label>البريد الإلكتروني:</label>
+                <input type="email" id="loginEmail" value="seller@test.com">
+            </div>
+            <div class="form-group">
+                <label>كلمة المرور:</label>
+                <input type="password" id="loginPassword" value="password">
+            </div>
+            <button onclick="login()">تسجيل الدخول</button>
+            <div id="loginResult" class="result"></div>
+        </div>
+
+        <!-- نموذج إضافة المطعم -->
+        <form id="restaurantForm">
+            <h3>➕ إضافة مطعم جديد</h3>
+            
+            <div class="form-group">
+                <label>اسم المطعم (عربي) *</label>
+                <input type="text" id="name_ar" required value="مطعم الاختبار">
+            </div>
+            
+            <div class="form-group">
+                <label>اسم المطعم (إنجليزي) *</label>
+                <input type="text" id="name_en" required value="Test Restaurant">
+            </div>
+            
+            <div class="form-group">
+                <label>الوصف (عربي)</label>
+                <textarea id="description_ar" rows="3">مطعم رائع يقدم أشهى الأطباق</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>الوصف (إنجليزي)</label>
+                <textarea id="description_en" rows="3">Amazing restaurant serving delicious dishes</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>الهاتف</label>
+                <input type="tel" id="phone" value="+968 1234 5678">
+            </div>
+            
+            <div class="form-group">
+                <label>البريد الإلكتروني</label>
+                <input type="email" id="email" value="restaurant@test.com">
+            </div>
+            
+            <div class="form-group">
+                <label>العنوان (عربي)</label>
+                <input type="text" id="address_ar" value="شارع السلطان قابوس، بوشر">
+            </div>
+            
+            <div class="form-group">
+                <label>العنوان (إنجليزي)</label>
+                <input type="text" id="address_en" value="Sultan Qaboos Street, Bosher">
+            </div>
+            
+            <div class="form-group">
+                <label>المناطق</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="location_bosher" value="bosher" checked>
+                        <label for="location_bosher">بوشر</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="location_khoudh" value="khoudh">
+                        <label for="location_khoudh">الخوض</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="location_maabilah" value="maabilah">
+                        <label for="location_maabilah">معبيلة</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>شعار المطعم</label>
+                <input type="file" id="logo" accept="image/*">
+            </div>
+            
+            <div class="form-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="is_active" checked>
+                    <label for="is_active">مطعم نشط</label>
+                </div>
+            </div>
+            
+            <button type="submit">إضافة المطعم</button>
+        </form>
+        
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        let token = localStorage.getItem('token');
+        
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const resultDiv = document.getElementById('loginResult');
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    token = data.token;
+                    localStorage.setItem('token', token);
+                    resultDiv.className = 'result success';
+                    resultDiv.style.display = 'block';
+                    resultDiv.textContent = '✅ تم تسجيل الدخول بنجاح!';
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.style.display = 'block';
+                    resultDiv.textContent = `❌ خطأ: ${data.message || 'فشل تسجيل الدخول'}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = `❌ خطأ في الاتصال: ${error.message}`;
+            }
+        }
+        
+        document.getElementById('restaurantForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!token) {
+                alert('يرجى تسجيل الدخول أولاً');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                const formData = new FormData();
+                
+                // إضافة البيانات الأساسية
+                formData.append('name_ar', document.getElementById('name_ar').value);
+                formData.append('name_en', document.getElementById('name_en').value);
+                formData.append('description_ar', document.getElementById('description_ar').value);
+                formData.append('description_en', document.getElementById('description_en').value);
+                formData.append('phone', document.getElementById('phone').value);
+                formData.append('email', document.getElementById('email').value);
+                formData.append('address_ar', document.getElementById('address_ar').value);
+                formData.append('address_en', document.getElementById('address_en').value);
+                formData.append('is_active', document.getElementById('is_active').checked);
+                
+                // إضافة المناطق المحددة
+                const locations = [];
+                if (document.getElementById('location_bosher').checked) locations.push('bosher');
+                if (document.getElementById('location_khoudh').checked) locations.push('khoudh');
+                if (document.getElementById('location_maabilah').checked) locations.push('maabilah');
+                
+                locations.forEach(location => {
+                    formData.append('locations[]', location);
+                });
+                
+                // إضافة الملف إذا تم اختياره
+                const logoFile = document.getElementById('logo').files[0];
+                if (logoFile) {
+                    formData.append('logo', logoFile);
+                }
+                
+                const response = await fetch('/api/seller/restaurants', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = `
+                        <h4>✅ تم إضافة المطعم بنجاح!</h4>
+                        <p><strong>الرسالة:</strong> ${data.message}</p>
+                        <p><strong>معرف المطعم:</strong> ${data.data.id}</p>
+                        <p><strong>اسم المطعم:</strong> ${data.data.name_ar}</p>
+                        <p><strong>الحالة:</strong> ${data.data.is_active ? 'نشط' : 'غير نشط'}</p>
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.style.display = 'block';
+                    let errorMessage = data.message || 'حدث خطأ غير معروف';
+                    
+                    if (data.errors) {
+                        errorMessage += '<br><br><strong>تفاصيل الأخطاء:</strong><ul>';
+                        Object.entries(data.errors).forEach(([field, errors]) => {
+                            errors.forEach(error => {
+                                errorMessage += `<li>${field}: ${error}</li>`;
+                            });
+                        });
+                        errorMessage += '</ul>';
+                    }
+                    
+                    resultDiv.innerHTML = `<h4>❌ فشل في إضافة المطعم</h4><p>${errorMessage}</p>`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `<h4>❌ خطأ في الاتصال</h4><p>${error.message}</p>`;
+            }
+        });
+        
+        // التحقق من وجود token عند تحميل الصفحة
+        if (token) {
+            document.getElementById('loginResult').className = 'result success';
+            document.getElementById('loginResult').style.display = 'block';
+            document.getElementById('loginResult').textContent = '✅ تم تسجيل الدخول مسبقاً';
+        }
+    </script>
+</body>
+</html>

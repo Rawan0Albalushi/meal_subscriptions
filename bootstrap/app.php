@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\EnsureRole::class,
             'seller' => \App\Http\Middleware\SellerMiddleware::class,
+            'log.auth' => \App\Http\Middleware\LogAuthMiddleware::class,
         ]);
         
         // Add global middleware for setting locale

@@ -21,14 +21,12 @@ class Restaurant extends Model
         'address_ar',
         'address_en',
         'locations',
-        'delivery_price',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'locations' => 'array',
-        'delivery_price' => 'decimal:2',
     ];
 
     protected $appends = ['name', 'description', 'address', 'locations_text'];
@@ -51,6 +49,16 @@ class Restaurant extends Model
     public function subscriptionTypes()
     {
         return $this->hasMany(SubscriptionType::class);
+    }
+
+    public function addresses()
+    {
+        return $this->hasMany(RestaurantAddress::class);
+    }
+
+    public function primaryAddress()
+    {
+        return $this->hasOne(RestaurantAddress::class)->where('is_primary', true);
     }
 
     public function getNameAttribute()
