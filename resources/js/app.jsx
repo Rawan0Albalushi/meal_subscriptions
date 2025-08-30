@@ -24,6 +24,9 @@ function AppRoutes() {
     const { isAuthenticated, user } = useAuth();
     const location = useLocation();
 
+    // Check if current path is seller dashboard
+    const isSellerPath = location.pathname.startsWith('/seller');
+
     return (
         <>
             {/* Global Background Wrapper */}
@@ -54,8 +57,8 @@ function AppRoutes() {
                 zIndex: -1
             }}></div>
             
-            {/* Show Navbar on all pages */}
-            <Navbar />
+            {/* Show Navbar on all pages except seller dashboard */}
+            {!isSellerPath && <Navbar />}
             <main style={{ 
                 width: '100%', 
                 padding: (location.pathname === '/' && !isAuthenticated) ? '0' : '1rem',
