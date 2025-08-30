@@ -263,8 +263,8 @@ const SellerLayout = () => {
                                         textDecoration: 'none',
                                         transition: 'all 0.2s ease',
                                         background: isActive(item.path) 
-                                            ? 'rgba(79, 70, 229, 0.1)' 
-                                            : 'rgba(255, 255, 255, 0.8)',
+                                            ? 'rgba(79, 70, 229, 0.08)' 
+                                            : 'rgba(255, 255, 255, 0.6)',
                                         color: isActive(item.path) ? 'rgb(79 70 229)' : 'rgb(55 65 81)',
                                         border: isActive(item.path) 
                                             ? '2px solid rgba(79, 70, 229, 0.3)' 
@@ -278,15 +278,15 @@ const SellerLayout = () => {
                                     }}
                                     onMouseEnter={(e) => {
                                         if (!isActive(item.path)) {
-                                            e.target.style.background = 'rgba(255, 255, 255, 0.95)';
-                                            e.target.style.borderColor = 'rgba(79, 70, 229, 0.15)';
+                                            e.target.style.background = 'rgba(255, 255, 255, 0.7)';
+                                            e.target.style.borderColor = 'rgba(79, 70, 229, 0.2)';
                                             e.target.style.transform = 'translateY(-1px)';
-                                            e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
+                                            e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
                                         }
                                     }}
                                     onMouseLeave={(e) => {
                                         if (!isActive(item.path)) {
-                                            e.target.style.background = 'rgba(255, 255, 255, 0.8)';
+                                            e.target.style.background = 'rgba(255, 255, 255, 0.6)';
                                             e.target.style.borderColor = 'rgba(0, 0, 0, 0.08)';
                                             e.target.style.transform = 'translateY(0)';
                                             e.target.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.06)';
@@ -311,8 +311,8 @@ const SellerLayout = () => {
                                         width: window.innerWidth <= 768 ? '2.5rem' : '2.25rem',
                                         height: window.innerWidth <= 768 ? '2.5rem' : '2.25rem',
                                         background: isActive(item.path)
-                                            ? 'rgba(79, 70, 229, 0.15)'
-                                            : 'rgba(79, 70, 229, 0.08)',
+                                            ? 'rgba(79, 70, 229, 0.12)'
+                                            : 'rgba(79, 70, 229, 0.06)',
                                         borderRadius: window.innerWidth <= 768 ? '0.5rem' : '0.5rem',
                                         display: 'flex',
                                         alignItems: 'center',
@@ -329,7 +329,8 @@ const SellerLayout = () => {
                                         flex: 1,
                                         minWidth: 0,
                                         paddingRight: window.innerWidth <= 768 ? '0.5rem' : '1rem',
-                                        paddingTop: window.innerWidth <= 768 ? '0.25rem' : '0'
+                                        paddingTop: window.innerWidth <= 768 ? '0.25rem' : '0',
+                                        background: 'transparent'
                                     }}>
                                         <div style={{
                                             fontSize: window.innerWidth <= 768 ? '0.875rem' : '0.875rem',
@@ -340,7 +341,9 @@ const SellerLayout = () => {
                                             overflow: 'hidden',
                                             textOverflow: 'ellipsis',
                                             textAlign: window.innerWidth <= 768 ? 'center' : (dir === 'rtl' ? 'right' : 'left'),
-                                            maxWidth: '100%'
+                                            maxWidth: '100%',
+                                            background: 'transparent',
+                                            color: isActive(item.path) ? 'rgb(79 70 229)' : 'rgb(55 65 81)'
                                         }}>
                                             {item.label}
                                         </div>
@@ -352,7 +355,9 @@ const SellerLayout = () => {
                                             overflow: 'hidden',
                                             textOverflow: 'ellipsis',
                                             textAlign: window.innerWidth <= 768 ? 'center' : (dir === 'rtl' ? 'right' : 'left'),
-                                            maxWidth: '100%'
+                                            maxWidth: '100%',
+                                            background: 'transparent',
+                                            color: isActive(item.path) ? 'rgba(79, 70, 229, 0.8)' : 'rgba(55, 65, 81, 0.65)'
                                         }}>
                                             {item.description}
                                         </div>
