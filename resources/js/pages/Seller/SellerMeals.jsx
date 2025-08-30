@@ -424,30 +424,84 @@ const SellerMeals = () => {
                                 marginBottom: '1rem'
                             }}>
                                 {meal.image ? (
-                                    <img 
-                                        src={`/storage/${meal.image}`}
-                                        alt={language === 'ar' ? meal.name_ar : meal.name_en}
-                                        style={{
-                                            width: '3rem',
-                                            height: '3rem',
-                                            borderRadius: '0.75rem',
-                                            objectFit: 'cover',
-                                            border: '2px solid rgba(0, 0, 0, 0.1)'
-                                        }}
-                                    />
+                                    <div style={{
+                                        width: '8rem',
+                                        height: '6rem',
+                                        borderRadius: '16px',
+                                        overflow: 'hidden',
+                                        boxShadow: '0 4px 15px rgba(79, 70, 229, 0.2)',
+                                        border: '2px solid rgba(79, 70, 229, 0.1)',
+                                        transition: 'all 0.3s ease',
+                                        position: 'relative'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.transform = 'scale(1.05)';
+                                        e.target.style.boxShadow = '0 6px 20px rgba(79, 70, 229, 0.3)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.transform = 'scale(1)';
+                                        e.target.style.boxShadow = '0 4px 15px rgba(79, 70, 229, 0.2)';
+                                    }}>
+                                        <img 
+                                            src={`/storage/${meal.image}`}
+                                            alt={language === 'ar' ? meal.name_ar : meal.name_en}
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                                objectFit: 'contain',
+                                                transition: 'transform 0.3s ease',
+                                                backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                                            }}
+                                            onLoad={(e) => {
+                                                e.target.style.transform = 'scale(1)';
+                                            }}
+                                            onError={(e) => {
+                                                e.target.style.display = 'none';
+                                                e.target.nextSibling.style.display = 'flex';
+                                            }}
+                                        />
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            right: 0,
+                                            bottom: 0,
+                                            background: meal.is_available 
+                                                ? 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+                                                : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                                            display: 'none',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontSize: '2.5rem',
+                                            color: 'white'
+                                        }}>
+                                            🍽️
+                                        </div>
+                                    </div>
                                 ) : (
                                     <div style={{
-                                        width: '3rem',
-                                        height: '3rem',
+                                        width: '8rem',
+                                        height: '6rem',
                                         background: meal.is_available 
                                             ? 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
                                             : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                                        borderRadius: '0.75rem',
+                                        borderRadius: '16px',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        fontSize: '1.5rem',
-                                        color: 'white'
+                                        fontSize: '2.5rem',
+                                        color: 'white',
+                                        boxShadow: '0 4px 15px rgba(79, 70, 229, 0.2)',
+                                        border: '2px solid rgba(79, 70, 229, 0.1)',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.transform = 'scale(1.05)';
+                                        e.target.style.boxShadow = '0 6px 20px rgba(79, 70, 229, 0.3)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.transform = 'scale(1)';
+                                        e.target.style.boxShadow = '0 4px 15px rgba(79, 70, 229, 0.2)';
                                     }}>
                                         🍽️
                                     </div>

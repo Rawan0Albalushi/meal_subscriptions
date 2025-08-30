@@ -741,21 +741,90 @@ const Restaurants = () => {
                 <div style={{ 
                   textAlign: 'center', 
                   marginBottom: '1rem',
-                  height: '80px',
+                  height: '180px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center'
                 }}>
-                  <div style={{ 
-                    fontSize: '3rem',
-                    width: '60px',
-                    height: '60px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    {restaurant.logo || '🍽️'}
-                  </div>
+                  {restaurant.logo ? (
+                    <div style={{
+                      width: '200px',
+                      height: '160px',
+                      borderRadius: '16px',
+                      overflow: 'hidden',
+                      boxShadow: '0 8px 25px rgba(79, 70, 229, 0.2)',
+                      border: '2px solid rgba(79, 70, 229, 0.1)',
+                      transition: 'all 0.3s ease',
+                      position: 'relative'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = 'scale(1.05)';
+                      e.target.style.boxShadow = '0 12px 35px rgba(79, 70, 229, 0.3)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = 'scale(1)';
+                      e.target.style.boxShadow = '0 8px 25px rgba(79, 70, 229, 0.2)';
+                    }}>
+                      <img 
+                        src={`/storage/${restaurant.logo}`}
+                        alt={language === 'ar' ? restaurant.name_ar : restaurant.name_en}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'contain',
+                          transition: 'transform 0.3s ease',
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                        }}
+                        onLoad={(e) => {
+                          e.target.style.transform = 'scale(1)';
+                        }}
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                      <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                        display: 'none',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '3rem',
+                        color: 'white'
+                      }}>
+                        🍽️
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{
+                      width: '200px',
+                      height: '160px',
+                      background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                      borderRadius: '16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '3rem',
+                      color: 'white',
+                      boxShadow: '0 8px 25px rgba(79, 70, 229, 0.2)',
+                      border: '2px solid rgba(79, 70, 229, 0.1)',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = 'scale(1.05)';
+                      e.target.style.boxShadow = '0 12px 35px rgba(79, 70, 229, 0.3)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = 'scale(1)';
+                      e.target.style.boxShadow = '0 8px 25px rgba(79, 70, 229, 0.2)';
+                    }}>
+                      🍽️
+                    </div>
+                  )}
                 </div>
 
                 {/* Title Section - Fixed Height */}

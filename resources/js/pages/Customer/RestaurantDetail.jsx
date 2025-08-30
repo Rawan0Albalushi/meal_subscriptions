@@ -1028,115 +1028,206 @@ const RestaurantDetail = () => {
           background: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(20px)',
           borderRadius: 'clamp(0.75rem, 3vw, 1.25rem)',
-          padding: 'clamp(1rem, 4vw, 1.5rem)',
-          marginBottom: 'clamp(1rem, 4vw, 1.5rem)',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+          padding: 'clamp(0.75rem, 2vw, 1rem)',
+          marginBottom: 'clamp(0.75rem, 3vw, 1rem)',
+          boxShadow: '0 15px 30px rgba(0, 0, 0, 0.1)',
           border: '1px solid rgba(229, 231, 235, 0.5)',
           position: 'relative',
           overflow: 'hidden',
           '@media (max-width: 768px)': {
-            padding: '1rem',
-            marginBottom: '1rem',
-            borderRadius: '1rem'
+            padding: '0.75rem',
+            marginBottom: '0.75rem',
+            borderRadius: '0.75rem'
           }
         }}>
+
+          {/* Enhanced Background Pattern */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: `
+              radial-gradient(circle at 20% 20%, rgba(79, 70, 229, 0.03) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+              radial-gradient(circle at 40% 60%, rgba(59, 130, 246, 0.02) 0%, transparent 50%)
+            `,
+            zIndex: 0
+          }}></div>
 
           <div style={{ 
             display: 'flex', 
             flexDirection: 'column',
             alignItems: 'center',
             textAlign: 'center',
-            gap: 'clamp(1rem, 4vw, 1.5rem)', 
-            marginBottom: 'clamp(1rem, 4vw, 1.5rem)' 
+            gap: 'clamp(0.75rem, 2vw, 1rem)', 
+            marginBottom: 'clamp(0.25rem, 1vw, 0.5rem)',
+            position: 'relative',
+            zIndex: 1
           }}>
-            <div style={{ 
-              fontSize: 'clamp(1.5rem, 6vw, 2.5rem)',
-              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
-              background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
-              borderRadius: '50%',
-              width: 'clamp(2.5rem, 8vw, 4rem)',
-              height: 'clamp(2.5rem, 8vw, 4rem)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: 'clamp(0.5rem, 2vw, 1rem)',
-              color: 'white',
-              boxShadow: '0 6px 20px rgba(79, 70, 229, 0.25)'
-            }}>
-              {restaurant.logo || '🍽️'}
-            </div>
-            <div style={{ width: '100%' }}>
-                              <h1 style={{ 
-                  fontSize: 'clamp(1rem, 4vw, 1.75rem)', 
-                  fontWeight: 'bold', 
-                  marginBottom: 'clamp(0.25rem, 2vw, 0.5rem)',
-                  color: 'rgb(79 70 229)'
-                }}>
-                {restaurant.name || (language === 'ar' ? restaurant.name_ar : restaurant.name_en)}
-              </h1>
-                              <p style={{ 
-                  fontSize: 'clamp(0.625rem, 2.5vw, 0.875rem)', 
-                  color: 'rgb(75 85 99)', 
-                  marginBottom: 'clamp(0.5rem, 2vw, 0.75rem)',
-                  lineHeight: '1.5',
-                  padding: '0 clamp(0.5rem, 2vw, 1rem)'
-                }}>
-                {restaurant.description || (language === 'ar' ? restaurant.description_ar : restaurant.description_en)}
-              </p>
-                              <div style={{ 
-                  display: 'flex', 
-                  flexDirection: 'column',
-                  gap: 'clamp(0.25rem, 2vw, 0.5rem)',
+            
+            {/* Enhanced Restaurant Logo Section */}
+            <div style={{
+              width: '100%',
+              maxWidth: 'clamp(8rem, 20vw, 12rem)',
+              height: 'clamp(4rem, 10vw, 6rem)',
+              borderRadius: 'clamp(0.75rem, 2vw, 1rem)',
+              overflow: 'hidden',
+              boxShadow: '0 8px 20px rgba(79, 70, 229, 0.15)',
+              border: '2px solid rgba(79, 70, 229, 0.08)',
+              transition: 'all 0.3s ease',
+              position: 'relative',
+              background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.02), rgba(139, 92, 246, 0.02))'
+            }}
+                          onMouseEnter={(e) => {
+                e.target.style.transform = 'scale(1.01)';
+                e.target.style.boxShadow = '0 12px 25px rgba(79, 70, 229, 0.25)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'scale(1)';
+                e.target.style.boxShadow = '0 8px 20px rgba(79, 70, 229, 0.15)';
+              }}>
+              {restaurant.logo ? (
+                <>
+                  <img 
+                    src={`/storage/${restaurant.logo}`}
+                    alt={language === 'ar' ? restaurant.name_ar : restaurant.name_en}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                      transition: 'transform 0.3s ease',
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      padding: '0.5rem'
+                    }}
+                    onLoad={(e) => {
+                      e.target.style.transform = 'scale(1)';
+                    }}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                    display: 'none',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 'clamp(1.25rem, 3vw, 1.5rem)',
+                    color: 'white'
+                  }}>
+                    🍽️
+                  </div>
+                </>
+              ) : (
+                <div style={{
+                  width: '100%',
+                  height: '100%',
+                  background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                  display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  flexWrap: 'wrap'
+                  fontSize: 'clamp(1.25rem, 3vw, 1.5rem)',
+                  color: 'white'
                 }}>
-                  <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '0.25rem', 
-                    fontSize: 'clamp(0.5rem, 2.5vw, 0.75rem)', 
-                    color: 'rgb(75 85 99)',
-                    padding: 'clamp(0.25rem, 2vw, 0.5rem)',
-                    background: 'rgba(255, 255, 255, 0.5)',
-                    borderRadius: '0.5rem',
-                    border: '1px solid rgba(229, 231, 235, 0.3)',
-                    textAlign: 'center',
-                    wordBreak: 'break-word'
-                  }}>
-                    📍 {restaurant.address || (language === 'ar' ? restaurant.address_ar : restaurant.address_en)}
-                  </div>
-                  <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '0.25rem', 
-                    fontSize: 'clamp(0.5rem, 2.5vw, 0.75rem)', 
-                    color: 'rgb(75 85 99)',
-                    padding: 'clamp(0.25rem, 2vw, 0.5rem)',
-                    background: 'rgba(255, 255, 255, 0.5)',
-                    borderRadius: '0.5rem',
-                    border: '1px solid rgba(229, 231, 235, 0.3)',
-                    textAlign: 'center',
-                    direction: 'ltr'
-                  }}>
-                    📞 {restaurant.phone}
-                  </div>
-                  <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '0.25rem', 
-                    fontSize: 'clamp(0.5rem, 2.5vw, 0.75rem)', 
-                    color: 'rgb(75 85 99)',
-                    padding: 'clamp(0.25rem, 2vw, 0.5rem)',
-                    background: 'rgba(255, 255, 255, 0.5)',
-                    borderRadius: '0.5rem',
-                    border: '1px solid rgba(229, 231, 235, 0.3)',
-                    textAlign: 'center',
-                    wordBreak: 'break-word'
-                  }}>
-                    ✉️ {restaurant.email}
-                  </div>
+                  🍽️
                 </div>
+              )}
+            </div>
+
+            {/* Enhanced Restaurant Info Section */}
+            <div style={{ 
+              width: '100%',
+              maxWidth: 'clamp(12rem, 25vw, 16rem)'
+            }}>
+              <h1 style={{ 
+                fontSize: 'clamp(0.875rem, 3vw, 1.25rem)', 
+                fontWeight: 'bold', 
+                marginBottom: 'clamp(0.25rem, 1vw, 0.375rem)',
+                color: 'rgb(79 70 229)',
+                textShadow: '0 1px 2px rgba(79, 70, 229, 0.1)'
+              }}>
+                {restaurant.name || (language === 'ar' ? restaurant.name_ar : restaurant.name_en)}
+              </h1>
+              
+              <p style={{ 
+                fontSize: 'clamp(0.625rem, 2vw, 0.75rem)', 
+                color: 'rgb(75 85 99)', 
+                marginBottom: 'clamp(0.5rem, 1.5vw, 0.75rem)',
+                lineHeight: '1.4',
+                padding: '0 clamp(0.25rem, 1.5vw, 0.5rem)'
+              }}>
+                {restaurant.description || (language === 'ar' ? restaurant.description_ar : restaurant.description_en)}
+              </p>
+              
+              {/* Enhanced Contact Info Grid */}
+              <div style={{ 
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                gap: 'clamp(0.375rem, 1vw, 0.5rem)',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  gap: '0.25rem', 
+                  fontSize: 'clamp(0.5rem, 1.5vw, 0.625rem)', 
+                  color: 'rgb(75 85 99)',
+                  padding: 'clamp(0.25rem, 1vw, 0.375rem)',
+                  background: 'rgba(255, 255, 255, 0.5)',
+                  borderRadius: 'clamp(0.25rem, 1vw, 0.375rem)',
+                  border: '1px solid rgba(229, 231, 235, 0.3)',
+                  textAlign: 'center',
+                  wordBreak: 'break-word',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-1px)';
+                  e.target.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.05)';
+                }}>
+                  📍 {restaurant.address || (language === 'ar' ? restaurant.address_ar : restaurant.address_en)}
+                </div>
+                
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  gap: '0.25rem', 
+                  fontSize: 'clamp(0.5rem, 1.5vw, 0.625rem)', 
+                  color: 'rgb(75 85 99)',
+                  padding: 'clamp(0.25rem, 1vw, 0.375rem)',
+                  background: 'rgba(255, 255, 255, 0.5)',
+                  borderRadius: 'clamp(0.25rem, 1vw, 0.375rem)',
+                  border: '1px solid rgba(229, 231, 235, 0.3)',
+                  textAlign: 'center',
+                  direction: 'ltr',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-1px)';
+                  e.target.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.05)';
+                }}>
+                  📞 {restaurant.phone}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -2189,12 +2280,12 @@ const RestaurantDetail = () => {
                       {filteredMeals.map((meal) => {
                         const isSelected = getSelectedMealForDay(day.key)?.id === meal.id;
                         return (
-                                                    <div key={meal.id} className="meal-card" style={{
+                          <div key={meal.id} className="meal-card" style={{
                             background: isSelected 
                               ? 'rgba(240, 253, 244, 0.95)' 
                               : 'rgba(255, 255, 255, 0.95)',
                             borderRadius: 'clamp(0.75rem, 3vw, 1.25rem)',
-                            padding: 'clamp(1.25rem, 4vw, 1.75rem)',
+                            padding: 0,
                             boxShadow: isSelected 
                               ? '0 15px 35px rgba(16, 185, 129, 0.2)' 
                               : '0 8px 25px rgba(0, 0, 0, 0.12)',
@@ -2206,8 +2297,11 @@ const RestaurantDetail = () => {
                             position: 'relative',
                             overflow: 'hidden',
                             backdropFilter: 'blur(20px)',
+                            height: 'clamp(280px, 40vw, 320px)',
+                            display: 'flex',
+                            flexDirection: 'column',
                             '@media (max-width: 768px)': {
-                              padding: '1rem',
+                              height: '280px',
                               borderRadius: '1rem'
                             }
                           }}
@@ -2228,11 +2322,13 @@ const RestaurantDetail = () => {
                                 e.target.style.background = 'rgba(255, 255, 255, 0.95)';
                               }
                             }}>
+                            
+                            {/* Selection Indicator */}
                             {isSelected && (
                               <div style={{
                                 position: 'absolute',
-                                top: '1rem',
-                                right: '1rem',
+                                top: '0.75rem',
+                                right: '0.75rem',
                                 background: '#10b981',
                                 color: 'white',
                                 borderRadius: '50%',
@@ -2244,7 +2340,8 @@ const RestaurantDetail = () => {
                                 fontSize: '1rem',
                                 fontWeight: 'bold',
                                 boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
-                                animation: 'pulse 2s infinite'
+                                animation: 'pulse 2s infinite',
+                                zIndex: 10
                               }}>
                                 ✓
                               </div>
@@ -2253,8 +2350,8 @@ const RestaurantDetail = () => {
                             {!isSelected && (
                               <div style={{
                                 position: 'absolute',
-                                top: '1rem',
-                                right: '1rem',
+                                top: '0.75rem',
+                                right: '0.75rem',
                                 background: 'rgba(79, 70, 229, 0.1)',
                                 color: 'rgb(79, 70, 229)',
                                 borderRadius: '50%',
@@ -2266,80 +2363,139 @@ const RestaurantDetail = () => {
                                 fontSize: '1rem',
                                 fontWeight: 'bold',
                                 border: '2px solid rgba(79, 70, 229, 0.3)',
-                                animation: 'bounce 2s infinite'
+                                animation: 'bounce 2s infinite',
+                                zIndex: 10
                               }}>
                                 👆
                               </div>
                             )}
                             
-                            <div className="meal-icon" style={{ 
-                              fontSize: 'clamp(2rem, 6vw, 3rem)', 
-                              marginBottom: 'clamp(0.5rem, 2vw, 1rem)',
-                              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))',
-                              background: isSelected 
-                                ? 'rgba(16, 185, 129, 0.1)'
-                                : 'rgba(79, 70, 229, 0.05)',
-                              borderRadius: '50%',
-                              width: 'clamp(3.5rem, 10vw, 5rem)',
-                              height: 'clamp(3.5rem, 10vw, 5rem)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              margin: '0 auto clamp(0.5rem, 2vw, 1rem) auto',
-                              border: isSelected 
-                                ? '3px solid rgba(16, 185, 129, 0.3)'
-                                : '2px solid rgba(79, 70, 229, 0.2)',
-                              transition: 'all 0.3s ease'
+                            {/* Meal Image - Full Width */}
+                            <div style={{
+                              width: '100%',
+                              height: '70%',
+                              position: 'relative',
+                              overflow: 'hidden',
+                              background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(139, 92, 246, 0.05))'
                             }}>
-                              🍽️
+                              {meal.image ? (
+                                <>
+                                  <img 
+                                    src={`/storage/${meal.image}`}
+                                    alt={language === 'ar' ? meal.name_ar : meal.name_en}
+                                    style={{
+                                      width: '100%',
+                                      height: '100%',
+                                      objectFit: 'cover',
+                                      transition: 'transform 0.4s ease'
+                                    }}
+                                    onLoad={(e) => {
+                                      e.target.style.transform = 'scale(1)';
+                                    }}
+                                    onError={(e) => {
+                                      e.target.style.display = 'none';
+                                      e.target.nextSibling.style.display = 'flex';
+                                    }}
+                                  />
+                                  <div style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                                    display: 'none',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: 'clamp(2rem, 6vw, 3rem)',
+                                    color: 'white'
+                                  }}>
+                                    🍽️
+                                  </div>
+                                </>
+                              ) : (
+                                <div style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  fontSize: 'clamp(2rem, 6vw, 3rem)',
+                                  color: 'white'
+                                }}>
+                                  🍽️
+                                </div>
+                              )}
                             </div>
-                                                          <h4 className="meal-title" style={{ 
-                                fontSize: 'clamp(0.875rem, 3vw, 1rem)', 
-                                fontWeight: '600', 
-                                marginBottom: 'clamp(0.25rem, 2vw, 0.5rem)',
-                                color: 'rgb(79 70 229)',
-                                textAlign: 'center'
-                              }}>
-                                {language === 'ar' ? meal.name_ar : meal.name_en}
-                              </h4>
-                              <p className="meal-description" style={{ 
-                                fontSize: 'clamp(0.625rem, 2.5vw, 0.75rem)', 
-                                color: 'rgb(75 85 99)', 
-                                marginBottom: 'clamp(0.75rem, 3vw, 1rem)',
-                                lineHeight: '1.4',
-                                textAlign: 'center',
-                                minHeight: 'clamp(2rem, 6vw, 2.5rem)'
-                              }}>
-                                {language === 'ar' ? meal.description_ar : meal.description_en || t('noDescriptionAvailable')}
-                              </p>
-                            
-                            <button 
-                              style={{
-                                width: '100%',
-                                padding: 'clamp(0.5rem, 3vw, 0.75rem)',
-                                borderRadius: 'clamp(0.25rem, 2vw, 0.5rem)',
-                                background: isSelected 
-                                  ? 'linear-gradient(135deg, #10b981, #059669)' 
-                                  : 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
-                                color: 'white',
-                                border: 'none',
-                                fontSize: 'clamp(0.75rem, 3vw, 0.875rem)',
-                                fontWeight: '600',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s ease',
-                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                              }}
-                              onMouseEnter={(e) => {
-                                e.target.style.transform = 'translateY(-1px)';
-                                e.target.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.15)';
-                              }}
-                              onMouseLeave={(e) => {
-                                e.target.style.transform = 'translateY(0)';
-                                e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
-                              }}
-                            >
-                              {isSelected ? t('selected') : t('selectThisMeal')}
-                            </button>
+
+                            {/* Meal Info Section */}
+                            <div style={{
+                              flex: 1,
+                              padding: 'clamp(0.75rem, 2vw, 1rem)',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: 'space-between',
+                              background: 'rgba(255, 255, 255, 0.95)',
+                              backdropFilter: 'blur(10px)'
+                            }}>
+                              <div>
+                                <h4 className="meal-title" style={{ 
+                                  fontSize: 'clamp(0.875rem, 3vw, 1rem)', 
+                                  fontWeight: '600', 
+                                  marginBottom: 'clamp(0.25rem, 1vw, 0.375rem)',
+                                  color: 'rgb(79 70 229)',
+                                  textAlign: 'center',
+                                  lineHeight: '1.3'
+                                }}>
+                                  {language === 'ar' ? meal.name_ar : meal.name_en}
+                                </h4>
+                                
+                                <p className="meal-description" style={{ 
+                                  fontSize: 'clamp(0.625rem, 2vw, 0.75rem)', 
+                                  color: 'rgb(75 85 99)', 
+                                  marginBottom: 'clamp(0.5rem, 2vw, 0.75rem)',
+                                  lineHeight: '1.4',
+                                  textAlign: 'center',
+                                  display: '-webkit-box',
+                                  WebkitLineClamp: 2,
+                                  WebkitBoxOrient: 'vertical',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis'
+                                }}>
+                                  {language === 'ar' ? meal.description_ar : meal.description_en || t('noDescriptionAvailable')}
+                                </p>
+                              </div>
+                              
+                              <button 
+                                style={{
+                                  width: '100%',
+                                  padding: 'clamp(0.5rem, 2vw, 0.75rem)',
+                                  borderRadius: 'clamp(0.375rem, 1.5vw, 0.5rem)',
+                                  background: isSelected 
+                                    ? 'linear-gradient(135deg, #10b981, #059669)' 
+                                    : 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                                  color: 'white',
+                                  border: 'none',
+                                  fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
+                                  fontWeight: '600',
+                                  cursor: 'pointer',
+                                  transition: 'all 0.2s ease',
+                                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                                  marginTop: 'auto'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.transform = 'translateY(-1px)';
+                                  e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.transform = 'translateY(0)';
+                                  e.target.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+                                }}
+                              >
+                                {isSelected ? t('selected') : t('selectThisMeal')}
+                              </button>
+                            </div>
                           </div>
                         );
                       })}

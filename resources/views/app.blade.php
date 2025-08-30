@@ -10,7 +10,7 @@
     <title>اشتراكات الوجبات</title>
     <script>
         // Configure Vite for local network access
-        window.__VITE_DEV_SERVER_URL__ = 'http://192.168.1.21:5173';
+        window.__VITE_DEV_SERVER_URL__ = 'http://localhost:5173';
     </script>
   </head>
   <body>

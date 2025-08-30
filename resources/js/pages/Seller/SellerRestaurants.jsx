@@ -562,18 +562,16 @@ const SellerRestaurants = () => {
                                 gap: '0.75rem'
                             }}>
                                                                  <div style={{
-                                     width: '3rem',
-                                     height: '3rem',
-                                     background: restaurant.logo 
-                                         ? 'transparent'
-                                         : (restaurant.is_active 
-                                             ? 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
-                                             : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'),
-                                     borderRadius: '0.75rem',
+                                     width: '5rem',
+                                     height: '4rem',
+                                     background: restaurant.is_active 
+                                         ? 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+                                         : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                                     borderRadius: '12px',
                                      display: 'flex',
                                      alignItems: 'center',
                                      justifyContent: 'center',
-                                     fontSize: '1.5rem',
+                                     fontSize: '2rem',
                                      color: 'white',
                                      overflow: 'hidden'
                                  }}>
@@ -584,11 +582,31 @@ const SellerRestaurants = () => {
                                              style={{
                                                  width: '100%',
                                                  height: '100%',
-                                                 objectFit: 'cover'
+                                                 objectFit: 'contain',
+                                                 transition: 'transform 0.3s ease',
+                                                 backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                                             }}
+                                             onLoad={(e) => {
+                                                 e.target.style.transform = 'scale(1)';
+                                             }}
+                                             onError={(e) => {
+                                                 e.target.style.display = 'none';
+                                                 e.target.nextSibling.style.display = 'flex';
                                              }}
                                          />
                                      ) : (
-                                         '🏪'
+                                         <div style={{
+                                             width: '100%',
+                                             height: '100%',
+                                             background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                                             display: 'flex',
+                                             alignItems: 'center',
+                                             justifyContent: 'center',
+                                             fontSize: '2rem',
+                                             color: 'white'
+                                         }}>
+                                             🏪
+                                         </div>
                                      )}
                                  </div>
                                 <div>

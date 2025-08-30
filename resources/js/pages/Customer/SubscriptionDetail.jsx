@@ -161,6 +161,12 @@ const SubscriptionDetail = () => {
             if (typeof dateString === 'string') {
                 // Remove any extra spaces and normalize
                 const cleanDateString = dateString.trim();
+                
+                // Check if it's already an invalid date string
+                if (cleanDateString === 'Invalid Date' || cleanDateString === 'null' || cleanDateString === 'undefined' || cleanDateString === '') {
+                    return '';
+                }
+                
                 // Try different date formats
                 if (cleanDateString.includes('-')) {
                     date = new Date(cleanDateString);
@@ -187,8 +193,8 @@ const SubscriptionDetail = () => {
                 day: 'numeric'
             });
             
-            // Check if the formatted date is valid
-            if (formattedDate === 'Invalid Date') {
+            // Check if the formatted date is valid and doesn't contain "Invalid"
+            if (formattedDate === 'Invalid Date' || formattedDate.includes('Invalid') || formattedDate === 'NaN') {
                 console.warn('Formatted date is invalid:', dateString);
                 return '';
             }
@@ -425,28 +431,28 @@ const SubscriptionDetail = () => {
                     <div style={{ 
                         display: 'grid', 
                         gridTemplateColumns: '1fr',
-                        gap: '1.5rem',
-                        marginBottom: '2rem',
+                        gap: '1rem',
+                        marginBottom: '1.5rem',
                         position: 'relative',
                         zIndex: 1,
                         '@media (min-width: 768px)': {
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-                            gap: '2rem',
-                            marginBottom: '2.5rem'
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                            gap: '1.5rem',
+                            marginBottom: '2rem'
                         }
                     }}>
                         
                         {/* Restaurant & Dates Section */}
                         <div style={{
                             background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
-                            borderRadius: '1.5rem',
-                            padding: '1.5rem',
+                            borderRadius: '1rem',
+                            padding: '1rem',
                             border: '1px solid rgba(102, 126, 234, 0.2)',
                             position: 'relative',
                             overflow: 'hidden',
                             '@media (max-width: 768px)': {
-                                borderRadius: '1.25rem',
-                                padding: '1.25rem'
+                                borderRadius: '0.875rem',
+                                padding: '0.875rem'
                             }
                         }}>
                             <div style={{
@@ -454,49 +460,49 @@ const SubscriptionDetail = () => {
                                 top: '0',
                                 left: '0',
                                 width: '100%',
-                                height: '4px',
+                                height: '3px',
                                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
                             }}></div>
                             <h3 style={{
-                                fontSize: '1.25rem',
+                                fontSize: '1rem',
                                 fontWeight: '700',
-                                marginBottom: '1rem',
+                                marginBottom: '0.75rem',
                                 color: '#667eea',
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '0.75rem',
+                                gap: '0.5rem',
                                 '@media (max-width: 768px)': {
-                                    fontSize: '1.125rem',
-                                    marginBottom: '0.75rem'
+                                    fontSize: '0.875rem',
+                                    marginBottom: '0.5rem'
                                 }
                             }}>
                                 📋 {language === 'ar' ? 'معلومات الاشتراك' : 'Subscription Info'}
                             </h3>
                             
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                 <div style={{
                                     background: 'rgba(255, 255, 255, 0.7)',
-                                    borderRadius: '0.75rem',
-                                    padding: '1rem',
+                                    borderRadius: '0.5rem',
+                                    padding: '0.75rem',
                                     border: '1px solid rgba(102, 126, 234, 0.1)'
                                 }}>
-                                    <div style={{ fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.5rem', fontWeight: '600' }}>
+                                    <div style={{ fontSize: '0.625rem', color: '#6b7280', marginBottom: '0.25rem', fontWeight: '600' }}>
                                         {language === 'ar' ? 'تاريخ البداية' : 'Start Date'}
                                     </div>
-                                    <div style={{ fontSize: '1rem', fontWeight: '700', color: '#1f2937' }}>
+                                    <div style={{ fontSize: '0.875rem', fontWeight: '700', color: '#1f2937' }}>
                                         {formatDate(subscription.start_date)}
                                     </div>
                                 </div>
                                 <div style={{
                                     background: 'rgba(255, 255, 255, 0.7)',
-                                    borderRadius: '0.75rem',
-                                    padding: '1rem',
+                                    borderRadius: '0.5rem',
+                                    padding: '0.75rem',
                                     border: '1px solid rgba(102, 126, 234, 0.1)'
                                 }}>
-                                    <div style={{ fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.5rem', fontWeight: '600' }}>
+                                    <div style={{ fontSize: '0.625rem', color: '#6b7280', marginBottom: '0.25rem', fontWeight: '600' }}>
                                         {language === 'ar' ? 'تاريخ الانتهاء' : 'End Date'}
                                     </div>
-                                    <div style={{ fontSize: '1rem', fontWeight: '700', color: '#1f2937' }}>
+                                    <div style={{ fontSize: '0.875rem', fontWeight: '700', color: '#1f2937' }}>
                                         {formatDate(subscription.end_date)}
                                     </div>
                                 </div>
@@ -506,14 +512,14 @@ const SubscriptionDetail = () => {
                         {/* Payment Information Section */}
                         <div style={{
                             background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.1) 0%, rgba(34, 197, 94, 0.1) 100%)',
-                            borderRadius: '1.5rem',
-                            padding: '1.5rem',
+                            borderRadius: '1rem',
+                            padding: '1rem',
                             border: '1px solid rgba(74, 222, 128, 0.2)',
                             position: 'relative',
                             overflow: 'hidden',
                             '@media (max-width: 768px)': {
-                                borderRadius: '1.25rem',
-                                padding: '1.25rem'
+                                borderRadius: '0.875rem',
+                                padding: '0.875rem'
                             }
                         }}>
                             <div style={{
@@ -521,55 +527,55 @@ const SubscriptionDetail = () => {
                                 top: '0',
                                 left: '0',
                                 width: '100%',
-                                height: '4px',
+                                height: '3px',
                                 background: 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)'
                             }}></div>
                             <h3 style={{ 
-                                fontSize: '1.25rem', 
+                                fontSize: '1rem', 
                                 fontWeight: '700', 
-                                marginBottom: '1rem',
+                                marginBottom: '0.75rem',
                                 color: '#22c55e',
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '0.75rem',
+                                gap: '0.5rem',
                                 '@media (max-width: 768px)': {
-                                    fontSize: '1.125rem',
-                                    marginBottom: '0.75rem'
+                                    fontSize: '0.875rem',
+                                    marginBottom: '0.5rem'
                                 }
                             }}>
                                 💰 {language === 'ar' ? 'معلومات الدفع' : 'Payment Info'}
                             </h3>
                             
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                                 <div style={{
                                     background: 'rgba(255, 255, 255, 0.7)',
-                                    borderRadius: '0.75rem',
-                                    padding: '0.75rem 1rem',
+                                    borderRadius: '0.5rem',
+                                    padding: '0.5rem 0.75rem',
                                     display: 'flex',
                                     justifyContent: 'space-between',
                                     alignItems: 'center',
                                     border: '1px solid rgba(74, 222, 128, 0.1)'
                                 }}>
-                                    <span style={{ fontSize: '0.875rem', color: '#6b7280', fontWeight: '600' }}>
+                                    <span style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: '600' }}>
                                         {language === 'ar' ? 'سعر الاشتراك' : 'Subscription Price'}
                                     </span>
-                                    <span style={{ fontSize: '0.875rem', fontWeight: '700', color: '#1f2937' }}>
+                                    <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#1f2937' }}>
                                         {subscription.total_amount} {language === 'ar' ? 'ريال' : 'SAR'}
                                     </span>
                                 </div>
                                 <div style={{
                                     background: 'rgba(255, 255, 255, 0.7)',
-                                    borderRadius: '0.75rem',
-                                    padding: '0.75rem 1rem',
+                                    borderRadius: '0.5rem',
+                                    padding: '0.5rem 0.75rem',
                                     display: 'flex',
                                     justifyContent: 'space-between',
                                     alignItems: 'center',
                                     border: '1px solid rgba(74, 222, 128, 0.1)'
                                 }}>
-                                    <span style={{ fontSize: '0.875rem', color: '#6b7280', fontWeight: '600' }}>
+                                    <span style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: '600' }}>
                                         {language === 'ar' ? 'سعر التوصيل' : 'Delivery Price'}
                                     </span>
-                                    <span style={{ fontSize: '0.875rem', fontWeight: '700', color: '#1f2937' }}>
+                                    <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#1f2937' }}>
                                         {subscription.delivery_price > 0 
                                             ? `${subscription.delivery_price} ${language === 'ar' ? 'ريال' : 'SAR'}`
                                             : language === 'ar' ? 'مجاني' : 'Free'
@@ -578,39 +584,38 @@ const SubscriptionDetail = () => {
                                 </div>
                                 <div style={{
                                     background: 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)',
-                                    borderRadius: '0.75rem',
-                                    padding: '1rem',
+                                    borderRadius: '0.5rem',
+                                    padding: '0.75rem',
                                     display: 'flex', 
                                     justifyContent: 'space-between', 
                                     alignItems: 'center',
                                     boxShadow: '0 4px 15px rgba(74, 222, 128, 0.3)'
                                 }}>
-                                    <span style={{ fontSize: '1rem', fontWeight: '700', color: 'white' }}>
+                                    <span style={{ fontSize: '0.875rem', fontWeight: '700', color: 'white' }}>
                                         {language === 'ar' ? 'المجموع' : 'Total'}
                                     </span>
                                     <span style={{ 
-                                        fontSize: '1.125rem', 
+                                        fontSize: '1rem', 
                                         fontWeight: '800', 
                                         color: 'white'
                                     }}>
                                         {(parseFloat(subscription.total_amount) + parseFloat(subscription.delivery_price)).toFixed(2)} {language === 'ar' ? 'ريال' : 'SAR'}
                                     </span>
                                 </div>
-
                             </div>
                         </div>
 
                         {/* Delivery Address Section */}
                         <div style={{
                             background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(219, 39, 119, 0.1) 100%)',
-                            borderRadius: '1.5rem',
-                            padding: '1.5rem',
+                            borderRadius: '1rem',
+                            padding: '1rem',
                             border: '1px solid rgba(236, 72, 153, 0.2)',
                             position: 'relative',
                             overflow: 'hidden',
                             '@media (max-width: 768px)': {
-                                borderRadius: '1.25rem',
-                                padding: '1.25rem'
+                                borderRadius: '0.875rem',
+                                padding: '0.875rem'
                             }
                         }}>
                             <div style={{
@@ -618,20 +623,20 @@ const SubscriptionDetail = () => {
                                 top: '0',
                                 left: '0',
                                 width: '100%',
-                                height: '4px',
+                                height: '3px',
                                 background: 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)'
                             }}></div>
                             <h3 style={{ 
-                                fontSize: '1.25rem', 
+                                fontSize: '1rem', 
                                 fontWeight: '700', 
-                                marginBottom: '1rem',
+                                marginBottom: '0.75rem',
                                 color: '#db2777',
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '0.75rem',
+                                gap: '0.5rem',
                                 '@media (max-width: 768px)': {
-                                    fontSize: '1.125rem',
-                                    marginBottom: '0.75rem'
+                                    fontSize: '0.875rem',
+                                    marginBottom: '0.5rem'
                                 }
                             }}>
                                 📍 {language === 'ar' ? 'عنوان التوصيل' : 'Delivery Address'}
@@ -639,18 +644,18 @@ const SubscriptionDetail = () => {
                             
                             <div style={{
                                 background: 'rgba(255, 255, 255, 0.7)',
-                                borderRadius: '0.75rem',
-                                padding: '1rem',
+                                borderRadius: '0.5rem',
+                                padding: '0.75rem',
                                 border: '1px solid rgba(236, 72, 153, 0.1)'
                             }}>
-                                <div style={{ fontSize: '1rem', fontWeight: '700', color: '#1f2937', marginBottom: '0.5rem' }}>
+                                <div style={{ fontSize: '0.875rem', fontWeight: '700', color: '#1f2937', marginBottom: '0.25rem' }}>
                                     {subscription.delivery_address?.name}
                                 </div>
-                                <div style={{ fontSize: '0.875rem', color: '#6b7280', lineHeight: '1.5', marginBottom: '0.75rem' }}>
+                                <div style={{ fontSize: '0.75rem', color: '#6b7280', lineHeight: '1.4', marginBottom: '0.5rem' }}>
                                     {subscription.delivery_address?.address}
                                 </div>
-                                                                <div style={{
-                                    fontSize: '0.875rem',
+                                <div style={{
+                                    fontSize: '0.75rem',
                                     color: '#6b7280',
                                     display: 'flex',
                                     alignItems: 'center',
@@ -908,13 +913,18 @@ const SubscriptionDetail = () => {
                         ) : (
                             <div style={{
                                 display: 'grid',
-                                gridTemplateColumns: '1fr',
-                                gap: '1rem',
-                                '@media (min-width: 640px)': {
-                                    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-                                    gap: '1.25rem'
+                                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                                gap: 'clamp(0.75rem, 3vw, 1rem)',
+                                '@media (min-width: 768px)': {
+                                    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                                    gap: 'clamp(1rem, 3vw, 1.25rem)'
                                 },
-                                '@media (max-width: 768px)': {
+                                '@media (min-width: 1024px)': {
+                                    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+                                    gap: 'clamp(1.25rem, 3vw, 1.5rem)'
+                                },
+                                '@media (max-width: 767px)': {
+                                    gridTemplateColumns: '1fr',
                                     gap: '0.75rem'
                                 }
                             }}>
@@ -922,15 +932,18 @@ const SubscriptionDetail = () => {
                                     <div key={index} style={{
                                         background: 'rgba(255, 255, 255, 0.95)',
                                         borderRadius: '1.25rem',
-                                        padding: '1.5rem',
+                                        padding: 0,
                                         boxShadow: '0 8px 25px rgba(0, 0, 0, 0.08)',
                                         border: '2px solid rgba(255, 255, 255, 0.6)',
                                         transition: 'all 0.3s ease',
                                         position: 'relative',
                                         overflow: 'hidden',
                                         cursor: 'pointer',
+                                        height: 'clamp(320px, 45vw, 380px)',
+                                        display: 'flex',
+                                        flexDirection: 'column',
                                         '@media (max-width: 768px)': {
-                                            padding: '1.25rem',
+                                            height: '320px',
                                             borderRadius: '1rem',
                                             border: '1px solid rgba(255, 255, 255, 0.4)'
                                         }
@@ -958,143 +971,173 @@ const SubscriptionDetail = () => {
                                             zIndex: 0
                                         }}></div>
                                         
-
-                                        
-                                        {/* Enhanced Meal Name */}
-                                        <h4 style={{
-                                            fontSize: '1.125rem',
-                                            fontWeight: '700',
-                                            marginBottom: '0.75rem',
-                                            color: '#1f2937',
-                                            lineHeight: '1.4',
-                                            position: 'relative',
-                                            zIndex: 1,
-                                            '@media (max-width: 768px)': {
-                                                fontSize: '1rem',
-                                                lineHeight: '1.3',
-                                                marginBottom: '0.5rem'
-                                            }
-                                        }}>
-                                            {language === 'ar' ? item.meal?.name_ar : item.meal?.name_en}
-                                        </h4>
-                                        
-                                        {/* Simplified Info Row - Only Time and Day */}
+                                        {/* Meal Image - Larger Space */}
                                         <div style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                            fontSize: '0.875rem',
-                                            color: '#6b7280',
-                                            marginBottom: '1rem',
+                                            width: '100%',
+                                            height: '75%',
                                             position: 'relative',
-                                            zIndex: 1,
-                                            '@media (max-width: 768px)': {
-                                                flexDirection: 'column',
-                                                alignItems: 'flex-start',
-                                                gap: '0.5rem',
-                                                fontSize: '0.8rem'
-                                            }
+                                            overflow: 'hidden',
+                                            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05))'
                                         }}>
-                                            <span style={{ 
-                                                display: 'flex', 
-                                                alignItems: 'center', 
-                                                gap: '0.5rem',
-                                                fontWeight: '600',
-                                                padding: '0.25rem 0.5rem',
-                                                background: 'rgba(102, 126, 234, 0.1)',
-                                                borderRadius: '0.5rem',
-                                                '@media (max-width: 768px)': {
-                                                    fontSize: '0.75rem',
-                                                    padding: '0.2rem 0.4rem'
-                                                }
-                                            }}>
-                                                🕐 {formatTime(item.meal?.delivery_time)}
-                                            </span>
-                                            <span style={{ 
-                                                fontSize: '0.8rem', 
-                                                opacity: '0.8',
-                                                fontWeight: '500',
-                                                padding: '0.25rem 0.5rem',
-                                                background: 'rgba(118, 75, 162, 0.1)',
-                                                borderRadius: '0.5rem',
-                                                '@media (max-width: 768px)': {
-                                                    fontSize: '0.75rem',
-                                                    padding: '0.2rem 0.4rem'
-                                                }
-                                            }}>
-                                                {item.day_of_week_text}
-                                            </span>
-                                        </div>
-                                        
-                                        {/* Enhanced Delivery Date Section */}
-                                        <div style={{
-                                            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%)',
-                                            borderRadius: '0.875rem',
-                                            padding: '1rem',
-                                            border: '1px solid rgba(102, 126, 234, 0.15)',
-                                            position: 'relative',
-                                            zIndex: 1,
-                                            '@media (max-width: 768px)': {
-                                                padding: '0.75rem',
-                                                borderRadius: '0.75rem'
-                                            }
-                                        }}>
-                                            <div style={{ 
-                                                fontSize: '0.75rem', 
-                                                color: '#6b7280', 
-                                                marginBottom: '0.5rem',
-                                                fontWeight: '600',
-                                                textTransform: 'uppercase',
-                                                letterSpacing: '0.5px',
-                                                '@media (max-width: 768px)': {
-                                                    fontSize: '0.7rem',
-                                                    marginBottom: '0.4rem'
-                                                }
-                                            }}>
-                                                {language === 'ar' ? 'تاريخ التوصيل' : 'Delivery Date'}
-                                            </div>
-                                            <div style={{ 
-                                                fontSize: '1rem', 
-                                                fontWeight: '700', 
-                                                color: '#1f2937',
-                                                marginBottom: '1rem',
-                                                '@media (max-width: 768px)': {
-                                                    fontSize: '0.9rem',
-                                                    lineHeight: '1.3',
-                                                    marginBottom: '0.75rem'
-                                                }
-                                            }}>
-                                                {formatDate(item.delivery_date)}
-                                            </div>
-                                            
-                                            {/* Enhanced Status Section */}
-                                            <div style={{
-                                                borderTop: '1px solid rgba(102, 126, 234, 0.2)',
-                                                paddingTop: '0.75rem',
-                                                '@media (max-width: 768px)': {
-                                                    paddingTop: '0.5rem'
-                                                }
-                                            }}>
-                                                <div style={{ 
-                                                    fontSize: '0.75rem', 
-                                                    color: '#6b7280', 
-                                                    marginBottom: '0.5rem',
-                                                    fontWeight: '600',
-                                                    textTransform: 'uppercase',
-                                                    letterSpacing: '0.5px',
-                                                    '@media (max-width: 768px)': {
-                                                        fontSize: '0.7rem',
-                                                        marginBottom: '0.4rem'
-                                                    }
+                                            {item.meal?.image ? (
+                                                <>
+                                                    <img 
+                                                        src={`/storage/${item.meal.image}`}
+                                                        alt={language === 'ar' ? item.meal.name_ar : item.meal.name_en}
+                                                        style={{
+                                                            width: '100%',
+                                                            height: '100%',
+                                                            objectFit: 'cover',
+                                                            transition: 'transform 0.4s ease'
+                                                        }}
+                                                        onLoad={(e) => {
+                                                            e.target.style.transform = 'scale(1)';
+                                                        }}
+                                                        onError={(e) => {
+                                                            e.target.style.display = 'none';
+                                                            e.target.nextSibling.style.display = 'flex';
+                                                        }}
+                                                    />
+                                                    <div style={{
+                                                        position: 'absolute',
+                                                        top: 0,
+                                                        left: 0,
+                                                        right: 0,
+                                                        bottom: 0,
+                                                        background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                                                        display: 'none',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        fontSize: 'clamp(2rem, 6vw, 3rem)',
+                                                        color: 'white'
+                                                    }}>
+                                                        🍽️
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <div style={{
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    fontSize: 'clamp(2rem, 6vw, 3rem)',
+                                                    color: 'white'
                                                 }}>
-                                                    {language === 'ar' ? 'حالة الطلب' : 'Order Status'}
+                                                    🍽️
                                                 </div>
+                                            )}
+                                        </div>
+
+                                        {/* Meal Info Section - Compact */}
+                                        <div style={{
+                                            flex: 1,
+                                            padding: 'clamp(0.75rem, 2vw, 1rem)',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            justifyContent: 'space-between',
+                                            background: 'rgba(255, 255, 255, 0.95)',
+                                            backdropFilter: 'blur(10px)',
+                                            position: 'relative',
+                                            zIndex: 1
+                                        }}>
+                                            <div>
+                                                {/* Enhanced Meal Name */}
+                                                <h4 style={{
+                                                    fontSize: 'clamp(0.875rem, 3vw, 1rem)',
+                                                    fontWeight: '700',
+                                                    marginBottom: 'clamp(0.25rem, 1vw, 0.375rem)',
+                                                    color: '#1f2937',
+                                                    lineHeight: '1.3',
+                                                    textAlign: 'center'
+                                                }}>
+                                                    {language === 'ar' ? item.meal?.name_ar : item.meal?.name_en}
+                                                </h4>
+                                                
+                                                {/* Compact Info Row */}
                                                 <div style={{
                                                     display: 'flex',
                                                     justifyContent: 'center',
-                                                    '@media (max-width: 768px)': {
-                                                        justifyContent: 'center'
-                                                    }
+                                                    alignItems: 'center',
+                                                    gap: '0.5rem',
+                                                    fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
+                                                    color: '#6b7280',
+                                                    marginBottom: 'clamp(0.5rem, 2vw, 0.75rem)',
+                                                    flexWrap: 'wrap'
+                                                }}>
+                                                    <span style={{ 
+                                                        display: 'flex', 
+                                                        alignItems: 'center', 
+                                                        gap: '0.25rem',
+                                                        fontWeight: '600',
+                                                        padding: '0.25rem 0.5rem',
+                                                        background: 'rgba(102, 126, 234, 0.1)',
+                                                        borderRadius: '0.5rem'
+                                                    }}>
+                                                        🕐 {formatTime(item.meal?.delivery_time)}
+                                                    </span>
+                                                    <span style={{ 
+                                                        fontSize: 'clamp(0.625rem, 2vw, 0.75rem)', 
+                                                        opacity: '0.8',
+                                                        fontWeight: '500',
+                                                        padding: '0.25rem 0.5rem',
+                                                        background: 'rgba(118, 75, 162, 0.1)',
+                                                        borderRadius: '0.5rem'
+                                                    }}>
+                                                        {item.day_of_week_text}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            
+                                            {/* Compact Status and Date Row */}
+                                            <div style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                                gap: '0.75rem'
+                                            }}>
+                                                {/* Delivery Date */}
+                                                <div style={{
+                                                    flex: 1,
+                                                    background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%)',
+                                                    borderRadius: '0.75rem',
+                                                    padding: '0.75rem',
+                                                    border: '1px solid rgba(102, 126, 234, 0.15)',
+                                                    textAlign: 'center',
+                                                    minHeight: '60px',
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    justifyContent: 'center'
+                                                }}>
+                                                    <div style={{ 
+                                                        fontSize: 'clamp(0.625rem, 2vw, 0.75rem)', 
+                                                        color: '#6b7280', 
+                                                        marginBottom: '0.25rem',
+                                                        fontWeight: '600',
+                                                        textTransform: 'uppercase',
+                                                        letterSpacing: '0.5px'
+                                                    }}>
+                                                        {language === 'ar' ? 'التاريخ' : 'Date'}
+                                                    </div>
+                                                    <div style={{ 
+                                                        fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)', 
+                                                        fontWeight: '700', 
+                                                        color: '#1f2937',
+                                                        lineHeight: '1.3',
+                                                        wordBreak: 'break-word'
+                                                    }}>
+                                                        {formatDate(item.delivery_date) || (language === 'ar' ? 'غير محدد' : 'Not set')}
+                                                    </div>
+                                                </div>
+                                                
+                                                {/* Status */}
+                                                <div style={{
+                                                    flex: 1,
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    minHeight: '60px'
                                                 }}>
                                                     <OrderStatusBadge status={item.status} language={language} />
                                                 </div>
