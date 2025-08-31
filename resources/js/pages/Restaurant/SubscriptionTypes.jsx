@@ -259,7 +259,7 @@ const RestaurantSubscriptionTypes = () => {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    السعر (ريال)
+                    السعر (ريال عماني)
                   </label>
                   <input
                     type="number"
@@ -331,7 +331,7 @@ const RestaurantSubscriptionTypes = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-blue-600">
-                    {type.price} ريال
+                    {type.price} ريال عماني
                   </p>
                   <p className="text-sm text-gray-500">
                     {type.meals_count} وجبة

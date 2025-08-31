@@ -112,6 +112,12 @@ Route::middleware(['auth:sanctum', 'role:seller', 'log.auth'])->prefix('seller')
     Route::put('restaurants/{restaurantId}/subscriptions/{subscriptionId}/status', [SubscriptionController::class, 'updateSellerSubscriptionStatus']);
     Route::put('restaurants/{restaurantId}/subscriptions/{subscriptionId}/items/{itemId}/status', [SubscriptionController::class, 'updateSellerItemStatus']);
     
+    // Today's orders for sellers
+    Route::get('restaurants/{restaurantId}/today-orders', [SubscriptionController::class, 'getTodayOrders']);
+    
+    // Reports for sellers
+    Route::get('/reports', [\App\Http\Controllers\Api\Seller\ReportsController::class, 'index']);
+    
     // Dashboard stats
     Route::get('/dashboard', function () {
         return response()->json([

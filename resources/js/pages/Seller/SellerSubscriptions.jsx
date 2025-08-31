@@ -897,7 +897,7 @@ const SellerSubscriptions = () => {
                                               textAlign: dir === 'rtl' ? 'right' : 'left',
                                               fontWeight: '500'
                                           }}>
-                                              {subscription.total_amount} {language === 'ar' ? 'ريال' : 'SAR'}
+                                              {subscription.total_amount} {language === 'ar' ? 'ريال' : 'OMR'}
                                           </div>
                                       </div>
                                      
@@ -923,7 +923,11 @@ const SellerSubscriptions = () => {
                                               textAlign: dir === 'rtl' ? 'right' : 'left',
                                               fontWeight: '500'
                                           }}>
-                                              {new Date(subscription.start_date).toLocaleDateString('en-US')}
+                                              {new Date(subscription.start_date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+})}
                                           </div>
                                       </div>
                                      
@@ -975,7 +979,11 @@ const SellerSubscriptions = () => {
                                                textAlign: dir === 'rtl' ? 'right' : 'left',
                                                fontWeight: '500'
                                            }}>
-                                               {new Date(subscription.created_at).toLocaleDateString('en-US')}
+                                               {new Date(subscription.created_at).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+})}
                                            </div>
                                        </div>
                                  </div>
@@ -1067,7 +1075,11 @@ const SellerSubscriptions = () => {
                                                             gap: '0.25rem'
                                                         }}>
                                                             <span style={{ fontSize: '0.75rem' }}>📅</span>
-                                                            <span>{new Date(item.delivery_date).toLocaleDateString('en-US')}</span>
+                                                            <span>{new Date(item.delivery_date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+})}</span>
                                                         </div>
                                                         
                                                         <div style={{
@@ -1076,7 +1088,7 @@ const SellerSubscriptions = () => {
                                                             gap: '0.25rem'
                                                         }}>
                                                             <span style={{ fontSize: '0.75rem' }}>💰</span>
-                                                            <span>{item.meal?.price} {language === 'ar' ? 'ريال' : 'SAR'}</span>
+                                                            <span>{item.meal?.price} {language === 'ar' ? 'ريال' : 'OMR'}</span>
                                                         </div>
                                                         
                                                         <div style={{
@@ -1435,7 +1447,11 @@ const SellerSubscriptions = () => {
                                                 color: 'rgb(107 114 128)',
                                                 textAlign: dir === 'rtl' ? 'right' : 'left'
                                             }}>
-                                                {new Date(item.delivery_date).toLocaleDateString('en-US')}
+                                                {new Date(item.delivery_date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+})}
                                             </div>
                                         </div>
                                         

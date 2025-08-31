@@ -207,7 +207,7 @@ const SubscriptionDetail = () => {
     };
 
     const formatTime = (timeString) => {
-        return new Date(`2000-01-01T${timeString}`).toLocaleTimeString('ar-SA', {
+        return new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-US', {
             hour: '2-digit',
             minute: '2-digit'
         });
@@ -560,7 +560,7 @@ const SubscriptionDetail = () => {
                                         {language === 'ar' ? 'سعر الاشتراك' : 'Subscription Price'}
                                     </span>
                                     <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#1f2937' }}>
-                                        {subscription.total_amount} {language === 'ar' ? 'ريال' : 'SAR'}
+                                        {subscription.total_amount} {language === 'ar' ? 'ريال' : 'OMR'}
                                     </span>
                                 </div>
                                 <div style={{
@@ -577,7 +577,7 @@ const SubscriptionDetail = () => {
                                     </span>
                                     <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#1f2937' }}>
                                         {subscription.delivery_price > 0 
-                                            ? `${subscription.delivery_price} ${language === 'ar' ? 'ريال' : 'SAR'}`
+                                            ? `${subscription.delivery_price} ${language === 'ar' ? 'ريال' : 'OMR'}`
                                             : language === 'ar' ? 'مجاني' : 'Free'
                                         }
                                     </span>
@@ -599,7 +599,7 @@ const SubscriptionDetail = () => {
                                         fontWeight: '800', 
                                         color: 'white'
                                     }}>
-                                        {(parseFloat(subscription.total_amount) + parseFloat(subscription.delivery_price)).toFixed(2)} {language === 'ar' ? 'ريال' : 'SAR'}
+                                        {(parseFloat(subscription.total_amount) + parseFloat(subscription.delivery_price)).toFixed(2)} {language === 'ar' ? 'ريال' : 'OMR'}
                                     </span>
                                 </div>
                             </div>

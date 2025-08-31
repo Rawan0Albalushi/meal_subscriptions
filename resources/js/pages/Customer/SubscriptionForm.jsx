@@ -82,12 +82,11 @@ const SubscriptionForm = () => {
     const targetDate = new Date(start);
     targetDate.setDate(start.getDate() + daysToAdd);
     
-    return targetDate.toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', {
+    return targetDate.toLocaleDateString('en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric',
-      calendar: 'gregory'
+      day: 'numeric'
     });
   };
 
@@ -517,12 +516,11 @@ const SubscriptionForm = () => {
                 </label>
                 <div className="bg-gradient-to-r from-gray-50 to-blue-50 border-2 border-indigo-200 rounded-2xl p-4 text-center">
                   <div className="text-lg font-semibold text-gray-800">
-                    {formData.startDate ? new Date(formData.startDate).toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', {
+                    {formData.startDate ? new Date(formData.startDate).toLocaleDateString('en-US', {
                       weekday: 'long',
                       year: 'numeric',
                       month: 'long',
-                      day: 'numeric',
-                      calendar: 'gregory'
+                      day: 'numeric'
                     }) : t('dateNotSelected')}
                   </div>
                 </div>

@@ -16,7 +16,7 @@ export default defineConfig({
         host: '0.0.0.0',
         port: 5173,
         hmr: {
-            host: 'localhost'
+            host: '192.168.100.103'
         }
     },
     optimizeDeps: {

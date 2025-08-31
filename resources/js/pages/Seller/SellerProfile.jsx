@@ -464,7 +464,11 @@ const SellerProfile = () => {
                                     borderRadius: '0.5rem',
                                     fontSize: '0.875rem'
                                 }}>
-                                    {user?.created_at ? new Date(user.created_at).toLocaleDateString() : (language === 'ar' ? 'غير محدد' : 'Not specified')}
+                                    {user?.created_at ? new Date(user.created_at).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+}) : (language === 'ar' ? 'غير محدد' : 'Not specified')}
                                 </div>
                             </div>
 
@@ -485,7 +489,11 @@ const SellerProfile = () => {
                                     borderRadius: '0.5rem',
                                     fontSize: '0.875rem'
                                 }}>
-                                    {user?.updated_at ? new Date(user.updated_at).toLocaleDateString() : (language === 'ar' ? 'غير محدد' : 'Not specified')}
+                                    {user?.updated_at ? new Date(user.updated_at).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+}) : (language === 'ar' ? 'غير محدد' : 'Not specified')}
                                 </div>
                             </div>
                         </div>

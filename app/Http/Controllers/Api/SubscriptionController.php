@@ -328,4 +328,49 @@ class SubscriptionController extends Controller
             'data' => $subscriptionItem->load(['meal', 'subscription'])
         ]);
     }
+
+    public function getTodayOrders(Request $request, $restaurantId)
+    {
+        // Check if the restaurant belongs to the seller
+        $restaurant = auth()->user()->restaurants()->findOrFail($restaurantId);
+        
+        $today = Carbon::today();
+        
+        // Get all subscription items for today for this restaurant
+        $todayOrders = SubscriptionItem::whereHas('subscription', function($query) use ($restaurantId) {
+            $query->where('restaurant_id', $restaurantId);
+        })
+        ->whereDate('delivery_date', $today)
+        ->with(['meal', 'subscription.user', 'subscription.deliveryAddress'])
+        ->orderBy('delivery_date', 'asc')
+        ->get();
+
+        // Group orders by status for better organization
+        $groupedOrders = [
+            'pending' => $todayOrders->where('status', 'pending'),
+            'preparing' => $todayOrders->where('status', 'preparing'),
+            'delivered' => $todayOrders->where('status', 'delivered'),
+            'cancelled' => $todayOrders->where('status', 'cancelled'),
+        ];
+
+        // Calculate statistics
+        $stats = [
+            'total' => $todayOrders->count(),
+            'pending' => $todayOrders->where('status', 'pending')->count(),
+            'preparing' => $todayOrders->where('status', 'preparing')->count(),
+            'delivered' => $todayOrders->where('status', 'delivered')->count(),
+            'cancelled' => $todayOrders->where('status', 'cancelled')->count(),
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'orders' => $todayOrders,
+                'grouped_orders' => $groupedOrders,
+                'stats' => $stats,
+                'date' => $today->format('Y-m-d'),
+                'date_formatted' => $today->format('l, F j, Y') // e.g., "Monday, January 15, 2024"
+            ]
+        ]);
+    }
 }

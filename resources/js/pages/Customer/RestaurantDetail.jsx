@@ -827,7 +827,7 @@ const RestaurantDetail = () => {
           label: mealLabels[mealIndex],
           icon: mealIcons[mealIndex],
           date: currentDate.toISOString().split('T')[0],
-          displayDate: currentDate.toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', { 
+          displayDate: currentDate.toLocaleDateString('en-US', { 
             weekday: 'long', 
             year: 'numeric', 
             month: 'long', 
@@ -1337,7 +1337,7 @@ const RestaurantDetail = () => {
                   ? `${subscriptionType.meals_count} وجبة في ${subscriptionType.type === 'weekly' ? 'الأسبوع' : 'الشهر'}`
                   : `${subscriptionType.meals_count} meals per ${subscriptionType.type === 'weekly' ? 'week' : 'month'}`,
                 price: subscriptionType.price.toString(),
-                currency: language === 'ar' ? 'ريال' : 'SAR',
+                currency: language === 'ar' ? 'ريال' : 'OMR',
                 period: language === 'ar' 
                   ? (subscriptionType.type === 'weekly' ? 'أسبوعياً' : 'شهرياً')
                   : (subscriptionType.type === 'weekly' ? 'Weekly' : 'Monthly'),
@@ -1808,7 +1808,7 @@ const RestaurantDetail = () => {
                       fontWeight: '600',
                       marginTop: '0.25rem'
                     }}>
-                      {new Date(startDate).toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', {
+                      {new Date(startDate).toLocaleDateString('en-US', {
                         weekday: 'long',
                         year: 'numeric',
                         month: 'long',
@@ -2633,8 +2633,10 @@ const RestaurantDetail = () => {
                   <span>✓</span>
                   <span>{t('selectedMealsCount', { count: Object.keys(selectedMeals).length })}</span>
                   <span>•</span>
-                                          <span>{t('startDate')}: {new Date(startDate).toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', {
-                          calendar: 'gregory'
+                                          <span>{t('startDate')}: {new Date(startDate).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
                         })}</span>
                 </div>
                 <button 

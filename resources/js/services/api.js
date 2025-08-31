@@ -77,6 +77,34 @@ export const subscriptionsAPI = {
     delete: (id) => api.delete(`/subscriptions/${id}`),
 };
 
+// Seller APIs
+export const sellerAPI = {
+    // Restaurant management
+    getRestaurants: () => api.get('/seller/restaurants'),
+    getRestaurant: (id) => api.get(`/seller/restaurants/${id}`),
+    createRestaurant: (data) => api.post('/seller/restaurants', data),
+    updateRestaurant: (id, data) => api.put(`/seller/restaurants/${id}`, data),
+    deleteRestaurant: (id) => api.delete(`/seller/restaurants/${id}`),
+    toggleRestaurantStatus: (id) => api.put(`/seller/restaurants/${id}/toggle-status`),
+    
+    // Meal management
+    getRestaurantMeals: (restaurantId) => api.get(`/seller/restaurants/${restaurantId}/meals`),
+    getRestaurantMeal: (restaurantId, mealId) => api.get(`/seller/restaurants/${restaurantId}/meals/${mealId}`),
+    createRestaurantMeal: (restaurantId, data) => api.post(`/seller/restaurants/${restaurantId}/meals`, data),
+    updateRestaurantMeal: (restaurantId, mealId, data) => api.put(`/seller/restaurants/${restaurantId}/meals/${mealId}`, data),
+    deleteRestaurantMeal: (restaurantId, mealId) => api.delete(`/seller/restaurants/${restaurantId}/meals/${mealId}`),
+    toggleMealAvailability: (restaurantId, mealId) => api.put(`/seller/restaurants/${restaurantId}/meals/${mealId}/toggle-availability`),
+    
+    // Subscription management
+    getRestaurantSubscriptions: (restaurantId) => api.get(`/seller/restaurants/${restaurantId}/subscriptions`),
+    getRestaurantSubscription: (restaurantId, subscriptionId) => api.get(`/seller/restaurants/${restaurantId}/subscriptions/${subscriptionId}`),
+    updateSubscriptionStatus: (restaurantId, subscriptionId, status) => api.put(`/seller/restaurants/${restaurantId}/subscriptions/${subscriptionId}/status`, { status }),
+    updateItemStatus: (restaurantId, subscriptionId, itemId, status) => api.put(`/seller/restaurants/${restaurantId}/subscriptions/${subscriptionId}/items/${itemId}/status`, { status }),
+    
+    // Today's orders
+    getTodayOrders: (restaurantId) => api.get(`/seller/restaurants/${restaurantId}/today-orders`),
+};
+
 // Subscription Types API
 export const subscriptionTypesAPI = {
     getAll: () => api.get('/subscription-types'),

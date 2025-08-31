@@ -7,7 +7,9 @@ import SellerRestaurants from './SellerRestaurants';
 import SellerMeals from './SellerMeals';
 import SellerSubscriptionTypes from './SellerSubscriptionTypes';
 import SellerSubscriptions from './SellerSubscriptions';
+import TodayOrders from './TodayOrders';
 import SellerProfile from './SellerProfile';
+import SellerReports from './SellerReports';
 
 const SellerLayout = () => {
     const { t, dir, language, toggleLanguage } = useLanguage();
@@ -52,16 +54,28 @@ const SellerLayout = () => {
             description: language === 'ar' ? 'إدارة أنواع الاشتراكات والأسعار' : 'Manage subscription types and prices'
         },
         {
+            path: '/seller/meals',
+            icon: '🍽️',
+            label: t('meals'),
+            description: t('mealsDescription')
+        },
+        {
+            path: '/seller/today-orders',
+            icon: '📋',
+            label: language === 'ar' ? 'طلبات اليوم' : 'Today\'s Orders',
+            description: language === 'ar' ? 'عرض وإدارة طلبات اليوم' : 'View and manage today\'s orders'
+        },
+        {
             path: '/seller/subscriptions',
             icon: '📦',
             label: language === 'ar' ? 'طلبات الاشتراك' : 'Subscription Requests',
             description: language === 'ar' ? 'إدارة طلبات الاشتراك للعملاء' : 'Manage customer subscription requests'
         },
         {
-            path: '/seller/meals',
-            icon: '🍽️',
-            label: t('meals'),
-            description: t('mealsDescription')
+            path: '/seller/reports',
+            icon: '📊',
+            label: language === 'ar' ? 'التقارير' : 'Reports',
+            description: language === 'ar' ? 'عرض الإحصائيات والتقارير' : 'View analytics and reports'
         },
         {
             path: '/seller/profile',
@@ -388,7 +402,9 @@ const SellerLayout = () => {
                         <Route path="/restaurants" element={<SellerRestaurants />} />
                         <Route path="/meals" element={<SellerMeals />} />
                         <Route path="/subscription-types" element={<SellerSubscriptionTypes />} />
+                        <Route path="/today-orders" element={<TodayOrders />} />
                         <Route path="/subscriptions" element={<SellerSubscriptions />} />
+                        <Route path="/reports" element={<SellerReports />} />
                         <Route path="/profile" element={<SellerProfile />} />
                     </Routes>
                 </div>

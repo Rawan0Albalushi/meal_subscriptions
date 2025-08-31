@@ -34,6 +34,8 @@ export const LanguageProvider = ({ children }) => {
             mealsDescription: 'إدارة وجباتك',
             profile: 'الملف الشخصي',
             profileDescription: 'إعدادات حسابك',
+            todayOrders: 'طلبات اليوم',
+            todayOrdersDescription: 'عرض وإدارة طلبات اليوم',
             
             // Greetings
             hello: 'مرحبا',

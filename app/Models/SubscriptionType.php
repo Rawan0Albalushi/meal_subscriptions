@@ -67,7 +67,7 @@ class SubscriptionType extends Model
     public function getDeliveryPriceTextAttribute()
     {
         if ($this->delivery_price > 0) {
-            return $this->delivery_price . ' ' . (app()->getLocale() === 'ar' ? 'ريال' : 'SAR');
+            return $this->delivery_price . ' ' . (app()->getLocale() === 'ar' ? 'ريال' : 'OMR');
         }
         return app()->getLocale() === 'ar' ? 'مجاني' : 'Free';
     }

@@ -25,7 +25,7 @@ class CheckMealsSeeder extends Seeder
         
         $this->command->info('الوجبات في مطعم الشرق الأصيل:');
         foreach ($meals as $meal) {
-            $this->command->line("- {$meal->name_ar} ({$meal->meal_type}) - {$meal->price} ريال");
+            $this->command->line("- {$meal->name_ar} ({$meal->meal_type}) - {$meal->price} ريال عماني");
         }
         
         $this->command->info("إجمالي عدد الوجبات: " . $meals->count());

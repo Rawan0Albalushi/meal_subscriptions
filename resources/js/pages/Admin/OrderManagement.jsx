@@ -317,7 +317,11 @@ const OrderManagement = () => {
                                                                 fontSize: '0.75rem', 
                                                                 color: 'rgb(75 85 99)' 
                                                             }}>
-                                                                {item.day_of_week_text} • {new Date(item.delivery_date).toLocaleDateString('en-US')}
+                                                                {item.day_of_week_text} • {new Date(item.delivery_date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+})}
                                                             </p>
                                                         </div>
                                                         <OrderStatusBadge status={item.status} language={language} />

@@ -355,7 +355,11 @@ const MySubscriptions = () => {
                                                 fontWeight: '600', 
                                                 color: 'rgb(31 41 55)' 
                                             }}>
-                                                {new Date(subscription.start_date).toLocaleDateString('en-US')}
+                                                {new Date(subscription.start_date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+})}
                                             </div>
                                         </div>
                                         
@@ -377,7 +381,11 @@ const MySubscriptions = () => {
                                                 fontWeight: '600', 
                                                 color: 'rgb(31 41 55)' 
                                             }}>
-                                                {new Date(subscription.end_date).toLocaleDateString('en-US')}
+                                                {new Date(subscription.end_date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+})}
                                             </div>
                                         </div>
                                         
@@ -405,7 +413,7 @@ const MySubscriptions = () => {
                                                 fontWeight: '600', 
                                                 color: 'rgb(79 70 229)' 
                                             }}>
-                                                {subscription.total_amount} {language === 'ar' ? 'ريال' : 'SAR'}
+                                                {subscription.total_amount} {language === 'ar' ? 'ريال' : 'OMR'}
                                             </div>
                                         </div>
                                     </div>

@@ -282,7 +282,7 @@ const SubscriptionTypes = () => {
               
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                  السعر (ريال) *
+                  السعر (ريال عماني) *
                 </label>
                 <input
                   type="number"
@@ -443,7 +443,7 @@ const SubscriptionTypes = () => {
                     </span>
                   </td>
                   <td style={{ padding: '1rem', fontWeight: '600', color: 'rgb(79 70 229)' }}>
-                    {type.price} ريال
+                    {type.price} ريال عماني
                   </td>
                   <td style={{ padding: '1rem' }}>
                     {type.meals_count} وجبة

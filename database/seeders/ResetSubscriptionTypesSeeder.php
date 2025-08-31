@@ -39,13 +39,13 @@ class ResetSubscriptionTypesSeeder extends Seeder
                 'is_active' => true,
             ]);
             
-            // إنشاء اشتراك شهري مع توصيل بقيمة 20 ريال
+            // إنشاء اشتراك شهري مع توصيل بقيمة 20 ريال عماني
             SubscriptionType::create([
                 'restaurant_id' => $restaurant->id,
                 'name_ar' => 'اشتراك شهري',
                 'name_en' => 'Monthly Subscription',
-                'description_ar' => 'اشتراك لمدة شهر واحد مع توصيل بقيمة 20 ريال',
-                'description_en' => 'One month subscription with 20 SAR delivery fee',
+                'description_ar' => 'اشتراك لمدة شهر واحد مع توصيل بقيمة 20 ريال عماني',
+                'description_en' => 'One month subscription with 20 OMR delivery fee',
                 'type' => 'monthly',
                 'price' => 350.00, // سعر الاشتراك الأساسي
                 'delivery_price' => 20.00, // رسوم التوصيل
