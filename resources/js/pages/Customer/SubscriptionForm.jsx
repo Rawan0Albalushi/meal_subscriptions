@@ -454,9 +454,13 @@ const SubscriptionForm = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{
+        background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(182, 84, 73, 0.05) 50%, rgba(74, 138, 143, 0.05) 100%)'
+      }}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-4" style={{
+            borderBottomColor: '#2f6e73'
+          }}></div>
           <p className="text-gray-600 text-lg font-medium">{t('loadingData')}</p>
         </div>
       </div>
@@ -465,13 +469,18 @@ const SubscriptionForm = () => {
 
   if (error && !submitting) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center p-4" style={{
+        background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(182, 84, 73, 0.05) 50%, rgba(74, 138, 143, 0.05) 100%)'
+      }}>
         <div className="text-center max-w-md">
           <div className="text-6xl mb-4">❌</div>
           <p className="text-red-600 text-lg mb-6">{error}</p>
           <button 
             onClick={() => navigate(`/restaurants/${restaurantId}`)}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            className="text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            style={{
+              background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)'
+            }}
           >
             {t('backToRestaurant')}
           </button>
@@ -481,13 +490,20 @@ const SubscriptionForm = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100" dir={dir}>
+    <div className="min-h-screen" dir={dir} style={{
+      background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(182, 84, 73, 0.05) 50%, rgba(74, 138, 143, 0.05) 100%)'
+    }}>
       <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
         
         {/* Header Section */}
         <div className="text-center mb-8">
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-white/20">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4" style={{
+              background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
               {t('createNewSubscription')}
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
@@ -502,7 +518,12 @@ const SubscriptionForm = () => {
           <div className="bg-white/85 backdrop-blur-lg rounded-3xl p-8 shadow-xl border border-white/20">
             <div className="text-center mb-8">
               <div className="text-5xl mb-4">✏️</div>
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              <h2 className="text-2xl font-bold" style={{
+                background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}>
                 {t('subscriptionDetails')}
               </h2>
             </div>
@@ -514,7 +535,10 @@ const SubscriptionForm = () => {
                 <label className="block text-lg font-bold text-gray-800 mb-3">
                   📅 {t('subscriptionStartDate')}
                 </label>
-                <div className="bg-gradient-to-r from-gray-50 to-blue-50 border-2 border-indigo-200 rounded-2xl p-4 text-center">
+                <div className="border-2 rounded-2xl p-4 text-center" style={{
+                  background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(74, 138, 143, 0.05) 100%)',
+                  borderColor: 'rgba(47, 110, 115, 0.2)'
+                }}>
                   <div className="text-lg font-semibold text-gray-800">
                     {formData.startDate ? new Date(formData.startDate).toLocaleDateString('en-US', {
                       weekday: 'long',
@@ -537,7 +561,11 @@ const SubscriptionForm = () => {
                     <select 
                       value={formData.deliveryAddressId} 
                       onChange={(e) => handleInputChange('deliveryAddressId', e.target.value)}
-                      className="w-full p-4 bg-white border-2 border-gray-200 rounded-2xl text-lg focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300 outline-none"
+                      className="w-full p-4 bg-white border-2 border-gray-200 rounded-2xl text-lg transition-all duration-300 outline-none"
+                      style={{
+                        focusBorderColor: '#2f6e73',
+                        focusRingColor: 'rgba(47, 110, 115, 0.1)'
+                      }}
                       required
                     >
                       <option value="">{t('selectDeliveryAddress')}</option>
@@ -550,7 +578,10 @@ const SubscriptionForm = () => {
                                          <button 
                        type="button" 
                        onClick={() => setAddingNewAddress(true)}
-                       className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-6 rounded-2xl font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                       className="w-full text-white py-3 px-6 rounded-2xl font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                    style={{
+                      background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)'
+                    }}
                      >
                        {t('addNewAddress')}
                      </button>

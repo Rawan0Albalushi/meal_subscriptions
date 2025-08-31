@@ -86,7 +86,7 @@ const ContactUs = () => {
                     <h2 style={{
                         fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
                         fontWeight: 'bold',
-                        color: 'rgb(79 70 229)',
+                        color: '#2f6e73',
                         marginBottom: '2rem',
                         textAlign: 'center'
                     }}>
@@ -117,9 +117,9 @@ const ContactUs = () => {
                             alignItems: 'center',
                             gap: '1.5rem',
                             padding: '1.5rem',
-                            background: 'rgba(79, 70, 229, 0.05)',
+                            background: 'rgba(47, 110, 115, 0.05)',
                             borderRadius: '1.25rem',
-                            border: '1px solid rgba(79, 70, 229, 0.1)',
+                            border: '1px solid rgba(47, 110, 115, 0.1)',
                             transition: 'all 0.3s ease',
                             cursor: 'pointer',
                             position: 'relative'
@@ -127,26 +127,26 @@ const ContactUs = () => {
                         onClick={() => copyToClipboard(contactInfo.phone, 'phone')}
                         onMouseEnter={(e) => {
                             e.target.style.transform = 'translateY(-5px)';
-                            e.target.style.boxShadow = '0 15px 30px rgba(79, 70, 229, 0.15)';
-                            e.target.style.background = 'rgba(79, 70, 229, 0.08)';
+                            e.target.style.boxShadow = '0 15px 30px rgba(47, 110, 115, 0.15)';
+                            e.target.style.background = 'rgba(47, 110, 115, 0.08)';
                         }}
                         onMouseLeave={(e) => {
                             e.target.style.transform = 'translateY(0)';
                             e.target.style.boxShadow = 'none';
-                            e.target.style.background = 'rgba(79, 70, 229, 0.05)';
+                            e.target.style.background = 'rgba(47, 110, 115, 0.05)';
                         }}
                         >
                             <div style={{
                                 width: '3.5rem',
                                 height: '3.5rem',
-                                background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                                background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                                 borderRadius: '50%',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 color: 'white',
                                 fontSize: '1.25rem',
-                                boxShadow: '0 8px 20px rgba(79, 70, 229, 0.3)'
+                                boxShadow: '0 8px 20px rgba(47, 110, 115, 0.3)'
                             }}>
                                 📞
                             </div>
@@ -154,7 +154,7 @@ const ContactUs = () => {
                                 <h3 style={{
                                     fontSize: '1.125rem',
                                     fontWeight: '600',
-                                    color: 'rgb(79 70 229)',
+                                    color: '#2f6e73',
                                     marginBottom: '0.25rem'
                                 }}>
                                     {language === 'ar' ? 'الهاتف' : 'Phone'}
@@ -173,18 +173,18 @@ const ContactUs = () => {
                             <div style={{
                                 width: '2.5rem',
                                 height: '2.5rem',
-                                background: copyStatus.phone ? '#10b981' : 'rgba(79, 70, 229, 0.1)',
+                                background: copyStatus.phone ? '#10b981' : 'rgba(47, 110, 115, 0.1)',
                                 borderRadius: '50%',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 transition: 'all 0.3s ease',
-                                border: '1px solid rgba(79, 70, 229, 0.2)',
+                                border: '1px solid rgba(47, 110, 115, 0.2)',
                                 flexShrink: 0
                             }}>
                                 <span style={{
                                     fontSize: '1.125rem',
-                                    color: copyStatus.phone ? 'white' : 'rgb(79 70 229)',
+                                    color: copyStatus.phone ? 'white' : '#2f6e73',
                                     transition: 'all 0.3s ease'
                                 }}>
                                     {copyStatus.phone ? '✓' : '📋'}
@@ -230,20 +230,20 @@ const ContactUs = () => {
                         onMouseLeave={(e) => {
                             e.target.style.transform = 'translateY(0)';
                             e.target.style.boxShadow = 'none';
-                            e.target.style.background = 'rgba(79, 70, 229, 0.05)';
+                            e.target.style.background = 'rgba(47, 110, 115, 0.05)';
                         }}
                         >
                             <div style={{
                                 width: '3.5rem',
                                 height: '3.5rem',
-                                background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                                background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                                 borderRadius: '50%',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 color: 'white',
                                 fontSize: '1.25rem',
-                                boxShadow: '0 8px 20px rgba(79, 70, 229, 0.3)'
+                                boxShadow: '0 8px 20px rgba(47, 110, 115, 0.3)'
                             }}>
                                 ✉️
                             </div>
@@ -251,7 +251,7 @@ const ContactUs = () => {
                                 <h3 style={{
                                     fontSize: '1.125rem',
                                     fontWeight: '600',
-                                    color: 'rgb(79 70 229)',
+                                    color: '#2f6e73',
                                     marginBottom: '0.25rem'
                                 }}>
                                     {language === 'ar' ? 'البريد الإلكتروني' : 'Email'}
@@ -271,18 +271,18 @@ const ContactUs = () => {
                             <div style={{
                                 width: '2.5rem',
                                 height: '2.5rem',
-                                background: copyStatus.email ? '#10b981' : 'rgba(79, 70, 229, 0.1)',
+                                background: copyStatus.email ? '#10b981' : 'rgba(47, 110, 115, 0.1)',
                                 borderRadius: '50%',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 transition: 'all 0.3s ease',
-                                border: '1px solid rgba(79, 70, 229, 0.2)',
+                                border: '1px solid rgba(47, 110, 115, 0.2)',
                                 flexShrink: 0
                             }}>
                                 <span style={{
                                     fontSize: '1.125rem',
-                                    color: copyStatus.email ? 'white' : 'rgb(79 70 229)',
+                                    color: copyStatus.email ? 'white' : '#2f6e73',
                                     transition: 'all 0.3s ease'
                                 }}>
                                     {copyStatus.email ? '✓' : '📋'}
@@ -311,15 +311,15 @@ const ContactUs = () => {
                     <div style={{
                         marginTop: '3rem',
                         padding: '2rem',
-                        background: 'rgba(79, 70, 229, 0.03)',
+                        background: 'rgba(47, 110, 115, 0.03)',
                         borderRadius: '1rem',
-                        border: '1px solid rgba(79, 70, 229, 0.1)',
+                        border: '1px solid rgba(47, 110, 115, 0.1)',
                         textAlign: 'center'
                     }}>
                         <h3 style={{
                             fontSize: '1.25rem',
                             fontWeight: '600',
-                            color: 'rgb(79 70 229)',
+                            color: '#2f6e73',
                             marginBottom: '1rem'
                         }}>
                             {language === 'ar' ? 'معلومات إضافية' : 'Additional Information'}

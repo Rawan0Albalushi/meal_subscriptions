@@ -49,9 +49,9 @@ function AppRoutes() {
                 width: '100%',
                 height: '100%',
                 backgroundImage: `
-                    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
-                    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
-                    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%)
+                    radial-gradient(circle at 20% 80%, rgba(47, 110, 115, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(182, 84, 73, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 40%, rgba(74, 138, 143, 0.1) 0%, transparent 50%)
                 `,
                 pointerEvents: 'none',
                 zIndex: -1

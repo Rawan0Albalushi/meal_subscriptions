@@ -88,7 +88,7 @@ const OrderStatusControl = ({ subscriptionId, itemId, currentStatus, onStatusUpd
                                 borderRadius: '0.5rem',
                                 border: 'none',
                                 background: option.value === currentStatus 
-                                    ? 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))'
+                                    ? 'linear-gradient(135deg, #2f6e73, #4a8a8f)'
                                     : 'rgb(249 250 251)',
                                 color: option.value === currentStatus ? 'white' : 'rgb(75 85 99)',
                                 fontSize: '0.75rem',

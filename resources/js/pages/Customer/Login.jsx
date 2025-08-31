@@ -329,7 +329,7 @@ const Login = () => {
             height: '3.5rem', 
             width: '3.5rem', 
             borderRadius: '1.25rem', 
-            background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -337,7 +337,7 @@ const Login = () => {
             fontWeight: 'bold',
             fontSize: '1.75rem',
             margin: '0 auto 1.5rem',
-            boxShadow: '0 10px 25px rgba(79, 70, 229, 0.3)'
+            boxShadow: '0 10px 25px rgba(47, 110, 115, 0.3)'
           }}>
             {language === 'ar' ? 'م' : 'M'}
           </div>
@@ -345,7 +345,7 @@ const Login = () => {
             fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', 
             fontWeight: 'bold', 
             marginBottom: '1rem',
-            color: 'rgb(79 70 229)'
+            color: '#2f6e73'
           }}>
             {t('welcomeTo')}
             <span style={{ display: 'block', marginTop: '0.5rem' }}>
@@ -442,8 +442,8 @@ const Login = () => {
                 padding: '0.625rem 0.75rem',
                 borderRadius: '0.5rem',
                 border: 'none',
-                background: isLogin ? 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))' : 'transparent',
-                color: isLogin ? 'white' : 'rgb(79 70 229)',
+                background: isLogin ? 'linear-gradient(135deg, #2f6e73, #4a8a8f)' : 'transparent',
+                color: isLogin ? 'white' : '#2f6e73',
                 fontWeight: '600',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
@@ -459,8 +459,8 @@ const Login = () => {
                 padding: '0.625rem 0.75rem',
                 borderRadius: '0.5rem',
                 border: 'none',
-                background: !isLogin ? 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))' : 'transparent',
-                color: !isLogin ? 'white' : 'rgb(79 70 229)',
+                background: !isLogin ? 'linear-gradient(135deg, #2f6e73, #4a8a8f)' : 'transparent',
+                color: !isLogin ? 'white' : '#2f6e73',
                 fontWeight: '600',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
@@ -474,7 +474,7 @@ const Login = () => {
           <h2 style={{ 
             fontSize: 'clamp(1.25rem, 3vw, 1.875rem)', 
             fontWeight: 'bold', 
-            color: 'rgb(79 70 229)', 
+            color: '#2f6e73', 
             marginBottom: '0.5rem',
             textAlign: 'center'
           }}>
@@ -696,7 +696,7 @@ const Login = () => {
                   <input type="checkbox" style={{ width: '0.875rem', height: '0.875rem' }} />
                   {t('rememberMe')}
                 </label>
-                <a href="#" style={{ color: 'rgb(79 70 229)', textDecoration: 'none', fontSize: '0.75rem', fontWeight: '500' }}>
+                <a href="#" style={{ color: '#2f6e73', textDecoration: 'none', fontSize: '0.75rem', fontWeight: '500' }}>
                   {t('forgotPassword')}
                 </a>
               </div>
@@ -709,7 +709,7 @@ const Login = () => {
                 width: '100%',
                 background: isSubmitting 
                   ? 'rgb(156 163 175)' 
-                  : 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                  : 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                 color: 'white',
                 padding: '0.875rem',
                 borderRadius: '0.625rem',
@@ -719,7 +719,7 @@ const Login = () => {
                 cursor: isSubmitting ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s ease',
                 marginTop: '0.75rem',
-                boxShadow: isSubmitting ? 'none' : '0 4px 15px rgba(79, 70, 229, 0.3)'
+                boxShadow: isSubmitting ? 'none' : '0 4px 15px rgba(47, 110, 115, 0.3)'
               }}
             >
               {isSubmitting 

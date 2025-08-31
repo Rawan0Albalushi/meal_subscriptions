@@ -43,7 +43,7 @@ const MySubscriptions = () => {
             case 'active':
                 return 'from-green-500 to-emerald-500';
             case 'completed':
-                return 'from-blue-500 to-indigo-500';
+                return 'from-teal-500 to-teal-600';
             case 'cancelled':
                 return 'from-red-500 to-pink-500';
             default:
@@ -113,7 +113,7 @@ const MySubscriptions = () => {
                         style={{
                             padding: 'clamp(0.5rem, 3vw, 0.75rem) clamp(1rem, 4vw, 1.5rem)',
                             borderRadius: '0.75rem',
-                            background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                             color: 'white',
                             border: 'none',
                             fontSize: 'clamp(0.875rem, 4vw, 1rem)',
@@ -146,7 +146,7 @@ const MySubscriptions = () => {
                         left: '10%',
                         width: '100px',
                         height: '100px',
-                        background: 'radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, transparent 70%)',
+                        background: 'radial-gradient(circle, rgba(47, 110, 115, 0.1) 0%, transparent 70%)',
                         borderRadius: '50%'
                     }}></div>
                     <div style={{
@@ -155,7 +155,7 @@ const MySubscriptions = () => {
                         right: '15%',
                         width: '80px',
                         height: '80px',
-                        background: 'radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%)',
+                        background: 'radial-gradient(circle, rgba(182, 84, 73, 0.08) 0%, transparent 70%)',
                         borderRadius: '50%'
                     }}></div>
                     <div style={{
@@ -164,7 +164,7 @@ const MySubscriptions = () => {
                         left: '20%',
                         width: '120px',
                         height: '120px',
-                        background: 'radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 70%)',
+                        background: 'radial-gradient(circle, rgba(74, 138, 143, 0.06) 0%, transparent 70%)',
                         borderRadius: '50%'
                     }}></div>
                 </div>
@@ -176,7 +176,7 @@ const MySubscriptions = () => {
                             fontWeight: 'bold', 
                             lineHeight: '1.2', 
                             marginBottom: 'clamp(1rem, 4vw, 1.5rem)',
-                            background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             backgroundClip: 'text'
@@ -219,7 +219,7 @@ const MySubscriptions = () => {
                                 fontSize: 'clamp(1.25rem, 5vw, 2rem)', 
                                 fontWeight: 'bold', 
                                 marginBottom: '1rem',
-                                color: 'rgb(79 70 229)'
+                                color: '#2f6e73'
                             }}>
                                 {language === 'ar' ? 'لا توجد اشتراكات' : 'No Subscriptions'}
                             </h2>
@@ -240,7 +240,7 @@ const MySubscriptions = () => {
                                 display: 'inline-block',
                                 padding: 'clamp(0.5rem, 3vw, 0.75rem) clamp(1rem, 4vw, 1.5rem)',
                                 borderRadius: '0.75rem',
-                                background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                                background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                                 color: 'white',
                                 textDecoration: 'none',
                                 fontSize: 'clamp(0.875rem, 4vw, 1rem)',
@@ -293,7 +293,7 @@ const MySubscriptions = () => {
                                         <div style={{
                                             width: 'clamp(2.5rem, 8vw, 3rem)',
                                             height: 'clamp(2.5rem, 8vw, 3rem)',
-                                            background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                                             borderRadius: '0.75rem',
                                             display: 'flex',
                                             alignItems: 'center',

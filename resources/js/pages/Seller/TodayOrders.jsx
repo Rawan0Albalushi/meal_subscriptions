@@ -141,7 +141,7 @@ const TodayOrders = () => {
             case 'pending':
                 return 'from-yellow-500 to-orange-500';
             case 'preparing':
-                return 'from-blue-500 to-indigo-500';
+                return 'from-teal-500 to-teal-600';
             case 'delivered':
                 return 'from-green-500 to-emerald-500';
             case 'cancelled':

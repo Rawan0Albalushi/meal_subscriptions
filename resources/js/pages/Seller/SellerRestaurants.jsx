@@ -397,7 +397,7 @@ const SellerRestaurants = () => {
                     onClick={() => setActiveTab('list')}
                     style={{
                         padding: '0.75rem 1.5rem',
-                        background: activeTab === 'list' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'transparent',
+                        background: activeTab === 'list' ? 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)' : 'transparent',
                         color: activeTab === 'list' ? 'white' : '#6b7280',
                         border: 'none',
                         borderRadius: '0.5rem',
@@ -414,7 +414,7 @@ const SellerRestaurants = () => {
                         onClick={() => setActiveTab('addresses')}
                         style={{
                             padding: '0.75rem 1.5rem',
-                            background: activeTab === 'addresses' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'transparent',
+                            background: activeTab === 'addresses' ? 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)' : 'transparent',
                             color: activeTab === 'addresses' ? 'white' : '#6b7280',
                             border: 'none',
                             borderRadius: '0.5rem',
@@ -519,7 +519,7 @@ const SellerRestaurants = () => {
                         }}
                         style={{
                             padding: '0.75rem 1.5rem',
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
                             color: 'white',
                             border: 'none',
                             borderRadius: '0.75rem',
@@ -581,8 +581,8 @@ const SellerRestaurants = () => {
                                      width: '5rem',
                                      height: '4rem',
                                      background: restaurant.is_active 
-                                         ? 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
-                                         : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                                         ? 'linear-gradient(135deg, #2f6e73 0%, #4a8a8f 100%)'
+                                         : 'linear-gradient(135deg, #b65449 0%, #c86a5a 100%)',
                                      borderRadius: '12px',
                                      display: 'flex',
                                      alignItems: 'center',
@@ -614,7 +614,7 @@ const SellerRestaurants = () => {
                                          <div style={{
                                              width: '100%',
                                              height: '100%',
-                                             background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                                             background: 'linear-gradient(135deg, #2f6e73 0%, #4a8a8f 100%)',
                                              display: 'flex',
                                              alignItems: 'center',
                                              justifyContent: 'center',
@@ -895,7 +895,7 @@ const SellerRestaurants = () => {
                         }}
                         style={{
                             padding: '0.75rem 1.5rem',
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
                             color: 'white',
                             border: 'none',
                             borderRadius: '0.75rem',
@@ -1463,7 +1463,7 @@ const SellerRestaurants = () => {
                                     type="submit"
                                     style={{
                                         padding: '0.75rem 1.5rem',
-                                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                        background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
                                         color: 'white',
                                         border: 'none',
                                         borderRadius: '0.75rem',

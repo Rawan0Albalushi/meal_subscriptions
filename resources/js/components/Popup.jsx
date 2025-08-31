@@ -32,7 +32,7 @@ const Popup = ({
         switch (type) {
             case 'success':
                 return {
-                    bg: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                    bg: 'linear-gradient(135deg, #2f6e73 0%, #4a8a8f 100%)',
                     border: 'rgba(34, 197, 94, 0.2)',
                     text: 'rgb(34 197 94)'
                 };

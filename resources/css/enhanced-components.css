@@ -77,10 +77,10 @@
   right: 0;
   height: 4px;
   background: linear-gradient(90deg, 
-    rgb(79 70 229), 
-    rgb(99 102 241), 
-    rgb(139 92 246), 
-    rgb(168 85 247));
+    #2f6e73, 
+    #4a8a8f, 
+    #b65449, 
+    #c86a5a);
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
@@ -119,8 +119,8 @@
   right: 0;
   bottom: 0;
   background: linear-gradient(135deg, 
-    rgba(79, 70, 229, 0.05) 0%, 
-    rgba(139, 92, 246, 0.05) 100%);
+    rgba(47, 110, 115, 0.05) 0%, 
+    rgba(182, 84, 73, 0.05) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -134,19 +134,19 @@
   box-shadow: 
     0 20px 40px rgba(31, 38, 135, 0.15),
     0 10px 20px rgba(0, 0, 0, 0.1);
-  border-color: rgba(79, 70, 229, 0.3);
+  border-color: rgba(47, 110, 115, 0.3);
 }
 
 /* Price Tag Enhancement */
 .price-tag-enhanced {
   background: linear-gradient(135deg, 
-    rgba(79, 70, 229, 0.1) 0%, 
-    rgba(139, 92, 246, 0.1) 100%);
-  border: 1px solid rgba(79, 70, 229, 0.2);
+    rgba(47, 110, 115, 0.1) 0%, 
+    rgba(182, 84, 73, 0.1) 100%);
+  border: 1px solid rgba(47, 110, 115, 0.2);
   border-radius: 9999px;
   padding: 0.5rem 1rem;
   font-weight: 600;
-  color: rgb(79 70 229);
+  color: #2f6e73;
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -172,10 +172,10 @@
 
 .price-tag-enhanced:hover {
   background: linear-gradient(135deg, 
-    rgba(79, 70, 229, 0.15) 0%, 
-    rgba(139, 92, 246, 0.15) 100%);
+    rgba(47, 110, 115, 0.15) 0%, 
+    rgba(182, 84, 73, 0.15) 100%);
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 4px 12px rgba(47, 110, 115, 0.2);
 }
 
 /* Rating Badge Enhancement */
@@ -240,9 +240,9 @@
 }
 
 .search-bar-enhanced:focus-within {
-  border-color: rgb(79 70 229);
+  border-color: #2f6e73;
   box-shadow: 
-    0 8px 25px rgba(79, 70, 229, 0.15),
+    0 8px 25px rgba(47, 110, 115, 0.15),
     0 4px 12px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
 }
@@ -270,7 +270,7 @@
   height: 100%;
   background: linear-gradient(90deg, 
     transparent, 
-    rgba(79, 70, 229, 0.1), 
+    rgba(47, 110, 115, 0.1), 
     transparent);
   transition: left 0.6s ease;
 }
@@ -280,21 +280,21 @@
 }
 
 .filter-button-enhanced:hover {
-  background: rgba(79, 70, 229, 0.1);
-  border-color: rgba(79, 70, 229, 0.3);
-  color: rgb(79 70 229);
+  background: rgba(47, 110, 115, 0.1);
+  border-color: rgba(47, 110, 115, 0.3);
+  color: #2f6e73;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+  box-shadow: 0 4px 12px rgba(47, 110, 115, 0.15);
 }
 
 .filter-button-enhanced.active {
   background: linear-gradient(135deg, 
-    rgba(79, 70, 229, 0.1) 0%, 
-    rgba(139, 92, 246, 0.1) 100%);
-  border-color: rgba(79, 70, 229, 0.4);
-  color: rgb(79 70 229);
+    rgba(47, 110, 115, 0.1) 0%, 
+    rgba(182, 84, 73, 0.1) 100%);
+  border-color: rgba(47, 110, 115, 0.4);
+  color: #2f6e73;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 4px 12px rgba(47, 110, 115, 0.2);
 }
 
 /* Pagination Enhancement */
@@ -328,7 +328,7 @@
   height: 100%;
   background: linear-gradient(90deg, 
     transparent, 
-    rgba(79, 70, 229, 0.1), 
+    rgba(47, 110, 115, 0.1), 
     transparent);
   transition: left 0.6s ease;
 }
@@ -338,21 +338,21 @@
 }
 
 .pagination-item-enhanced:hover {
-  background: rgba(79, 70, 229, 0.1);
-  border-color: rgba(79, 70, 229, 0.3);
-  color: rgb(79 70 229);
+  background: rgba(47, 110, 115, 0.1);
+  border-color: rgba(47, 110, 115, 0.3);
+  color: #2f6e73;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+  box-shadow: 0 4px 12px rgba(47, 110, 115, 0.15);
 }
 
 .pagination-item-enhanced.active {
   background: linear-gradient(135deg, 
-    rgba(79, 70, 229, 0.15) 0%, 
-    rgba(139, 92, 246, 0.15) 100%);
-  border-color: rgba(79, 70, 229, 0.4);
-  color: rgb(79 70 229);
+    rgba(47, 110, 115, 0.15) 0%, 
+    rgba(182, 84, 73, 0.15) 100%);
+  border-color: rgba(47, 110, 115, 0.4);
+  color: #2f6e73;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 4px 12px rgba(47, 110, 115, 0.2);
 }
 
 /* Loading State Enhancement */

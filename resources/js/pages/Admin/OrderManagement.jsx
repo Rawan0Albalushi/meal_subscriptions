@@ -97,7 +97,7 @@ const OrderManagement = () => {
                             fontWeight: 'bold', 
                             lineHeight: '1.2', 
                             marginBottom: '1.5rem',
-                            background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             backgroundClip: 'text'
@@ -144,7 +144,7 @@ const OrderManagement = () => {
                                     borderRadius: '1rem',
                                     border: 'none',
                                     background: filter === option.value 
-                                        ? 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))'
+                                        ? 'linear-gradient(135deg, #2f6e73, #4a8a8f)'
                                         : 'rgba(255, 255, 255, 0.9)',
                                     color: filter === option.value ? 'white' : 'rgb(75 85 99)',
                                     fontSize: '0.875rem',
@@ -152,7 +152,7 @@ const OrderManagement = () => {
                                     cursor: 'pointer',
                                     transition: 'all 0.3s ease',
                                     boxShadow: filter === option.value 
-                                        ? '0 8px 25px rgba(79, 70, 229, 0.3)'
+                                        ? '0 8px 25px rgba(47, 110, 115, 0.3)'
                                         : '0 4px 12px rgba(0, 0, 0, 0.1)'
                                 }}
                                 onMouseEnter={(e) => {
@@ -243,7 +243,7 @@ const OrderManagement = () => {
                                         <div style={{
                                             width: '3rem',
                                             height: '3rem',
-                                            background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                                             borderRadius: '0.75rem',
                                             display: 'flex',
                                             alignItems: 'center',
@@ -294,7 +294,7 @@ const OrderManagement = () => {
                                                         <div style={{
                                                             width: '2rem',
                                                             height: '2rem',
-                                                            background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                                                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                                                             borderRadius: '0.5rem',
                                                             display: 'flex',
                                                             alignItems: 'center',
@@ -341,15 +341,15 @@ const OrderManagement = () => {
                                     {/* Customer Info */}
                                     <div style={{
                                         padding: '1rem',
-                                        background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(99, 102, 241, 0.05))',
+                                        background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05), rgba(74, 138, 143, 0.05))',
                                         borderRadius: '0.75rem',
-                                        border: '1px solid rgba(79, 70, 229, 0.1)'
+                                        border: '1px solid rgba(47, 110, 115, 0.1)'
                                     }}>
                                         <h5 style={{ 
                                             fontSize: '0.875rem', 
                                             fontWeight: '600', 
                                             marginBottom: '0.5rem',
-                                            color: 'rgb(79 70 229)'
+                                            color: '#2f6e73'
                                         }}>
                                             {language === 'ar' ? 'معلومات العميل:' : 'Customer Info:'}
                                         </h5>

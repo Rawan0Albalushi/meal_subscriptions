@@ -40,7 +40,7 @@ const AdminLayout = () => {
                             <h1 style={{
                                 fontSize: '1.5rem',
                                 fontWeight: 'bold',
-                                color: 'rgb(79 70 229)'
+                                color: '#2f6e73'
                             }}>
                                 لوحة تحكم المدير
                             </h1>
@@ -56,14 +56,14 @@ const AdminLayout = () => {
                                         padding: '0.5rem 1rem',
                                         borderRadius: '0.5rem',
                                         textDecoration: 'none',
-                                        color: isActive('/admin/contact-information') ? 'white' : 'rgb(79 70 229)',
-                                        backgroundColor: isActive('/admin/contact-information') ? 'rgb(79 70 229)' : 'transparent',
+                                        color: isActive('/admin/contact-information') ? 'white' : '#2f6e73',
+                                        backgroundColor: isActive('/admin/contact-information') ? '#2f6e73' : 'transparent',
                                         fontWeight: isActive('/admin/contact-information') ? '600' : '500',
                                         transition: 'all 0.3s ease'
                                     }}
                                     onMouseEnter={(e) => {
                                         if (!isActive('/admin/contact-information')) {
-                                            e.target.style.backgroundColor = 'rgba(79, 70, 229, 0.1)';
+                                            e.target.style.backgroundColor = 'rgba(47, 110, 115, 0.1)';
                                         }
                                     }}
                                     onMouseLeave={(e) => {
@@ -113,7 +113,7 @@ const AdminLayout = () => {
                             <h2 style={{
                                 fontSize: '2rem',
                                 fontWeight: 'bold',
-                                color: 'rgb(79 70 229)',
+                                color: '#2f6e73',
                                 marginBottom: '1rem'
                             }}>
                                 لوحة تحكم المدير
@@ -134,7 +134,7 @@ const AdminLayout = () => {
                                     to="/admin/contact-information"
                                     style={{
                                         padding: '0.75rem 1.5rem',
-                                        backgroundColor: 'rgb(79 70 229)',
+                                        backgroundColor: '#2f6e73',
                                         color: 'white',
                                         textDecoration: 'none',
                                         borderRadius: '0.5rem',
@@ -146,7 +146,7 @@ const AdminLayout = () => {
                                         e.target.style.transform = 'translateY(-2px)';
                                     }}
                                     onMouseLeave={(e) => {
-                                        e.target.style.backgroundColor = 'rgb(79 70 229)';
+                                        e.target.style.backgroundColor = '#2f6e73';
                                         e.target.style.transform = 'translateY(0)';
                                     }}
                                 >

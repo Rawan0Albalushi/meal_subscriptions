@@ -116,7 +116,7 @@ const ContactInformationManagement = () => {
                     <h2 style={{
                         fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
                         fontWeight: 'bold',
-                        color: 'rgb(79 70 229)',
+                        color: '#2f6e73',
                         marginBottom: '2rem',
                         textAlign: 'center'
                     }}>
@@ -149,7 +149,7 @@ const ContactInformationManagement = () => {
                                 display: 'block',
                                 marginBottom: '0.5rem',
                                 fontWeight: '600',
-                                color: 'rgb(79 70 229)',
+                                color: '#2f6e73',
                                 fontSize: '1.125rem'
                             }}>
                                 {language === 'ar' ? 'رقم الهاتف' : 'Phone Number'}
@@ -164,7 +164,7 @@ const ContactInformationManagement = () => {
                                     width: '100%',
                                     padding: '1rem',
                                     borderRadius: '0.75rem',
-                                    border: '2px solid rgba(79, 70, 229, 0.2)',
+                                    border: '2px solid rgba(47, 110, 115, 0.2)',
                                     fontSize: '1rem',
                                     direction: 'ltr',
                                     textAlign: 'left',
@@ -172,11 +172,11 @@ const ContactInformationManagement = () => {
                                     transition: 'all 0.3s ease'
                                 }}
                                 onFocus={(e) => {
-                                    e.target.style.borderColor = 'rgb(79 70 229)';
+                                    e.target.style.borderColor = '#2f6e73';
                                     e.target.style.backgroundColor = 'white';
                                 }}
                                 onBlur={(e) => {
-                                    e.target.style.borderColor = 'rgba(79, 70, 229, 0.2)';
+                                    e.target.style.borderColor = 'rgba(47, 110, 115, 0.2)';
                                     e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
                                 }}
                             />
@@ -187,7 +187,7 @@ const ContactInformationManagement = () => {
                                 display: 'block',
                                 marginBottom: '0.5rem',
                                 fontWeight: '600',
-                                color: 'rgb(79 70 229)',
+                                color: '#2f6e73',
                                 fontSize: '1.125rem'
                             }}>
                                 {language === 'ar' ? 'البريد الإلكتروني' : 'Email Address'}
@@ -202,7 +202,7 @@ const ContactInformationManagement = () => {
                                     width: '100%',
                                     padding: '1rem',
                                     borderRadius: '0.75rem',
-                                    border: '2px solid rgba(79, 70, 229, 0.2)',
+                                    border: '2px solid rgba(47, 110, 115, 0.2)',
                                     fontSize: '1rem',
                                     direction: 'ltr',
                                     textAlign: 'left',
@@ -210,11 +210,11 @@ const ContactInformationManagement = () => {
                                     transition: 'all 0.3s ease'
                                 }}
                                 onFocus={(e) => {
-                                    e.target.style.borderColor = 'rgb(79 70 229)';
+                                    e.target.style.borderColor = '#2f6e73';
                                     e.target.style.backgroundColor = 'white';
                                 }}
                                 onBlur={(e) => {
-                                    e.target.style.borderColor = 'rgba(79, 70, 229, 0.2)';
+                                    e.target.style.borderColor = 'rgba(47, 110, 115, 0.2)';
                                     e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
                                 }}
                             />
@@ -226,7 +226,7 @@ const ContactInformationManagement = () => {
                             style={{
                                 width: '100%',
                                 padding: '1rem 2rem',
-                                backgroundColor: saving ? 'rgb(156 163 175)' : 'rgb(79 70 229)',
+                                backgroundColor: saving ? 'rgb(156 163 175)' : '#2f6e73',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '0.75rem',
@@ -238,14 +238,14 @@ const ContactInformationManagement = () => {
                             }}
                             onMouseEnter={(e) => {
                                 if (!saving) {
-                                    e.target.style.backgroundColor = 'rgb(67 56 202)';
+                                    e.target.style.backgroundColor = '#1f5a5f';
                                     e.target.style.transform = 'translateY(-2px)';
                                     e.target.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.15)';
                                 }
                             }}
                             onMouseLeave={(e) => {
                                 if (!saving) {
-                                    e.target.style.backgroundColor = 'rgb(79 70 229)';
+                                    e.target.style.backgroundColor = '#2f6e73';
                                     e.target.style.transform = 'translateY(0)';
                                     e.target.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
                                 }

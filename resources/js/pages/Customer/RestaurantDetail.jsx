@@ -872,7 +872,7 @@ const RestaurantDetail = () => {
         <div style={{ fontSize: 'clamp(2rem, 8vw, 3rem)' }}>🍽️</div>
         <div style={{ 
           fontSize: 'clamp(1rem, 4vw, 1.25rem)', 
-          color: 'rgb(79 70 229)', 
+          color: '#2f6e73', 
           fontWeight: '600',
           textAlign: 'center'
         }}>
@@ -924,22 +924,22 @@ const RestaurantDetail = () => {
           style={{
             padding: 'clamp(0.5rem, 3vw, 0.75rem) clamp(1rem, 4vw, 1.5rem)',
             borderRadius: '0.5rem',
-            background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
             color: 'white',
             border: 'none',
             fontSize: 'clamp(0.75rem, 3vw, 0.875rem)',
             fontWeight: '600',
             cursor: 'pointer',
             transition: 'all 0.2s ease',
-            boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)'
+            boxShadow: '0 4px 12px rgba(47, 110, 115, 0.3)'
           }}
           onMouseEnter={(e) => {
             e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 6px 16px rgba(79, 70, 229, 0.4)';
+            e.target.style.boxShadow = '0 6px 16px rgba(47, 110, 115, 0.4)';
           }}
           onMouseLeave={(e) => {
             e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
+            e.target.style.boxShadow = '0 4px 12px rgba(47, 110, 115, 0.3)';
           }}
         >
           🔄 {t('retry')}
@@ -981,22 +981,22 @@ const RestaurantDetail = () => {
           style={{
             padding: '0.75rem 1.5rem',
             borderRadius: '0.5rem',
-            background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
             color: 'white',
             border: 'none',
             fontSize: '0.875rem',
             fontWeight: '600',
             cursor: 'pointer',
             transition: 'all 0.2s ease',
-            boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)'
+            boxShadow: '0 4px 12px rgba(47, 110, 115, 0.3)'
           }}
           onMouseEnter={(e) => {
             e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 6px 16px rgba(79, 70, 229, 0.4)';
+            e.target.style.boxShadow = '0 6px 16px rgba(47, 110, 115, 0.4)';
           }}
           onMouseLeave={(e) => {
             e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
+            e.target.style.boxShadow = '0 4px 12px rgba(47, 110, 115, 0.3)';
           }}
         >
           🏪 {t('backToRestaurants')}
@@ -1115,7 +1115,7 @@ const RestaurantDetail = () => {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                    background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                     display: 'none',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -1129,7 +1129,7 @@ const RestaurantDetail = () => {
                 <div style={{
                   width: '100%',
                   height: '100%',
-                  background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                  background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -1150,8 +1150,8 @@ const RestaurantDetail = () => {
                 fontSize: 'clamp(0.875rem, 3vw, 1.25rem)', 
                 fontWeight: 'bold', 
                 marginBottom: 'clamp(0.25rem, 1vw, 0.375rem)',
-                color: 'rgb(79 70 229)',
-                textShadow: '0 1px 2px rgba(79, 70, 229, 0.1)'
+                color: '#2f6e73',
+                textShadow: '0 1px 2px rgba(47, 110, 115, 0.1)'
               }}>
                 {restaurant.name || (language === 'ar' ? restaurant.name_ar : restaurant.name_en)}
               </h1>
@@ -1263,7 +1263,7 @@ const RestaurantDetail = () => {
             fontSize: 'clamp(1.25rem, 4vw, 2rem)', 
             fontWeight: 'bold', 
             marginBottom: 'clamp(0.75rem, 3vw, 1rem)',
-            color: 'rgb(79 70 229)',
+            color: '#2f6e73',
             textAlign: 'center'
           }}>
             {t('selectSubscriptionType')}
@@ -1272,7 +1272,7 @@ const RestaurantDetail = () => {
           {/* Selection Instructions */}
           <div style={{
             background: 'rgba(255, 255, 255, 0.9)',
-            border: '2px solid rgba(79, 70, 229, 0.2)',
+            border: '2px solid rgba(47, 110, 115, 0.2)',
             borderRadius: 'clamp(0.5rem, 2vw, 1rem)',
             padding: 'clamp(0.75rem, 3vw, 1rem) clamp(1rem, 4vw, 1.5rem)',
             marginBottom: 'clamp(1.5rem, 4vw, 2rem)',
@@ -1289,7 +1289,7 @@ const RestaurantDetail = () => {
               <span style={{ 
                 fontSize: '1rem', 
                 fontWeight: '600', 
-                color: 'rgb(79, 70, 229)'
+                color: '#2f6e73'
               }}>
                 {language === 'ar' ? 'اختر نوع الاشتراك المناسب لك' : 'Choose the subscription type that suits you'}
               </span>
@@ -1344,12 +1344,12 @@ const RestaurantDetail = () => {
                 icon: subscriptionType.type === 'weekly' ? '📅' : '📆',
 
                 gradient: subscriptionType.type === 'weekly' 
-                  ? 'linear-gradient(135deg, #10b981, #059669)' 
-                  : 'linear-gradient(135deg, #6366f1, #4f46e5)',
+                  ? 'linear-gradient(135deg, #4a8a8f, #2f6e73)' 
+                  : 'linear-gradient(135deg, #b65449, #a54a3f)',
                 bgGradient: subscriptionType.type === 'weekly' 
-                  ? 'linear-gradient(135deg, #ecfdf5, #d1fae5)' 
-                  : 'linear-gradient(135deg, #eef2ff, #e0e7ff)',
-                borderColor: subscriptionType.type === 'weekly' ? '#10b981' : '#6366f1',
+                  ? 'linear-gradient(135deg, #f0f9ff, #e0f2fe)' 
+                  : 'linear-gradient(135deg, #fef2f2, #fee2e2)',
+                borderColor: subscriptionType.type === 'weekly' ? '#2f6e73' : '#b65449',
                 deliveryPrice: subscriptionType.delivery_price || 0
               };
               
@@ -1369,7 +1369,7 @@ const RestaurantDetail = () => {
                     : '0 8px 25px rgba(0, 0, 0, 0.12)',
                   border: selectedSubscriptionType?.type === subscription.type 
                     ? `3px solid ${subscription.borderColor}` 
-                    : '2px solid rgba(79, 70, 229, 0.2)',
+                    : '2px solid rgba(47, 110, 115, 0.2)',
                   transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                   cursor: 'pointer',
                   position: 'relative',
@@ -1395,7 +1395,7 @@ const RestaurantDetail = () => {
                   if (selectedSubscriptionType?.type !== subscription.type) {
                     e.target.style.transform = 'translateY(0) scale(1)';
                     e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.12)';
-                    e.target.style.borderColor = 'rgba(79, 70, 229, 0.2)';
+                    e.target.style.borderColor = 'rgba(47, 110, 115, 0.2)';
                     e.target.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95))';
                   }
                 }}
@@ -1448,8 +1448,8 @@ const RestaurantDetail = () => {
                     position: 'absolute',
                     top: '1rem',
                     right: '1rem',
-                    background: 'rgba(79, 70, 229, 0.1)',
-                    color: 'rgb(79, 70, 229)',
+                    background: 'rgba(47, 110, 115, 0.1)',
+                    color: '#2f6e73',
                     borderRadius: '50%',
                     width: '2rem',
                     height: '2rem',
@@ -1459,7 +1459,7 @@ const RestaurantDetail = () => {
                     fontSize: '1rem',
                     fontWeight: 'bold',
                     zIndex: 2,
-                    border: '2px solid rgba(79, 70, 229, 0.3)',
+                    border: '2px solid rgba(47, 110, 115, 0.3)',
                     animation: 'bounce 2s infinite'
                   }}>
                     👆
@@ -1572,8 +1572,8 @@ const RestaurantDetail = () => {
                     </div>
                   ) : (
                     <div className="selection-button" style={{
-                      background: 'rgba(79, 70, 229, 0.1)',
-                      color: 'rgb(79, 70, 229)',
+                      background: 'rgba(47, 110, 115, 0.1)',
+                      color: '#2f6e73',
                       padding: '0.75rem 1.25rem',
                       borderRadius: '2rem',
                       fontSize: '1rem',
@@ -1581,7 +1581,7 @@ const RestaurantDetail = () => {
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '0.5rem',
-                      border: '1px solid rgba(79, 70, 229, 0.3)',
+                      border: '1px solid rgba(47, 110, 115, 0.3)',
                       transition: 'all 0.3s ease'
                     }}>
                       <span>👆</span>
@@ -1619,7 +1619,7 @@ const RestaurantDetail = () => {
               fontSize: 'clamp(1.5rem, 4vw, 2rem)', 
               fontWeight: 'bold', 
               marginBottom: '1rem',
-              color: 'rgb(79 70 229)',
+              color: '#2f6e73',
               textAlign: 'center'
             }}>
               {t('selectMealForEachDay')}
@@ -2228,7 +2228,7 @@ const RestaurantDetail = () => {
                         <h3 style={{ 
                           fontSize: '1.25rem', 
                           fontWeight: '600', 
-                          color: 'rgb(79 70 229)',
+                          color: '#2f6e73',
                           margin: 0,
                           marginBottom: '0.25rem'
                         }}>
@@ -2244,7 +2244,7 @@ const RestaurantDetail = () => {
                         {selectedSubscriptionType?.type === 'monthly' && day.weekNumber && (
                           <div style={{
                             fontSize: '0.75rem',
-                            color: day.weekNumber === 1 ? '#059669' : day.weekNumber === 2 ? '#2563eb' : day.weekNumber === 3 ? '#7c3aed' : '#db2777',
+                            color: day.weekNumber === 1 ? '#2f6e73' : day.weekNumber === 2 ? '#4a8a8f' : day.weekNumber === 3 ? '#b65449' : '#c86a5a',
                             fontWeight: '600',
                             marginTop: '0.25rem'
                           }}>
@@ -2352,8 +2352,8 @@ const RestaurantDetail = () => {
                                 position: 'absolute',
                                 top: '0.75rem',
                                 right: '0.75rem',
-                                background: 'rgba(79, 70, 229, 0.1)',
-                                color: 'rgb(79, 70, 229)',
+                                background: 'rgba(47, 110, 115, 0.1)',
+                                color: '#2f6e73',
                                 borderRadius: '50%',
                                 width: '2rem',
                                 height: '2rem',
@@ -2362,7 +2362,7 @@ const RestaurantDetail = () => {
                                 justifyContent: 'center',
                                 fontSize: '1rem',
                                 fontWeight: 'bold',
-                                border: '2px solid rgba(79, 70, 229, 0.3)',
+                                border: '2px solid rgba(47, 110, 115, 0.3)',
                                 animation: 'bounce 2s infinite',
                                 zIndex: 10
                               }}>
@@ -2444,7 +2444,7 @@ const RestaurantDetail = () => {
                                   fontSize: 'clamp(0.875rem, 3vw, 1rem)', 
                                   fontWeight: '600', 
                                   marginBottom: 'clamp(0.25rem, 1vw, 0.375rem)',
-                                  color: 'rgb(79 70 229)',
+                                  color: '#2f6e73',
                                   textAlign: 'center',
                                   lineHeight: '1.3'
                                 }}>
@@ -2474,7 +2474,7 @@ const RestaurantDetail = () => {
                                   borderRadius: 'clamp(0.375rem, 1.5vw, 0.5rem)',
                                   background: isSelected 
                                     ? 'linear-gradient(135deg, #10b981, #059669)' 
-                                    : 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                                    : 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                                   color: 'white',
                                   border: 'none',
                                   fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
@@ -2644,24 +2644,24 @@ const RestaurantDetail = () => {
                   style={{
                     padding: '1.25rem 2.5rem',
                     borderRadius: '1rem',
-                    background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                    background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                     color: 'white',
                     border: 'none',
                     fontSize: '1.125rem',
                     fontWeight: '700',
                     cursor: 'pointer',
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    boxShadow: '0 10px 25px rgba(79, 70, 229, 0.3)',
+                    boxShadow: '0 10px 25px rgba(47, 110, 115, 0.3)',
                     position: 'relative',
                     overflow: 'hidden'
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.transform = 'translateY(-3px) scale(1.02)';
-                    e.target.style.boxShadow = '0 15px 35px rgba(79, 70, 229, 0.4)';
+                    e.target.style.boxShadow = '0 15px 35px rgba(47, 110, 115, 0.4)';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.transform = 'translateY(0) scale(1)';
-                    e.target.style.boxShadow = '0 10px 25px rgba(79, 70, 229, 0.3)';
+                    e.target.style.boxShadow = '0 10px 25px rgba(47, 110, 115, 0.3)';
                   }}
                 >
                   <span style={{ position: 'relative', zIndex: 2 }}>
@@ -2790,7 +2790,7 @@ const RestaurantDetail = () => {
               <h3 style={{
                 fontSize: '1.5rem',
                 fontWeight: 'bold',
-                color: 'rgb(79 70 229)',
+                color: '#2f6e73',
                 marginBottom: '1rem'
               }}>
                 {t('loginRequired')}
@@ -2846,23 +2846,23 @@ const RestaurantDetail = () => {
                   style={{
                     padding: 'clamp(0.5rem, 3vw, 0.75rem) clamp(1rem, 4vw, 1.5rem)',
                     borderRadius: 'clamp(0.5rem, 2vw, 0.75rem)',
-                    background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                    background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                     color: 'white',
                     border: 'none',
                     fontSize: 'clamp(0.75rem, 3vw, 0.875rem)',
                     fontWeight: '600',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
-                    boxShadow: '0 4px 15px rgba(79, 70, 229, 0.3)',
+                    boxShadow: '0 4px 15px rgba(47, 110, 115, 0.3)',
                     minWidth: 'clamp(100px, 25vw, 120px)'
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 8px 25px rgba(79, 70, 229, 0.4)';
+                    e.target.style.boxShadow = '0 8px 25px rgba(47, 110, 115, 0.4)';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 4px 15px rgba(79, 70, 229, 0.3)';
+                    e.target.style.boxShadow = '0 4px 15px rgba(47, 110, 115, 0.3)';
                   }}
                 >
                   {t('login')}

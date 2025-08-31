@@ -165,7 +165,7 @@ const InteractiveMap = ({
                draggable: true,
                icon: L.divIcon({
                  className: 'custom-marker',
-                 html: '<div style="background-color: #3b82f6; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
+                 html: '<div style="background-color: #2f6e73; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
                  iconSize: [20, 20],
                  iconAnchor: [10, 10]
                })
@@ -190,7 +190,7 @@ const InteractiveMap = ({
                draggable: true,
                icon: L.divIcon({
                  className: 'custom-marker',
-                 html: '<div style="background-color: #ef4444; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
+                 html: '<div style="background-color: #b65449; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
                  iconSize: [20, 20],
                  iconAnchor: [10, 10]
                })
@@ -214,7 +214,7 @@ const InteractiveMap = ({
              const userMarker = L.marker([userLocation.lat, userLocation.lng], {
                icon: L.divIcon({
                  className: 'user-location-marker',
-                 html: '<div style="background-color: #10b981; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
+                 html: '<div style="background-color: #4a8a8f; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
                  iconSize: [16, 16],
                  iconAnchor: [8, 8]
                })
@@ -293,7 +293,7 @@ const InteractiveMap = ({
              draggable: true,
              icon: L.divIcon({
                className: 'custom-marker',
-               html: '<div style="background-color: #3b82f6; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
+               html: '<div style="background-color: #2f6e73; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
                iconSize: [20, 20],
                iconAnchor: [10, 10]
              })
@@ -358,7 +358,7 @@ const InteractiveMap = ({
             const userMarker = L.marker([latitude, longitude], {
               icon: L.divIcon({
                 className: 'user-location-marker',
-                html: '<div style="background-color: #10b981; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
+                html: '<div style="background-color: #4a8a8f; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
                 iconSize: [16, 16],
                 iconAnchor: [8, 8]
               })
@@ -482,7 +482,9 @@ const InteractiveMap = ({
       {isLoading && (
         <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10 rounded-lg">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mb-2"></div>
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto mb-2" style={{
+                    borderBottomColor: '#2f6e73'
+                }}></div>
             <p className="text-sm text-gray-600">جاري تحميل الخريطة...</p>
           </div>
         </div>

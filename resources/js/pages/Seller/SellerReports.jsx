@@ -179,7 +179,7 @@ const SellerReports = () => {
             }}>
                 <div style={{
                     fontSize: '1.125rem',
-                    color: 'rgb(79 70 229)',
+                    color: '#2f6e73',
                     fontWeight: '600'
                 }}>
                     {language === 'ar' ? 'جاري تحميل التقارير...' : 'Loading reports...'}
@@ -214,21 +214,21 @@ const SellerReports = () => {
                     <div style={{
                         width: '3rem',
                         height: '3rem',
-                        background: 'linear-gradient(135deg, rgb(79 70 229), rgb(147 51 234))',
+                        background: 'linear-gradient(135deg, #2f6e73, #b65449)',
                         borderRadius: '1rem',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         fontSize: '1.5rem',
                         color: 'white',
-                        boxShadow: '0 8px 25px rgba(79, 70, 229, 0.3)'
+                        boxShadow: '0 8px 25px rgba(47, 110, 115, 0.3)'
                     }}>
                         📊
                     </div>
                     <h1 style={{
                         fontSize: '2rem',
                         fontWeight: '700',
-                        background: 'linear-gradient(135deg, rgb(79 70 229), rgb(147 51 234))',
+                        background: 'linear-gradient(135deg, #2f6e73, #b65449)',
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                         backgroundClip: 'text',
@@ -576,8 +576,8 @@ const SellerReports = () => {
                                  borderRadius: '9999px',
                                  fontSize: '0.875rem',
                                  fontWeight: '500',
-                                 background: 'rgba(79, 70, 229, 0.1)',
-                                 color: 'rgb(79 70 229)'
+                                 background: 'rgba(47, 110, 115, 0.1)',
+                                 color: '#2f6e73'
                              }}>
                                                                    {recentSubscriptions.length} {language === 'ar' ? 'اشتراك' : 'subscriptions'}
                              </span>
@@ -598,14 +598,14 @@ const SellerReports = () => {
                         }}>
                             <thead>
                                 <tr style={{
-                                    background: 'rgba(79, 70, 229, 0.1)',
-                                    borderBottom: '2px solid rgba(79, 70, 229, 0.2)'
+                                    background: 'rgba(47, 110, 115, 0.1)',
+                                    borderBottom: '2px solid rgba(47, 110, 115, 0.2)'
                                 }}>
                                     <th style={{
                                 padding: '1rem',
                                         textAlign: 'center',
                                         fontWeight: '600',
-                                        color: 'rgb(79 70 229)',
+                                        color: '#2f6e73',
                                         borderRight: '1px solid rgba(0, 0, 0, 0.1)'
                                     }}>
                                         #
@@ -738,14 +738,14 @@ const SellerReports = () => {
                                         }}>
                                             {subscription.subscription_type}
                                         </td>
-                                        <td style={{
+                                                                                <td style={{
                                             padding: '1rem',
                                             textAlign: 'center',
                                         fontWeight: '600',
-                                            color: 'rgb(79 70 229)',
+                                            color: '#2f6e73',
                                             borderRight: '1px solid rgba(0, 0, 0, 0.1)'
                                     }}>
-                                                                                 {formatCurrency(subscription.total_amount)}
+                                        {formatCurrency(subscription.total_amount)}
                                         </td>
                                         <td style={{
                                             padding: '1rem',

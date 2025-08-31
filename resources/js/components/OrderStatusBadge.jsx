@@ -13,8 +13,8 @@ const OrderStatusBadge = ({ status, language = 'ar' }) => {
             preparing: {
                 text: language === 'ar' ? 'قيد التحضير' : 'Preparing',
                 icon: '👨‍🍳',
-                gradient: 'linear-gradient(135deg, rgb(59 130 246), rgb(99 102 241))',
-                shadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+                gradient: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                shadow: '0 4px 12px rgba(47, 110, 115, 0.3)',
                 pulse: true
             },
             delivered: {

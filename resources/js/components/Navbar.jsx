@@ -73,7 +73,7 @@ const Navbar = () => {
                         <div style={{
                             width: '2.5rem',
                             height: '2.5rem',
-                                    background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                                    background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                                     borderRadius: '0.5rem',
                             display: 'flex',
                             alignItems: 'center',
@@ -87,7 +87,7 @@ const Navbar = () => {
                                 <span style={{ 
                                     fontSize: '1.25rem', 
                                     fontWeight: 'bold', 
-                                    background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))', 
+                                    background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)', 
                                     WebkitBackgroundClip: 'text', 
                                     WebkitTextFillColor: 'transparent' 
                                 }}>
@@ -106,7 +106,7 @@ const Navbar = () => {
                             <Link to="/restaurants" style={{
                                 padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
                                 borderRadius: '0.5rem',
-                                color: 'rgb(79 70 229)',
+                                color: '#2f6e73',
                                 textDecoration: 'none',
                                 fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
                                 fontWeight: '500',
@@ -114,7 +114,7 @@ const Navbar = () => {
                                 whiteSpace: 'nowrap'
                             }}
                             onMouseEnter={(e) => {
-                                e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                                e.target.style.background = 'rgba(47, 110, 115, 0.1)';
                             }}
                             onMouseLeave={(e) => {
                                 e.target.style.background = 'transparent';
@@ -126,7 +126,7 @@ const Navbar = () => {
                             <Link to="/my-subscriptions" style={{
                                 padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
                                 borderRadius: '0.5rem',
-                                color: 'rgb(79 70 229)',
+                                color: '#2f6e73',
                                 textDecoration: 'none',
                                 fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
                                 fontWeight: '500',
@@ -134,7 +134,7 @@ const Navbar = () => {
                                 whiteSpace: 'nowrap'
                             }}
                             onMouseEnter={(e) => {
-                                e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                                e.target.style.background = 'rgba(47, 110, 115, 0.1)';
                             }}
                             onMouseLeave={(e) => {
                                 e.target.style.background = 'transparent';
@@ -146,7 +146,7 @@ const Navbar = () => {
                             <Link to="/contact-us" style={{
                                 padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
                                 borderRadius: '0.5rem',
-                                color: 'rgb(79 70 229)',
+                                color: '#2f6e73',
                                 textDecoration: 'none',
                                 fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
                                 fontWeight: '500',
@@ -154,7 +154,7 @@ const Navbar = () => {
                                 whiteSpace: 'nowrap'
                             }}
                             onMouseEnter={(e) => {
-                                e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                                e.target.style.background = 'rgba(47, 110, 115, 0.1)';
                             }}
                             onMouseLeave={(e) => {
                                 e.target.style.background = 'transparent';
@@ -173,7 +173,7 @@ const Navbar = () => {
                                     width: 'clamp(2.5rem, 6vw, 3rem)',
                                     height: 'clamp(2.5rem, 6vw, 3rem)',
                                     borderRadius: '0.5rem',
-                                    background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                                    background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                                     color: 'white',
                                     border: 'none',
                                     cursor: 'pointer',
@@ -208,8 +208,8 @@ const Navbar = () => {
                                     width: 'clamp(2.5rem, 5vw, 2.75rem)',
                                     height: 'clamp(2.5rem, 5vw, 2.75rem)',
                                     borderRadius: '0.75rem',
-                                    color: 'rgb(79 70 229)',
-                                    border: '2px solid rgba(79, 70, 229, 0.3)',
+                                    color: '#2f6e73',
+                                    border: '2px solid rgba(47, 110, 115, 0.3)',
                                     fontWeight: '600',
                                     fontSize: 'clamp(1.25rem, 3vw, 1.5rem)',
                                     transition: 'all 0.3s ease',
@@ -218,7 +218,7 @@ const Navbar = () => {
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    boxShadow: '0 4px 12px rgba(79, 70, 229, 0.15)',
+                                    boxShadow: '0 4px 12px rgba(47, 110, 115, 0.15)',
                                     position: 'relative',
                                     overflow: 'hidden',
                                     backdropFilter: 'blur(10px)',
@@ -227,14 +227,14 @@ const Navbar = () => {
                                 title={language === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'}
                                 onMouseEnter={(e) => {
                                     e.target.style.transform = 'translateY(-3px) scale(1.08)';
-                                    e.target.style.boxShadow = '0 12px 25px rgba(79, 70, 229, 0.25)';
-                                    e.target.style.borderColor = 'rgba(79, 70, 229, 0.6)';
-                                    e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                                    e.target.style.boxShadow = '0 12px 25px rgba(47, 110, 115, 0.25)';
+                                    e.target.style.borderColor = 'rgba(47, 110, 115, 0.6)';
+                                    e.target.style.background = 'rgba(47, 110, 115, 0.1)';
                                 }}
                                 onMouseLeave={(e) => {
                                     e.target.style.transform = 'translateY(0) scale(1)';
-                                    e.target.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.15)';
-                                    e.target.style.borderColor = 'rgba(79, 70, 229, 0.3)';
+                                    e.target.style.boxShadow = '0 4px 12px rgba(47, 110, 115, 0.15)';
+                                    e.target.style.borderColor = 'rgba(47, 110, 115, 0.3)';
                                     e.target.style.background = 'rgba(255, 255, 255, 0.9)';
                                 }}
                             >
@@ -246,7 +246,7 @@ const Navbar = () => {
                                     <span style={{
                                         padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
                                         borderRadius: '0.5rem',
-                                        color: 'rgb(79 70 229)',
+                                        color: '#2f6e73',
                                         fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
                                         fontWeight: '500',
                                         whiteSpace: 'nowrap'
@@ -259,8 +259,8 @@ const Navbar = () => {
                                         <Link to={user.role === 'admin' ? '/admin' : '/seller'} style={{
                                             padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
                                             borderRadius: '0.5rem',
-                                            background: 'rgba(79, 70, 229, 0.1)',
-                                            color: 'rgb(79 70 229)',
+                                            background: 'rgba(47, 110, 115, 0.1)',
+                                            color: '#2f6e73',
                                             textDecoration: 'none',
                                             fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
                                             fontWeight: '500',
@@ -268,10 +268,10 @@ const Navbar = () => {
                                             whiteSpace: 'nowrap'
                                         }}
                                         onMouseEnter={(e) => {
-                                            e.target.style.background = 'rgba(79, 70, 229, 0.2)';
+                                            e.target.style.background = 'rgba(47, 110, 115, 0.2)';
                                         }}
                                         onMouseLeave={(e) => {
-                                            e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                                            e.target.style.background = 'rgba(47, 110, 115, 0.1)';
                                         }}
                                         >
                                             {user.role === 'admin' ? 'لوحة التحكم' : 'لوحة البائع'}
@@ -283,7 +283,7 @@ const Navbar = () => {
                                         style={{
                                             padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
                                             borderRadius: '0.5rem',
-                                            background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                                             color: 'white',
                                             border: 'none',
                                             fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
@@ -294,7 +294,7 @@ const Navbar = () => {
                                         }}
                                         onMouseEnter={(e) => {
                                             e.target.style.transform = 'translateY(-1px)';
-                                            e.target.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.3)';
+                                            e.target.style.boxShadow = '0 4px 12px rgba(47, 110, 115, 0.3)';
                                         }}
                                         onMouseLeave={(e) => {
                                             e.target.style.transform = 'translateY(0)';
@@ -310,7 +310,7 @@ const Navbar = () => {
                                 <Link to="/login" style={{
                                     padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
                                     borderRadius: '0.5rem',
-                                    color: 'rgb(79 70 229)',
+                                    color: '#2f6e73',
                                     textDecoration: 'none',
                                     fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
                                     fontWeight: '500',
@@ -318,7 +318,7 @@ const Navbar = () => {
                                     whiteSpace: 'nowrap'
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                                    e.target.style.background = 'rgba(47, 110, 115, 0.1)';
                                 }}
                                 onMouseLeave={(e) => {
                                     e.target.style.background = 'transparent';
@@ -355,22 +355,22 @@ const Navbar = () => {
                                     style={{
                                         padding: 'clamp(0.75rem, 3vw, 1rem)',
                                         borderRadius: '0.75rem',
-                                        color: 'rgb(79 70 229)',
+                                        color: '#2f6e73',
                                         textDecoration: 'none',
                                         fontSize: 'clamp(1rem, 3vw, 1.125rem)',
                                         fontWeight: '600',
-                                        background: 'rgba(79, 70, 229, 0.05)',
-                                        border: '1px solid rgba(79, 70, 229, 0.1)',
+                                        background: 'rgba(47, 110, 115, 0.05)',
+                                        border: '1px solid rgba(47, 110, 115, 0.1)',
                                         transition: 'all 0.2s ease',
                                         textAlign: 'center'
                                     }}
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     onMouseEnter={(e) => {
-                                        e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                                        e.target.style.background = 'rgba(47, 110, 115, 0.1)';
                                         e.target.style.transform = 'translateX(-5px)';
                                     }}
                                     onMouseLeave={(e) => {
-                                        e.target.style.background = 'rgba(79, 70, 229, 0.05)';
+                                        e.target.style.background = 'rgba(47, 110, 115, 0.05)';
                                         e.target.style.transform = 'translateX(0)';
                                     }}
                                 >
@@ -381,22 +381,22 @@ const Navbar = () => {
                                     style={{
                                         padding: 'clamp(0.75rem, 3vw, 1rem)',
                                         borderRadius: '0.75rem',
-                                        color: 'rgb(79 70 229)',
+                                        color: '#2f6e73',
                                         textDecoration: 'none',
                                         fontSize: 'clamp(1rem, 3vw, 1.125rem)',
                                         fontWeight: '600',
-                                        background: 'rgba(79, 70, 229, 0.05)',
-                                        border: '1px solid rgba(79, 70, 229, 0.1)',
+                                        background: 'rgba(47, 110, 115, 0.05)',
+                                        border: '1px solid rgba(47, 110, 115, 0.1)',
                                         transition: 'all 0.2s ease',
                                         textAlign: 'center'
                                     }}
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     onMouseEnter={(e) => {
-                                        e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                                        e.target.style.background = 'rgba(47, 110, 115, 0.1)';
                                         e.target.style.transform = 'translateX(-5px)';
                                     }}
                                     onMouseLeave={(e) => {
-                                        e.target.style.background = 'rgba(79, 70, 229, 0.05)';
+                                        e.target.style.background = 'rgba(47, 110, 115, 0.05)';
                                         e.target.style.transform = 'translateX(0)';
                                     }}
                                 >
@@ -407,22 +407,22 @@ const Navbar = () => {
                                     style={{
                                         padding: 'clamp(0.75rem, 3vw, 1rem)',
                                         borderRadius: '0.75rem',
-                                        color: 'rgb(79 70 229)',
+                                        color: '#2f6e73',
                                         textDecoration: 'none',
                                         fontSize: 'clamp(1rem, 3vw, 1.125rem)',
                                         fontWeight: '600',
-                                        background: 'rgba(79, 70, 229, 0.05)',
-                                        border: '1px solid rgba(79, 70, 229, 0.1)',
+                                        background: 'rgba(47, 110, 115, 0.05)',
+                                        border: '1px solid rgba(47, 110, 115, 0.1)',
                                         transition: 'all 0.2s ease',
                                         textAlign: 'center'
                                     }}
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     onMouseEnter={(e) => {
-                                        e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                                        e.target.style.background = 'rgba(47, 110, 115, 0.1)';
                                         e.target.style.transform = 'translateX(-5px)';
                                     }}
                                     onMouseLeave={(e) => {
-                                        e.target.style.background = 'rgba(79, 70, 229, 0.05)';
+                                        e.target.style.background = 'rgba(47, 110, 115, 0.05)';
                                         e.target.style.transform = 'translateX(0)';
                                     }}
                                 >
@@ -443,28 +443,28 @@ const Navbar = () => {
                                     style={{
                                         padding: 'clamp(0.75rem, 3vw, 1rem) clamp(1.5rem, 5vw, 2rem)',
                                         borderRadius: '1rem',
-                                        color: 'rgb(79 70 229)',
-                                        border: '2px solid rgb(79 70 229)',
-                                        background: 'rgba(79, 70, 229, 0.05)',
+                                        color: '#2f6e73',
+                                        border: '2px solid #2f6e73',
+                                        background: 'rgba(47, 110, 115, 0.05)',
                                         fontWeight: '600',
                                         fontSize: 'clamp(1rem, 3vw, 1.125rem)',
                                         transition: 'all 0.3s ease',
                                         cursor: 'pointer',
-                                        boxShadow: '0 4px 12px rgba(79, 70, 229, 0.15)',
+                                        boxShadow: '0 4px 12px rgba(47, 110, 115, 0.15)',
                                         position: 'relative',
                                         overflow: 'hidden'
                                     }}
                                     onMouseEnter={(e) => {
                                         e.target.style.transform = 'translateY(-2px) scale(1.02)';
-                                        e.target.style.background = 'rgb(79 70 229)';
+                                        e.target.style.background = '#2f6e73';
                                         e.target.style.color = 'white';
-                                        e.target.style.boxShadow = '0 8px 20px rgba(79, 70, 229, 0.3)';
+                                        e.target.style.boxShadow = '0 8px 20px rgba(47, 110, 115, 0.3)';
                                     }}
                                     onMouseLeave={(e) => {
                                         e.target.style.transform = 'translateY(0) scale(1)';
-                                        e.target.style.background = 'rgba(79, 70, 229, 0.05)';
-                                        e.target.style.color = 'rgb(79 70 229)';
-                                        e.target.style.boxShadow = '0 4px 12px rgba(79, 70, 229, 0.15)';
+                                        e.target.style.background = 'rgba(47, 110, 115, 0.05)';
+                                        e.target.style.color = '#2f6e73';
+                                        e.target.style.boxShadow = '0 4px 12px rgba(47, 110, 115, 0.15)';
                                     }}
                                 >
                                     🌐 {language === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'}
@@ -482,13 +482,13 @@ const Navbar = () => {
                                         <div style={{
                                             padding: 'clamp(0.75rem, 3vw, 1rem)',
                                             borderRadius: '0.75rem',
-                                            background: 'rgba(79, 70, 229, 0.05)',
-                                            border: '1px solid rgba(79, 70, 229, 0.1)',
+                                            background: 'rgba(47, 110, 115, 0.05)',
+                                            border: '1px solid rgba(47, 110, 115, 0.1)',
                                             textAlign: 'center'
                                         }}>
                                             <div style={{
                                                 fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
-                                                color: 'rgb(79 70 229)',
+                                                color: '#2f6e73',
                                                 fontWeight: '600',
                                                 marginBottom: '0.25rem'
                                             }}>
@@ -508,22 +508,22 @@ const Navbar = () => {
                                                 style={{
                                                     padding: 'clamp(0.75rem, 3vw, 1rem)',
                                                     borderRadius: '0.75rem',
-                                                    background: 'rgba(79, 70, 229, 0.1)',
-                                                    color: 'rgb(79 70 229)',
+                                                    background: 'rgba(47, 110, 115, 0.1)',
+                                                    color: '#2f6e73',
                                                     textDecoration: 'none',
                                                     fontSize: 'clamp(1rem, 3vw, 1.125rem)',
                                                     fontWeight: '600',
-                                                    border: '1px solid rgba(79, 70, 229, 0.2)',
+                                                    border: '1px solid rgba(47, 110, 115, 0.2)',
                                                     transition: 'all 0.2s ease',
                                                     textAlign: 'center'
                                                 }}
                                                 onClick={() => setIsMobileMenuOpen(false)}
                                                 onMouseEnter={(e) => {
-                                                    e.target.style.background = 'rgba(79, 70, 229, 0.2)';
+                                                    e.target.style.background = 'rgba(47, 110, 115, 0.2)';
                                                     e.target.style.transform = 'translateX(-5px)';
                                                 }}
                                                 onMouseLeave={(e) => {
-                                                    e.target.style.background = 'rgba(79, 70, 229, 0.1)';
+                                                    e.target.style.background = 'rgba(47, 110, 115, 0.1)';
                                                     e.target.style.transform = 'translateX(0)';
                                                 }}
                                             >
@@ -562,27 +562,27 @@ const Navbar = () => {
                                     </>
                                 ) : (
                                     <Link to="/login" 
-                                        style={{
-                                            padding: 'clamp(0.75rem, 3vw, 1rem)',
-                                            borderRadius: '0.75rem',
-                                            background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
-                                            color: 'white',
-                                            textDecoration: 'none',
-                                            fontSize: 'clamp(1rem, 3vw, 1.125rem)',
-                                            fontWeight: '600',
-                                            transition: 'all 0.2s ease',
-                                            textAlign: 'center',
-                                            boxShadow: '0 4px 15px rgba(79, 70, 229, 0.3)'
-                                        }}
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                        onMouseEnter={(e) => {
-                                            e.target.style.transform = 'translateY(-2px)';
-                                            e.target.style.boxShadow = '0 8px 25px rgba(79, 70, 229, 0.4)';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.target.style.transform = 'translateY(0)';
-                                            e.target.style.boxShadow = '0 4px 15px rgba(79, 70, 229, 0.3)';
-                                        }}
+                                                                            style={{
+                                        padding: 'clamp(0.75rem, 3vw, 1rem)',
+                                        borderRadius: '0.75rem',
+                                        background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                                        color: 'white',
+                                        textDecoration: 'none',
+                                        fontSize: 'clamp(1rem, 3vw, 1.125rem)',
+                                        fontWeight: '600',
+                                        transition: 'all 0.2s ease',
+                                        textAlign: 'center',
+                                        boxShadow: '0 4px 15px rgba(47, 110, 115, 0.3)'
+                                    }}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.transform = 'translateY(-2px)';
+                                        e.target.style.boxShadow = '0 8px 25px rgba(47, 110, 115, 0.4)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.transform = 'translateY(0)';
+                                        e.target.style.boxShadow = '0 4px 15px rgba(47, 110, 115, 0.3)';
+                                    }}
                                     >
                                         🔐 {t('login')}
                                  </Link>

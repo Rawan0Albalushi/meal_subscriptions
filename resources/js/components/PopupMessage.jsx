@@ -75,11 +75,11 @@ const PopupMessage = ({
   const getBackgroundColor = () => {
     switch (type) {
       case 'success':
-        return 'linear-gradient(135deg, rgb(34 197 94), rgb(16 185 129))';
+        return 'linear-gradient(135deg, #2f6e73, #4a8a8f)';
       case 'error':
-        return 'linear-gradient(135deg, rgb(239 68 68), rgb(236 72 153))';
+        return 'linear-gradient(135deg, #b65449, #c86a5a)';
       default:
-        return 'linear-gradient(135deg, rgb(59 130 246), rgb(99 102 241))';
+        return 'linear-gradient(135deg, #2f6e73, #4a8a8f)';
     }
   };
 

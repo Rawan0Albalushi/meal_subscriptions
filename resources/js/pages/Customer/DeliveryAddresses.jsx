@@ -156,10 +156,18 @@ const DeliveryAddresses = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex justify-center items-center">
+            <div className="min-h-screen flex justify-center items-center" style={{
+                background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(182, 84, 73, 0.05) 50%, rgba(74, 138, 143, 0.05) 100%)'
+            }}>
                 <div className="relative">
-                    <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
-                    <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-pink-600 rounded-full animate-spin" style={{ animationDelay: '0.5s' }}></div>
+                    <div className="w-16 h-16 border-4 rounded-full animate-spin" style={{
+                        borderColor: 'rgba(47, 110, 115, 0.2)',
+                        borderTopColor: '#2f6e73'
+                    }}></div>
+                    <div className="absolute inset-0 w-16 h-16 border-4 border-transparent rounded-full animate-spin" style={{ 
+                        animationDelay: '0.5s',
+                        borderTopColor: '#b65449'
+                    }}></div>
                 </div>
             </div>
         );
@@ -167,13 +175,21 @@ const DeliveryAddresses = () => {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex justify-center items-center">
+            <div className="min-h-screen flex justify-center items-center" style={{
+                background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(182, 84, 73, 0.05) 50%, rgba(74, 138, 143, 0.05) 100%)'
+            }}>
                 <div className="text-center">
-                    <div className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-2xl p-8 max-w-md mx-auto shadow-2xl">
+                    <div className="border rounded-2xl p-8 max-w-md mx-auto shadow-2xl" style={{
+                        background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(220, 38, 38, 0.05) 100%)',
+                        borderColor: 'rgba(239, 68, 68, 0.2)'
+                    }}>
                         <div className="text-red-600 text-lg mb-6 font-semibold">{error}</div>
                         <button 
                             onClick={fetchAddresses}
-                            className="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                            className="text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                            style={{
+                                background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
+                            }}
                         >
                             {language === 'ar' ? 'إعادة المحاولة' : 'Retry'}
                         </button>
@@ -184,14 +200,24 @@ const DeliveryAddresses = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+        <div className="min-h-screen" style={{
+            background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(182, 84, 73, 0.05) 50%, rgba(74, 138, 143, 0.05) 100%)'
+        }}>
             {/* Hero Section */}
-            <div className="relative bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 overflow-hidden">
+            <div className="relative overflow-hidden" style={{
+                background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 50%, #c86a5a 100%)'
+            }}>
                 {/* Animated Background Elements */}
                 <div className="absolute inset-0">
                     <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-                    <div className="absolute top-40 right-20 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
-                    <div className="absolute bottom-20 left-1/4 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
+                    <div className="absolute top-40 right-20 w-96 h-96 rounded-full blur-3xl animate-pulse" style={{
+                        backgroundColor: 'rgba(182, 84, 73, 0.2)',
+                        animationDelay: '1s'
+                    }}></div>
+                    <div className="absolute bottom-20 left-1/4 w-80 h-80 rounded-full blur-3xl animate-pulse" style={{
+                        backgroundColor: 'rgba(47, 110, 115, 0.2)',
+                        animationDelay: '2s'
+                    }}></div>
                 </div>
                 
                 <div className="relative max-w-7xl mx-auto px-6 py-24 lg:py-32">
@@ -205,7 +231,12 @@ const DeliveryAddresses = () => {
                         
                         {/* Main Heading with Glow Effect */}
                         <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-tight drop-shadow-2xl">
-                            <span className="bg-gradient-to-r from-yellow-300 via-pink-300 to-purple-300 bg-clip-text text-transparent animate-pulse">
+                            <span className="animate-pulse" style={{
+                                background: 'linear-gradient(135deg, #fbbf24 0%, #b65449 50%, #2f6e73 100%)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                backgroundClip: 'text'
+                            }}>
                                 {language === 'ar' ? 'عناوين التوصيل' : 'Delivery Addresses'}
                             </span>
                         </h1>
@@ -242,7 +273,12 @@ const DeliveryAddresses = () => {
                         <div className="mb-8">
                             <button
                                 onClick={() => setShowForm(true)}
-                                className="group relative inline-flex px-12 py-6 bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600 text-white rounded-2xl text-2xl font-bold transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-purple-500/50 transform hover:-rotate-1 focus:outline-none focus:ring-4 focus:ring-yellow-500 focus:ring-offset-2"
+                                className="group relative inline-flex px-12 py-6 text-white rounded-2xl text-2xl font-bold transition-all duration-500 hover:scale-110 hover:shadow-2xl transform hover:-rotate-1 focus:outline-none focus:ring-4 focus:ring-offset-2"
+                                style={{
+                                    background: 'linear-gradient(135deg, #fbbf24 0%, #b65449 50%, #2f6e73 100%)',
+                                    boxShadow: '0 4px 12px rgba(47, 110, 115, 0.3)',
+                                    focusRingColor: '#fbbf24'
+                                }}
                             >
                                 <span className="relative z-10 flex items-center">
                                     {language === 'ar' ? 'إضافة عنوان جديد' : 'Add New Address'}
@@ -250,7 +286,9 @@ const DeliveryAddresses = () => {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                     </svg>
                                 </span>
-                                <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 via-pink-600 to-purple-700 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{
+                                    background: 'linear-gradient(135deg, #f59e0b 0%, #a54a3f 50%, #1f5a5f 100%)'
+                                }}></div>
                             </button>
                         </div>
                     </div>
@@ -263,7 +301,12 @@ const DeliveryAddresses = () => {
                     <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between mb-8">
                             <h2 className="text-3xl font-bold text-gray-900">
-                                <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
+                                <span style={{
+                                    background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 50%, #4a8a8f 100%)',
+                                    WebkitBackgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent',
+                                    backgroundClip: 'text'
+                                }}>
                                     {editingAddress ? (language === 'ar' ? 'تعديل العنوان' : 'Edit Address') : (language === 'ar' ? 'إضافة عنوان جديد' : 'Add New Address')}
                                 </span>
                             </h2>
@@ -287,7 +330,11 @@ const DeliveryAddresses = () => {
                                         type="text"
                                         value={formData.name}
                                         onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl transition-all duration-300"
+                                        style={{
+                                            focusRingColor: '#2f6e73',
+                                            focusBorderColor: '#2f6e73'
+                                        }}
                                         required
                                         placeholder={language === 'ar' ? 'مثال: المنزل، العمل' : 'Example: Home, Work'}
                                     />
@@ -389,7 +436,11 @@ const DeliveryAddresses = () => {
                                 <button
                                     type="submit"
                                     disabled={submitting}
-                                    className="group relative px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                                    className="group relative px-8 py-3 text-white rounded-2xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                                    style={{
+                                        background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
+                                        focusRingColor: '#2f6e73'
+                                    }}
                                 >
                                     {submitting ? (
                                         <span className="flex items-center">
@@ -424,7 +475,11 @@ const DeliveryAddresses = () => {
                                 </p>
                                 <button
                                     onClick={() => setShowForm(true)}
-                                    className="group relative inline-flex px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl text-lg font-bold transition-all duration-500 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                                    className="group relative inline-flex px-8 py-4 text-white rounded-2xl text-lg font-bold transition-all duration-500 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2"
+                                    style={{
+                                        background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
+                                        focusRingColor: '#2f6e73'
+                                    }}
                                 >
                                     <span className="relative z-10 flex items-center">
                                         {t('addAddress')}

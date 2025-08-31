@@ -107,7 +107,7 @@ const SubscriptionDetail = () => {
             case 'active':
                 return 'from-green-500 to-emerald-500';
             case 'completed':
-                return 'from-blue-500 to-indigo-500';
+                return 'from-teal-500 to-teal-600';
             case 'cancelled':
                 return 'from-red-500 to-pink-500';
             default:

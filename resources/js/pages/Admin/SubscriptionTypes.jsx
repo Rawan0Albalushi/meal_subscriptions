@@ -126,7 +126,7 @@ const SubscriptionTypes = () => {
         alignItems: 'center', 
         marginBottom: '2rem' 
       }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: 'rgb(79 70 229)' }}>
+        <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2f6e73' }}>
           إدارة أنواع الاشتراك
         </h1>
         <button
@@ -137,7 +137,7 @@ const SubscriptionTypes = () => {
           }}
           style={{
             padding: '0.75rem 1.5rem',
-            background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
             color: 'white',
             border: 'none',
             borderRadius: '0.5rem',
@@ -173,7 +173,7 @@ const SubscriptionTypes = () => {
           boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
           marginBottom: '2rem'
         }}>
-          <h2 style={{ marginBottom: '1.5rem', color: 'rgb(79 70 229)' }}>
+          <h2 style={{ marginBottom: '1.5rem', color: '#2f6e73' }}>
             {editingType ? 'تعديل نوع الاشتراك' : 'إضافة نوع اشتراك جديد'}
           </h2>
           
@@ -338,7 +338,7 @@ const SubscriptionTypes = () => {
                 disabled={loading}
                 style={{
                   padding: '0.75rem 1.5rem',
-                  background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                  background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                   color: 'white',
                   border: 'none',
                   borderRadius: '0.5rem',
@@ -388,7 +388,7 @@ const SubscriptionTypes = () => {
           borderBottom: '1px solid rgb(229 231 235)',
           background: 'rgb(249 250 251)'
         }}>
-          <h3 style={{ margin: 0, color: 'rgb(79 70 229)', fontWeight: '600' }}>
+          <h3 style={{ margin: 0, color: '#2f6e73', fontWeight: '600' }}>
             أنواع الاشتراك ({subscriptionTypes.length})
           </h3>
         </div>
@@ -442,7 +442,7 @@ const SubscriptionTypes = () => {
                       {type.type === 'weekly' ? 'أسبوعي' : 'شهري'}
                     </span>
                   </td>
-                  <td style={{ padding: '1rem', fontWeight: '600', color: 'rgb(79 70 229)' }}>
+                  <td style={{ padding: '1rem', fontWeight: '600', color: '#2f6e73' }}>
                     {type.price} ريال عماني
                   </td>
                   <td style={{ padding: '1rem' }}>

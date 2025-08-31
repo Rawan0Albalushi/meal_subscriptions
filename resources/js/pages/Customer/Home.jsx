@@ -258,7 +258,7 @@ const Home = () => {
                 position: 'relative'
               }}>
                 <span style={{ 
-                  background: 'linear-gradient(135deg, rgb(79 70 229) 0%, rgb(99 102 241) 100%)',
+                  background: 'linear-gradient(135deg, #2f6e73 0%, #4a8a8f 100%)',
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
@@ -269,7 +269,7 @@ const Home = () => {
                 </span>
                 <span className="gradient-text" style={{ 
                   display: 'block',
-                  background: 'linear-gradient(135deg, rgb(139 92 246) 0%, rgb(168 85 247) 100%)',
+                  background: 'linear-gradient(135deg, #b65449 0%, #c86a5a 100%)',
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
@@ -313,8 +313,8 @@ const Home = () => {
                   position: 'relative',
                   overflow: 'hidden',
                   background: 'rgba(255, 255, 255, 0.1)',
-                  border: '2px solid rgb(79 70 229)',
-                  color: 'rgb(79 70 229)',
+                  border: '2px solid #2f6e73',
+                  color: '#2f6e73',
                   padding: '1rem 2rem',
                   borderRadius: '1rem',
                   fontSize: '1rem',
@@ -326,8 +326,8 @@ const Home = () => {
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.transform = 'translateY(-3px)';
-                  e.target.style.background = 'rgba(79, 70, 229, 0.1)';
-                  e.target.style.boxShadow = '0 8px 25px rgba(79, 70, 229, 0.2)';
+                  e.target.style.background = 'rgba(47, 110, 115, 0.1)';
+                  e.target.style.boxShadow = '0 8px 25px rgba(47, 110, 115, 0.2)';
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.transform = 'translateY(0)';
@@ -883,12 +883,12 @@ const Home = () => {
                                          <div style={{ 
                        fontSize: '1.8rem', 
                        fontWeight: '700', 
-                       background: 'linear-gradient(135deg, rgb(79 70 229) 0%, rgb(139 92 246) 50%, rgb(168 85 247) 100%)',
+                       background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 50%, #c86a5a 100%)',
                        backgroundClip: 'text',
                        WebkitBackgroundClip: 'text',
                        WebkitTextFillColor: 'transparent',
                        marginBottom: '0.75rem',
-                       textShadow: '0 2px 4px rgba(79, 70, 229, 0.1)',
+                       textShadow: '0 2px 4px rgba(47, 110, 115, 0.1)',
                        letterSpacing: '0.5px'
                      }}>
                        {t('designPreview')}
@@ -929,7 +929,7 @@ const Home = () => {
               marginBottom: '1rem',
               textAlign: 'center',
               letterSpacing: '0.5px',
-              textShadow: '0 0 20px rgba(79, 70, 229, 0.5)'
+              textShadow: '0 0 20px rgba(47, 110, 115, 0.5)'
             }}>
               {t('whySubscribe')}
                         </h2>
@@ -1409,8 +1409,8 @@ const Home = () => {
             }}></div>
 
             {[
-              { step: t('step1'), icon: '👤', color: 'from-blue-500 to-indigo-600', delay: '0s', title: t('step1Title') },
-              { step: t('step2'), icon: '🍽️', color: 'from-purple-500 to-pink-600', delay: '0.1s', title: t('step2Title') },
+                      { step: t('step1'), icon: '👤', color: 'from-teal-500 to-teal-600', delay: '0s', title: t('step1Title') },
+        { step: t('step2'), icon: '🍽️', color: 'from-red-500 to-red-600', delay: '0.1s', title: t('step2Title') },
               { step: t('step3'), icon: '📅', color: 'from-green-500 to-emerald-600', delay: '0.2s', title: t('step3Title') },
               { step: t('step4'), icon: '💳', color: 'from-orange-500 to-red-600', delay: '0.3s', title: t('step4Title') },
             ].map((item, i) => (
@@ -1477,14 +1477,14 @@ const Home = () => {
                     width: '32px',
                     height: '32px',
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, rgb(79 70 229) 0%, rgb(139 92 246) 100%)',
+                    background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
                     color: 'white',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontSize: '0.875rem',
                     fontWeight: '700',
-                    boxShadow: '0 4px 12px rgba(79, 70, 229, 0.4)',
+                    boxShadow: '0 4px 12px rgba(47, 110, 115, 0.4)',
                     border: '2px solid white',
                     transition: 'all 0.3s ease'
                   }}>
