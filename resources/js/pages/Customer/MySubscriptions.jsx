@@ -113,7 +113,7 @@ const MySubscriptions = () => {
                         style={{
                             padding: 'clamp(0.5rem, 3vw, 0.75rem) clamp(1rem, 4vw, 1.5rem)',
                             borderRadius: '0.75rem',
-                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                            background: 'linear-gradient(135deg, #4a757c, #ba6c5d)',
                             color: 'white',
                             border: 'none',
                             fontSize: 'clamp(0.875rem, 4vw, 1rem)',
@@ -130,7 +130,7 @@ const MySubscriptions = () => {
     }
 
     return (
-        <div style={{ minHeight: '100vh', background: 'transparent' }}>
+        <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #faeeee 0%, #eefafa 100%)' }}>
             {/* Hero Section */}
             <section style={{ 
                 position: 'relative',
@@ -176,7 +176,7 @@ const MySubscriptions = () => {
                             fontWeight: 'bold', 
                             lineHeight: '1.2', 
                             marginBottom: 'clamp(1rem, 4vw, 1.5rem)',
-                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                            background: 'linear-gradient(135deg, #4a757c, #ba6c5d)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             backgroundClip: 'text'
@@ -219,7 +219,7 @@ const MySubscriptions = () => {
                                 fontSize: 'clamp(1.25rem, 5vw, 2rem)', 
                                 fontWeight: 'bold', 
                                 marginBottom: '1rem',
-                                color: '#2f6e73'
+                                color: '#4a757c'
                             }}>
                                 {language === 'ar' ? 'لا توجد اشتراكات' : 'No Subscriptions'}
                             </h2>
@@ -240,7 +240,7 @@ const MySubscriptions = () => {
                                 display: 'inline-block',
                                 padding: 'clamp(0.5rem, 3vw, 0.75rem) clamp(1rem, 4vw, 1.5rem)',
                                 borderRadius: '0.75rem',
-                                background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                                background: 'linear-gradient(135deg, #4a757c, #ba6c5d)',
                                 color: 'white',
                                 textDecoration: 'none',
                                 fontSize: 'clamp(0.875rem, 4vw, 1rem)',
@@ -293,7 +293,7 @@ const MySubscriptions = () => {
                                         <div style={{
                                             width: 'clamp(2.5rem, 8vw, 3rem)',
                                             height: 'clamp(2.5rem, 8vw, 3rem)',
-                                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                                            background: 'linear-gradient(135deg, #4a757c, #ba6c5d)',
                                             borderRadius: '0.75rem',
                                             display: 'flex',
                                             alignItems: 'center',
@@ -411,7 +411,7 @@ const MySubscriptions = () => {
                                             <div style={{ 
                                                 fontSize: 'clamp(0.875rem, 3vw, 1rem)', 
                                                 fontWeight: '600', 
-                                                color: '#2f6e73' 
+                                                color: '#4a757c' 
                                             }}>
                                                 {subscription.total_amount} {language === 'ar' ? 'ريال' : 'OMR'}
                                             </div>
@@ -424,7 +424,7 @@ const MySubscriptions = () => {
                                         width: '100%',
                                         padding: 'clamp(0.75rem, 3vw, 1rem)',
                                         borderRadius: '0.75rem',
-                                        background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                                        background: 'linear-gradient(135deg, #4a757c, #ba6c5d)',
                                         color: 'white',
                                         textDecoration: 'none',
                                         fontSize: 'clamp(0.875rem, 4vw, 1rem)',

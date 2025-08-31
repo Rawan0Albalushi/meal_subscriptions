@@ -133,7 +133,7 @@ const HomeNavbar = () => {
                                 borderRadius: '0.5rem',
                                 color: '#2f6e73',
                                 textDecoration: 'none',
-                                fontSize: '0.875rem',
+                                fontSize: '1.125rem',
                                 fontWeight: '500',
                                 transition: 'all 0.2s'
                             }}>
@@ -145,7 +145,7 @@ const HomeNavbar = () => {
                                 borderRadius: '0.5rem',
                                 color: '#2f6e73',
                                 textDecoration: 'none',
-                                fontSize: '0.875rem',
+                                fontSize: '1.125rem',
                                 fontWeight: '500',
                                 transition: 'all 0.2s'
                             }}>
@@ -202,7 +202,7 @@ const HomeNavbar = () => {
                                         padding: '0.5rem 1rem',
                                         borderRadius: '0.5rem',
                                         color: '#2f6e73',
-                                        fontSize: '0.875rem',
+                                        fontSize: '1.125rem',
                                         fontWeight: '500'
                                     }}>
                                         {t('hello')} {user?.full_name || user?.name || t('user')}
@@ -215,7 +215,7 @@ const HomeNavbar = () => {
                                             background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                                             color: 'white',
                                             border: 'none',
-                                            fontSize: '0.875rem',
+                                            fontSize: '1.125rem',
                                             fontWeight: '500',
                                             cursor: 'pointer',
                                             transition: 'all 0.2s'
@@ -230,7 +230,7 @@ const HomeNavbar = () => {
                                     borderRadius: '0.5rem',
                                     color: '#2f6e73',
                                     textDecoration: 'none',
-                                    fontSize: '0.875rem',
+                                    fontSize: '1.125rem',
                                     fontWeight: '500',
                                     transition: 'all 0.2s'
                                 }}>

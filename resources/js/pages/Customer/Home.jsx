@@ -86,7 +86,7 @@ const Home = () => {
     <div style={{ 
       minHeight: '100vh',
       position: 'relative',
-      background: 'transparent'
+      background: 'linear-gradient(135deg, #faeeee 0%, #eefafa 100%)'
     }}>
       {/* Hero Section */}
       <section className="hero-section-enhanced section-enhanced" style={{ 
@@ -103,50 +103,50 @@ const Home = () => {
           <div className="floating-element" style={{
             width: '100px',
             height: '100px',
-            background: 'radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(74, 117, 124, 0.1) 0%, transparent 70%)',
             borderRadius: '50%',
             cursor: 'pointer',
             transition: 'all 0.3s ease'
           }}
           onMouseEnter={(e) => {
             e.target.style.transform = 'scale(1.2)';
-            e.target.style.background = 'radial-gradient(circle, rgba(79, 70, 229, 0.2) 0%, transparent 70%)';
+            e.target.style.background = 'radial-gradient(circle, rgba(74, 117, 124, 0.2) 0%, transparent 70%)';
           }}
           onMouseLeave={(e) => {
             e.target.style.transform = 'scale(1)';
-            e.target.style.background = 'radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, transparent 70%)';
+            e.target.style.background = 'radial-gradient(circle, rgba(74, 117, 124, 0.1) 0%, transparent 70%)';
           }}></div>
           <div className="floating-element" style={{
             width: '80px',
             height: '80px',
-            background: 'radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(186, 108, 93, 0.08) 0%, transparent 70%)',
             borderRadius: '50%',
             cursor: 'pointer',
             transition: 'all 0.3s ease'
           }}
           onMouseEnter={(e) => {
             e.target.style.transform = 'scale(1.2)';
-            e.target.style.background = 'radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%)';
+            e.target.style.background = 'radial-gradient(circle, rgba(186, 108, 93, 0.15) 0%, transparent 70%)';
           }}
           onMouseLeave={(e) => {
             e.target.style.transform = 'scale(1)';
-            e.target.style.background = 'radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%)';
+            e.target.style.background = 'radial-gradient(circle, rgba(186, 108, 93, 0.08) 0%, transparent 70%)';
           }}></div>
           <div className="floating-element" style={{
             width: '120px',
             height: '120px',
-            background: 'radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(74, 117, 124, 0.06) 0%, transparent 70%)',
             borderRadius: '50%',
             cursor: 'pointer',
             transition: 'all 0.3s ease'
           }}
           onMouseEnter={(e) => {
             e.target.style.transform = 'scale(1.2)';
-            e.target.style.background = 'radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%)';
+            e.target.style.background = 'radial-gradient(circle, rgba(74, 117, 124, 0.12) 0%, transparent 70%)';
           }}
           onMouseLeave={(e) => {
             e.target.style.transform = 'scale(1)';
-            e.target.style.background = 'radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 70%)';
+            e.target.style.background = 'radial-gradient(circle, rgba(74, 117, 124, 0.06) 0%, transparent 70%)';
           }}></div>
           
           {/* Additional Food-themed floating elements */}
@@ -258,7 +258,7 @@ const Home = () => {
                 position: 'relative'
               }}>
                 <span style={{ 
-                  background: 'linear-gradient(135deg, #2f6e73 0%, #4a8a8f 100%)',
+                  background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
@@ -883,7 +883,7 @@ const Home = () => {
                                          <div style={{ 
                        fontSize: '1.8rem', 
                        fontWeight: '700', 
-                       background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 50%, #c86a5a 100%)',
+                       background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 50%, #ba6c5d 100%)',
                        backgroundClip: 'text',
                        WebkitBackgroundClip: 'text',
                        WebkitTextFillColor: 'transparent',
@@ -1477,7 +1477,7 @@ const Home = () => {
                     width: '32px',
                     height: '32px',
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
+                    background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
                     color: 'white',
                     display: 'flex',
                     alignItems: 'center',

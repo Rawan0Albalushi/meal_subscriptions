@@ -51,7 +51,7 @@ const ContactUs = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background: 'transparent'
+                background: 'linear-gradient(135deg, #faeeee 0%, #eefafa 100%)'
             }}>
                 <div style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
@@ -68,7 +68,7 @@ const ContactUs = () => {
             minHeight: '100vh',
             padding: 'clamp(1rem, 4vw, 2rem)',
             direction: isRTL ? 'rtl' : 'ltr',
-            background: 'transparent'
+            background: 'linear-gradient(135deg, #faeeee 0%, #eefafa 100%)'
         }}>
             <div style={{
                 maxWidth: '800px',
@@ -86,7 +86,7 @@ const ContactUs = () => {
                     <h2 style={{
                         fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
                         fontWeight: 'bold',
-                        color: '#2f6e73',
+                        color: '#4a757c',
                         marginBottom: '2rem',
                         textAlign: 'center'
                     }}>
@@ -139,7 +139,7 @@ const ContactUs = () => {
                             <div style={{
                                 width: '3.5rem',
                                 height: '3.5rem',
-                                background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                                background: 'linear-gradient(135deg, #4a757c, #ba6c5d)',
                                 borderRadius: '50%',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -154,7 +154,7 @@ const ContactUs = () => {
                                 <h3 style={{
                                     fontSize: '1.125rem',
                                     fontWeight: '600',
-                                    color: '#2f6e73',
+                                    color: '#4a757c',
                                     marginBottom: '0.25rem'
                                 }}>
                                     {language === 'ar' ? 'الهاتف' : 'Phone'}
@@ -173,7 +173,7 @@ const ContactUs = () => {
                             <div style={{
                                 width: '2.5rem',
                                 height: '2.5rem',
-                                background: copyStatus.phone ? '#10b981' : 'rgba(47, 110, 115, 0.1)',
+                                background: copyStatus.phone ? '#4CAF50' : 'rgba(74, 117, 124, 0.1)',
                                 borderRadius: '50%',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -184,7 +184,7 @@ const ContactUs = () => {
                             }}>
                                 <span style={{
                                     fontSize: '1.125rem',
-                                    color: copyStatus.phone ? 'white' : '#2f6e73',
+                                    color: copyStatus.phone ? 'white' : '#4a757c',
                                     transition: 'all 0.3s ease'
                                 }}>
                                     {copyStatus.phone ? '✓' : '📋'}
@@ -195,7 +195,7 @@ const ContactUs = () => {
                                     position: 'absolute',
                                     top: '-2.5rem',
                                     right: '0',
-                                    background: '#10b981',
+                                    background: '#4CAF50',
                                     color: 'white',
                                     padding: '0.5rem 1rem',
                                     borderRadius: '0.5rem',
@@ -236,7 +236,7 @@ const ContactUs = () => {
                             <div style={{
                                 width: '3.5rem',
                                 height: '3.5rem',
-                                background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                                background: 'linear-gradient(135deg, #4a757c, #ba6c5d)',
                                 borderRadius: '50%',
                                 display: 'flex',
                                 alignItems: 'center',

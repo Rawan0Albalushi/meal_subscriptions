@@ -73,7 +73,7 @@ const Navbar = () => {
                         <div style={{
                             width: '2.5rem',
                             height: '2.5rem',
-                                    background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                                    background: 'linear-gradient(135deg, #4a757c, #ba6c5d)',
                                     borderRadius: '0.5rem',
                             display: 'flex',
                             alignItems: 'center',
@@ -87,7 +87,7 @@ const Navbar = () => {
                                 <span style={{ 
                                     fontSize: '1.25rem', 
                                     fontWeight: 'bold', 
-                                    background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)', 
+                                    background: 'linear-gradient(135deg, #4a757c, #ba6c5d)', 
                                     WebkitBackgroundClip: 'text', 
                                     WebkitTextFillColor: 'transparent' 
                                 }}>
@@ -106,15 +106,15 @@ const Navbar = () => {
                             <Link to="/restaurants" style={{
                                 padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
                                 borderRadius: '0.5rem',
-                                color: '#2f6e73',
+                                color: '#4a757c',
                                 textDecoration: 'none',
-                                fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
+                                fontSize: 'clamp(0.875rem, 3vw, 1.125rem)',
                                 fontWeight: '500',
                                 transition: 'all 0.2s',
                                 whiteSpace: 'nowrap'
                             }}
                             onMouseEnter={(e) => {
-                                e.target.style.background = 'rgba(47, 110, 115, 0.1)';
+                                e.target.style.background = 'rgba(74, 117, 124, 0.1)';
                             }}
                             onMouseLeave={(e) => {
                                 e.target.style.background = 'transparent';
@@ -126,15 +126,15 @@ const Navbar = () => {
                             <Link to="/my-subscriptions" style={{
                                 padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
                                 borderRadius: '0.5rem',
-                                color: '#2f6e73',
+                                color: '#4a757c',
                                 textDecoration: 'none',
-                                fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
+                                fontSize: 'clamp(0.875rem, 3vw, 1.125rem)',
                                 fontWeight: '500',
                                 transition: 'all 0.2s',
                                 whiteSpace: 'nowrap'
                             }}
                             onMouseEnter={(e) => {
-                                e.target.style.background = 'rgba(47, 110, 115, 0.1)';
+                                e.target.style.background = 'rgba(74, 117, 124, 0.1)';
                             }}
                             onMouseLeave={(e) => {
                                 e.target.style.background = 'transparent';
@@ -146,15 +146,15 @@ const Navbar = () => {
                             <Link to="/contact-us" style={{
                                 padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
                                 borderRadius: '0.5rem',
-                                color: '#2f6e73',
+                                color: '#4a757c',
                                 textDecoration: 'none',
-                                fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
+                                fontSize: 'clamp(0.875rem, 3vw, 1.125rem)',
                                 fontWeight: '500',
                                 transition: 'all 0.2s',
                                 whiteSpace: 'nowrap'
                             }}
                             onMouseEnter={(e) => {
-                                e.target.style.background = 'rgba(47, 110, 115, 0.1)';
+                                e.target.style.background = 'rgba(74, 117, 124, 0.1)';
                             }}
                             onMouseLeave={(e) => {
                                 e.target.style.background = 'transparent';
@@ -173,7 +173,7 @@ const Navbar = () => {
                                     width: 'clamp(2.5rem, 6vw, 3rem)',
                                     height: 'clamp(2.5rem, 6vw, 3rem)',
                                     borderRadius: '0.5rem',
-                                    background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                                    background: 'linear-gradient(135deg, #4a757c, #ba6c5d)',
                                     color: 'white',
                                     border: 'none',
                                     cursor: 'pointer',
@@ -247,7 +247,7 @@ const Navbar = () => {
                                         padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
                                         borderRadius: '0.5rem',
                                         color: '#2f6e73',
-                                        fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
+                                        fontSize: 'clamp(0.875rem, 3vw, 1.125rem)',
                                         fontWeight: '500',
                                         whiteSpace: 'nowrap'
                                     }}>
@@ -262,7 +262,7 @@ const Navbar = () => {
                                             background: 'rgba(47, 110, 115, 0.1)',
                                             color: '#2f6e73',
                                             textDecoration: 'none',
-                                            fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
+                                            fontSize: 'clamp(0.875rem, 3vw, 1.125rem)',
                                             fontWeight: '500',
                                             transition: 'all 0.2s',
                                             whiteSpace: 'nowrap'
@@ -286,7 +286,7 @@ const Navbar = () => {
                                             background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                                             color: 'white',
                                             border: 'none',
-                                            fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
+                                            fontSize: 'clamp(0.875rem, 3vw, 1.125rem)',
                                             fontWeight: '500',
                                             cursor: 'pointer',
                                             transition: 'all 0.2s',
@@ -312,7 +312,7 @@ const Navbar = () => {
                                     borderRadius: '0.5rem',
                                     color: '#2f6e73',
                                     textDecoration: 'none',
-                                    fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
+                                    fontSize: 'clamp(0.875rem, 3vw, 1.125rem)',
                                     fontWeight: '500',
                                     transition: 'all 0.2s',
                                     whiteSpace: 'nowrap'
@@ -357,7 +357,7 @@ const Navbar = () => {
                                         borderRadius: '0.75rem',
                                         color: '#2f6e73',
                                         textDecoration: 'none',
-                                        fontSize: 'clamp(1rem, 3vw, 1.125rem)',
+                                        fontSize: 'clamp(1.125rem, 3.5vw, 1.375rem)',
                                         fontWeight: '600',
                                         background: 'rgba(47, 110, 115, 0.05)',
                                         border: '1px solid rgba(47, 110, 115, 0.1)',
@@ -383,7 +383,7 @@ const Navbar = () => {
                                         borderRadius: '0.75rem',
                                         color: '#2f6e73',
                                         textDecoration: 'none',
-                                        fontSize: 'clamp(1rem, 3vw, 1.125rem)',
+                                        fontSize: 'clamp(1.125rem, 3.5vw, 1.375rem)',
                                         fontWeight: '600',
                                         background: 'rgba(47, 110, 115, 0.05)',
                                         border: '1px solid rgba(47, 110, 115, 0.1)',
@@ -409,7 +409,7 @@ const Navbar = () => {
                                         borderRadius: '0.75rem',
                                         color: '#2f6e73',
                                         textDecoration: 'none',
-                                        fontSize: 'clamp(1rem, 3vw, 1.125rem)',
+                                        fontSize: 'clamp(1.125rem, 3.5vw, 1.375rem)',
                                         fontWeight: '600',
                                         background: 'rgba(47, 110, 115, 0.05)',
                                         border: '1px solid rgba(47, 110, 115, 0.1)',
@@ -447,7 +447,7 @@ const Navbar = () => {
                                         border: '2px solid #2f6e73',
                                         background: 'rgba(47, 110, 115, 0.05)',
                                         fontWeight: '600',
-                                        fontSize: 'clamp(1rem, 3vw, 1.125rem)',
+                                        fontSize: 'clamp(1.125rem, 3.5vw, 1.375rem)',
                                         transition: 'all 0.3s ease',
                                         cursor: 'pointer',
                                         boxShadow: '0 4px 12px rgba(47, 110, 115, 0.15)',
@@ -487,7 +487,7 @@ const Navbar = () => {
                                             textAlign: 'center'
                                         }}>
                                             <div style={{
-                                                fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
+                                                fontSize: 'clamp(1rem, 3vw, 1.25rem)',
                                                 color: '#2f6e73',
                                                 fontWeight: '600',
                                                 marginBottom: '0.25rem'
@@ -495,7 +495,7 @@ const Navbar = () => {
                                                 👋 {t('hello')}
                                             </div>
                                             <div style={{
-                                                fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
+                                                fontSize: 'clamp(0.875rem, 3vw, 1.125rem)',
                                                 color: 'rgb(75 85 99)'
                                             }}>
                                                 {user?.full_name || user?.name || 'المستخدم'}
@@ -511,7 +511,7 @@ const Navbar = () => {
                                                     background: 'rgba(47, 110, 115, 0.1)',
                                                     color: '#2f6e73',
                                                     textDecoration: 'none',
-                                                    fontSize: 'clamp(1rem, 3vw, 1.125rem)',
+                                                    fontSize: 'clamp(1.125rem, 3.5vw, 1.375rem)',
                                                     fontWeight: '600',
                                                     border: '1px solid rgba(47, 110, 115, 0.2)',
                                                     transition: 'all 0.2s ease',
@@ -542,7 +542,7 @@ const Navbar = () => {
                                                 background: 'linear-gradient(135deg, rgb(239 68 68), rgb(220 38 38))',
                                                 color: 'white',
                                                 border: 'none',
-                                                fontSize: 'clamp(1rem, 3vw, 1.125rem)',
+                                                fontSize: 'clamp(1.125rem, 3.5vw, 1.375rem)',
                                                 fontWeight: '600',
                                                 cursor: 'pointer',
                                                 transition: 'all 0.2s ease',
@@ -568,7 +568,7 @@ const Navbar = () => {
                                         background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                                         color: 'white',
                                         textDecoration: 'none',
-                                        fontSize: 'clamp(1rem, 3vw, 1.125rem)',
+                                        fontSize: 'clamp(1.125rem, 3.5vw, 1.375rem)',
                                         fontWeight: '600',
                                         transition: 'all 0.2s ease',
                                         textAlign: 'center',

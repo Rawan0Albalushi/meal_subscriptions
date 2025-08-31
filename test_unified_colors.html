@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار نظام الألوان الموحد</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* استيراد ملف tokens.css */
+        @import url('./resources/css/tokens.css');
+        
+        body {
+            font-family: 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+        }
+        
+        .test-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-4xl font-bold text-white text-center mb-8">اختبار نظام الألوان الموحد</h1>
+        
+        <!-- الألوان الأساسية -->
+        <div class="test-card rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-primary mb-6">الألوان الأساسية</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-primary text-white p-4 rounded-lg text-center">
+                    <div class="text-lg font-bold">Primary</div>
+                    <div class="text-sm">#4a757c</div>
+                </div>
+                <div class="bg-accent text-white p-4 rounded-lg text-center">
+                    <div class="text-lg font-bold">Accent</div>
+                    <div class="text-sm">#ba6c5d</div>
+                </div>
+                <div class="bg-bg border border-gray-200 p-4 rounded-lg text-center">
+                    <div class="text-lg font-bold text-gray-800">Background</div>
+                    <div class="text-sm text-gray-600">#ffffff</div>
+                </div>
+                <div class="bg-beige border border-gray-200 p-4 rounded-lg text-center">
+                    <div class="text-lg font-bold text-gray-800">Beige</div>
+                    <div class="text-sm text-gray-600">#fff4d7</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ألوان الحالة -->
+        <div class="test-card rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-primary mb-6">ألوان الحالة</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-success text-white p-4 rounded-lg text-center">
+                    <div class="text-lg font-bold">Success</div>
+                    <div class="text-sm">#4CAF50</div>
+                </div>
+                <div class="bg-error text-white p-4 rounded-lg text-center">
+                    <div class="text-lg font-bold">Error</div>
+                    <div class="text-sm">#F44336</div>
+                </div>
+                <div class="bg-warning text-white p-4 rounded-lg text-center">
+                    <div class="text-lg font-bold">Warning</div>
+                    <div class="text-sm">#FFC107</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- تدرجات الألوان -->
+        <div class="test-card rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-primary mb-6">تدرجات Primary</h2>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="bg-primary-50 border border-gray-200 p-3 rounded-lg text-center">
+                    <div class="text-sm font-bold text-gray-800">50</div>
+                </div>
+                <div class="bg-primary-100 border border-gray-200 p-3 rounded-lg text-center">
+                    <div class="text-sm font-bold text-gray-800">100</div>
+                </div>
+                <div class="bg-primary-200 border border-gray-200 p-3 rounded-lg text-center">
+                    <div class="text-sm font-bold text-gray-800">200</div>
+                </div>
+                <div class="bg-primary-300 border border-gray-200 p-3 rounded-lg text-center">
+                    <div class="text-sm font-bold text-gray-800">300</div>
+                </div>
+                <div class="bg-primary-400 text-white p-3 rounded-lg text-center">
+                    <div class="text-sm font-bold">400</div>
+                </div>
+                <div class="bg-primary-500 text-white p-3 rounded-lg text-center">
+                    <div class="text-sm font-bold">500</div>
+                </div>
+                <div class="bg-primary-600 text-white p-3 rounded-lg text-center">
+                    <div class="text-sm font-bold">600</div>
+                </div>
+                <div class="bg-primary-700 text-white p-3 rounded-lg text-center">
+                    <div class="text-sm font-bold">700</div>
+                </div>
+                <div class="bg-primary-800 text-white p-3 rounded-lg text-center">
+                    <div class="text-sm font-bold">800</div>
+                </div>
+                <div class="bg-primary-900 text-white p-3 rounded-lg text-center">
+                    <div class="text-sm font-bold">900</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- الأزرار -->
+        <div class="test-card rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-primary mb-6">الأزرار</h2>
+            <div class="flex flex-wrap gap-4">
+                <button class="btn-primary">زر أساسي</button>
+                <button class="btn-secondary">زر ثانوي</button>
+                <button class="btn-success">زر نجاح</button>
+                <button class="btn-error">زر خطأ</button>
+                <button class="btn-warning">زر تحذير</button>
+            </div>
+        </div>
+        
+        <!-- البطاقات -->
+        <div class="test-card rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-primary mb-6">البطاقات</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card-primary">
+                    <h3 class="text-lg font-bold mb-2">بطاقة أساسية</h3>
+                    <p class="text-gray-600">هذه بطاقة تستخدم اللون الأساسي</p>
+                </div>
+                <div class="card-accent">
+                    <h3 class="text-lg font-bold mb-2">بطاقة ثانوية</h3>
+                    <p class="text-gray-600">هذه بطاقة تستخدم اللون الثانوي</p>
+                </div>
+                <div class="card-beige">
+                    <h3 class="text-lg font-bold mb-2">بطاقة بيج</h3>
+                    <p class="text-gray-600">هذه بطاقة تستخدم اللون البيج</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- التنبيهات -->
+        <div class="test-card rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-primary mb-6">التنبيهات</h2>
+            <div class="space-y-4">
+                <div class="alert-success">
+                    <strong>نجح!</strong> تم حفظ البيانات بنجاح.
+                </div>
+                <div class="alert-error">
+                    <strong>خطأ!</strong> حدث خطأ أثناء حفظ البيانات.
+                </div>
+                <div class="alert-warning">
+                    <strong>تحذير!</strong> يرجى مراجعة البيانات قبل الحفظ.
+                </div>
+            </div>
+        </div>
+        
+        <!-- النصوص -->
+        <div class="test-card rounded-2xl p-8">
+            <h2 class="text-2xl font-bold text-primary mb-6">النصوص</h2>
+            <div class="space-y-4">
+                <h1 class="text-primary text-3xl font-bold">عنوان رئيسي</h1>
+                <h2 class="text-accent text-2xl font-semibold">عنوان فرعي</h2>
+                <p class="text-gray-700 text-lg">نص عادي بلون رمادي</p>
+                <p class="text-primary-600">نص بلون أساسي فاتح</p>
+                <p class="text-accent-600">نص بلون ثانوي فاتح</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

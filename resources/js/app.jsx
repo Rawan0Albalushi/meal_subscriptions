@@ -36,7 +36,7 @@ function AppRoutes() {
                 left: 0,
                 width: '100%',
                 height: '100%',
-                background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%, #f8fafc 100%)',
+                background: 'linear-gradient(135deg, #faeeee 0%, #eefafa 100%)',
                 backgroundAttachment: 'fixed',
                 zIndex: -2
             }}></div>
@@ -49,9 +49,9 @@ function AppRoutes() {
                 width: '100%',
                 height: '100%',
                 backgroundImage: `
-                    radial-gradient(circle at 20% 80%, rgba(47, 110, 115, 0.1) 0%, transparent 50%),
-                    radial-gradient(circle at 80% 20%, rgba(182, 84, 73, 0.1) 0%, transparent 50%),
-                    radial-gradient(circle at 40% 40%, rgba(74, 138, 143, 0.1) 0%, transparent 50%)
+                    radial-gradient(circle at 20% 80%, rgba(74, 117, 124, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(186, 108, 93, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 40%, rgba(74, 117, 124, 0.1) 0%, transparent 50%)
                 `,
                 pointerEvents: 'none',
                 zIndex: -1

@@ -185,7 +185,7 @@ const Restaurants = () => {
       minHeight: '100vh', 
       overflowX: 'hidden',
       direction: dir,
-      background: 'transparent'
+              background: 'linear-gradient(135deg, #faeeee 0%, #eefafa 100%)'
     }}>
       {/* Main Content */}
       <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '1rem' }}>
@@ -193,7 +193,7 @@ const Restaurants = () => {
           <h1 style={{
             fontSize: 'clamp(2rem, 6vw, 3rem)',
             fontWeight: 'bold',
-            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+            background: 'linear-gradient(135deg, #4a757c, #ba6c5d)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             marginBottom: '1rem'
@@ -244,7 +244,7 @@ const Restaurants = () => {
             <h2 style={{
               fontSize: '1.25rem',
               fontWeight: 'bold',
-              color: '#2f6e73',
+              color: '#4a757c',
               margin: 0
             }}>
               🔍 {t('searchFilters')}
@@ -314,7 +314,7 @@ const Restaurants = () => {
                     borderRadius: '0.5rem',
                     border: '2px solid rgb(209 213 219)',
                     background: 'rgba(255, 255, 255, 0.9)',
-                    color: filters.locations ? '#2f6e73' : 'rgb(75 85 99)',
+                    color: filters.locations ? '#4a757c' : 'rgb(75 85 99)',
                     fontSize: '0.875rem',
                     fontWeight: '500',
                     cursor: 'pointer',
@@ -330,8 +330,8 @@ const Restaurants = () => {
                     }
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.borderColor = '#2f6e73';
-                    e.target.style.boxShadow = '0 0 0 3px rgba(47, 110, 115, 0.1)';
+                    e.target.style.borderColor = '#4a757c';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(74, 117, 124, 0.1)';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.borderColor = 'rgb(209 213 219)';
@@ -426,7 +426,7 @@ const Restaurants = () => {
                           transition: 'background-color 0.2s ease',
                           borderBottom: '1px solid rgb(243 244 246)',
                           fontSize: '0.875rem',
-                          color: filters.locations === location ? '#2f6e73' : 'rgb(75 85 99)',
+                          color: filters.locations === location ? '#4a757c' : 'rgb(75 85 99)',
                           fontWeight: filters.locations === location ? '600' : '500',
                           backgroundColor: filters.locations === location ? 'rgb(238 242 255)' : 'transparent',
                           textAlign: dir === 'rtl' ? 'right' : 'left',
@@ -680,7 +680,7 @@ const Restaurants = () => {
               style={{
                 padding: '0.75rem 1.5rem',
                 borderRadius: '0.5rem',
-                background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                background: 'linear-gradient(135deg, #4a757c, #ba6c5d)',
                 color: 'white',
                 border: 'none',
                 fontSize: '0.875rem',
@@ -789,7 +789,7 @@ const Restaurants = () => {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        background: 'linear-gradient(135deg, #2f6e73 0%, #4a8a8f 100%)',
+                        background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
                         display: 'none',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -803,7 +803,7 @@ const Restaurants = () => {
                     <div style={{
                       width: '200px',
                       height: '160px',
-                      background: 'linear-gradient(135deg, #2f6e73 0%, #4a8a8f 100%)',
+                      background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
                       borderRadius: '16px',
                       display: 'flex',
                       alignItems: 'center',
@@ -839,7 +839,7 @@ const Restaurants = () => {
                   <h3 style={{ 
                     fontSize: '1.25rem', 
                     fontWeight: 'bold', 
-                    color: '#2f6e73', 
+                    color: '#4a757c', 
                     margin: 0,
                     lineHeight: '1.3'
                   }}>
@@ -883,7 +883,7 @@ const Restaurants = () => {
                   {restaurant.locations && restaurant.locations.length > 0 && (
                     <div style={{ 
                       fontSize: '0.875rem', 
-                      color: '#2f6e73',
+                      color: '#4a757c',
                       textAlign: 'center',
                       fontWeight: '600'
                     }}>
@@ -907,7 +907,7 @@ const Restaurants = () => {
                       width: '100%',
                       padding: '0.75rem',
                       borderRadius: '0.5rem',
-                      background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                      background: 'linear-gradient(135deg, #4a757c, #ba6c5d)',
                       color: 'white',
                       border: 'none',
                       fontSize: '0.875rem',

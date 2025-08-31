@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import url('https://unpkg.com/leaflet@1.7.1/dist/leaflet.css');
+@import "./tokens.css";
 @import "./enhanced-components.css";
 @import "./special-effects.css";
 @import "./mobile-optimizations.css";

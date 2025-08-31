@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet">
     @viteReactRefresh
     @vite(['resources/css/app.css','resources/js/app.jsx'])
-    <title>اشتراكات الوجبات</title>
+    <title>اشتراكات الوجبات - نظام الألوان الموحد</title>
     <script>
         // Configure Vite for local network access
         window.__VITE_DEV_SERVER_URL__ = 'http://localhost:5173';

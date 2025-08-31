@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار ألوان صفحة تفاصيل المطعم</title>
+    <style>
+        /* استيراد ملف الألوان الموحدة */
+        @import url('resources/css/tokens.css');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Tajawal', 'Calibri', sans-serif;
+            background: var(--gradient-background);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+        
+        .test-title {
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .color-item {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .primary-gradient {
+            background: var(--gradient-primary);
+        }
+        
+        .accent-gradient {
+            background: var(--gradient-accent);
+        }
+        
+        .primary-reverse-gradient {
+            background: var(--gradient-primary-reverse);
+        }
+        
+        .primary-color {
+            background: var(--color-primary);
+        }
+        
+        .accent-color {
+            background: var(--color-accent);
+        }
+        
+        .beige-color {
+            background: var(--color-beige);
+            color: var(--color-primary);
+        }
+        
+        .restaurant-logo {
+            width: 120px;
+            height: 80px;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(74, 117, 124, 0.15);
+            border: 2px solid rgba(74, 117, 124, 0.08);
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin: 0 auto 1rem;
+        }
+        
+        .restaurant-title {
+            color: var(--color-primary);
+            font-size: 1.25rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subscription-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95));
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 2px solid rgba(74, 117, 124, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .subscription-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 25px rgba(74, 117, 124, 0.15);
+            border-color: var(--color-primary);
+        }
+        
+        .subscription-card.selected {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 3px solid var(--color-primary);
+            box-shadow: 0 20px 40px rgba(74, 117, 124, 0.25);
+        }
+        
+        .meal-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            border: 1px solid rgba(74, 117, 124, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .meal-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(74, 117, 124, 0.1);
+        }
+        
+        .meal-title {
+            color: var(--color-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .meal-button {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+        
+        .meal-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(74, 117, 124, 0.2);
+        }
+        
+        .status-message {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border: 1px solid #fecaca;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            color: #dc2626;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        .success-message {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border: 1px solid #bbf7d0;
+            color: #16a34a;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .test-section {
+                padding: 1rem;
+            }
+            
+            .color-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="test-section">
+            <h1 class="test-title">اختبار ألوان صفحة تفاصيل المطعم</h1>
+            
+            <h2 style="color: var(--color-primary); margin-bottom: 1rem;">الألوان الأساسية المستخدمة:</h2>
+            
+            <div class="color-grid">
+                <div class="color-item primary-gradient">Primary Gradient</div>
+                <div class="color-item accent-gradient">Accent Gradient</div>
+                <div class="color-item primary-reverse-gradient">Primary Reverse</div>
+                <div class="color-item primary-color">Primary Color</div>
+                <div class="color-item accent-color">Accent Color</div>
+                <div class="color-item beige-color">Beige Color</div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="test-title">شعار المطعم</h2>
+            <div class="restaurant-logo">🍽️</div>
+            <div class="restaurant-title">اسم المطعم</div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="test-title">بطاقات الاشتراكات</h2>
+            <div class="color-grid">
+                <div class="subscription-card">
+                    <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">اشتراك أسبوعي</h3>
+                    <p style="color: #6b7280; margin-bottom: 1rem;">7 وجبات في الأسبوع</p>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--color-primary);">25 ريال</div>
+                </div>
+                
+                <div class="subscription-card selected">
+                    <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">اشتراك شهري</h3>
+                    <p style="color: #6b7280; margin-bottom: 1rem;">30 وجبة في الشهر</p>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--color-primary);">90 ريال</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="test-title">بطاقات الوجبات</h2>
+            <div class="color-grid">
+                <div class="meal-card">
+                    <h4 class="meal-title">وجبة الإفطار</h4>
+                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.5rem;">وجبة إفطار صحية ومتوازنة</p>
+                    <button class="meal-button">اختيار هذه الوجبة</button>
+                </div>
+                
+                <div class="meal-card">
+                    <h4 class="meal-title">وجبة الغداء</h4>
+                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.5rem;">وجبة غداء شهية ومغذية</p>
+                    <button class="meal-button">اختيار هذه الوجبة</button>
+                </div>
+                
+                <div class="meal-card">
+                    <h4 class="meal-title">وجبة العشاء</h4>
+                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.5rem;">وجبة عشاء خفيفة ومفيدة</p>
+                    <button class="meal-button">اختيار هذه الوجبة</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="test-title">رسائل الحالة</h2>
+            
+            <div class="status-message">
+                ⚠️ يجب اختيار وجبة واحدة على الأقل
+            </div>
+            
+            <div class="status-message success-message">
+                ✅ تم اختيار جميع الوجبات بنجاح
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="test-title">ملاحظات التحديث</h2>
+            <ul style="color: var(--color-primary); line-height: 1.6;">
+                <li>✅ تم تحديث جميع الألوان لتستخدم متغيرات CSS الموحدة</li>
+                <li>✅ تم تطبيق التدرجات الموحدة (Primary, Accent, Primary-Reverse)</li>
+                <li>✅ تم تحديث ألوان العناوين والبطاقات</li>
+                <li>✅ تم تحديث ألوان الأزرار والتفاعلات</li>
+                <li>✅ تم تحديث ألوان رسائل الحالة</li>
+                <li>✅ تم الحفاظ على التصميم المتجاوب</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

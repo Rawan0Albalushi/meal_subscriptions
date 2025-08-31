@@ -1115,7 +1115,7 @@ const RestaurantDetail = () => {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                    background: 'var(--gradient-primary)',
                     display: 'none',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -1129,7 +1129,7 @@ const RestaurantDetail = () => {
                 <div style={{
                   width: '100%',
                   height: '100%',
-                  background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                  background: 'var(--gradient-primary)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -1150,8 +1150,8 @@ const RestaurantDetail = () => {
                 fontSize: 'clamp(0.875rem, 3vw, 1.25rem)', 
                 fontWeight: 'bold', 
                 marginBottom: 'clamp(0.25rem, 1vw, 0.375rem)',
-                color: '#2f6e73',
-                textShadow: '0 1px 2px rgba(47, 110, 115, 0.1)'
+                color: 'var(--color-primary)',
+                textShadow: '0 1px 2px rgba(74, 117, 124, 0.1)'
               }}>
                 {restaurant.name || (language === 'ar' ? restaurant.name_ar : restaurant.name_en)}
               </h1>
@@ -1263,7 +1263,7 @@ const RestaurantDetail = () => {
             fontSize: 'clamp(1.25rem, 4vw, 2rem)', 
             fontWeight: 'bold', 
             marginBottom: 'clamp(0.75rem, 3vw, 1rem)',
-            color: '#2f6e73',
+            color: 'var(--color-primary)',
             textAlign: 'center'
           }}>
             {t('selectSubscriptionType')}
@@ -1272,7 +1272,7 @@ const RestaurantDetail = () => {
           {/* Selection Instructions */}
           <div style={{
             background: 'rgba(255, 255, 255, 0.9)',
-            border: '2px solid rgba(47, 110, 115, 0.2)',
+            border: '2px solid rgba(74, 117, 124, 0.2)',
             borderRadius: 'clamp(0.5rem, 2vw, 1rem)',
             padding: 'clamp(0.75rem, 3vw, 1rem) clamp(1rem, 4vw, 1.5rem)',
             marginBottom: 'clamp(1.5rem, 4vw, 2rem)',
@@ -1289,7 +1289,7 @@ const RestaurantDetail = () => {
               <span style={{ 
                 fontSize: '1rem', 
                 fontWeight: '600', 
-                color: '#2f6e73'
+                color: 'var(--color-primary)'
               }}>
                 {language === 'ar' ? 'اختر نوع الاشتراك المناسب لك' : 'Choose the subscription type that suits you'}
               </span>
@@ -1344,12 +1344,12 @@ const RestaurantDetail = () => {
                 icon: subscriptionType.type === 'weekly' ? '📅' : '📆',
 
                 gradient: subscriptionType.type === 'weekly' 
-                  ? 'linear-gradient(135deg, #4a8a8f, #2f6e73)' 
-                  : 'linear-gradient(135deg, #b65449, #a54a3f)',
+                  ? 'var(--gradient-primary)' 
+                  : 'var(--gradient-accent)',
                 bgGradient: subscriptionType.type === 'weekly' 
                   ? 'linear-gradient(135deg, #f0f9ff, #e0f2fe)' 
                   : 'linear-gradient(135deg, #fef2f2, #fee2e2)',
-                borderColor: subscriptionType.type === 'weekly' ? '#2f6e73' : '#b65449',
+                borderColor: subscriptionType.type === 'weekly' ? 'var(--color-primary)' : 'var(--color-accent)',
                 deliveryPrice: subscriptionType.delivery_price || 0
               };
               
@@ -1369,7 +1369,7 @@ const RestaurantDetail = () => {
                     : '0 8px 25px rgba(0, 0, 0, 0.12)',
                   border: selectedSubscriptionType?.type === subscription.type 
                     ? `3px solid ${subscription.borderColor}` 
-                    : '2px solid rgba(47, 110, 115, 0.2)',
+                    : '2px solid rgba(74, 117, 124, 0.2)',
                   transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                   cursor: 'pointer',
                   position: 'relative',
@@ -1395,7 +1395,7 @@ const RestaurantDetail = () => {
                   if (selectedSubscriptionType?.type !== subscription.type) {
                     e.target.style.transform = 'translateY(0) scale(1)';
                     e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.12)';
-                    e.target.style.borderColor = 'rgba(47, 110, 115, 0.2)';
+                    e.target.style.borderColor = 'rgba(74, 117, 124, 0.2)';
                     e.target.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95))';
                   }
                 }}
@@ -2403,7 +2403,7 @@ const RestaurantDetail = () => {
                                     left: 0,
                                     right: 0,
                                     bottom: 0,
-                                    background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
+                                    background: 'var(--gradient-primary-reverse)',
                                     display: 'none',
                                     alignItems: 'center',
                                     justifyContent: 'center',
@@ -2417,7 +2417,7 @@ const RestaurantDetail = () => {
                                 <div style={{
                                   width: '100%',
                                   height: '100%',
-                                  background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
+                                  background: 'var(--gradient-primary-reverse)',
                                   display: 'flex',
                                   alignItems: 'center',
                                   justifyContent: 'center',
@@ -2444,7 +2444,7 @@ const RestaurantDetail = () => {
                                   fontSize: 'clamp(0.875rem, 3vw, 1rem)', 
                                   fontWeight: '600', 
                                   marginBottom: 'clamp(0.25rem, 1vw, 0.375rem)',
-                                  color: '#2f6e73',
+                                  color: 'var(--color-primary)',
                                   textAlign: 'center',
                                   lineHeight: '1.3'
                                 }}>
@@ -2473,8 +2473,8 @@ const RestaurantDetail = () => {
                                   padding: 'clamp(0.5rem, 2vw, 0.75rem)',
                                   borderRadius: 'clamp(0.375rem, 1.5vw, 0.5rem)',
                                   background: isSelected 
-                                    ? 'linear-gradient(135deg, #2f6e73, #4a8a8f)' 
-                                    : 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                                    ? 'var(--gradient-primary)' 
+                                    : 'var(--gradient-primary)',
                                   color: 'white',
                                   border: 'none',
                                   fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',

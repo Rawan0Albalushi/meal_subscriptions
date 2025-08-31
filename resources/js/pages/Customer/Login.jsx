@@ -244,7 +244,7 @@ const Login = () => {
         justifyContent: 'center',
         padding: '1rem',
         direction: dir,
-        background: 'transparent'
+        background: 'linear-gradient(135deg, #faeeee 0%, #eefafa 100%)'
       }}
     >
       {/* Success Message Overlay */}
@@ -274,7 +274,7 @@ const Login = () => {
               width: '4rem',
               height: '4rem',
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, #10b981, #059669)',
+              background: 'linear-gradient(135deg, #4CAF50, #45a049)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -329,7 +329,7 @@ const Login = () => {
             height: '3.5rem', 
             width: '3.5rem', 
             borderRadius: '1.25rem', 
-            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+            background: 'linear-gradient(135deg, #4a757c, #ba6c5d)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -337,7 +337,7 @@ const Login = () => {
             fontWeight: 'bold',
             fontSize: '1.75rem',
             margin: '0 auto 1.5rem',
-            boxShadow: '0 10px 25px rgba(47, 110, 115, 0.3)'
+            boxShadow: '0 10px 25px rgba(74, 117, 124, 0.3)'
           }}>
             {language === 'ar' ? 'م' : 'M'}
           </div>
@@ -345,7 +345,7 @@ const Login = () => {
             fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', 
             fontWeight: 'bold', 
             marginBottom: '1rem',
-            color: '#2f6e73'
+            color: '#4a757c'
           }}>
             {t('welcomeTo')}
             <span style={{ display: 'block', marginTop: '0.5rem' }}>
@@ -442,8 +442,8 @@ const Login = () => {
                 padding: '0.625rem 0.75rem',
                 borderRadius: '0.5rem',
                 border: 'none',
-                background: isLogin ? 'linear-gradient(135deg, #2f6e73, #4a8a8f)' : 'transparent',
-                color: isLogin ? 'white' : '#2f6e73',
+                            background: isLogin ? 'linear-gradient(135deg, #4a757c, #ba6c5d)' : 'transparent',
+            color: isLogin ? 'white' : '#4a757c',
                 fontWeight: '600',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
@@ -459,8 +459,8 @@ const Login = () => {
                 padding: '0.625rem 0.75rem',
                 borderRadius: '0.5rem',
                 border: 'none',
-                background: !isLogin ? 'linear-gradient(135deg, #2f6e73, #4a8a8f)' : 'transparent',
-                color: !isLogin ? 'white' : '#2f6e73',
+                            background: !isLogin ? 'linear-gradient(135deg, #4a757c, #ba6c5d)' : 'transparent',
+            color: !isLogin ? 'white' : '#4a757c',
                 fontWeight: '600',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
@@ -474,7 +474,7 @@ const Login = () => {
           <h2 style={{ 
             fontSize: 'clamp(1.25rem, 3vw, 1.875rem)', 
             fontWeight: 'bold', 
-            color: '#2f6e73', 
+            color: '#4a757c', 
             marginBottom: '0.5rem',
             textAlign: 'center'
           }}>
@@ -709,7 +709,7 @@ const Login = () => {
                 width: '100%',
                 background: isSubmitting 
                   ? 'rgb(156 163 175)' 
-                  : 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                  : 'linear-gradient(135deg, #4a757c, #ba6c5d)',
                 color: 'white',
                 padding: '0.875rem',
                 borderRadius: '0.625rem',
@@ -719,7 +719,7 @@ const Login = () => {
                 cursor: isSubmitting ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s ease',
                 marginTop: '0.75rem',
-                boxShadow: isSubmitting ? 'none' : '0 4px 15px rgba(47, 110, 115, 0.3)'
+                boxShadow: isSubmitting ? 'none' : '0 4px 15px rgba(74, 117, 124, 0.3)'
               }}
             >
               {isSubmitting 

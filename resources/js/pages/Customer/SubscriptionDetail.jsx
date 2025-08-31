@@ -260,7 +260,7 @@ const SubscriptionDetail = () => {
                         style={{
                             padding: 'clamp(0.5rem, 3vw, 0.75rem) clamp(1rem, 4vw, 1.5rem)',
                             borderRadius: '0.75rem',
-                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                            background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
                             color: 'white',
                             border: 'none',
                             fontSize: 'clamp(0.875rem, 4vw, 1rem)',
@@ -280,7 +280,7 @@ const SubscriptionDetail = () => {
         <div style={{ 
             minHeight: '100vh',
             position: 'relative',
-            background: 'transparent'
+            background: 'linear-gradient(135deg, #faeeee 0%, #eefafa 100%)'
         }}>
             {/* Hero Section */}
             <section style={{ 
@@ -327,7 +327,7 @@ const SubscriptionDetail = () => {
                             fontWeight: 'bold', 
                             lineHeight: '1.2', 
                             marginBottom: 'clamp(1rem, 4vw, 1.5rem)',
-                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                            background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             backgroundClip: 'text'

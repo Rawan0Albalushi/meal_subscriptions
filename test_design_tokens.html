@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار نظام الألوان الموحد - Design Tokens</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* استيراد ملف tokens.css */
+        @import url('./resources/css/tokens.css');
+        
+        body {
+            font-family: 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+        }
+        
+        .test-section {
+            margin: 2rem 0;
+            padding: 2rem;
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+        }
+        
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .color-swatch {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .color-swatch:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .gradient-demo {
+            height: 100px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            margin: 0.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .button-demo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .demo-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .demo-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .alert-demo {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .card-demo {
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card-demo:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-gradient-primary-soft min-h-screen p-4">
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-primary mb-4">اختبار نظام الألوان الموحد</h1>
+            <p class="text-lg text-gray-600">Design Tokens System - نظام الألوان الموحد</p>
+        </header>
+
+        <!-- الألوان الأساسية -->
+        <section class="test-section">
+            <h2 class="text-2xl font-bold text-primary mb-4">الألوان الأساسية</h2>
+            
+            <div class="color-palette">
+                <div class="color-swatch bg-primary text-white">
+                    <div class="text-sm">Primary</div>
+                    <div class="text-xs">#4a757c</div>
+                </div>
+                <div class="color-swatch bg-accent text-white">
+                    <div class="text-sm">Accent</div>
+                    <div class="text-xs">#ba6c5d</div>
+                </div>
+                <div class="color-swatch bg-bg border border-gray-300">
+                    <div class="text-sm">Background</div>
+                    <div class="text-xs">#ffffff</div>
+                </div>
+                <div class="color-swatch bg-beige border border-gray-300">
+                    <div class="text-sm">Beige</div>
+                    <div class="text-xs">#fff4d7</div>
+                </div>
+                <div class="color-swatch bg-success text-white">
+                    <div class="text-sm">Success</div>
+                    <div class="text-xs">#4CAF50</div>
+                </div>
+                <div class="color-swatch bg-error text-white">
+                    <div class="text-sm">Error</div>
+                    <div class="text-xs">#F44336</div>
+                </div>
+                <div class="color-swatch bg-warning text-white">
+                    <div class="text-sm">Warning</div>
+                    <div class="text-xs">#FFC107</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- التدرجات -->
+        <section class="test-section">
+            <h2 class="text-2xl font-bold text-primary mb-4">التدرجات</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="gradient-demo bg-gradient-primary">
+                    التدرج الرئيسي
+                </div>
+                <div class="gradient-demo bg-gradient-primary-reverse">
+                    التدرج العكسي
+                </div>
+                <div class="gradient-demo bg-gradient-primary-soft text-primary">
+                    التدرج الناعم
+                </div>
+                <div class="gradient-demo bg-gradient-accent">
+                    التدرج الثانوي
+                </div>
+                <div class="gradient-demo bg-gradient-success">
+                    تدرج النجاح
+                </div>
+                <div class="gradient-demo bg-gradient-error">
+                    تدرج الخطأ
+                </div>
+                <div class="gradient-demo bg-gradient-warning">
+                    تدرج التحذير
+                </div>
+            </div>
+        </section>
+
+        <!-- الأزرار -->
+        <section class="test-section">
+            <h2 class="text-2xl font-bold text-primary mb-4">الأزرار</h2>
+            
+            <div class="button-demo">
+                <button class="demo-button btn-primary">زر أساسي</button>
+                <button class="demo-button btn-accent">زر ثانوي</button>
+                <button class="demo-button btn-success">زر نجاح</button>
+                <button class="demo-button btn-error">زر خطأ</button>
+                <button class="demo-button btn-warning">زر تحذير</button>
+            </div>
+            
+            <div class="button-demo">
+                <button class="demo-button bg-gradient-primary text-white">تدرج رئيسي</button>
+                <button class="demo-button bg-gradient-accent text-white">تدرج ثانوي</button>
+                <button class="demo-button bg-gradient-success text-white">تدرج نجاح</button>
+                <button class="demo-button bg-gradient-error text-white">تدرج خطأ</button>
+                <button class="demo-button bg-gradient-warning text-white">تدرج تحذير</button>
+            </div>
+        </section>
+
+        <!-- التنبيهات -->
+        <section class="test-section">
+            <h2 class="text-2xl font-bold text-primary mb-4">التنبيهات</h2>
+            
+            <div class="alert-demo alert-primary">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                </svg>
+                <span>هذا تنبيه أساسي</span>
+            </div>
+            
+            <div class="alert-demo alert-success">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>تم حفظ البيانات بنجاح!</span>
+            </div>
+            
+            <div class="alert-demo alert-error">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                </svg>
+                <span>حدث خطأ في حفظ البيانات</span>
+            </div>
+            
+            <div class="alert-demo alert-warning">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <span>تحذير: يرجى مراجعة البيانات</span>
+            </div>
+        </section>
+
+        <!-- البطاقات -->
+        <section class="test-section">
+            <h2 class="text-2xl font-bold text-primary mb-4">البطاقات</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="card-demo card-primary">
+                    <h3 class="text-lg font-bold text-primary mb-2">بطاقة أساسية</h3>
+                    <p class="text-gray-600">محتوى البطاقة الأساسية مع التصميم الموحد</p>
+                </div>
+                
+                <div class="card-demo card-accent">
+                    <h3 class="text-lg font-bold text-accent mb-2">بطاقة ثانوية</h3>
+                    <p class="text-gray-600">محتوى البطاقة الثانوية مع التصميم الموحد</p>
+                </div>
+                
+                <div class="card-demo card-beige">
+                    <h3 class="text-lg font-bold text-primary mb-2">بطاقة بيج</h3>
+                    <p class="text-gray-600">محتوى البطاقة البيج مع التصميم الموحد</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- الخلفيات الناعمة -->
+        <section class="test-section">
+            <h2 class="text-2xl font-bold text-primary mb-4">الخلفيات الناعمة</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-6 rounded-lg bg-primary-soft">
+                    <h3 class="text-lg font-bold text-primary mb-2">خلفية أساسية ناعمة</h3>
+                    <p class="text-gray-700">محتوى مع خلفية أساسية ناعمة</p>
+                </div>
+                
+                <div class="p-6 rounded-lg bg-accent-soft">
+                    <h3 class="text-lg font-bold text-accent mb-2">خلفية ثانوية ناعمة</h3>
+                    <p class="text-gray-700">محتوى مع خلفية ثانوية ناعمة</p>
+                </div>
+                
+                <div class="p-6 rounded-lg bg-beige-soft">
+                    <h3 class="text-lg font-bold text-primary mb-2">خلفية بيج ناعمة</h3>
+                    <p class="text-gray-700">محتوى مع خلفية بيج ناعمة</p>
+                </div>
+                
+                <div class="p-6 rounded-lg bg-success-soft">
+                    <h3 class="text-lg font-bold text-success mb-2">خلفية نجاح ناعمة</h3>
+                    <p class="text-gray-700">محتوى مع خلفية نجاح ناعمة</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- الظلال -->
+        <section class="test-section">
+            <h2 class="text-2xl font-bold text-primary mb-4">الظلال</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-6 rounded-lg bg-white shadow-primary">
+                    <h3 class="text-lg font-bold text-primary mb-2">ظل أساسي</h3>
+                    <p class="text-gray-600">بطاقة مع ظل أساسي</p>
+                </div>
+                
+                <div class="p-6 rounded-lg bg-white shadow-accent">
+                    <h3 class="text-lg font-bold text-accent mb-2">ظل ثانوي</h3>
+                    <p class="text-gray-600">بطاقة مع ظل ثانوي</p>
+                </div>
+                
+                <div class="p-6 rounded-lg bg-white shadow-success">
+                    <h3 class="text-lg font-bold text-success mb-2">ظل نجاح</h3>
+                    <p class="text-gray-600">بطاقة مع ظل نجاح</p>
+                </div>
+                
+                <div class="p-6 rounded-lg bg-white shadow-error">
+                    <h3 class="text-lg font-bold text-error mb-2">ظل خطأ</h3>
+                    <p class="text-gray-600">بطاقة مع ظل خطأ</p>
+                </div>
+                
+                <div class="p-6 rounded-lg bg-white shadow-warning">
+                    <h3 class="text-lg font-bold text-warning mb-2">ظل تحذير</h3>
+                    <p class="text-gray-600">بطاقة مع ظل تحذير</p>
+                </div>
+                
+                <div class="p-6 rounded-lg bg-white shadow-beige">
+                    <h3 class="text-lg font-bold text-primary mb-2">ظل بيج</h3>
+                    <p class="text-gray-600">بطاقة مع ظل بيج</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- التدرجات اللونية -->
+        <section class="test-section">
+            <h2 class="text-2xl font-bold text-primary mb-4">التدرجات اللونية</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="p-4 rounded-lg bg-primary-50 border border-primary-200">
+                    <div class="text-sm font-bold text-primary mb-1">Primary 50</div>
+                    <div class="text-xs text-gray-600">#f0f4f5</div>
+                </div>
+                
+                <div class="p-4 rounded-lg bg-primary-100 border border-primary-300">
+                    <div class="text-sm font-bold text-primary mb-1">Primary 100</div>
+                    <div class="text-xs text-gray-600">#d9e2e5</div>
+                </div>
+                
+                <div class="p-4 rounded-lg bg-primary-200 border border-primary-400">
+                    <div class="text-sm font-bold text-primary mb-1">Primary 200</div>
+                    <div class="text-xs text-gray-600">#b3c5cc</div>
+                </div>
+                
+                <div class="p-4 rounded-lg bg-primary-300 border border-primary-500">
+                    <div class="text-sm font-bold text-primary mb-1">Primary 300</div>
+                    <div class="text-xs text-gray-600">#8da8b2</div>
+                </div>
+                
+                <div class="p-4 rounded-lg bg-primary-400 border border-primary-600">
+                    <div class="text-sm font-bold text-white mb-1">Primary 400</div>
+                    <div class="text-xs text-primary-100">#678b99</div>
+                </div>
+                
+                <div class="p-4 rounded-lg bg-primary-500 border border-primary-700">
+                    <div class="text-sm font-bold text-white mb-1">Primary 500</div>
+                    <div class="text-xs text-primary-100">#4a757c</div>
+                </div>
+                
+                <div class="p-4 rounded-lg bg-primary-600 border border-primary-800">
+                    <div class="text-sm font-bold text-white mb-1">Primary 600</div>
+                    <div class="text-xs text-primary-100">#3e5e64</div>
+                </div>
+                
+                <div class="p-4 rounded-lg bg-primary-700 border border-primary-900">
+                    <div class="text-sm font-bold text-white mb-1">Primary 700</div>
+                    <div class="text-xs text-primary-100">#2e464b</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- مثال عملي -->
+        <section class="test-section">
+            <h2 class="text-2xl font-bold text-primary mb-4">مثال عملي - نموذج تسجيل</h2>
+            
+            <div class="max-w-md mx-auto">
+                <div class="card-primary p-6">
+                    <h3 class="text-xl font-bold text-primary mb-4 text-center">تسجيل حساب جديد</h3>
+                    
+                    <form class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-primary mb-2">الاسم الكامل</label>
+                            <input type="text" class="w-full p-3 border border-primary-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary-200 transition-all" placeholder="أدخل اسمك الكامل">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-primary mb-2">البريد الإلكتروني</label>
+                            <input type="email" class="w-full p-3 border border-primary-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary-200 transition-all" placeholder="أدخل بريدك الإلكتروني">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-primary mb-2">كلمة المرور</label>
+                            <input type="password" class="w-full p-3 border border-primary-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary-200 transition-all" placeholder="أدخل كلمة المرور">
+                        </div>
+                        
+                        <button type="submit" class="w-full btn-primary py-3 rounded-lg">
+                            إنشاء الحساب
+                        </button>
+                    </form>
+                    
+                    <div class="mt-4 p-3 rounded-lg bg-success-soft border border-success-200">
+                        <div class="flex items-center text-success">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm">تم إنشاء الحساب بنجاح!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center mt-8 p-4 text-gray-600">
+            <p>نظام الألوان الموحد - Design Tokens System</p>
+            <p class="text-sm mt-2">تم تطويره باستخدام Tailwind CSS و CSS Variables</p>
+        </footer>
+    </div>
+</body>
+</html>

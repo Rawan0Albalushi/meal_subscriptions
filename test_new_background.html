@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الخلفية الجديدة - New Background Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Tajawal', 'Calibri', sans-serif;
+            min-height: 100vh;
+        }
+        
+        .background-test {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #faeeee 0%, #eefafa 100%);
+            position: relative;
+        }
+        
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backgroundImage: `
+                radial-gradient(circle at 20% 80%, rgba(74, 117, 124, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(186, 108, 93, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(74, 117, 124, 0.1) 0%, transparent 50%)
+            `;
+            pointerEvents: 'none';
+            zIndex: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+        
+        .test-title {
+            color: #4a757c;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .color-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .color-box {
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .old-background {
+            background: linear-gradient(135deg, #f5dcd9 0%, #d9eeed 100%);
+            color: #333;
+        }
+        
+        .new-background {
+            background: linear-gradient(135deg, #faeeee 0%, #eefafa 100%);
+            color: #333;
+        }
+        
+        .page-simulation {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 1px solid rgba(74, 117, 124, 0.2);
+        }
+        
+        .page-title {
+            color: #4a757c;
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-description {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .benefits-list li {
+            padding: 0.5rem 0;
+            color: #4a757c;
+            font-weight: 500;
+        }
+        
+        .benefits-list li::before {
+            content: "✅ ";
+            margin-right: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .color-comparison {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .test-section {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-test">
+        <div class="background-overlay"></div>
+        
+        <div class="container">
+            <div class="test-section">
+                <h1 class="test-title">اختبار الخلفية الجديدة</h1>
+                <p style="text-align: center; color: #6b7280; margin-bottom: 2rem;">
+                    تم تحديث خلفية جميع صفحات الكستمر لتستخدم التدرج الجديد
+                </p>
+                
+                <div class="color-comparison">
+                    <div class="color-box old-background">
+                        <h3>الخلفية القديمة</h3>
+                        <p style="font-size: 0.9rem; margin-top: 1rem;">
+                            linear-gradient(135deg, #f5dcd9 0%, #d9eeed 100%)
+                        </p>
+                    </div>
+                    
+                    <div class="color-box new-background">
+                        <h3>الخلفية الجديدة</h3>
+                        <p style="font-size: 0.9rem; margin-top: 1rem;">
+                            linear-gradient(135deg, #faeeee 0%, #eefafa 100%)
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="test-section">
+                <h2 class="test-title">محاكاة صفحات الكستمر</h2>
+                
+                <div class="page-simulation">
+                    <div class="page-title">الصفحة الرئيسية</div>
+                    <div class="page-description">صفحة الترحيب مع العناصر العائمة</div>
+                </div>
+                
+                <div class="page-simulation">
+                    <div class="page-title">صفحة تسجيل الدخول</div>
+                    <div class="page-description">نموذج تسجيل الدخول والتسجيل</div>
+                </div>
+                
+                <div class="page-simulation">
+                    <div class="page-title">صفحة المطاعم</div>
+                    <div class="page-description">قائمة المطاعم مع الفلاتر</div>
+                </div>
+                
+                <div class="page-simulation">
+                    <div class="page-title">صفحة تفاصيل المطعم</div>
+                    <div class="page-description">تفاصيل المطعم وأنواع الاشتراكات</div>
+                </div>
+                
+                <div class="page-simulation">
+                    <div class="page-title">صفحة الاشتراكات</div>
+                    <div class="page-description">قائمة اشتراكات المستخدم</div>
+                </div>
+                
+                <div class="page-simulation">
+                    <div class="page-title">صفحة عناوين التوصيل</div>
+                    <div class="page-description">إدارة عناوين التوصيل</div>
+                </div>
+                
+                <div class="page-simulation">
+                    <div class="page-title">صفحة تفاصيل الاشتراك</div>
+                    <div class="page-description">تفاصيل اشتراك محدد</div>
+                </div>
+                
+                <div class="page-simulation">
+                    <div class="page-title">نموذج إنشاء الاشتراك</div>
+                    <div class="page-description">نموذج إنشاء اشتراك جديد</div>
+                </div>
+            </div>
+            
+            <div class="test-section">
+                <h2 class="test-title">مميزات الخلفية الجديدة</h2>
+                
+                <ul class="benefits-list">
+                    <li>لون أكثر نعومة وهدوءاً</li>
+                    <li>تناسق أفضل مع الألوان الأساسية</li>
+                    <li>تحسين قابلية القراءة</li>
+                    <li>مظهر أكثر احترافية</li>
+                    <li>تناسق مع نظام الألوان الموحد</li>
+                    <li>خلفية موحدة لجميع صفحات الكستمر</li>
+                </ul>
+            </div>
+            
+            <div class="test-section">
+                <h2 class="test-title">ملاحظات التحديث</h2>
+                
+                <ul class="benefits-list">
+                    <li>✅ تم تحديث الخلفية في جميع صفحات الكستمر</li>
+                    <li>✅ تم تحديث ملف الألوان الموحدة (tokens.css)</li>
+                    <li>✅ تم تحديث الخلفية العامة في app.jsx</li>
+                    <li>✅ تم الحفاظ على جميع العناصر الزخرفية</li>
+                    <li>✅ تم الحفاظ على التصميم المتجاوب</li>
+                    <li>✅ تم تحديث ملفات التوثيق</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

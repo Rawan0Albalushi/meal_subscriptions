@@ -459,7 +459,7 @@ const SubscriptionForm = () => {
       }}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-4" style={{
-            borderBottomColor: '#2f6e73'
+            borderBottomColor: '#4a757c'
           }}></div>
           <p className="text-gray-600 text-lg font-medium">{t('loadingData')}</p>
         </div>
@@ -479,7 +479,7 @@ const SubscriptionForm = () => {
             onClick={() => navigate(`/restaurants/${restaurantId}`)}
             className="text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
             style={{
-              background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)'
+              background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)'
             }}
           >
             {t('backToRestaurant')}
@@ -491,7 +491,7 @@ const SubscriptionForm = () => {
 
   return (
     <div className="min-h-screen" dir={dir} style={{
-      background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(182, 84, 73, 0.05) 50%, rgba(74, 138, 143, 0.05) 100%)'
+      background: 'linear-gradient(135deg, #faeeee 0%, #eefafa 100%)'
     }}>
       <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
         
@@ -499,7 +499,7 @@ const SubscriptionForm = () => {
         <div className="text-center mb-8">
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-white/20">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4" style={{
-              background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
+              background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text'
@@ -519,7 +519,7 @@ const SubscriptionForm = () => {
             <div className="text-center mb-8">
               <div className="text-5xl mb-4">✏️</div>
               <h2 className="text-2xl font-bold" style={{
-                background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
+                background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text'
@@ -563,7 +563,7 @@ const SubscriptionForm = () => {
                       onChange={(e) => handleInputChange('deliveryAddressId', e.target.value)}
                       className="w-full p-4 bg-white border-2 border-gray-200 rounded-2xl text-lg transition-all duration-300 outline-none"
                       style={{
-                        focusBorderColor: '#2f6e73',
+                        focusBorderColor: '#4a757c',
                         focusRingColor: 'rgba(47, 110, 115, 0.1)'
                       }}
                       required
@@ -580,7 +580,7 @@ const SubscriptionForm = () => {
                        onClick={() => setAddingNewAddress(true)}
                        className="w-full text-white py-3 px-6 rounded-2xl font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
                     style={{
-                      background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)'
+                      background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)'
                     }}
                      >
                        {t('addNewAddress')}
@@ -602,12 +602,12 @@ const SubscriptionForm = () => {
                           placeholder={t('addressNamePlaceholder')} 
                           className="w-full p-3 bg-white border border-gray-300 rounded-xl transition-all duration-300 outline-none"
                           style={{ 
-                            '--tw-ring-color': '#2f6e73',
+                            '--tw-ring-color': '#4a757c',
                             '--tw-ring-opacity': '0.1'
                           }}
                           onFocus={(e) => {
-                            e.target.style.borderColor = '#2f6e73';
-                            e.target.style.boxShadow = '0 0 0 2px rgba(47, 110, 115, 0.1)';
+                            e.target.style.borderColor = '#4a757c';
+                            e.target.style.boxShadow = '0 0 0 2px rgba(74, 117, 124, 0.1)';
                           }}
                           onBlur={(e) => {
                             e.target.style.borderColor = '#d1d5db';
@@ -627,12 +627,12 @@ const SubscriptionForm = () => {
                           placeholder={t('detailedAddressPlaceholder')} 
                           className="w-full p-3 bg-white border border-gray-300 rounded-xl transition-all duration-300 outline-none"
                           style={{ 
-                            '--tw-ring-color': '#2f6e73',
+                            '--tw-ring-color': '#4a757c',
                             '--tw-ring-opacity': '0.1'
                           }}
                           onFocus={(e) => {
-                            e.target.style.borderColor = '#2f6e73';
-                            e.target.style.boxShadow = '0 0 0 2px rgba(47, 110, 115, 0.1)';
+                            e.target.style.borderColor = '#4a757c';
+                            e.target.style.boxShadow = '0 0 0 2px rgba(74, 117, 124, 0.1)';
                           }}
                           onBlur={(e) => {
                             e.target.style.borderColor = '#d1d5db';
@@ -652,12 +652,12 @@ const SubscriptionForm = () => {
                           placeholder={t('cityPlaceholder')} 
                           className="w-full p-3 bg-white border border-gray-300 rounded-xl transition-all duration-300 outline-none"
                           style={{ 
-                            '--tw-ring-color': '#2f6e73',
+                            '--tw-ring-color': '#4a757c',
                             '--tw-ring-opacity': '0.1'
                           }}
                           onFocus={(e) => {
-                            e.target.style.borderColor = '#2f6e73';
-                            e.target.style.boxShadow = '0 0 0 2px rgba(47, 110, 115, 0.1)';
+                            e.target.style.borderColor = '#4a757c';
+                            e.target.style.boxShadow = '0 0 0 2px rgba(74, 117, 124, 0.1)';
                           }}
                           onBlur={(e) => {
                             e.target.style.borderColor = '#d1d5db';
@@ -679,12 +679,12 @@ const SubscriptionForm = () => {
                           style={{ 
                             direction: 'ltr', 
                             textAlign: 'left',
-                            '--tw-ring-color': '#2f6e73',
+                            '--tw-ring-color': '#4a757c',
                             '--tw-ring-opacity': '0.1'
                           }}
                           onFocus={(e) => {
-                            e.target.style.borderColor = '#2f6e73';
-                            e.target.style.boxShadow = '0 0 0 2px rgba(47, 110, 115, 0.1)';
+                            e.target.style.borderColor = '#4a757c';
+                            e.target.style.boxShadow = '0 0 0 2px rgba(74, 117, 124, 0.1)';
                           }}
                           onBlur={(e) => {
                             e.target.style.borderColor = '#d1d5db';
@@ -805,12 +805,12 @@ const SubscriptionForm = () => {
                   rows={4} 
                   className="w-full p-4 bg-white border-2 border-gray-200 rounded-2xl text-lg transition-all duration-300 outline-none resize-none"
                   style={{ 
-                    '--tw-ring-color': '#2f6e73',
+                    '--tw-ring-color': '#4a757c',
                     '--tw-ring-opacity': '0.1'
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = '#2f6e73';
-                    e.target.style.boxShadow = '0 0 0 4px rgba(47, 110, 115, 0.1)';
+                    e.target.style.borderColor = '#4a757c';
+                    e.target.style.boxShadow = '0 0 0 4px rgba(74, 117, 124, 0.1)';
                   }}
                   onBlur={(e) => {
                     e.target.style.borderColor = '#e5e7eb';
@@ -828,7 +828,7 @@ const SubscriptionForm = () => {
               <div className="text-5xl mb-4">📋</div>
               <h2 className="text-2xl font-bold bg-clip-text text-transparent"
                 style={{
-                  background: 'linear-gradient(135deg, #2f6e73, #b65449)',
+                  background: 'linear-gradient(135deg, #4a757c, #ba6c5d)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent'
                 }}>
@@ -839,7 +839,7 @@ const SubscriptionForm = () => {
             {/* Restaurant Info */}
             <div className="rounded-2xl p-6 text-white mb-6 relative overflow-hidden"
               style={{
-                background: 'linear-gradient(135deg, #2f6e73, #b65449)'
+                background: 'linear-gradient(135deg, #4a757c, #ba6c5d)'
               }}>
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
@@ -863,7 +863,7 @@ const SubscriptionForm = () => {
                   border: '1px solid rgba(47, 110, 115, 0.2)'
                 }}>
                 <div className="text-xs font-semibold uppercase tracking-wide mb-2"
-                  style={{ color: '#2f6e73' }}>
+                  style={{ color: '#4a757c' }}>
                   {t('subscriptionTypeLabel')}
                 </div>
                 <div className="text-lg font-bold text-gray-800">
@@ -905,7 +905,7 @@ const SubscriptionForm = () => {
                       <div className="text-2xl">{meal.dayIcon}</div>
                       <div className="flex-1">
                         <div className="text-sm font-bold mb-1"
-                          style={{ color: '#2f6e73' }}>
+                          style={{ color: '#4a757c' }}>
                           {meal.dayLabel}
                         </div>
                         <div className="text-xs text-gray-500 mb-1">
@@ -937,7 +937,7 @@ const SubscriptionForm = () => {
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg"
                       style={{
-                        background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)'
+                        background: 'linear-gradient(135deg, #4a757c, #ba6c5d)'
                       }}>
                       📦
                     </div>
@@ -948,7 +948,7 @@ const SubscriptionForm = () => {
                   </div>
                   <div className="text-right">
                     <div className="text-lg font-bold"
-                      style={{ color: '#2f6e73' }}>
+                      style={{ color: '#4a757c' }}>
                       {calculateSubscriptionPrice()} {t('omaniRiyal')}
                     </div>
                   </div>
@@ -968,7 +968,7 @@ const SubscriptionForm = () => {
                     <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg"
                       style={{
                         background: isDeliveryFree() 
-                          ? 'linear-gradient(135deg, #2f6e73, #4a8a8f)' 
+                          ? 'linear-gradient(135deg, #4a757c, #ba6c5d)' 
                           : 'linear-gradient(135deg, #b65449, #c86a5a)'
                       }}>
                       🚚
@@ -983,7 +983,7 @@ const SubscriptionForm = () => {
                   <div className="text-right">
                     <div className="text-lg font-bold"
                       style={{ 
-                        color: isDeliveryFree() ? '#2f6e73' : '#b65449'
+                        color: isDeliveryFree() ? '#4a757c' : '#b65449'
                       }}>
                       {isDeliveryFree() ? t('free') : `${calculateDeliveryPrice()} ${t('omaniRiyal')}`}
                     </div>
@@ -1002,7 +1002,7 @@ const SubscriptionForm = () => {
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg"
                       style={{
-                        background: 'linear-gradient(135deg, #2f6e73, #b65449)'
+                        background: 'linear-gradient(135deg, #4a757c, #ba6c5d)'
                       }}>
                       💰
                     </div>
@@ -1013,7 +1013,7 @@ const SubscriptionForm = () => {
                   </div>
                   <div className="text-right">
                     <div className="text-lg font-bold"
-                      style={{ color: '#2f6e73' }}>
+                      style={{ color: '#4a757c' }}>
                       {calculateTotalPrice()} {t('omaniRiyal')}
                     </div>
                   </div>
@@ -1030,8 +1030,8 @@ const SubscriptionForm = () => {
               {submitting ? (
                 <div className="flex items-center justify-center gap-3">
                   <div className="animate-spin rounded-full h-5 w-5 border-2 border-t-transparent"
-                    style={{ borderColor: '#2f6e73' }}></div>
-                  <span style={{ color: '#2f6e73' }}>{t('creatingSubscription')}</span>
+                    style={{ borderColor: '#4a757c' }}></div>
+                  <span style={{ color: '#4a757c' }}>{t('creatingSubscription')}</span>
                 </div>
               ) : (
                 <div className="flex items-center justify-center gap-3">

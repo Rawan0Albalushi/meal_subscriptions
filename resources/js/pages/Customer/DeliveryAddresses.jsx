@@ -157,16 +157,16 @@ const DeliveryAddresses = () => {
     if (loading) {
         return (
             <div className="min-h-screen flex justify-center items-center" style={{
-                background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(182, 84, 73, 0.05) 50%, rgba(74, 138, 143, 0.05) 100%)'
+                background: 'linear-gradient(135deg, #f5dcd9 0%, #d9eeed 100%)'
             }}>
                 <div className="relative">
                     <div className="w-16 h-16 border-4 rounded-full animate-spin" style={{
-                        borderColor: 'rgba(47, 110, 115, 0.2)',
-                        borderTopColor: '#2f6e73'
+                        borderColor: 'rgba(74, 117, 124, 0.2)',
+                        borderTopColor: '#4a757c'
                     }}></div>
                     <div className="absolute inset-0 w-16 h-16 border-4 border-transparent rounded-full animate-spin" style={{ 
                         animationDelay: '0.5s',
-                        borderTopColor: '#b65449'
+                        borderTopColor: '#ba6c5d'
                     }}></div>
                 </div>
             </div>
@@ -176,7 +176,7 @@ const DeliveryAddresses = () => {
     if (error) {
         return (
             <div className="min-h-screen flex justify-center items-center" style={{
-                background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(182, 84, 73, 0.05) 50%, rgba(74, 138, 143, 0.05) 100%)'
+                background: 'linear-gradient(135deg, #f5dcd9 0%, #d9eeed 100%)'
             }}>
                 <div className="text-center">
                     <div className="border rounded-2xl p-8 max-w-md mx-auto shadow-2xl" style={{
@@ -201,21 +201,21 @@ const DeliveryAddresses = () => {
 
     return (
         <div className="min-h-screen" style={{
-            background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(182, 84, 73, 0.05) 50%, rgba(74, 138, 143, 0.05) 100%)'
+            background: 'linear-gradient(135deg, #faeeee 0%, #eefafa 100%)'
         }}>
             {/* Hero Section */}
             <div className="relative overflow-hidden" style={{
-                background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 50%, #c86a5a 100%)'
+                                    background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 50%, #c86a5a 100%)'
             }}>
                 {/* Animated Background Elements */}
                 <div className="absolute inset-0">
                     <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
                     <div className="absolute top-40 right-20 w-96 h-96 rounded-full blur-3xl animate-pulse" style={{
-                        backgroundColor: 'rgba(182, 84, 73, 0.2)',
+                        backgroundColor: 'rgba(186, 108, 93, 0.2)',
                         animationDelay: '1s'
                     }}></div>
                     <div className="absolute bottom-20 left-1/4 w-80 h-80 rounded-full blur-3xl animate-pulse" style={{
-                        backgroundColor: 'rgba(47, 110, 115, 0.2)',
+                        backgroundColor: 'rgba(74, 117, 124, 0.2)',
                         animationDelay: '2s'
                     }}></div>
                 </div>
@@ -232,7 +232,7 @@ const DeliveryAddresses = () => {
                         {/* Main Heading with Glow Effect */}
                         <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-tight drop-shadow-2xl">
                             <span className="animate-pulse" style={{
-                                background: 'linear-gradient(135deg, #fbbf24 0%, #b65449 50%, #2f6e73 100%)',
+                                background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 50%, #ba6c5d 100%)',
                                 WebkitBackgroundClip: 'text',
                                 WebkitTextFillColor: 'transparent',
                                 backgroundClip: 'text'
@@ -275,9 +275,9 @@ const DeliveryAddresses = () => {
                                 onClick={() => setShowForm(true)}
                                 className="group relative inline-flex px-12 py-6 text-white rounded-2xl text-2xl font-bold transition-all duration-500 hover:scale-110 hover:shadow-2xl transform hover:-rotate-1 focus:outline-none focus:ring-4 focus:ring-offset-2"
                                 style={{
-                                    background: 'linear-gradient(135deg, #fbbf24 0%, #b65449 50%, #2f6e73 100%)',
-                                    boxShadow: '0 4px 12px rgba(47, 110, 115, 0.3)',
-                                    focusRingColor: '#fbbf24'
+                                    background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 50%, #ba6c5d 100%)',
+                                    boxShadow: '0 4px 12px rgba(74, 117, 124, 0.3)',
+                                    focusRingColor: '#4a757c'
                                 }}
                             >
                                 <span className="relative z-10 flex items-center">
@@ -302,7 +302,7 @@ const DeliveryAddresses = () => {
                         <div className="flex items-center justify-between mb-8">
                             <h2 className="text-3xl font-bold text-gray-900">
                                 <span style={{
-                                    background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 50%, #4a8a8f 100%)',
+                                    background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 50%, #ba6c5d 100%)',
                                     WebkitBackgroundClip: 'text',
                                     WebkitTextFillColor: 'transparent',
                                     backgroundClip: 'text'
@@ -332,8 +332,8 @@ const DeliveryAddresses = () => {
                                         onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl transition-all duration-300"
                                         style={{
-                                            focusRingColor: '#2f6e73',
-                                            focusBorderColor: '#2f6e73'
+                                            focusRingColor: '#4a757c',
+                                            focusBorderColor: '#4a757c'
                                         }}
                                         required
                                         placeholder={language === 'ar' ? 'مثال: المنزل، العمل' : 'Example: Home, Work'}
@@ -438,8 +438,8 @@ const DeliveryAddresses = () => {
                                     disabled={submitting}
                                     className="group relative px-8 py-3 text-white rounded-2xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2"
                                     style={{
-                                        background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
-                                        focusRingColor: '#2f6e73'
+                                        background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
+                                        focusRingColor: '#4a757c'
                                     }}
                                 >
                                     {submitting ? (
@@ -477,8 +477,8 @@ const DeliveryAddresses = () => {
                                     onClick={() => setShowForm(true)}
                                     className="group relative inline-flex px-8 py-4 text-white rounded-2xl text-lg font-bold transition-all duration-500 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2"
                                     style={{
-                                        background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
-                                        focusRingColor: '#2f6e73'
+                                        background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
+                                        focusRingColor: '#4a757c'
                                     }}
                                 >
                                     <span className="relative z-10 flex items-center">

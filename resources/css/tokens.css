@@ -1,0 +1,255 @@
+/* Design Tokens - نظام الألوان الموحد */
+
+:root {
+  /* الألوان الأساسية */
+  --color-primary: #4a757c;
+  --color-primary-50: #f0f4f5;
+  --color-primary-100: #d9e2e5;
+  --color-primary-200: #b3c5cc;
+  --color-primary-300: #8da8b2;
+  --color-primary-400: #678b99;
+  --color-primary-500: #4a757c;
+  --color-primary-600: #3e5e64;
+  --color-primary-700: #2e464b;
+  --color-primary-800: #1f2e32;
+  --color-primary-900: #0f1719;
+
+  --color-accent: #ba6c5d;
+  --color-accent-50: #fdf4f3;
+  --color-accent-100: #fbe8e5;
+  --color-accent-200: #f7d1cc;
+  --color-accent-300: #f3bab3;
+  --color-accent-400: #efa39a;
+  --color-accent-500: #ba6c5d;
+  --color-accent-600: #a55a4b;
+  --color-accent-700: #8f4839;
+  --color-accent-800: #793627;
+  --color-accent-900: #632415;
+
+  --color-bg: #ffffff;
+  --color-bg-50: #ffffff;
+  --color-bg-100: #fafafa;
+  --color-bg-200: #f5f5f5;
+  --color-bg-300: #e5e5e5;
+  --color-bg-400: #d4d4d4;
+  --color-bg-500: #a3a3a3;
+  --color-bg-600: #737373;
+  --color-bg-700: #525252;
+  --color-bg-800: #404040;
+  --color-bg-900: #262626;
+
+  --color-beige: #fff4d7;
+  --color-beige-50: #fffef9;
+  --color-beige-100: #fffdf3;
+  --color-beige-200: #fffbe7;
+  --color-beige-300: #fff9db;
+  --color-beige-400: #fff7cf;
+  --color-beige-500: #fff4d7;
+  --color-beige-600: #e6dcc1;
+  --color-beige-700: #ccc4ab;
+  --color-beige-800: #b3ac95;
+  --color-beige-900: #99947f;
+
+  --color-success: #4CAF50;
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-200: #bbf7d0;
+  --color-success-300: #86efac;
+  --color-success-400: #4ade80;
+  --color-success-500: #4CAF50;
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+  --color-success-800: #166534;
+  --color-success-900: #14532d;
+
+  --color-error: #F44336;
+  --color-error-50: #fef2f2;
+  --color-error-100: #fee2e2;
+  --color-error-200: #fecaca;
+  --color-error-300: #fca5a5;
+  --color-error-400: #f87171;
+  --color-error-500: #F44336;
+  --color-error-600: #dc2626;
+  --color-error-700: #b91c1c;
+  --color-error-800: #991b1b;
+  --color-error-900: #7f1d1d;
+
+  --color-warning: #FFC107;
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-200: #fde68a;
+  --color-warning-300: #fcd34d;
+  --color-warning-400: #fbbf24;
+  --color-warning-500: #FFC107;
+  --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+  --color-warning-800: #92400e;
+  --color-warning-900: #78350f;
+
+  /* التدرجات */
+          --gradient-primary: linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%);
+        --gradient-background: linear-gradient(135deg, #faeeee 0%, #eefafa 100%);
+  --gradient-primary-reverse: linear-gradient(135deg, #ba6c5d 0%, #4a757c 100%);
+  --gradient-primary-soft: linear-gradient(135deg, rgba(74, 117, 124, 0.1) 0%, rgba(186, 108, 93, 0.1) 100%);
+  --gradient-accent: linear-gradient(135deg, #ba6c5d 0%, #4a757c 100%);
+  --gradient-success: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  --gradient-error: linear-gradient(135deg, #F44336 0%, #d32f2f 100%);
+  --gradient-warning: linear-gradient(135deg, #FFC107 0%, #ffb300 100%);
+
+  /* الظلال */
+  --shadow-primary: 0 4px 14px 0 rgba(74, 117, 124, 0.25);
+  --shadow-accent: 0 4px 14px 0 rgba(186, 108, 93, 0.25);
+  --shadow-success: 0 4px 14px 0 rgba(76, 175, 80, 0.25);
+  --shadow-error: 0 4px 14px 0 rgba(244, 67, 54, 0.25);
+  --shadow-warning: 0 4px 14px 0 rgba(255, 193, 7, 0.25);
+  --shadow-beige: 0 4px 14px 0 rgba(255, 244, 215, 0.25);
+
+  /* الحدود */
+  --border-primary: #4a757c;
+  --border-accent: #ba6c5d;
+  --border-beige: #fff4d7;
+  --border-success: #4CAF50;
+  --border-error: #F44336;
+  --border-warning: #FFC107;
+
+  /* النصوص */
+  --text-primary: #4a757c;
+  --text-accent: #ba6c5d;
+  --text-beige: #fff4d7;
+  --text-success: #4CAF50;
+  --text-error: #F44336;
+  --text-warning: #FFC107;
+}
+
+/* فئات CSS مساعدة */
+.bg-primary { background-color: var(--color-primary); }
+.bg-accent { background-color: var(--color-accent); }
+.bg-beige { background-color: var(--color-beige); }
+.bg-success { background-color: var(--color-success); }
+.bg-error { background-color: var(--color-error); }
+.bg-warning { background-color: var(--color-warning); }
+
+.text-primary { color: var(--text-primary); }
+.text-accent { color: var(--text-accent); }
+.text-beige { color: var(--text-beige); }
+.text-success { color: var(--text-success); }
+.text-error { color: var(--text-error); }
+.text-warning { color: var(--text-warning); }
+
+.border-primary { border-color: var(--border-primary); }
+.border-accent { border-color: var(--border-accent); }
+.border-beige { border-color: var(--border-beige); }
+.border-success { border-color: var(--border-success); }
+.border-error { border-color: var(--border-error); }
+.border-warning { border-color: var(--border-warning); }
+
+.shadow-primary { box-shadow: var(--shadow-primary); }
+.shadow-accent { box-shadow: var(--shadow-accent); }
+.shadow-success { box-shadow: var(--shadow-success); }
+.shadow-error { box-shadow: var(--shadow-error); }
+.shadow-warning { box-shadow: var(--shadow-warning); }
+.shadow-beige { box-shadow: var(--shadow-beige); }
+
+/* التدرجات */
+.bg-gradient-primary { background: var(--gradient-primary); }
+.bg-gradient-primary-reverse { background: var(--gradient-primary-reverse); }
+.bg-gradient-primary-soft { background: var(--gradient-primary-soft); }
+.bg-gradient-accent { background: var(--gradient-accent); }
+.bg-gradient-success { background: var(--gradient-success); }
+.bg-gradient-error { background: var(--gradient-error); }
+.bg-gradient-warning { background: var(--gradient-warning); }
+.bg-gradient-background { background: var(--gradient-background); }
+
+/* فئات للأزرار */
+.btn-primary {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  box-shadow: var(--shadow-primary);
+}
+
+.btn-accent {
+  background: var(--gradient-accent);
+  color: white;
+  border: none;
+  box-shadow: var(--shadow-accent);
+}
+
+.btn-success {
+  background: var(--gradient-success);
+  color: white;
+  border: none;
+  box-shadow: var(--shadow-success);
+}
+
+.btn-error {
+  background: var(--gradient-error);
+  color: white;
+  border: none;
+  box-shadow: var(--shadow-error);
+}
+
+.btn-warning {
+  background: var(--gradient-warning);
+  color: white;
+  border: none;
+  box-shadow: var(--shadow-warning);
+}
+
+/* فئات للتنبيهات */
+.alert-success {
+  background-color: var(--color-success-50);
+  border: 1px solid var(--border-success);
+  color: var(--text-success);
+}
+
+.alert-error {
+  background-color: var(--color-error-50);
+  border: 1px solid var(--border-error);
+  color: var(--text-error);
+}
+
+.alert-warning {
+  background-color: var(--color-warning-50);
+  border: 1px solid var(--border-warning);
+  color: var(--text-warning);
+}
+
+.alert-primary {
+  background-color: var(--color-primary-50);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+}
+
+/* فئات للبطاقات */
+.card-primary {
+  background: white;
+  border: 1px solid var(--border-primary);
+  box-shadow: var(--shadow-primary);
+}
+
+.card-accent {
+  background: white;
+  border: 1px solid var(--border-accent);
+  box-shadow: var(--shadow-accent);
+}
+
+.card-beige {
+  background: var(--color-beige);
+  border: 1px solid var(--border-beige);
+  box-shadow: var(--shadow-beige);
+}
+
+/* فئات للصفحات */
+.page-background {
+  background: var(--gradient-background);
+  min-height: 100vh;
+}
+
+/* فئات للخلفيات */
+.bg-primary-soft { background-color: var(--color-primary-50); }
+.bg-accent-soft { background-color: var(--color-accent-50); }
+.bg-beige-soft { background-color: var(--color-beige-50); }
+.bg-success-soft { background-color: var(--color-success-50); }
+.bg-error-soft { background-color: var(--color-error-50); }
+.bg-warning-soft { background-color: var(--color-warning-50); }
