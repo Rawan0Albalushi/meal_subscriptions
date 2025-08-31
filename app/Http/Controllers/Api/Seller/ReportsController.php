@@ -160,7 +160,11 @@ class ReportsController extends Controller
             'period' => $periodRevenue,
             'today' => $todayRevenue,
             'thisWeek' => $thisWeekRevenue,
-            'thisMonth' => $thisMonthRevenue
+            'thisMonth' => $thisMonthRevenue,
+            'today' => $todayRevenue,
+            'week' => $thisWeekRevenue,
+            'month' => $thisMonthRevenue,
+            'year' => $totalRevenue
         ];
     }
 
@@ -194,7 +198,11 @@ class ReportsController extends Controller
             'period' => $periodOrders,
             'today' => $todayOrders,
             'thisWeek' => $thisWeekOrders,
-            'thisMonth' => $thisMonthOrders
+            'thisMonth' => $thisMonthOrders,
+            'today' => $todayOrders,
+            'week' => $thisWeekOrders,
+            'month' => $thisMonthOrders,
+            'year' => $totalOrders
         ];
     }
 
