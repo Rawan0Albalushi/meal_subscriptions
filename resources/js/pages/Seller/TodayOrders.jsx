@@ -31,6 +31,8 @@ const TodayOrders = () => {
         window.scrollTo(0, 0);
     }, []);
 
+
+
     useEffect(() => {
         fetchRestaurants();
     }, []);
@@ -394,8 +396,8 @@ const TodayOrders = () => {
             {/* Statistics Cards */}
             <div style={{
                 display: 'grid',
-                gridTemplateColumns: window.innerWidth <= 768 ? 'repeat(2, 1fr)' : 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: window.innerWidth <= 768 ? '0.75rem' : '1rem',
+                gridTemplateColumns: 'repeat(5, 1fr)',
+                gap: '0.75rem',
                 marginBottom: '2rem'
             }}>
                 {Object.entries(stats).map(([key, value]) => (
@@ -404,25 +406,27 @@ const TodayOrders = () => {
                         style={{
                             background: 'rgba(255, 255, 255, 0.9)',
                             backdropFilter: 'blur(20px)',
-                            borderRadius: window.innerWidth <= 768 ? '0.75rem' : '1rem',
-                            padding: window.innerWidth <= 768 ? '1rem' : '1.5rem',
-                            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+                            borderRadius: '0.75rem',
+                            padding: '1rem',
+                            boxShadow: '0 15px 30px rgba(0, 0, 0, 0.1)',
                             border: '1px solid rgba(255, 255, 255, 0.2)',
-                            textAlign: 'center'
+                            textAlign: 'center',
+                            minWidth: '0'
                         }}
                     >
                         <div style={{
-                            fontSize: window.innerWidth <= 768 ? '1.5rem' : '2rem',
+                            fontSize: '1.25rem',
                             fontWeight: 'bold',
                             color: 'rgb(55 65 81)',
-                            marginBottom: '0.5rem'
+                            marginBottom: '0.25rem'
                         }}>
                             {value}
                         </div>
                         <div style={{
-                            fontSize: window.innerWidth <= 768 ? '0.75rem' : '0.875rem',
+                            fontSize: '0.75rem',
                             color: 'rgb(107 114 128)',
-                            textTransform: 'capitalize'
+                            textTransform: 'capitalize',
+                            lineHeight: '1.2'
                         }}>
                             {key === 'total' 
                                 ? (language === 'ar' ? 'إجمالي الطلبات' : 'Total Orders')
@@ -620,65 +624,115 @@ const TodayOrders = () => {
                         </div>
                     )}
 
-                    {/* Export Button */}
-                    <button
-                        onClick={() => {
-                            const csvContent = [
-                                // CSV Header
-                                [
-                                    language === 'ar' ? 'رقم الطلب' : 'Order ID',
-                                    language === 'ar' ? 'العميل' : 'Customer',
-                                    language === 'ar' ? 'رقم الهاتف' : 'Phone',
-                                    language === 'ar' ? 'الوجبة' : 'Meal',
-                                    language === 'ar' ? 'العنوان' : 'Address',
-                                    language === 'ar' ? 'وقت التوصيل' : 'Delivery Time',
-                                    language === 'ar' ? 'الحالة' : 'Status'
-                                ].join(','),
-                                // CSV Data
-                                ...sortedOrders.map(order => [
-                                    order.id,
-                                    order.subscription?.user?.full_name || order.subscription?.user?.name || '',
-                                    order.subscription?.delivery_address?.phone || '',
-                                    language === 'ar' ? order.meal?.name_ar : order.meal?.name_en || '',
-                                    order.subscription?.delivery_address?.address || '',
-                                    order.meal?.delivery_time || '',
-                                    getStatusText(order.status)
-                                ].join(','))
-                            ].join('\n');
-
-                            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                            const link = document.createElement('a');
-                            const url = URL.createObjectURL(blob);
-                            link.setAttribute('href', url);
-                            link.setAttribute('download', `orders_${new Date().toISOString().split('T')[0]}.csv`);
-                            link.style.visibility = 'hidden';
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                        }}
-                        style={{
-                            padding: '0.75rem 1rem',
-                            background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '0.5rem',
-                            fontSize: '0.875rem',
-                            fontWeight: '600',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s',
-                            whiteSpace: 'nowrap'
-                        }}
-                        onMouseEnter={(e) => {
-                            e.target.style.transform = 'translateY(-2px)';
-                            e.target.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.target.style.transform = 'translateY(0)';
-                            e.target.style.boxShadow = 'none';
-                        }}
-                    >
-                        📊 {language === 'ar' ? 'تصدير CSV' : 'Export CSV'}
-                    </button>
+                                                                                   {/* Export Buttons */}
+                      <div style={{
+                          display: 'flex',
+                          gap: '0.5rem',
+                          flexWrap: 'wrap'
+                      }}>
+                          {/* Excel Export Button */}
+                         <button
+                             onClick={() => {
+                                 // إنشاء جدول HTML للتصدير إلى Excel
+                                 const table = document.createElement('table');
+                                 
+                                 // إضافة رؤوس الجدول
+                                 const thead = document.createElement('thead');
+                                 const headerRow = document.createElement('tr');
+                                 [
+                                     language === 'ar' ? 'رقم الطلب' : 'Order ID',
+                                     language === 'ar' ? 'العميل' : 'Customer',
+                                     language === 'ar' ? 'رقم الهاتف' : 'Phone',
+                                     language === 'ar' ? 'الوجبة' : 'Meal',
+                                     language === 'ar' ? 'العنوان' : 'Address',
+                                     language === 'ar' ? 'وقت التوصيل' : 'Delivery Time',
+                                     language === 'ar' ? 'الحالة' : 'Status'
+                                 ].forEach(header => {
+                                     const th = document.createElement('th');
+                                     th.textContent = header;
+                                     headerRow.appendChild(th);
+                                 });
+                                 thead.appendChild(headerRow);
+                                 table.appendChild(thead);
+                                 
+                                 // إضافة بيانات الجدول
+                                 const tbody = document.createElement('tbody');
+                                 sortedOrders.forEach(order => {
+                                     const row = document.createElement('tr');
+                                     [
+                                         order.id,
+                                         order.subscription?.user?.full_name || order.subscription?.user?.name || '',
+                                         order.subscription?.delivery_address?.phone || '',
+                                         language === 'ar' ? order.meal?.name_ar : order.meal?.name_en || '',
+                                         order.subscription?.delivery_address?.address || '',
+                                         order.meal?.delivery_time || '',
+                                         getStatusText(order.status)
+                                     ].forEach(cellData => {
+                                         const td = document.createElement('td');
+                                         td.textContent = cellData;
+                                         row.appendChild(td);
+                                     });
+                                     tbody.appendChild(row);
+                                 });
+                                 table.appendChild(tbody);
+                                 
+                                 // تحويل الجدول إلى HTML
+                                 const htmlContent = `
+                                     <html>
+                                         <head>
+                                             <meta charset="utf-8">
+                                             <style>
+                                                 table { border-collapse: collapse; width: 100%; }
+                                                 th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                                                 th { background-color: #f2f2f2; font-weight: bold; }
+                                                 tr:nth-child(even) { background-color: #f9f9f9; }
+                                             </style>
+                                         </head>
+                                         <body>
+                                             ${table.outerHTML}
+                                         </body>
+                                     </html>
+                                 `;
+                                 
+                                 const blob = new Blob([htmlContent], { 
+                                     type: 'application/vnd.ms-excel;charset=utf-8' 
+                                 });
+                                 const link = document.createElement('a');
+                                 const url = URL.createObjectURL(blob);
+                                 link.setAttribute('href', url);
+                                 link.setAttribute('download', `orders_${new Date().toISOString().split('T')[0]}.xls`);
+                                 link.style.visibility = 'hidden';
+                                 document.body.appendChild(link);
+                                 link.click();
+                                 document.body.removeChild(link);
+                                 
+                                 // تنظيف الذاكرة
+                                 URL.revokeObjectURL(url);
+                             }}
+                             style={{
+                                 padding: '0.75rem 1rem',
+                                 background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                                 color: 'white',
+                                 border: 'none',
+                                 borderRadius: '0.5rem',
+                                 fontSize: '0.875rem',
+                                 fontWeight: '600',
+                                 cursor: 'pointer',
+                                 transition: 'all 0.2s',
+                                 whiteSpace: 'nowrap'
+                             }}
+                             onMouseEnter={(e) => {
+                                 e.target.style.transform = 'translateY(-2px)';
+                                 e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+                             }}
+                             onMouseLeave={(e) => {
+                                 e.target.style.transform = 'translateY(0)';
+                                 e.target.style.boxShadow = 'none';
+                             }}
+                         >
+                             📈 {language === 'ar' ? 'تصدير Excel' : 'Export Excel'}
+                         </button>
+                     </div>
 
                     {/* Clear Filters Button */}
                     {(searchTerm !== '' || filterStatus !== 'all') && (
@@ -1127,139 +1181,145 @@ const TodayOrders = () => {
                                                 }}>
                                                     🕐
                                                 </div>
-                                                <span style={{ color: 'rgb(55 65 81)' }}>
-                                                    {order.meal?.delivery_time || '12:00 PM'}
-                                                </span>
+                                                                                                 <span style={{ 
+                                                     color: 'rgb(55 65 81)',
+                                                     fontSize: '0.75rem',
+                                                     fontWeight: '500'
+                                                 }}>
+                                                     {(() => {
+                                                         const deliveryTime = order.meal?.delivery_time;
+                                                         if (!deliveryTime) return '12:00 PM';
+                                                         
+                                                         // Handle ISO string format
+                                                         if (deliveryTime.includes('T')) {
+                                                             const date = new Date(deliveryTime);
+                                                             return date.toLocaleTimeString('ar-SA', {
+                                                                 hour: '2-digit',
+                                                                 minute: '2-digit',
+                                                                 hour12: true
+                                                             });
+                                                         }
+                                                         
+                                                         // Handle simple time format
+                                                         return deliveryTime;
+                                                     })()}
+                                                 </span>
                                             </div>
                                         </td>
-                                        <td style={{
-                                            padding: '1rem 0.75rem',
-                                            borderBottom: '1px solid rgba(0, 0, 0, 0.05)'
-                                        }}>
-                                            <span style={{
-                                                display: 'inline-flex',
-                                                alignItems: 'center',
-                                                gap: '0.25rem',
-                                                padding: '0.25rem 0.75rem',
-                                                borderRadius: '0.5rem',
-                                                fontSize: '0.75rem',
-                                                fontWeight: '600',
-                                                textTransform: 'uppercase',
-                                                background: `linear-gradient(135deg, ${getStatusColor(order.status)})`,
-                                                color: 'white'
-                                            }}>
-                                                {getStatusIcon(order.status)}
-                                                {getStatusText(order.status)}
-                                            </span>
-                                        </td>
-                                        <td style={{
-                                            padding: '1rem 0.75rem',
-                                            borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
-                                            textAlign: 'center'
-                                        }}>
-                                            {order.status !== 'delivered' && order.status !== 'cancelled' ? (
-                                                <div style={{
-                                                    display: 'flex',
-                                                    gap: '0.5rem',
-                                                    justifyContent: 'center',
-                                                    flexWrap: 'wrap'
-                                                }}>
-                                                    {order.status === 'pending' && (
-                                                        <button
-                                                            onClick={() => handleStatusUpdate(order.id, 'preparing')}
-                                                            style={{
-                                                                padding: '0.5rem 1rem',
-                                                                background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-                                                                color: 'white',
-                                                                border: 'none',
-                                                                borderRadius: '0.5rem',
-                                                                fontSize: '0.75rem',
-                                                                fontWeight: '600',
-                                                                cursor: 'pointer',
-                                                                transition: 'all 0.2s',
-                                                                display: 'flex',
-                                                                alignItems: 'center',
-                                                                gap: '0.25rem'
-                                                            }}
-                                                            onMouseEnter={(e) => {
-                                                                e.target.style.transform = 'translateY(-2px)';
-                                                                e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
-                                                            }}
-                                                            onMouseLeave={(e) => {
-                                                                e.target.style.transform = 'translateY(0)';
-                                                                e.target.style.boxShadow = 'none';
-                                                            }}
-                                                        >
-                                                            👨‍🍳 {language === 'ar' ? 'بدء التحضير' : 'Start Preparing'}
-                                                        </button>
-                                                    )}
-                                                    {order.status === 'preparing' && (
-                                                        <button
-                                                            onClick={() => handleStatusUpdate(order.id, 'delivered')}
-                                                            style={{
-                                                                padding: '0.5rem 1rem',
-                                                                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                                                                color: 'white',
-                                                                border: 'none',
-                                                                borderRadius: '0.5rem',
-                                                                fontSize: '0.75rem',
-                                                                fontWeight: '600',
-                                                                cursor: 'pointer',
-                                                                transition: 'all 0.2s',
-                                                                display: 'flex',
-                                                                alignItems: 'center',
-                                                                gap: '0.25rem'
-                                                            }}
-                                                            onMouseEnter={(e) => {
-                                                                e.target.style.transform = 'translateY(-2px)';
-                                                                e.target.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
-                                                            }}
-                                                            onMouseLeave={(e) => {
-                                                                e.target.style.transform = 'translateY(0)';
-                                                                e.target.style.boxShadow = 'none';
-                                                            }}
-                                                        >
-                                                            ✅ {language === 'ar' ? 'تم التوصيل' : 'Mark Delivered'}
-                                                        </button>
-                                                    )}
-                                                    <button
-                                                        onClick={() => handleStatusUpdate(order.id, 'cancelled')}
-                                                        style={{
-                                                            padding: '0.5rem 1rem',
-                                                            background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                                                            color: 'white',
-                                                            border: 'none',
-                                                            borderRadius: '0.5rem',
-                                                            fontSize: '0.75rem',
-                                                            fontWeight: '600',
-                                                            cursor: 'pointer',
-                                                            transition: 'all 0.2s',
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            gap: '0.25rem'
-                                                        }}
-                                                        onMouseEnter={(e) => {
-                                                            e.target.style.transform = 'translateY(-2px)';
-                                                            e.target.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
-                                                        }}
-                                                        onMouseLeave={(e) => {
-                                                            e.target.style.transform = 'translateY(0)';
-                                                            e.target.style.boxShadow = 'none';
-                                                        }}
-                                                    >
-                                                        ❌ {language === 'ar' ? 'إلغاء' : 'Cancel'}
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <span style={{
-                                                    color: 'rgb(107 114 128)',
-                                                    fontSize: '0.75rem',
-                                                    fontStyle: 'italic'
-                                                }}>
-                                                    {language === 'ar' ? 'لا يمكن تغيير الحالة' : 'Cannot change status'}
-                                                </span>
-                                            )}
-                                        </td>
+                                                                                 <td style={{
+                                             padding: '1rem 0.75rem',
+                                             borderBottom: '1px solid rgba(0, 0, 0, 0.05)'
+                                         }}>
+                                             <div style={{
+                                                 display: 'flex',
+                                                 alignItems: 'center',
+                                                 gap: '0.5rem'
+                                             }}>
+                                                 <div style={{
+                                                     width: '1.5rem',
+                                                     height: '1.5rem',
+                                                     background: order.status === 'delivered' ? '#10b981' : 
+                                                                 order.status === 'preparing' ? '#3b82f6' : 
+                                                                 order.status === 'pending' ? '#f59e0b' : '#ef4444',
+                                                     borderRadius: '0.25rem',
+                                                     display: 'flex',
+                                                     alignItems: 'center',
+                                                     justifyContent: 'center',
+                                                     fontSize: '0.75rem',
+                                                     color: 'white'
+                                                 }}>
+                                                     {getStatusIcon(order.status)}
+                                                 </div>
+                                                 <span style={{
+                                                     fontSize: '0.75rem',
+                                                     fontWeight: '500',
+                                                     color: 'rgb(55 65 81)'
+                                                 }}>
+                                                     {getStatusText(order.status)}
+                                                 </span>
+                                             </div>
+                                         </td>
+                                                                                 <td style={{
+                                             padding: '1rem 0.75rem',
+                                             borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+                                             textAlign: 'center'
+                                         }}>
+                                                                                                                                                                                       {order.status !== 'delivered' && order.status !== 'cancelled' ? (
+                                                  <div style={{ position: 'relative' }}>
+                                                      <select
+                                                          onChange={(e) => {
+                                                              const selectedAction = e.target.value;
+                                                              if (selectedAction && selectedAction !== '') {
+                                                                  if (selectedAction === 'cancel') {
+                                                                      if (window.confirm(language === 'ar' 
+                                                                          ? 'هل أنت متأكد من إلغاء هذا الطلب؟'
+                                                                          : 'Are you sure you want to cancel this order?'
+                                                                      )) {
+                                                                          handleStatusUpdate(order.id, 'cancelled');
+                                                                      }
+                                                                  } else {
+                                                                      handleStatusUpdate(order.id, selectedAction);
+                                                                  }
+                                                                  // Reset select value
+                                                                  e.target.value = '';
+                                                              }
+                                                          }}
+                                                          style={{
+                                                              padding: '0.5rem 0.75rem',
+                                                              background: '#ffffff',
+                                                              color: '#374151',
+                                                              border: '1px solid #d1d5db',
+                                                              borderRadius: '0.375rem',
+                                                              fontSize: '0.75rem',
+                                                              fontWeight: '500',
+                                                              cursor: 'pointer',
+                                                              transition: 'all 0.2s ease',
+                                                              minWidth: '140px',
+                                                              outline: 'none',
+                                                              boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                                                          }}
+                                                          onMouseEnter={(e) => {
+                                                              e.target.style.borderColor = '#9ca3af';
+                                                              e.target.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)';
+                                                          }}
+                                                          onMouseLeave={(e) => {
+                                                              e.target.style.borderColor = '#d1d5db';
+                                                              e.target.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
+                                                          }}
+                                                          defaultValue=""
+                                                      >
+                                                          <option value="" disabled>
+                                                              {language === 'ar' ? 'اختر الإجراء' : 'Select Action'}
+                                                          </option>
+                                                          {order.status === 'pending' && (
+                                                              <option value="preparing">
+                                                                  👨‍🍳 {language === 'ar' ? 'بدء التحضير' : 'Start Preparing'}
+                                                              </option>
+                                                          )}
+                                                          {order.status === 'preparing' && (
+                                                              <option value="delivered">
+                                                                  ✅ {language === 'ar' ? 'تم التوصيل' : 'Mark Delivered'}
+                                                              </option>
+                                                          )}
+                                                          <option value="cancel" style={{ color: '#dc2626' }}>
+                                                              ❌ {language === 'ar' ? 'إلغاء الطلب' : 'Cancel Order'}
+                                                          </option>
+                                                      </select>
+                                                  </div>
+                                             ) : (
+                                                 <span style={{
+                                                     color: 'rgb(107 114 128)',
+                                                     fontSize: '0.75rem',
+                                                     fontStyle: 'italic',
+                                                     padding: '0.5rem 1rem',
+                                                     background: 'rgba(107, 114, 128, 0.1)',
+                                                     borderRadius: '0.5rem',
+                                                     display: 'inline-block'
+                                                 }}>
+                                                     {language === 'ar' ? 'لا يمكن تغيير الحالة' : 'Cannot change status'}
+                                                 </span>
+                                             )}
+                                         </td>
                                     </tr>
                                 ))}
                             </tbody>

@@ -118,44 +118,24 @@ const SellerReports = () => {
         }
     };
 
-    const statCards = [
-        {
-            icon: '💰',
-            titleAr: 'إجمالي الإيرادات',
-            titleEn: 'Total Revenue',
-            value: formatCurrency(reports.revenue.total),
-            color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            change: '+12%',
-            changeType: 'positive'
-        },
-                 {
-             icon: '📦',
-             titleAr: 'الاشتراكات النشطة',
-             titleEn: 'Active Subscriptions',
-             value: reports.orders.total,
-             color: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-             change: '+8%',
-             changeType: 'positive'
-         },
-                 {
-             icon: '🍽️',
-             titleAr: 'إجمالي الاشتراكات',
-             titleEn: 'Total Subscriptions',
-             value: reports.subscriptions.total,
-             color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-             change: '+5%',
-             changeType: 'positive'
-         },
-        {
-            icon: '🏪',
-            titleAr: 'المطاعم النشطة',
-            titleEn: 'Active Restaurants',
-            value: reports.restaurants.active,
-            color: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-            change: '+2%',
-            changeType: 'positive'
+    const getStatusColor = (status) => {
+        switch (status?.toLowerCase()) {
+            case 'active':
+            case 'نشط':
+                return 'rgb(34 197 94)';
+            case 'completed':
+            case 'مكتمل':
+                return 'rgb(59 130 246)';
+            case 'cancelled':
+            case 'ملغي':
+                return 'rgb(239 68 68)';
+            case 'pending':
+            case 'في الانتظار':
+                return 'rgb(245 158 11)';
+            default:
+                return 'rgb(107 114 128)';
         }
-    ];
+    };
 
     if (loading) {
         return (
@@ -279,7 +259,7 @@ const SellerReports = () => {
                     </div>
                 </div>
                 
-                {/* Period Summary */}
+                {/* Period Summary Table */}
                 <div style={{
                     background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(147, 51, 234, 0.05) 100%)',
                     borderRadius: '1rem',
@@ -290,7 +270,7 @@ const SellerReports = () => {
                         display: 'flex',
                         alignItems: 'center',
                         gap: '0.75rem',
-                        marginBottom: '1rem'
+                        marginBottom: '1.5rem'
                     }}>
                         <div style={{
                             width: '2.5rem',
@@ -323,207 +303,183 @@ const SellerReports = () => {
                         </div>
                     </div>
                     
+                    {/* Summary Table */}
                     <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(2, 1fr)',
-                        gap: '1rem'
+                        overflowX: 'auto',
+                        borderRadius: '0.75rem',
+                        border: '1px solid rgba(0, 0, 0, 0.1)',
+                        background: 'rgba(255, 255, 255, 0.9)'
                     }}>
-                        <div style={{
-                            textAlign: 'center',
-                            padding: '1rem',
-                            background: 'rgba(255, 255, 255, 0.8)',
-                            borderRadius: '0.75rem',
-                            border: '1px solid rgba(0, 0, 0, 0.05)'
+                        <table style={{
+                            width: '100%',
+                            borderCollapse: 'collapse',
+                            fontSize: '0.875rem'
                         }}>
-                            <div style={{
-                                fontSize: '1.5rem',
+                            <thead>
+                                <tr style={{
+                                    background: 'rgba(79, 70, 229, 0.1)',
+                                    borderBottom: '2px solid rgba(79, 70, 229, 0.2)'
+                                }}>
+                                    <th style={{
+                                        padding: '1rem',
+                            textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(79 70 229)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {language === 'ar' ? 'المؤشر' : 'Metric'}
+                                    </th>
+                                    <th style={{
+                            padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(79 70 229)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {language === 'ar' ? 'القيمة' : 'Value'}
+                                    </th>
+                                    <th style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(79 70 229)'
+                                    }}>
+                                        {language === 'ar' ? 'النسبة المئوية' : 'Percentage'}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style={{
+                                    borderBottom: '1px solid rgba(0, 0, 0, 0.05)'
+                                }}>
+                                    <td style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '500',
+                                        color: 'rgb(17 24 39)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {language === 'ar' ? 'الإيرادات' : 'Revenue'}
+                                    </td>
+                                    <td style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
                                 fontWeight: '700',
                                 color: 'rgb(79 70 229)',
-                                marginBottom: '0.5rem'
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
                             }}>
                                 {formatCurrency(reports.revenue[selectedPeriod] || 0)}
-                            </div>
-                            <div style={{
-                                fontSize: '0.875rem',
-                                color: 'rgb(107 114 128)'
-                            }}>
-                                {language === 'ar' ? 'الإيرادات' : 'Revenue'}
-                            </div>
-                        </div>
-                        
-                        <div style={{
+                                    </td>
+                                    <td style={{
+                                        padding: '1rem',
                             textAlign: 'center',
-                            padding: '1rem',
-                            background: 'rgba(255, 255, 255, 0.8)',
-                            borderRadius: '0.75rem',
-                            border: '1px solid rgba(0, 0, 0, 0.05)'
-                        }}>
-                            <div style={{
-                                fontSize: '1.5rem',
-                                fontWeight: '700',
-                                color: 'rgb(239 68 68)',
-                                marginBottom: '0.5rem'
-                            }}>
-                                {reports.orders[selectedPeriod] || 0}
-                            </div>
-                            <div style={{
-                                fontSize: '0.875rem',
-                                color: 'rgb(107 114 128)'
-                            }}>
-                                {language === 'ar' ? 'الطلبات' : 'Orders'}
-                            </div>
-                        </div>
-                        
-                        <div style={{
-                            textAlign: 'center',
-                            padding: '1rem',
-                            background: 'rgba(255, 255, 255, 0.8)',
-                            borderRadius: '0.75rem',
-                            border: '1px solid rgba(0, 0, 0, 0.05)'
-                        }}>
-                            <div style={{
-                                fontSize: '1.5rem',
-                                fontWeight: '700',
-                                color: 'rgb(34 197 94)',
-                                marginBottom: '0.5rem'
-                            }}>
-                                {reports.subscriptions.active}
-                            </div>
-                            <div style={{
-                                fontSize: '0.875rem',
-                                color: 'rgb(107 114 128)'
-                            }}>
-                                {language === 'ar' ? 'الاشتراكات النشطة' : 'Active Subscriptions'}
-                            </div>
-                        </div>
-                        
-                        <div style={{
-                            textAlign: 'center',
-                            padding: '1rem',
-                            background: 'rgba(255, 255, 255, 0.8)',
-                            borderRadius: '0.75rem',
-                            border: '1px solid rgba(0, 0, 0, 0.05)'
-                        }}>
-                                                         <div style={{
-                                 fontSize: '1.5rem',
-                                 fontWeight: '700',
-                                 color: 'rgb(245 158 11)',
-                                 marginBottom: '0.5rem'
-                             }}>
-                                 {reports.subscriptions.total}
-                             </div>
-                             <div style={{
-                                 fontSize: '0.875rem',
-                                 color: 'rgb(107 114 128)'
-                             }}>
-                                 {language === 'ar' ? 'إجمالي الاشتراكات' : 'Total Subscriptions'}
-                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Stats Cards */}
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr',
-                gap: '1.5rem',
-                marginBottom: '2rem'
-            }}>
-                {statCards.map((card, index) => (
-                    <div key={index} style={{
-                        background: 'rgba(255, 255, 255, 0.95)',
-                        backdropFilter: 'blur(20px)',
-                        borderRadius: '1.25rem',
-                        padding: '1.5rem',
-                        boxShadow: '0 15px 35px rgba(0, 0, 0, 0.1)',
-                        border: '1px solid rgba(255, 255, 255, 0.2)',
-                        position: 'relative',
-                        overflow: 'hidden'
-                    }}>
-                        <div style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            height: '4px',
-                            background: card.color
-                        }}></div>
-                        
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '1rem',
-                            marginBottom: '1rem'
-                        }}>
-                            <div style={{
-                                width: '3rem',
-                                height: '3rem',
-                                background: card.color,
-                                borderRadius: '0.75rem',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontSize: '1.5rem',
-                                color: 'white'
-                            }}>
-                                {card.icon}
-                            </div>
-                            <div style={{ flex: 1 }}>
-                                <h3 style={{
-                                    fontSize: '1.125rem',
-                                    fontWeight: '600',
-                                    color: 'rgb(17 24 39)',
-                                    margin: '0 0 0.25rem 0'
-                                }}>
-                                    {language === 'ar' ? card.titleAr : card.titleEn}
-                                </h3>
-                                <div style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem'
-                                }}>
-                                    <span style={{
-                                        fontSize: '0.875rem',
-                                        color: card.changeType === 'positive' ? 'rgb(34 197 94)' : 'rgb(239 68 68)',
+                                        color: 'rgb(34 197 94)',
                                         fontWeight: '500'
                                     }}>
-                                        {card.change}
-                                    </span>
-                                    <span style={{
-                                        fontSize: '0.75rem',
-                                        color: 'rgb(107 114 128)'
+                                        +12%
+                                    </td>
+                                </tr>
+                                <tr style={{
+                                    borderBottom: '1px solid rgba(0, 0, 0, 0.05)'
+                                }}>
+                                    <td style={{
+                            padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '500',
+                                        color: 'rgb(17 24 39)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
                                     }}>
-                                        {language === 'ar' ? 'من الشهر الماضي' : 'from last month'}
-                                    </span>
+                                        {language === 'ar' ? 'الطلبات' : 'Orders'}
+                                    </td>
+                                    <td style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                fontWeight: '700',
+                                color: 'rgb(239 68 68)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                            }}>
+                                {reports.orders[selectedPeriod] || 0}
+                                    </td>
+                                    <td style={{
+                                        padding: '1rem',
+                            textAlign: 'center',
+                                        color: 'rgb(34 197 94)',
+                                        fontWeight: '500'
+                                    }}>
+                                        +8%
+                                    </td>
+                                </tr>
+                                <tr style={{
+                                    borderBottom: '1px solid rgba(0, 0, 0, 0.05)'
+                                }}>
+                                    <td style={{
+                            padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '500',
+                                        color: 'rgb(17 24 39)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {language === 'ar' ? 'الاشتراكات النشطة' : 'Active Subscriptions'}
+                                    </td>
+                                    <td style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                fontWeight: '700',
+                                color: 'rgb(34 197 94)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                            }}>
+                                {reports.subscriptions.active}
+                                    </td>
+                                    <td style={{
+                                        padding: '1rem',
+                            textAlign: 'center',
+                                        color: 'rgb(34 197 94)',
+                                        fontWeight: '500'
+                                    }}>
+                                        +5%
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style={{
+                            padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '500',
+                                        color: 'rgb(17 24 39)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {language === 'ar' ? 'إجمالي الاشتراكات' : 'Total Subscriptions'}
+                                    </td>
+                                    <td style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                 fontWeight: '700',
+                                 color: 'rgb(245 158 11)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                             }}>
+                                 {reports.subscriptions.total}
+                                    </td>
+                                    <td style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                        color: 'rgb(34 197 94)',
+                                        fontWeight: '500'
+                                    }}>
+                                        +3%
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                                 </div>
                             </div>
                         </div>
                         
-                        <div style={{
-                            fontSize: '2rem',
-                            fontWeight: '700',
-                            color: 'rgb(17 24 39)',
-                            marginBottom: '0.5rem'
-                        }}>
-                            {card.value}
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            {/* Recent Orders and Top Meals */}
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr',
-                gap: '2rem'
-            }}>
-                {/* Recent Orders */}
+            {/* Subscription Orders Table */}
                 <div style={{
                     background: 'rgba(255, 255, 255, 0.95)',
                     backdropFilter: 'blur(20px)',
                     borderRadius: '1.25rem',
                     padding: '1.5rem',
+                marginBottom: '2rem',
                     boxShadow: '0 15px 35px rgba(0, 0, 0, 0.1)',
                     border: '1px solid rgba(255, 255, 255, 0.2)'
                 }}>
@@ -567,100 +523,220 @@ const SellerReports = () => {
                          </div>
                     </div>
                     
+                {recentSubscriptions.length > 0 ? (
                     <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '1rem',
-                        maxHeight: '600px',
-                        overflowY: 'auto',
-                        paddingRight: '0.5rem'
+                        overflowX: 'auto',
+                        borderRadius: '0.75rem',
+                        border: '1px solid rgba(0, 0, 0, 0.1)',
+                        background: 'rgba(255, 255, 255, 0.9)'
                     }}>
-                                                 {recentSubscriptions.length > 0 ? recentSubscriptions.map((subscription, index) => (
-                            <div key={index} style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '1rem',
+                        <table style={{
+                            width: '100%',
+                            borderCollapse: 'collapse',
+                            fontSize: '0.875rem'
+                        }}>
+                            <thead>
+                                <tr style={{
+                                    background: 'rgba(79, 70, 229, 0.1)',
+                                    borderBottom: '2px solid rgba(79, 70, 229, 0.2)'
+                                }}>
+                                    <th style={{
                                 padding: '1rem',
-                                background: index % 2 === 0 ? 'rgba(0, 0, 0, 0.02)' : 'rgba(0, 0, 0, 0.01)',
-                                borderRadius: '0.75rem',
-                                border: '1px solid rgba(0, 0, 0, 0.05)',
+                                        textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(79 70 229)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        #
+                                    </th>
+                                    <th style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(79 70 229)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {language === 'ar' ? 'اسم العميل' : 'Customer Name'}
+                                    </th>
+                                    <th style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(79 70 229)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {language === 'ar' ? 'رقم الهاتف' : 'Phone'}
+                                    </th>
+                                    <th style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(79 70 229)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {language === 'ar' ? 'المطعم' : 'Restaurant'}
+                                    </th>
+                                    <th style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(79 70 229)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {language === 'ar' ? 'نوع الاشتراك' : 'Subscription Type'}
+                                    </th>
+                                    <th style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(79 70 229)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {language === 'ar' ? 'المبلغ' : 'Amount'}
+                                    </th>
+                                    <th style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(79 70 229)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {language === 'ar' ? 'الحالة' : 'Status'}
+                                    </th>
+                                    <th style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(79 70 229)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {language === 'ar' ? 'تاريخ البدء' : 'Start Date'}
+                                    </th>
+                                    <th style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(79 70 229)'
+                                    }}>
+                                        {language === 'ar' ? 'تاريخ الإنشاء' : 'Created At'}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {recentSubscriptions.map((subscription, index) => (
+                                    <tr key={index} style={{
+                                        borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
                                 transition: 'all 0.2s ease',
                                 cursor: 'pointer'
                             }}
                             onMouseEnter={(e) => {
-                                e.target.style.background = 'rgba(79, 70, 229, 0.05)';
-                                e.target.style.transform = 'translateY(-1px)';
+                                        e.target.parentElement.style.background = 'rgba(79, 70, 229, 0.05)';
                             }}
                             onMouseLeave={(e) => {
-                                e.target.style.background = index % 2 === 0 ? 'rgba(0, 0, 0, 0.02)' : 'rgba(0, 0, 0, 0.01)';
-                                e.target.style.transform = 'translateY(0)';
-                            }}>
-                                <div style={{
-                                    width: '2.5rem',
-                                    height: '2.5rem',
-                                    background: 'rgba(79, 70, 229, 0.1)',
-                                    borderRadius: '0.5rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontSize: '1rem'
-                                }}>
-                                    🍽️
-                                </div>
-                                <div style={{ flex: 1 }}>
-                                    <div style={{
-                                        fontSize: '0.875rem',
+                                        e.target.parentElement.style.background = 'transparent';
+                                    }}>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
+                                            fontWeight: '500',
+                                            color: 'rgb(17 24 39)',
+                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                        }}>
+                                            {index + 1}
+                                        </td>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
                                         fontWeight: '600',
                                         color: 'rgb(17 24 39)',
-                                        marginBottom: '0.25rem'
+                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
                                     }}>
                                         {subscription.customer_name}
-                                    </div>
-                                    <div style={{
-                                        fontSize: '0.75rem',
+                                        </td>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
                                         color: 'rgb(107 114 128)',
-                                        marginBottom: '0.25rem'
-                                    }}>
-                                        📞 {subscription.customer_phone || (language === 'ar' ? 'غير متوفر' : 'Not available')}
-                                    </div>
-                                    <div style={{
-                                        fontSize: '0.75rem',
-                                        color: 'rgb(107 114 128)'
-                                    }}>
-                                        {subscription.restaurant_name} • {subscription.subscription_type} • {formatDate(subscription.created_at)}
-                                    </div>
-                                </div>
-                                <div style={{
-                                    textAlign: 'right'
-                                }}>
-                                    <div style={{
-                                        fontSize: '0.875rem',
+                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                        }}>
+                                            {subscription.customer_phone || (language === 'ar' ? 'غير متوفر' : 'Not available')}
+                                        </td>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
+                                            color: 'rgb(107 114 128)',
+                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                        }}>
+                                            {subscription.restaurant_name}
+                                        </td>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
+                                            color: 'rgb(107 114 128)',
+                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                        }}>
+                                            {subscription.subscription_type}
+                                        </td>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
                                         fontWeight: '600',
-                                        color: 'rgb(79 70 229)'
+                                            color: 'rgb(79 70 229)',
+                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
                                     }}>
                                                                                  {formatCurrency(subscription.total_amount)}
-                                    </div>
-                                                                         <div style={{
+                                        </td>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
+                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                        }}>
+                                            <span style={{
+                                                padding: '0.25rem 0.75rem',
+                                                borderRadius: '9999px',
                                          fontSize: '0.75rem',
+                                                fontWeight: '500',
+                                                background: `${getStatusColor(subscription.status)}20`,
+                                                color: getStatusColor(subscription.status)
+                                            }}>
+                                                {subscription.status}
+                                            </span>
+                                        </td>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
+                                            color: 'rgb(107 114 128)',
+                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                        }}>
+                                            {formatDate(subscription.start_date)}
+                                        </td>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
                                          color: 'rgb(107 114 128)'
                                      }}>
-                                         {subscription.status} • {formatDate(subscription.start_date)}
+                                            {formatDate(subscription.created_at)}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                                      </div>
-                                </div>
-                            </div>
-                        )) : (
+                ) : (
                                                          <div style={{
                                  textAlign: 'center',
                                  padding: '2rem',
-                                 color: 'rgb(107 114 128)'
+                        color: 'rgb(107 114 128)',
+                        background: 'rgba(255, 255, 255, 0.9)',
+                        borderRadius: '0.75rem',
+                        border: '1px solid rgba(0, 0, 0, 0.1)'
                              }}>
                                  {language === 'ar' ? 'لا توجد طلبات اشتراكات' : 'No subscription orders'}
                              </div>
                         )}
-                    </div>
                 </div>
 
-                {/* Top Meals */}
+            {/* Top Subscription Types Table */}
                 <div style={{
                     background: 'rgba(255, 255, 255, 0.95)',
                     backdropFilter: 'blur(20px)',
@@ -709,93 +785,142 @@ const SellerReports = () => {
                          </div>
                     </div>
                     
+                {topSubscriptionTypes.length > 0 ? (
                     <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '1rem',
-                        maxHeight: '600px',
-                        overflowY: 'auto',
-                        paddingRight: '0.5rem'
+                        overflowX: 'auto',
+                        borderRadius: '0.75rem',
+                        border: '1px solid rgba(0, 0, 0, 0.1)',
+                        background: 'rgba(255, 255, 255, 0.9)'
                     }}>
-                                                 {topSubscriptionTypes.length > 0 ? topSubscriptionTypes.map((subscriptionType, index) => (
-                            <div key={index} style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '1rem',
+                        <table style={{
+                            width: '100%',
+                            borderCollapse: 'collapse',
+                            fontSize: '0.875rem'
+                        }}>
+                            <thead>
+                                <tr style={{
+                                    background: 'rgba(34, 197, 94, 0.1)',
+                                    borderBottom: '2px solid rgba(34, 197, 94, 0.2)'
+                                }}>
+                                    <th style={{
                                 padding: '1rem',
-                                background: index % 2 === 0 ? 'rgba(0, 0, 0, 0.02)' : 'rgba(0, 0, 0, 0.01)',
-                                borderRadius: '0.75rem',
-                                border: '1px solid rgba(0, 0, 0, 0.05)',
+                                        textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(34 197 94)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        #
+                                    </th>
+                                    <th style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(34 197 94)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {language === 'ar' ? 'اسم نوع الاشتراك' : 'Subscription Type Name'}
+                                    </th>
+                                    <th style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(34 197 94)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {language === 'ar' ? 'المطعم' : 'Restaurant'}
+                                    </th>
+                                    <th style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(34 197 94)',
+                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {language === 'ar' ? 'عدد الاشتراكات' : 'Subscription Count'}
+                                    </th>
+                                    <th style={{
+                                        padding: '1rem',
+                                        textAlign: 'center',
+                                        fontWeight: '600',
+                                        color: 'rgb(34 197 94)'
+                                    }}>
+                                        {language === 'ar' ? 'إجمالي الإيرادات' : 'Total Revenue'}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {topSubscriptionTypes.map((subscriptionType, index) => (
+                                    <tr key={index} style={{
+                                        borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
                                 transition: 'all 0.2s ease',
                                 cursor: 'pointer'
                             }}
                             onMouseEnter={(e) => {
-                                e.target.style.background = 'rgba(34, 197, 94, 0.05)';
-                                e.target.style.transform = 'translateY(-1px)';
+                                        e.target.parentElement.style.background = 'rgba(34, 197, 94, 0.05)';
                             }}
                             onMouseLeave={(e) => {
-                                e.target.style.background = index % 2 === 0 ? 'rgba(0, 0, 0, 0.02)' : 'rgba(0, 0, 0, 0.01)';
-                                e.target.style.transform = 'translateY(0)';
-                            }}>
-                                <div style={{
-                                    width: '2.5rem',
-                                    height: '2.5rem',
-                                    background: 'rgba(34, 197, 94, 0.1)',
-                                    borderRadius: '0.5rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontSize: '1rem',
+                                        e.target.parentElement.style.background = 'transparent';
+                                    }}>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
                                     fontWeight: '600',
-                                    color: 'rgb(34 197 94)'
+                                            color: 'rgb(34 197 94)',
+                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
                                 }}>
                                     #{index + 1}
-                                </div>
-                                <div style={{ flex: 1 }}>
-                                    <div style={{
-                                        fontSize: '0.875rem',
+                                        </td>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
                                         fontWeight: '600',
                                         color: 'rgb(17 24 39)',
-                                        marginBottom: '0.25rem'
+                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
                                     }}>
                                                                                  {subscriptionType.name}
-                                    </div>
-                                    <div style={{
-                                        fontSize: '0.75rem',
-                                        color: 'rgb(107 114 128)'
+                                        </td>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
+                                            color: 'rgb(107 114 128)',
+                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
                                     }}>
                                                                                  {subscriptionType.restaurant_name}
-                                    </div>
-                                </div>
-                                <div style={{
-                                    textAlign: 'right'
-                                }}>
-                                                                         <div style={{
-                                         fontSize: '0.875rem',
+                                        </td>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
+                                            fontWeight: '600',
+                                            color: 'rgb(34 197 94)',
+                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                        }}>
+                                            {subscriptionType.subscription_count} {language === 'ar' ? 'اشتراك' : 'subscriptions'}
+                                        </td>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
                                          fontWeight: '600',
                                          color: 'rgb(34 197 94)'
-                                     }}>
-                                         {subscriptionType.subscription_count} {language === 'ar' ? 'اشتراك' : 'subscriptions'}
-                                     </div>
-                                    <div style={{
-                                        fontSize: '0.75rem',
-                                        color: 'rgb(107 114 128)'
                                     }}>
                                                                                  {formatCurrency(subscriptionType.total_revenue)}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                                     </div>
-                                </div>
-                            </div>
-                        )) : (
+                ) : (
                                                          <div style={{
                                  textAlign: 'center',
                                  padding: '2rem',
-                                 color: 'rgb(107 114 128)'
+                        color: 'rgb(107 114 128)',
+                        background: 'rgba(255, 255, 255, 0.9)',
+                        borderRadius: '0.75rem',
+                        border: '1px solid rgba(0, 0, 0, 0.1)'
                              }}>
                                  {language === 'ar' ? 'لا توجد أنواع اشتراكات' : 'No subscription types'}
                              </div>
                         )}
-                    </div>
-                </div>
             </div>
         </div>
     );
