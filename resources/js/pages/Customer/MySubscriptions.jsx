@@ -45,7 +45,7 @@ const MySubscriptions = () => {
             case 'completed':
                 return 'from-teal-500 to-teal-600';
             case 'cancelled':
-                return 'from-red-500 to-pink-500';
+                return 'from-red-500 to-red-600';
             default:
                 return 'from-gray-500 to-gray-600';
         }
@@ -411,7 +411,7 @@ const MySubscriptions = () => {
                                             <div style={{ 
                                                 fontSize: 'clamp(0.875rem, 3vw, 1rem)', 
                                                 fontWeight: '600', 
-                                                color: 'rgb(79 70 229)' 
+                                                color: '#2f6e73' 
                                             }}>
                                                 {subscription.total_amount} {language === 'ar' ? 'ريال' : 'OMR'}
                                             </div>
@@ -424,14 +424,14 @@ const MySubscriptions = () => {
                                         width: '100%',
                                         padding: 'clamp(0.75rem, 3vw, 1rem)',
                                         borderRadius: '0.75rem',
-                                        background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                                        background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                                         color: 'white',
                                         textDecoration: 'none',
                                         fontSize: 'clamp(0.875rem, 4vw, 1rem)',
                                         fontWeight: '600',
                                         textAlign: 'center',
                                         transition: 'all 0.3s ease',
-                                        boxShadow: '0 4px 15px rgba(79, 70, 229, 0.3)'
+                                        boxShadow: '0 4px 15px rgba(47, 110, 115, 0.3)'
                                     }}>
                                         {language === 'ar' ? 'عرض التفاصيل' : 'View Details'}
                                     </Link>

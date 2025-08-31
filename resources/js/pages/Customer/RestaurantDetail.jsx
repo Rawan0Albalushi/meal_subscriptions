@@ -1902,7 +1902,7 @@ const RestaurantDetail = () => {
                     justifyContent: 'center',
                     width: '3rem',
                     height: '3rem',
-                    background: '#10b981',
+                    background: '#2f6e73',
                     borderRadius: '50%',
                     marginBottom: '1rem'
                   }}>
@@ -1961,9 +1961,9 @@ const RestaurantDetail = () => {
                         }}
                         className="meal-filter-button meal-type-button"
                         style={{
-                          background: isSelected ? '#10b981' : 'white',
+                          background: isSelected ? '#2f6e73' : 'white',
                           color: isSelected ? 'white' : '#374151',
-                          border: isSelected ? '2px solid #10b981' : '2px solid #d1d5db',
+                          border: isSelected ? '2px solid #2f6e73' : '2px solid #d1d5db',
                           borderRadius: '0.75rem',
                           padding: '1rem 1.5rem',
                           cursor: 'pointer',
@@ -1992,8 +1992,8 @@ const RestaurantDetail = () => {
                         }}
                         onMouseEnter={(e) => {
                           if (!isSelected) {
-                            e.target.style.borderColor = '#10b981';
-                            e.target.style.background = '#f0fdf4';
+                            e.target.style.borderColor = '#2f6e73';
+                            e.target.style.background = 'rgba(47, 110, 115, 0.05)';
                             e.target.style.transform = 'translateY(-2px)';
                           }
                         }}
@@ -2167,13 +2167,13 @@ const RestaurantDetail = () => {
                   background: 'rgba(255, 255, 255, 0.9)',
                   borderRadius: '1rem',
                   padding: '1rem',
-                  border: '1px solid #10b981',
+                  border: '1px solid #2f6e73',
                   textAlign: 'center',
                   marginBottom: '1rem'
                 }}>
                   <div style={{
                     fontSize: '1rem',
-                    color: '#059669',
+                    color: '#2f6e73',
                     fontWeight: '600',
                     marginBottom: '0.25rem'
                   }}>
@@ -2181,7 +2181,7 @@ const RestaurantDetail = () => {
                   </div>
                   <div style={{
                     fontSize: '0.875rem',
-                    color: '#047857'
+                    color: '#1f5a5f'
                   }}>
                     {Object.keys(selectedMeals).length} / {selectedSubscriptionType?.meals_count || 0} {t('mealsSelected')}
                   </div>
@@ -2209,11 +2209,11 @@ const RestaurantDetail = () => {
                       marginBottom: '1.5rem',
                       padding: '0.75rem',
                       background: selectedSubscriptionType?.type === 'monthly' && day.weekNumber 
-                        ? `linear-gradient(135deg, ${day.weekNumber === 1 ? 'rgba(16, 185, 129, 0.1)' : day.weekNumber === 2 ? 'rgba(59, 130, 246, 0.1)' : day.weekNumber === 3 ? 'rgba(168, 85, 247, 0.1)' : 'rgba(236, 72, 153, 0.1)'}, ${day.weekNumber === 1 ? 'rgba(5, 150, 105, 0.05)' : day.weekNumber === 2 ? 'rgba(37, 99, 235, 0.05)' : day.weekNumber === 3 ? 'rgba(147, 51, 234, 0.05)' : 'rgba(219, 39, 119, 0.05)'})`
+                        ? `linear-gradient(135deg, ${day.weekNumber === 1 ? 'rgba(47, 110, 115, 0.1)' : day.weekNumber === 2 ? 'rgba(74, 138, 143, 0.1)' : day.weekNumber === 3 ? 'rgba(182, 84, 73, 0.1)' : 'rgba(200, 106, 90, 0.1)'}, ${day.weekNumber === 1 ? 'rgba(47, 110, 115, 0.05)' : day.weekNumber === 2 ? 'rgba(74, 138, 143, 0.05)' : day.weekNumber === 3 ? 'rgba(182, 84, 73, 0.05)' : 'rgba(200, 106, 90, 0.05)'})`
                         : 'transparent',
                       borderRadius: '0.75rem',
                       border: selectedSubscriptionType?.type === 'monthly' && day.weekNumber
-                        ? `1px solid ${day.weekNumber === 1 ? 'rgba(16, 185, 129, 0.3)' : day.weekNumber === 2 ? 'rgba(59, 130, 246, 0.3)' : day.weekNumber === 3 ? 'rgba(168, 85, 247, 0.3)' : 'rgba(236, 72, 153, 0.3)'}`
+                        ? `1px solid ${day.weekNumber === 1 ? 'rgba(47, 110, 115, 0.3)' : day.weekNumber === 2 ? 'rgba(74, 138, 143, 0.3)' : day.weekNumber === 3 ? 'rgba(182, 84, 73, 0.3)' : 'rgba(200, 106, 90, 0.3)'}`
                         : '1px solid rgba(229, 231, 235, 0.3)',
                       '@media (max-width: 768px)': {
                         flexDirection: 'column',
@@ -2255,7 +2255,7 @@ const RestaurantDetail = () => {
                       {getSelectedMealForDay(day.key) && (
                         <div style={{
                           padding: '0.375rem 0.75rem',
-                          background: 'linear-gradient(135deg, #10b981, #059669)',
+                          background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                           color: 'white',
                           borderRadius: '1rem',
                           fontSize: '0.75rem',
@@ -2287,11 +2287,11 @@ const RestaurantDetail = () => {
                             borderRadius: 'clamp(0.75rem, 3vw, 1.25rem)',
                             padding: 0,
                             boxShadow: isSelected 
-                              ? '0 15px 35px rgba(16, 185, 129, 0.2)' 
+                              ? '0 15px 35px rgba(47, 110, 115, 0.2)' 
                               : '0 8px 25px rgba(0, 0, 0, 0.12)',
                             border: isSelected 
-                              ? '3px solid #10b981' 
-                              : '2px solid rgba(79, 70, 229, 0.2)',
+                              ? '3px solid #2f6e73' 
+                              : '2px solid rgba(47, 110, 115, 0.2)',
                             transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                             cursor: 'pointer',
                             position: 'relative',
@@ -2309,16 +2309,16 @@ const RestaurantDetail = () => {
                             onMouseEnter={(e) => {
                               if (!isSelected) {
                                 e.target.style.transform = 'translateY(-8px) scale(1.02)';
-                                e.target.style.boxShadow = '0 20px 40px rgba(16, 185, 129, 0.15)';
-                                e.target.style.borderColor = '#10b981';
-                                e.target.style.background = 'rgba(240, 253, 244, 0.95)';
+                                e.target.style.boxShadow = '0 20px 40px rgba(47, 110, 115, 0.15)';
+                                e.target.style.borderColor = '#2f6e73';
+                                e.target.style.background = 'rgba(47, 110, 115, 0.05)';
                               }
                             }}
                             onMouseLeave={(e) => {
                               if (!isSelected) {
                                 e.target.style.transform = 'translateY(0) scale(1)';
                                 e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.12)';
-                                e.target.style.borderColor = 'rgba(79, 70, 229, 0.2)';
+                                e.target.style.borderColor = 'rgba(47, 110, 115, 0.2)';
                                 e.target.style.background = 'rgba(255, 255, 255, 0.95)';
                               }
                             }}>
@@ -2329,7 +2329,7 @@ const RestaurantDetail = () => {
                                 position: 'absolute',
                                 top: '0.75rem',
                                 right: '0.75rem',
-                                background: '#10b981',
+                                background: '#2f6e73',
                                 color: 'white',
                                 borderRadius: '50%',
                                 width: '2rem',
@@ -2339,7 +2339,7 @@ const RestaurantDetail = () => {
                                 justifyContent: 'center',
                                 fontSize: '1rem',
                                 fontWeight: 'bold',
-                                boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
+                                boxShadow: '0 4px 12px rgba(47, 110, 115, 0.3)',
                                 animation: 'pulse 2s infinite',
                                 zIndex: 10
                               }}>
@@ -2376,7 +2376,7 @@ const RestaurantDetail = () => {
                               height: '70%',
                               position: 'relative',
                               overflow: 'hidden',
-                              background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(139, 92, 246, 0.05))'
+                              background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05), rgba(182, 84, 73, 0.05))'
                             }}>
                               {meal.image ? (
                                 <>
@@ -2403,7 +2403,7 @@ const RestaurantDetail = () => {
                                     left: 0,
                                     right: 0,
                                     bottom: 0,
-                                    background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                                    background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
                                     display: 'none',
                                     alignItems: 'center',
                                     justifyContent: 'center',
@@ -2417,7 +2417,7 @@ const RestaurantDetail = () => {
                                 <div style={{
                                   width: '100%',
                                   height: '100%',
-                                  background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                                  background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
                                   display: 'flex',
                                   alignItems: 'center',
                                   justifyContent: 'center',
@@ -2473,7 +2473,7 @@ const RestaurantDetail = () => {
                                   padding: 'clamp(0.5rem, 2vw, 0.75rem)',
                                   borderRadius: 'clamp(0.375rem, 1.5vw, 0.5rem)',
                                   background: isSelected 
-                                    ? 'linear-gradient(135deg, #10b981, #059669)' 
+                                    ? 'linear-gradient(135deg, #2f6e73, #4a8a8f)' 
                                     : 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                                   color: 'white',
                                   border: 'none',

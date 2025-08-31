@@ -600,7 +600,19 @@ const SubscriptionForm = () => {
                           value={newAddress.name} 
                           onChange={(e) => setNewAddress(prev => ({ ...prev, name: e.target.value }))} 
                           placeholder={t('addressNamePlaceholder')} 
-                          className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-300 outline-none"
+                          className="w-full p-3 bg-white border border-gray-300 rounded-xl transition-all duration-300 outline-none"
+                          style={{ 
+                            '--tw-ring-color': '#2f6e73',
+                            '--tw-ring-opacity': '0.1'
+                          }}
+                          onFocus={(e) => {
+                            e.target.style.borderColor = '#2f6e73';
+                            e.target.style.boxShadow = '0 0 0 2px rgba(47, 110, 115, 0.1)';
+                          }}
+                          onBlur={(e) => {
+                            e.target.style.borderColor = '#d1d5db';
+                            e.target.style.boxShadow = 'none';
+                          }}
                           required 
                         />
                       </div>
@@ -613,7 +625,19 @@ const SubscriptionForm = () => {
                           value={newAddress.address} 
                           onChange={(e) => setNewAddress(prev => ({ ...prev, address: e.target.value }))} 
                           placeholder={t('detailedAddressPlaceholder')} 
-                          className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-300 outline-none"
+                          className="w-full p-3 bg-white border border-gray-300 rounded-xl transition-all duration-300 outline-none"
+                          style={{ 
+                            '--tw-ring-color': '#2f6e73',
+                            '--tw-ring-opacity': '0.1'
+                          }}
+                          onFocus={(e) => {
+                            e.target.style.borderColor = '#2f6e73';
+                            e.target.style.boxShadow = '0 0 0 2px rgba(47, 110, 115, 0.1)';
+                          }}
+                          onBlur={(e) => {
+                            e.target.style.borderColor = '#d1d5db';
+                            e.target.style.boxShadow = 'none';
+                          }}
                           required 
                         />
                       </div>
@@ -626,7 +650,19 @@ const SubscriptionForm = () => {
                           value={newAddress.city} 
                           onChange={(e) => setNewAddress(prev => ({ ...prev, city: e.target.value }))} 
                           placeholder={t('cityPlaceholder')} 
-                          className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-300 outline-none"
+                          className="w-full p-3 bg-white border border-gray-300 rounded-xl transition-all duration-300 outline-none"
+                          style={{ 
+                            '--tw-ring-color': '#2f6e73',
+                            '--tw-ring-opacity': '0.1'
+                          }}
+                          onFocus={(e) => {
+                            e.target.style.borderColor = '#2f6e73';
+                            e.target.style.boxShadow = '0 0 0 2px rgba(47, 110, 115, 0.1)';
+                          }}
+                          onBlur={(e) => {
+                            e.target.style.borderColor = '#d1d5db';
+                            e.target.style.boxShadow = 'none';
+                          }}
                           required 
                         />
                       </div>
@@ -639,9 +675,22 @@ const SubscriptionForm = () => {
                           value={newAddress.phone} 
                           onChange={(e) => setNewAddress(prev => ({ ...prev, phone: e.target.value }))} 
                           placeholder={t('phonePlaceholder')} 
-                          className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-300 outline-none"
+                          className="w-full p-3 bg-white border border-gray-300 rounded-xl transition-all duration-300 outline-none"
+                          style={{ 
+                            direction: 'ltr', 
+                            textAlign: 'left',
+                            '--tw-ring-color': '#2f6e73',
+                            '--tw-ring-opacity': '0.1'
+                          }}
+                          onFocus={(e) => {
+                            e.target.style.borderColor = '#2f6e73';
+                            e.target.style.boxShadow = '0 0 0 2px rgba(47, 110, 115, 0.1)';
+                          }}
+                          onBlur={(e) => {
+                            e.target.style.borderColor = '#d1d5db';
+                            e.target.style.boxShadow = 'none';
+                          }}
                           required 
-                          style={{ direction: 'ltr', textAlign: 'left' }}
                         />
                       </div>
                     </div>
@@ -660,13 +709,16 @@ const SubscriptionForm = () => {
 
               {/* Interactive Map */}
               <div className="mt-6">
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200" style={{
-                  '@media (max-width: 768px)': {
-                    padding: '1rem',
-                    borderRadius: '1rem',
-                    marginTop: '1rem'
-                  }
-                }}>
+                                <div className="rounded-2xl p-6 border"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05), rgba(74, 138, 143, 0.05))',
+                    borderColor: 'rgba(47, 110, 115, 0.2)',
+                    '@media (max-width: 768px)': {
+                      padding: '1rem',
+                      borderRadius: '1rem',
+                      marginTop: '1rem'
+                    }
+                  }}>
                   <h3 className="text-lg font-bold text-gray-800 mb-4 text-center" style={{
                     '@media (max-width: 768px)': {
                       fontSize: '1rem',
@@ -751,7 +803,19 @@ const SubscriptionForm = () => {
                   onChange={(e) => handleInputChange('specialInstructions', e.target.value)} 
                   placeholder={t('specialInstructionsPlaceholder')} 
                   rows={4} 
-                  className="w-full p-4 bg-white border-2 border-gray-200 rounded-2xl text-lg focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300 outline-none resize-none"
+                  className="w-full p-4 bg-white border-2 border-gray-200 rounded-2xl text-lg transition-all duration-300 outline-none resize-none"
+                  style={{ 
+                    '--tw-ring-color': '#2f6e73',
+                    '--tw-ring-opacity': '0.1'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#2f6e73';
+                    e.target.style.boxShadow = '0 0 0 4px rgba(47, 110, 115, 0.1)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#e5e7eb';
+                    e.target.style.boxShadow = 'none';
+                  }}
                 />
               </div>
             </div>
@@ -762,13 +826,21 @@ const SubscriptionForm = () => {
             <div className="bg-white/85 backdrop-blur-lg rounded-3xl p-8 shadow-xl border border-white/20">
             <div className="text-center mb-8">
               <div className="text-5xl mb-4">📋</div>
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              <h2 className="text-2xl font-bold bg-clip-text text-transparent"
+                style={{
+                  background: 'linear-gradient(135deg, #2f6e73, #b65449)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>
                 {t('subscriptionSummary')}
               </h2>
             </div>
 
             {/* Restaurant Info */}
-            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white mb-6 relative overflow-hidden">
+            <div className="rounded-2xl p-6 text-white mb-6 relative overflow-hidden"
+              style={{
+                background: 'linear-gradient(135deg, #2f6e73, #b65449)'
+              }}>
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
               
@@ -785,16 +857,26 @@ const SubscriptionForm = () => {
 
             {/* Subscription Details */}
             <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-gradient-to-br from-emerald-50 to-green-100 border border-emerald-200 rounded-2xl p-4 text-center">
-                <div className="text-xs text-emerald-600 font-semibold uppercase tracking-wide mb-2">
+              <div className="rounded-2xl p-4 text-center"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05), rgba(74, 138, 143, 0.05))',
+                  border: '1px solid rgba(47, 110, 115, 0.2)'
+                }}>
+                <div className="text-xs font-semibold uppercase tracking-wide mb-2"
+                  style={{ color: '#2f6e73' }}>
                   {t('subscriptionTypeLabel')}
                 </div>
                 <div className="text-lg font-bold text-gray-800">
                   {formData.subscriptionType === 'weekly' ? t('weekly') : t('monthly')}
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 rounded-2xl p-4 text-center">
-                <div className="text-xs text-blue-600 font-semibold uppercase tracking-wide mb-2">
+              <div className="rounded-2xl p-4 text-center"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(182, 84, 73, 0.05), rgba(200, 106, 90, 0.05))',
+                  border: '1px solid rgba(182, 84, 73, 0.2)'
+                }}>
+                <div className="text-xs font-semibold uppercase tracking-wide mb-2"
+                  style={{ color: '#b65449' }}>
                   {t('mealsCount')}
                 </div>
                 <div className="text-lg font-bold text-gray-800">
@@ -822,7 +904,8 @@ const SubscriptionForm = () => {
                     <div key={meal.mealId || meal.id} className="bg-gradient-to-r from-white to-gray-50 border border-gray-200 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-all duration-300">
                       <div className="text-2xl">{meal.dayIcon}</div>
                       <div className="flex-1">
-                        <div className="text-sm font-bold text-indigo-600 mb-1">
+                        <div className="text-sm font-bold mb-1"
+                          style={{ color: '#2f6e73' }}>
                           {meal.dayLabel}
                         </div>
                         <div className="text-xs text-gray-500 mb-1">
@@ -846,9 +929,16 @@ const SubscriptionForm = () => {
               
               <div className="space-y-3">
                 {/* Subscription Price */}
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-200">
+                <div className="flex items-center justify-between p-3 rounded-2xl border"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05), rgba(74, 138, 143, 0.05))',
+                    borderColor: 'rgba(47, 110, 115, 0.2)'
+                  }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-lg">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg"
+                      style={{
+                        background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)'
+                      }}>
                       📦
                     </div>
                     <div>
@@ -857,24 +947,30 @@ const SubscriptionForm = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-bold text-blue-600">
+                    <div className="text-lg font-bold"
+                      style={{ color: '#2f6e73' }}>
                       {calculateSubscriptionPrice()} {t('omaniRiyal')}
                     </div>
                   </div>
                 </div>
 
                 {/* Delivery Price */}
-                <div className={`flex items-center justify-between p-3 rounded-2xl border ${
-                  isDeliveryFree() 
-                    ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200' 
-                    : 'bg-gradient-to-r from-orange-50 to-red-50 border-orange-200'
-                }`}>
+                <div className="flex items-center justify-between p-3 rounded-2xl border"
+                  style={{
+                    background: isDeliveryFree() 
+                      ? 'linear-gradient(135deg, rgba(47, 110, 115, 0.05), rgba(74, 138, 143, 0.05))' 
+                      : 'linear-gradient(135deg, rgba(182, 84, 73, 0.05), rgba(200, 106, 90, 0.05))',
+                    borderColor: isDeliveryFree() 
+                      ? 'rgba(47, 110, 115, 0.2)' 
+                      : 'rgba(182, 84, 73, 0.2)'
+                  }}>
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-lg ${
-                      isDeliveryFree() 
-                        ? 'bg-gradient-to-r from-green-500 to-emerald-600' 
-                        : 'bg-gradient-to-r from-orange-500 to-red-600'
-                    }`}>
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg"
+                      style={{
+                        background: isDeliveryFree() 
+                          ? 'linear-gradient(135deg, #2f6e73, #4a8a8f)' 
+                          : 'linear-gradient(135deg, #b65449, #c86a5a)'
+                      }}>
                       🚚
                     </div>
                     <div>
@@ -885,9 +981,10 @@ const SubscriptionForm = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className={`text-lg font-bold ${
-                      isDeliveryFree() ? 'text-green-600' : 'text-orange-600'
-                    }`}>
+                    <div className="text-lg font-bold"
+                      style={{ 
+                        color: isDeliveryFree() ? '#2f6e73' : '#b65449'
+                      }}>
                       {isDeliveryFree() ? t('free') : `${calculateDeliveryPrice()} ${t('omaniRiyal')}`}
                     </div>
                   </div>
@@ -897,9 +994,16 @@ const SubscriptionForm = () => {
                 <div className="border-t-2 border-gray-200 my-4"></div>
 
                 {/* Total Amount */}
-                <div className="flex items-center justify-between p-3 rounded-2xl border bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-200">
+                <div className="flex items-center justify-between p-3 rounded-2xl border"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05), rgba(182, 84, 73, 0.05))',
+                    borderColor: 'rgba(47, 110, 115, 0.2)'
+                  }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg bg-gradient-to-r from-indigo-500 to-purple-600">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg"
+                      style={{
+                        background: 'linear-gradient(135deg, #2f6e73, #b65449)'
+                      }}>
                       💰
                     </div>
                     <div>
@@ -908,7 +1012,8 @@ const SubscriptionForm = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-bold text-indigo-600">
+                    <div className="text-lg font-bold"
+                      style={{ color: '#2f6e73' }}>
                       {calculateTotalPrice()} {t('omaniRiyal')}
                     </div>
                   </div>
@@ -924,8 +1029,9 @@ const SubscriptionForm = () => {
             >
               {submitting ? (
                 <div className="flex items-center justify-center gap-3">
-                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-indigo-500 border-t-transparent"></div>
-                  <span className="text-indigo-600">{t('creatingSubscription')}</span>
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-t-transparent"
+                    style={{ borderColor: '#2f6e73' }}></div>
+                  <span style={{ color: '#2f6e73' }}>{t('creatingSubscription')}</span>
                 </div>
               ) : (
                 <div className="flex items-center justify-center gap-3">

@@ -109,7 +109,7 @@ const SubscriptionDetail = () => {
             case 'completed':
                 return 'from-teal-500 to-teal-600';
             case 'cancelled':
-                return 'from-red-500 to-pink-500';
+                return 'from-red-500 to-red-600';
             default:
                 return 'from-gray-500 to-gray-600';
         }
@@ -146,7 +146,7 @@ const SubscriptionDetail = () => {
             case 'pending':
                 return 'from-yellow-500 to-orange-500';
             case 'failed':
-                return 'from-red-500 to-pink-500';
+                return 'from-red-500 to-red-600';
             default:
                 return 'from-gray-500 to-gray-600';
         }
@@ -260,7 +260,7 @@ const SubscriptionDetail = () => {
                         style={{
                             padding: 'clamp(0.5rem, 3vw, 0.75rem) clamp(1rem, 4vw, 1.5rem)',
                             borderRadius: '0.75rem',
-                            background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                             color: 'white',
                             border: 'none',
                             fontSize: 'clamp(0.875rem, 4vw, 1rem)',
@@ -297,7 +297,7 @@ const SubscriptionDetail = () => {
                         left: '10%',
                         width: '100px',
                         height: '100px',
-                        background: 'radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, transparent 70%)',
+                        background: 'radial-gradient(circle, rgba(47, 110, 115, 0.1) 0%, transparent 70%)',
                         borderRadius: '50%'
                     }}></div>
                     <div style={{
@@ -306,7 +306,7 @@ const SubscriptionDetail = () => {
                         right: '15%',
                         width: '80px',
                         height: '80px',
-                        background: 'radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%)',
+                        background: 'radial-gradient(circle, rgba(182, 84, 73, 0.08) 0%, transparent 70%)',
                         borderRadius: '50%'
                     }}></div>
                     <div style={{
@@ -315,7 +315,7 @@ const SubscriptionDetail = () => {
                         left: '20%',
                         width: '120px',
                         height: '120px',
-                        background: 'radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 70%)',
+                        background: 'radial-gradient(circle, rgba(74, 138, 143, 0.06) 0%, transparent 70%)',
                         borderRadius: '50%'
                     }}></div>
                 </div>
@@ -327,7 +327,7 @@ const SubscriptionDetail = () => {
                             fontWeight: 'bold', 
                             lineHeight: '1.2', 
                             marginBottom: 'clamp(1rem, 4vw, 1.5rem)',
-                            background: 'linear-gradient(135deg, rgb(79 70 229), rgb(99 102 241))',
+                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             backgroundClip: 'text'
@@ -384,7 +384,7 @@ const SubscriptionDetail = () => {
                         left: '0',
                         width: '100%',
                         height: '100%',
-                        background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%)',
+                        background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(182, 84, 73, 0.05) 100%)',
                         opacity: 0.5,
                         zIndex: 0
                     }}></div>
@@ -396,7 +396,7 @@ const SubscriptionDetail = () => {
                         gap: '1.5rem',
                         marginBottom: '2rem',
                         paddingBottom: '1.5rem',
-                        borderBottom: '2px solid rgba(102, 126, 234, 0.2)',
+                        borderBottom: '2px solid rgba(47, 110, 115, 0.2)',
                         position: 'relative',
                         zIndex: 1,
                         '@media (min-width: 768px)': {
@@ -413,7 +413,7 @@ const SubscriptionDetail = () => {
                                 fontSize: '1.75rem', 
                                 fontWeight: '800', 
                                 marginBottom: '0.75rem',
-                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
                                 WebkitBackgroundClip: 'text',
                                 WebkitTextFillColor: 'transparent',
                                 backgroundClip: 'text',
@@ -444,10 +444,10 @@ const SubscriptionDetail = () => {
                         
                         {/* Restaurant & Dates Section */}
                         <div style={{
-                            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+                            background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.1) 0%, rgba(182, 84, 73, 0.1) 100%)',
                             borderRadius: '1rem',
                             padding: '1rem',
-                            border: '1px solid rgba(102, 126, 234, 0.2)',
+                            border: '1px solid rgba(47, 110, 115, 0.2)',
                             position: 'relative',
                             overflow: 'hidden',
                             '@media (max-width: 768px)': {
@@ -461,13 +461,13 @@ const SubscriptionDetail = () => {
                                 left: '0',
                                 width: '100%',
                                 height: '3px',
-                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                                background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)'
                             }}></div>
                             <h3 style={{
                                 fontSize: '1rem',
                                 fontWeight: '700',
                                 marginBottom: '0.75rem',
-                                color: '#667eea',
+                                color: '#2f6e73',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '0.5rem',
@@ -484,7 +484,7 @@ const SubscriptionDetail = () => {
                                     background: 'rgba(255, 255, 255, 0.7)',
                                     borderRadius: '0.5rem',
                                     padding: '0.75rem',
-                                    border: '1px solid rgba(102, 126, 234, 0.1)'
+                                    border: '1px solid rgba(47, 110, 115, 0.1)'
                                 }}>
                                     <div style={{ fontSize: '0.625rem', color: '#6b7280', marginBottom: '0.25rem', fontWeight: '600' }}>
                                         {language === 'ar' ? 'تاريخ البداية' : 'Start Date'}
@@ -497,7 +497,7 @@ const SubscriptionDetail = () => {
                                     background: 'rgba(255, 255, 255, 0.7)',
                                     borderRadius: '0.5rem',
                                     padding: '0.75rem',
-                                    border: '1px solid rgba(102, 126, 234, 0.1)'
+                                    border: '1px solid rgba(47, 110, 115, 0.1)'
                                 }}>
                                     <div style={{ fontSize: '0.625rem', color: '#6b7280', marginBottom: '0.25rem', fontWeight: '600' }}>
                                         {language === 'ar' ? 'تاريخ الانتهاء' : 'End Date'}
@@ -511,10 +511,10 @@ const SubscriptionDetail = () => {
 
                         {/* Payment Information Section */}
                         <div style={{
-                            background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.1) 0%, rgba(34, 197, 94, 0.1) 100%)',
+                            background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.1) 0%, rgba(182, 84, 73, 0.1) 100%)',
                             borderRadius: '1rem',
                             padding: '1rem',
-                            border: '1px solid rgba(74, 222, 128, 0.2)',
+                            border: '1px solid rgba(47, 110, 115, 0.2)',
                             position: 'relative',
                             overflow: 'hidden',
                             '@media (max-width: 768px)': {
@@ -528,13 +528,13 @@ const SubscriptionDetail = () => {
                                 left: '0',
                                 width: '100%',
                                 height: '3px',
-                                background: 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)'
+                                background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)'
                             }}></div>
                             <h3 style={{ 
                                 fontSize: '1rem', 
                                 fontWeight: '700', 
                                 marginBottom: '0.75rem',
-                                color: '#22c55e',
+                                color: '#2f6e73',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '0.5rem',
@@ -554,7 +554,7 @@ const SubscriptionDetail = () => {
                                     display: 'flex',
                                     justifyContent: 'space-between',
                                     alignItems: 'center',
-                                    border: '1px solid rgba(74, 222, 128, 0.1)'
+                                    border: '1px solid rgba(47, 110, 115, 0.1)'
                                 }}>
                                     <span style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: '600' }}>
                                         {language === 'ar' ? 'سعر الاشتراك' : 'Subscription Price'}
@@ -570,7 +570,7 @@ const SubscriptionDetail = () => {
                                     display: 'flex',
                                     justifyContent: 'space-between',
                                     alignItems: 'center',
-                                    border: '1px solid rgba(74, 222, 128, 0.1)'
+                                    border: '1px solid rgba(47, 110, 115, 0.1)'
                                 }}>
                                     <span style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: '600' }}>
                                         {language === 'ar' ? 'سعر التوصيل' : 'Delivery Price'}
@@ -583,13 +583,13 @@ const SubscriptionDetail = () => {
                                     </span>
                                 </div>
                                 <div style={{
-                                    background: 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)',
+                                    background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
                                     borderRadius: '0.5rem',
                                     padding: '0.75rem',
                                     display: 'flex', 
                                     justifyContent: 'space-between', 
                                     alignItems: 'center',
-                                    boxShadow: '0 4px 15px rgba(74, 222, 128, 0.3)'
+                                    boxShadow: '0 4px 15px rgba(47, 110, 115, 0.3)'
                                 }}>
                                     <span style={{ fontSize: '0.875rem', fontWeight: '700', color: 'white' }}>
                                         {language === 'ar' ? 'المجموع' : 'Total'}
@@ -607,10 +607,10 @@ const SubscriptionDetail = () => {
 
                         {/* Delivery Address Section */}
                         <div style={{
-                            background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(219, 39, 119, 0.1) 100%)',
+                            background: 'linear-gradient(135deg, rgba(182, 84, 73, 0.1) 0%, rgba(200, 106, 90, 0.1) 100%)',
                             borderRadius: '1rem',
                             padding: '1rem',
-                            border: '1px solid rgba(236, 72, 153, 0.2)',
+                            border: '1px solid rgba(182, 84, 73, 0.2)',
                             position: 'relative',
                             overflow: 'hidden',
                             '@media (max-width: 768px)': {
@@ -624,13 +624,13 @@ const SubscriptionDetail = () => {
                                 left: '0',
                                 width: '100%',
                                 height: '3px',
-                                background: 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)'
+                                background: 'linear-gradient(135deg, #b65449 0%, #c86a5a 100%)'
                             }}></div>
                             <h3 style={{ 
                                 fontSize: '1rem', 
                                 fontWeight: '700', 
                                 marginBottom: '0.75rem',
-                                color: '#db2777',
+                                color: '#b65449',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '0.5rem',
@@ -672,11 +672,11 @@ const SubscriptionDetail = () => {
                     {/* Special Instructions (if exists) */}
                     {subscription.special_instructions && (
                         <div style={{
-                            background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%)',
+                            background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.1) 0%, rgba(182, 84, 73, 0.1) 100%)',
                             borderRadius: '1.5rem',
                             padding: '1.5rem',
                             marginBottom: '2rem',
-                            border: '1px solid rgba(245, 158, 11, 0.2)',
+                            border: '1px solid rgba(47, 110, 115, 0.2)',
                             position: 'relative',
                             overflow: 'hidden',
                             '@media (max-width: 768px)': {
@@ -691,13 +691,13 @@ const SubscriptionDetail = () => {
                                 left: '0',
                                 width: '100%',
                                 height: '4px',
-                                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
+                                background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)'
                             }}></div>
                             <h3 style={{ 
                                 fontSize: '1.25rem', 
                                 fontWeight: '700', 
                                 marginBottom: '1rem',
-                                color: '#d97706',
+                                color: '#2f6e73',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '0.75rem',
@@ -712,7 +712,7 @@ const SubscriptionDetail = () => {
                                 background: 'rgba(255, 255, 255, 0.7)',
                                 borderRadius: '0.75rem',
                                 padding: '1rem',
-                                border: '1px solid rgba(245, 158, 11, 0.1)'
+                                border: '1px solid rgba(47, 110, 115, 0.1)'
                             }}>
                                 <p style={{ 
                                     fontSize: '0.875rem', 
@@ -790,13 +790,13 @@ const SubscriptionDetail = () => {
                             <div style={{
                                 width: '3rem',
                                 height: '3rem',
-                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
                                 borderRadius: '1rem',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 fontSize: '1.5rem',
-                                boxShadow: '0 8px 20px rgba(102, 126, 234, 0.3)',
+                                boxShadow: '0 8px 20px rgba(47, 110, 115, 0.3)',
                                 '@media (max-width: 768px)': {
                                     width: '2.5rem',
                                     height: '2.5rem',
@@ -809,7 +809,7 @@ const SubscriptionDetail = () => {
                                 <h3 style={{
                                     fontSize: '1.5rem',
                                     fontWeight: '800',
-                                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                    background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
                                     WebkitBackgroundClip: 'text',
                                     WebkitTextFillColor: 'transparent',
                                     backgroundClip: 'text',
@@ -850,11 +850,11 @@ const SubscriptionDetail = () => {
                     }}>
                         {filteredMeals.length === 0 ? (
                             <div style={{
-                                background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%)',
+                                background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.08) 0%, rgba(182, 84, 73, 0.08) 100%)',
                                 borderRadius: '1.25rem',
                                 padding: '2.5rem 1.5rem',
                                 textAlign: 'center',
-                                border: '2px solid rgba(102, 126, 234, 0.15)',
+                                border: '2px solid rgba(47, 110, 115, 0.15)',
                                 '@media (max-width: 768px)': {
                                     borderRadius: '1rem',
                                     padding: '2rem 1rem'
@@ -891,14 +891,14 @@ const SubscriptionDetail = () => {
                                     style={{
                                         padding: '0.875rem 1.5rem',
                                         borderRadius: '0.875rem',
-                                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                        background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
                                         color: 'white',
                                         border: 'none',
                                         fontSize: '0.9rem',
                                         fontWeight: '600',
                                         cursor: 'pointer',
                                         transition: 'all 0.3s ease',
-                                        boxShadow: '0 8px 25px rgba(102, 126, 234, 0.4)',
+                                        boxShadow: '0 8px 25px rgba(47, 110, 115, 0.4)',
                                         minHeight: '44px',
                                         '@media (max-width: 768px)': {
                                             padding: '0.75rem 1.25rem',
@@ -1004,7 +1004,7 @@ const SubscriptionDetail = () => {
                                                         left: 0,
                                                         right: 0,
                                                         bottom: 0,
-                                                        background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                                                        background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
                                                         display: 'none',
                                                         alignItems: 'center',
                                                         justifyContent: 'center',
@@ -1018,7 +1018,7 @@ const SubscriptionDetail = () => {
                                                 <div style={{
                                                     width: '100%',
                                                     height: '100%',
-                                                    background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                                                    background: 'linear-gradient(135deg, #2f6e73 0%, #b65449 100%)',
                                                     display: 'flex',
                                                     alignItems: 'center',
                                                     justifyContent: 'center',
@@ -1072,7 +1072,7 @@ const SubscriptionDetail = () => {
                                                         gap: '0.25rem',
                                                         fontWeight: '600',
                                                         padding: '0.25rem 0.5rem',
-                                                        background: 'rgba(102, 126, 234, 0.1)',
+                                                        background: 'rgba(47, 110, 115, 0.1)',
                                                         borderRadius: '0.5rem'
                                                     }}>
                                                         🕐 {formatTime(item.meal?.delivery_time)}
@@ -1082,7 +1082,7 @@ const SubscriptionDetail = () => {
                                                         opacity: '0.8',
                                                         fontWeight: '500',
                                                         padding: '0.25rem 0.5rem',
-                                                        background: 'rgba(118, 75, 162, 0.1)',
+                                                        background: 'rgba(182, 84, 73, 0.1)',
                                                         borderRadius: '0.5rem'
                                                     }}>
                                                         {item.day_of_week_text}
