@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار طلبات اليوم</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s;
+            margin: 10px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+        .orders-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+        }
+        .order-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 10px 0;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-preparing { background: #dbeafe; color: #1e40af; }
+        .status-delivered { background: #d1fae5; color: #065f46; }
+        .status-cancelled { background: #fee2e2; color: #991b1b; }
+        .debug-info {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            overflow-x: auto;
+        }
+        .restaurant-selector {
+            margin-bottom: 20px;
+        }
+        .restaurant-selector select {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #d1d5db;
+            font-size: 1rem;
+            min-width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 اختبار طلبات اليوم</h1>
+        
+        <div class="restaurant-selector">
+            <label>اختر المطعم:</label>
+            <select id="restaurantSelect">
+                <option value="">جاري التحميل...</option>
+            </select>
+        </div>
+        
+        <button class="btn" onclick="fetchTodayOrders()">🔄 جلب طلبات اليوم</button>
+        <button class="btn" onclick="clearResults()">🗑️ مسح النتائج</button>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let restaurants = [];
+        let selectedRestaurantId = null;
+
+        // جلب المطاعم
+        async function fetchRestaurants() {
+            try {
+                const token = localStorage.getItem('auth_token');
+                if (!token) {
+                    showError('يجب تسجيل الدخول أولاً');
+                    return;
+                }
+
+                const response = await fetch('/api/seller/restaurants', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    restaurants = data.data || [];
+                    
+                    const select = document.getElementById('restaurantSelect');
+                    select.innerHTML = '<option value="">اختر المطعم</option>';
+                    
+                    restaurants.forEach(restaurant => {
+                        const option = document.createElement('option');
+                        option.value = restaurant.id;
+                        option.textContent = restaurant.name_ar;
+                        select.appendChild(option);
+                    });
+                    
+                    console.log('🏪 المطاعم المتاحة:', restaurants);
+                } else {
+                    showError('فشل في جلب المطاعم');
+                }
+            } catch (error) {
+                console.error('خطأ في جلب المطاعم:', error);
+                showError('خطأ في جلب المطاعم');
+            }
+        }
+
+        // جلب طلبات اليوم
+        async function fetchTodayOrders() {
+            const select = document.getElementById('restaurantSelect');
+            const restaurantId = select.value;
+            
+            if (!restaurantId) {
+                showError('يرجى اختيار مطعم أولاً');
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('auth_token');
+                if (!token) {
+                    showError('يجب تسجيل الدخول أولاً');
+                    return;
+                }
+
+                console.log('🔄 جلب طلبات اليوم للمطعم:', restaurantId);
+
+                const response = await fetch(`/api/seller/restaurants/${restaurantId}/today-orders`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                console.log('📊 استجابة طلبات اليوم:', data);
+
+                if (data.success) {
+                    displayResults(data.data);
+                } else {
+                    showError(data.message || 'فشل في جلب طلبات اليوم');
+                }
+            } catch (error) {
+                console.error('خطأ في جلب طلبات اليوم:', error);
+                showError('خطأ في جلب طلبات اليوم');
+            }
+        }
+
+        // عرض النتائج
+        function displayResults(data) {
+            const resultsDiv = document.getElementById('results');
+            
+            let html = `
+                <h2>📊 نتائج طلبات اليوم</h2>
+                <p><strong>التاريخ:</strong> ${data.date_formatted}</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">${data.stats.total}</div>
+                        <div class="stat-label">إجمالي الطلبات</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${data.stats.pending}</div>
+                        <div class="stat-label">في الانتظار</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${data.stats.preparing}</div>
+                        <div class="stat-label">قيد التحضير</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${data.stats.delivered}</div>
+                        <div class="stat-label">تم التوصيل</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${data.stats.cancelled}</div>
+                        <div class="stat-label">ملغي</div>
+                    </div>
+                </div>
+            `;
+
+            // عرض الطلبات حسب الحالة
+            Object.entries(data.grouped_orders).forEach(([status, orders]) => {
+                if (orders.length > 0) {
+                    html += `
+                        <div class="orders-section">
+                            <h3>${getStatusText(status)} (${orders.length})</h3>
+                            ${orders.map(order => `
+                                <div class="order-card">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <strong>طلب #${order.id}</strong>
+                                        <span class="status-badge status-${status}">${getStatusText(status)}</span>
+                                    </div>
+                                    <div><strong>العميل:</strong> ${order.subscription?.user?.name || 'غير متوفر'}</div>
+                                    <div><strong>الوجبة:</strong> ${order.meal?.name_ar || 'غير متوفر'}</div>
+                                    <div><strong>العنوان:</strong> ${order.subscription?.delivery_address?.address || 'غير متوفر'}</div>
+                                    <div><strong>تاريخ التوصيل:</strong> ${order.delivery_date}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+            });
+
+            if (data.orders.length === 0) {
+                html += `
+                    <div class="orders-section">
+                        <h3>📋 لا توجد طلبات اليوم</h3>
+                        <p>لا توجد طلبات للتوصيل في التاريخ المحدد.</p>
+                    </div>
+                `;
+            }
+
+            // معلومات التصحيح
+            html += `
+                <div class="debug-info">
+                    <strong>معلومات التصحيح:</strong><br>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+
+            resultsDiv.innerHTML = html;
+        }
+
+        // عرض خطأ
+        function showError(message) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <div style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 0.5rem; margin: 20px 0;">
+                    <strong>❌ خطأ:</strong> ${message}
+                </div>
+            `;
+        }
+
+        // مسح النتائج
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        // الحصول على نص الحالة
+        function getStatusText(status) {
+            const statuses = {
+                'pending': 'في الانتظار',
+                'preparing': 'قيد التحضير',
+                'delivered': 'تم التوصيل',
+                'cancelled': 'ملغي'
+            };
+            return statuses[status] || status;
+        }
+
+        // تحميل البيانات تلقائياً عند فتح الصفحة
+        window.onload = function() {
+            console.log('🚀 تم تحميل صفحة اختبار طلبات اليوم');
+            fetchRestaurants();
+        };
+    </script>
+</body>
+</html>

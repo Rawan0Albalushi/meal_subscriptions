@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار طلبات اليوم - بسيط</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s;
+            margin: 10px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .info-box {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #e2e8f0;
+        }
+        .error-box {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #fecaca;
+        }
+        .success-box {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #a7f3d0;
+        }
+        .debug-info {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 اختبار طلبات اليوم - بسيط</h1>
+        
+        <div class="info-box">
+            <h3>ℹ️ معلومات مهمة:</h3>
+            <ul>
+                <li>تأكد من تسجيل الدخول كبائع</li>
+                <li>تأكد من وجود مطاعم في النظام</li>
+                <li>تأكد من وجود وجبات في المطاعم</li>
+                <li>تأكد من وجود اشتراكات لليوم الحالي</li>
+            </ul>
+        </div>
+        
+        <button class="btn" onclick="checkAuth()">🔐 فحص تسجيل الدخول</button>
+        <button class="btn" onclick="checkRestaurants()">🏪 فحص المطاعم</button>
+        <button class="btn" onclick="checkTodayOrders()">📋 فحص طلبات اليوم</button>
+        <button class="btn" onclick="clearResults()">🗑️ مسح النتائج</button>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function showResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const className = type === 'error' ? 'error-box' : type === 'success' ? 'success-box' : 'info-box';
+            
+            resultsDiv.innerHTML = `
+                <div class="${className}">
+                    ${message}
+                </div>
+            `;
+        }
+
+        function showDebugInfo(data) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML += `
+                <div class="debug-info">
+                    <strong>معلومات التصحيح:</strong><br>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        async function checkAuth() {
+            try {
+                const token = localStorage.getItem('auth_token');
+                if (!token) {
+                    showResult('❌ لم يتم العثور على token تسجيل الدخول', 'error');
+                    return;
+                }
+
+                const response = await fetch('/api/auth/user', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult(`
+                        ✅ تم تسجيل الدخول بنجاح<br>
+                        <strong>المستخدم:</strong> ${data.name}<br>
+                        <strong>البريد الإلكتروني:</strong> ${data.email}<br>
+                        <strong>الدور:</strong> ${data.role}
+                    `, 'success');
+                    showDebugInfo(data);
+                } else {
+                    showResult('❌ فشل في التحقق من تسجيل الدخول', 'error');
+                }
+            } catch (error) {
+                console.error('خطأ في فحص تسجيل الدخول:', error);
+                showResult('❌ خطأ في فحص تسجيل الدخول', 'error');
+            }
+        }
+
+        async function checkRestaurants() {
+            try {
+                const token = localStorage.getItem('auth_token');
+                if (!token) {
+                    showResult('❌ يرجى تسجيل الدخول أولاً', 'error');
+                    return;
+                }
+
+                const response = await fetch('/api/seller/restaurants', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.data && data.data.length > 0) {
+                        showResult(`
+                            ✅ تم العثور على ${data.data.length} مطعم<br>
+                            ${data.data.map(restaurant => 
+                                `<strong>${restaurant.name_ar}</strong> (ID: ${restaurant.id})`
+                            ).join('<br>')}
+                        `, 'success');
+                        showDebugInfo(data);
+                    } else {
+                        showResult('⚠️ لا توجد مطاعم في النظام', 'error');
+                    }
+                } else {
+                    showResult('❌ فشل في جلب المطاعم', 'error');
+                }
+            } catch (error) {
+                console.error('خطأ في فحص المطاعم:', error);
+                showResult('❌ خطأ في فحص المطاعم', 'error');
+            }
+        }
+
+        async function checkTodayOrders() {
+            try {
+                const token = localStorage.getItem('auth_token');
+                if (!token) {
+                    showResult('❌ يرجى تسجيل الدخول أولاً', 'error');
+                    return;
+                }
+
+                // أولاً، جلب المطاعم
+                const restaurantsResponse = await fetch('/api/seller/restaurants', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!restaurantsResponse.ok) {
+                    showResult('❌ فشل في جلب المطاعم', 'error');
+                    return;
+                }
+
+                const restaurantsData = await restaurantsResponse.json();
+                if (!restaurantsData.data || restaurantsData.data.length === 0) {
+                    showResult('❌ لا توجد مطاعم في النظام', 'error');
+                    return;
+                }
+
+                // جلب طلبات اليوم لأول مطعم
+                const firstRestaurant = restaurantsData.data[0];
+                const ordersResponse = await fetch(`/api/seller/restaurants/${firstRestaurant.id}/today-orders`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (ordersResponse.ok) {
+                    const ordersData = await ordersResponse.json();
+                    
+                    if (ordersData.success) {
+                        const { orders, stats, date_formatted } = ordersData.data;
+                        
+                        if (orders.length > 0) {
+                            showResult(`
+                                ✅ تم العثور على ${orders.length} طلب لليوم الحالي<br>
+                                <strong>التاريخ:</strong> ${date_formatted}<br>
+                                <strong>المطعم:</strong> ${firstRestaurant.name_ar}<br>
+                                <strong>الإحصائيات:</strong><br>
+                                - إجمالي: ${stats.total}<br>
+                                - في الانتظار: ${stats.pending}<br>
+                                - قيد التحضير: ${stats.preparing}<br>
+                                - تم التوصيل: ${stats.delivered}<br>
+                                - ملغي: ${stats.cancelled}
+                            `, 'success');
+                        } else {
+                            showResult(`
+                                ℹ️ لا توجد طلبات لليوم الحالي<br>
+                                <strong>التاريخ:</strong> ${date_formatted}<br>
+                                <strong>المطعم:</strong> ${firstRestaurant.name_ar}<br>
+                                <br>
+                                <strong>الأسباب المحتملة:</strong><br>
+                                - لا توجد اشتراكات نشطة<br>
+                                - لا توجد طلبات لليوم الحالي<br>
+                                - المشكلة في قاعدة البيانات
+                            `, 'info');
+                        }
+                        
+                        showDebugInfo(ordersData);
+                    } else {
+                        showResult(`❌ فشل في جلب طلبات اليوم: ${ordersData.message}`, 'error');
+                    }
+                } else {
+                    const errorData = await ordersResponse.json();
+                    showResult(`❌ خطأ في جلب طلبات اليوم: ${errorData.message || 'خطأ غير معروف'}`, 'error');
+                }
+            } catch (error) {
+                console.error('خطأ في فحص طلبات اليوم:', error);
+                showResult('❌ خطأ في فحص طلبات اليوم', 'error');
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        // تحميل البيانات تلقائياً عند فتح الصفحة
+        window.onload = function() {
+            console.log('🚀 تم تحميل صفحة اختبار طلبات اليوم البسيط');
+            showResult(`
+                🎯 مرحباً! يمكنك استخدام هذه الصفحة لفحص طلبات اليوم<br>
+                <br>
+                <strong>الخطوات:</strong><br>
+                1. فحص تسجيل الدخول<br>
+                2. فحص المطاعم<br>
+                3. فحص طلبات اليوم
+            `, 'info');
+        };
+    </script>
+</body>
+</html>

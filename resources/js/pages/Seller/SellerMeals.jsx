@@ -21,6 +21,12 @@ const SellerMeals = () => {
     });
     const [selectedImage, setSelectedImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
+    const [popupType, setPopupType] = useState('success'); // success, error, warning, info
+    const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+    const [confirmAction, setConfirmAction] = useState(null);
+    const [confirmMessage, setConfirmMessage] = useState('');
 
     useEffect(() => {
         fetchRestaurants();
@@ -66,11 +72,37 @@ const SellerMeals = () => {
             
             if (response.ok) {
                 const data = await response.json();
+                console.log('🍽️ البيانات المستلمة من الخادم:', data.data);
+                
+                // مراقبة وقت التوصيل لكل وجبة
+                data.data.forEach((meal, index) => {
+                    console.log(`🕐 وجبة ${index + 1} (${meal.name_ar}):`, {
+                        delivery_time: meal.delivery_time,
+                        delivery_time_formatted: meal.delivery_time_formatted,
+                        type: typeof meal.delivery_time,
+                        formatted_type: typeof meal.delivery_time_formatted
+                    });
+                });
+                
                 setMeals(data.data || []);
             }
         } catch (error) {
             console.error('Error fetching meals:', error);
         }
+    };
+
+    // دوال إدارة الـ popup messages
+    const showMessage = (message, type = 'success') => {
+        setPopupMessage(message);
+        setPopupType(type);
+        setShowPopup(true);
+        setTimeout(() => setShowPopup(false), 4000);
+    };
+
+    const showConfirmMessage = (message, action) => {
+        setConfirmMessage(message);
+        setConfirmAction(() => action);
+        setShowConfirmPopup(true);
     };
 
     const handleSubmit = async (e) => {
@@ -143,58 +175,89 @@ const SellerMeals = () => {
                 setEditingMeal(null);
                 resetForm();
                 fetchMeals(selectedRestaurant);
+                
+                const successMessage = editingMeal 
+                    ? (language === 'ar' ? 'تم تحديث الوجبة بنجاح' : 'Meal updated successfully')
+                    : (language === 'ar' ? 'تم إضافة الوجبة بنجاح' : 'Meal added successfully');
+                showMessage(successMessage, 'success');
             } else {
                 const errorData = await response.json();
                 console.error('❌ [Frontend] خطأ في حفظ الوجبة:', errorData);
-                alert(errorData.message || 'حدث خطأ في حفظ الوجبة');
+                showMessage(errorData.message || (language === 'ar' ? 'حدث خطأ في حفظ الوجبة' : 'Error saving meal'), 'error');
             }
         } catch (error) {
             console.error('💥 [Frontend] خطأ غير متوقع في حفظ الوجبة:', error);
-            alert('حدث خطأ في حفظ الوجبة');
+            showMessage(language === 'ar' ? 'حدث خطأ في حفظ الوجبة' : 'Error saving meal', 'error');
         }
     };
 
     const handleEdit = (meal) => {
+        console.log('🔍 تحميل بيانات الوجبة للتعديل:', meal);
+        console.log('🕐 تفاصيل وقت التوصيل:', {
+            original: meal.delivery_time,
+            formatted: meal.delivery_time_formatted,
+            type: typeof meal.delivery_time,
+            formatted_type: typeof meal.delivery_time_formatted
+        });
+        
         setEditingMeal(meal);
         setFormData({
-            name_ar: meal.name_ar,
-            name_en: meal.name_en,
+            name_ar: meal.name_ar || '',
+            name_en: meal.name_en || '',
             description_ar: meal.description_ar || '',
             description_en: meal.description_en || '',
-            price: meal.price.toString(),
-            meal_type: meal.meal_type,
-            delivery_time: meal.delivery_time ? meal.delivery_time.substring(0, 5) : '',
-            is_available: meal.is_available,
+            price: meal.price ? meal.price.toString() : '',
+            meal_type: meal.meal_type || 'lunch',
+            delivery_time: meal.delivery_time_formatted || '',
+            is_available: meal.is_available !== undefined ? meal.is_available : true,
         });
         setSelectedImage(null);
         setImagePreview(meal.image ? `/storage/${meal.image}` : null);
+        
+        console.log('✅ تم تحميل البيانات في النموذج:', {
+            name_ar: meal.name_ar,
+            name_en: meal.name_en,
+            description_ar: meal.description_ar,
+            description_en: meal.description_en,
+            price: meal.price,
+            meal_type: meal.meal_type,
+            delivery_time: meal.delivery_time,
+            processed_delivery_time: meal.delivery_time_formatted || '',
+            is_available: meal.is_available,
+            image: meal.image
+        });
+        
         setShowAddModal(true);
     };
 
     const handleDelete = async (id) => {
-        if (!confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذه الوجبة؟' : 'Are you sure you want to delete this meal?')) {
-            return;
-        }
+        const meal = meals.find(m => m.id === id);
+        const message = language === 'ar' 
+            ? `هل أنت متأكد من حذف الوجبة "${meal?.name_ar}"؟` 
+            : `Are you sure you want to delete the meal "${meal?.name_en}"?`;
+        
+        showConfirmMessage(message, async () => {
+            try {
+                const response = await fetch(`/api/seller/restaurants/${selectedRestaurant}/meals/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
 
-        try {
-            const response = await fetch(`/api/seller/restaurants/${selectedRestaurant}/meals/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
-                    'Content-Type': 'application/json'
+                if (response.ok) {
+                    showMessage(language === 'ar' ? 'تم حذف الوجبة بنجاح' : 'Meal deleted successfully', 'success');
+                    fetchMeals(selectedRestaurant);
+                } else {
+                    const errorData = await response.json();
+                    showMessage(errorData.message || (language === 'ar' ? 'حدث خطأ في حذف الوجبة' : 'Error deleting meal'), 'error');
                 }
-            });
-
-            if (response.ok) {
-                fetchMeals(selectedRestaurant);
-            } else {
-                const errorData = await response.json();
-                alert(errorData.message || 'حدث خطأ في حذف الوجبة');
+            } catch (error) {
+                console.error('Error deleting meal:', error);
+                showMessage(language === 'ar' ? 'حدث خطأ في حذف الوجبة' : 'Error deleting meal', 'error');
             }
-        } catch (error) {
-            console.error('Error deleting meal:', error);
-            alert('حدث خطأ في حذف الوجبة');
-        }
+        });
     };
 
     const resetForm = () => {
@@ -234,7 +297,7 @@ const SellerMeals = () => {
                     size: file.size,
                     maxSize: 2 * 1024 * 1024
                 });
-                alert('حجم الصورة يجب أن يكون أقل من 2MB');
+                showMessage(language === 'ar' ? 'حجم الصورة يجب أن يكون أقل من 2MB' : 'Image size must be less than 2MB', 'warning');
                 return;
             }
 
@@ -245,7 +308,7 @@ const SellerMeals = () => {
                     type: file.type,
                     allowedTypes: allowedTypes
                 });
-                alert('نوع الملف غير مدعوم. يرجى اختيار صورة بصيغة JPG, PNG, أو GIF');
+                showMessage(language === 'ar' ? 'نوع الملف غير مدعوم. يرجى اختيار صورة بصيغة JPG, PNG, أو GIF' : 'File type not supported. Please choose an image in JPG, PNG, or GIF format', 'warning');
                 return;
             }
 
@@ -591,7 +654,7 @@ const SellerMeals = () => {
                                         color: 'rgb(55 65 81)',
                                         marginTop: '0.25rem'
                                     }}>
-                                        {meal.delivery_time ? meal.delivery_time.substring(0, 5) : (language === 'ar' ? 'غير محدد' : 'Not specified')}
+                                        {meal.delivery_time_formatted || (language === 'ar' ? 'غير محدد' : 'Not specified')}
                                     </div>
                                 </div>
                             </div>
@@ -751,7 +814,11 @@ const SellerMeals = () => {
                                 }
                             </h2>
                             <button
-                                onClick={() => setShowAddModal(false)}
+                                onClick={() => {
+                                    setShowAddModal(false);
+                                    setEditingMeal(null);
+                                    resetForm();
+                                }}
                                 style={{
                                     background: 'none',
                                     border: 'none',
@@ -786,6 +853,7 @@ const SellerMeals = () => {
                                         value={formData.name_ar}
                                         onChange={(e) => setFormData({...formData, name_ar: e.target.value})}
                                         required
+                                        placeholder={language === 'ar' ? 'أدخل اسم الوجبة بالعربية' : 'Enter meal name in Arabic'}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -810,6 +878,7 @@ const SellerMeals = () => {
                                         value={formData.name_en}
                                         onChange={(e) => setFormData({...formData, name_en: e.target.value})}
                                         required
+                                        placeholder={language === 'ar' ? 'أدخل اسم الوجبة بالإنجليزية' : 'Enter meal name in English'}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -841,6 +910,7 @@ const SellerMeals = () => {
                                         value={formData.description_ar}
                                         onChange={(e) => setFormData({...formData, description_ar: e.target.value})}
                                         rows="3"
+                                        placeholder={language === 'ar' ? 'أدخل وصف الوجبة بالعربية' : 'Enter meal description in Arabic'}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -865,6 +935,7 @@ const SellerMeals = () => {
                                         value={formData.description_en}
                                         onChange={(e) => setFormData({...formData, description_en: e.target.value})}
                                         rows="3"
+                                        placeholder={language === 'ar' ? 'أدخل وصف الوجبة بالإنجليزية' : 'Enter meal description in English'}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -1126,7 +1197,11 @@ const SellerMeals = () => {
                             }}>
                                 <button
                                     type="button"
-                                    onClick={() => setShowAddModal(false)}
+                                    onClick={() => {
+                                        setShowAddModal(false);
+                                        setEditingMeal(null);
+                                        resetForm();
+                                    }}
                                     style={{
                                         padding: '0.75rem 1.5rem',
                                         background: 'rgba(107, 114, 128, 0.1)',
@@ -1163,6 +1238,169 @@ const SellerMeals = () => {
                     </div>
                 </div>
             )}
+
+            {/* Popup Messages */}
+            {showPopup && (
+                <div style={{
+                    position: 'fixed',
+                    top: '20px',
+                    right: '20px',
+                    zIndex: 9999,
+                    background: popupType === 'success' ? '#10b981' : 
+                               popupType === 'error' ? '#ef4444' : 
+                               popupType === 'warning' ? '#f59e0b' : '#3b82f6',
+                    color: 'white',
+                    padding: '1rem 1.5rem',
+                    borderRadius: '0.75rem',
+                    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+                    maxWidth: '400px',
+                    animation: 'slideInRight 0.3s ease-out',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem'
+                }}>
+                    <div style={{
+                        fontSize: '1.25rem'
+                    }}>
+                        {popupType === 'success' ? '✅' : 
+                         popupType === 'error' ? '❌' : 
+                         popupType === 'warning' ? '⚠️' : 'ℹ️'}
+                    </div>
+                    <div>
+                        <div style={{
+                            fontWeight: '600',
+                            marginBottom: '0.25rem'
+                        }}>
+                            {popupType === 'success' ? (language === 'ar' ? 'نجح' : 'Success') : 
+                             popupType === 'error' ? (language === 'ar' ? 'خطأ' : 'Error') : 
+                             popupType === 'warning' ? (language === 'ar' ? 'تحذير' : 'Warning') : 
+                             (language === 'ar' ? 'معلومات' : 'Info')}
+                        </div>
+                        <div style={{
+                            fontSize: '0.875rem',
+                            opacity: 0.9
+                        }}>
+                            {popupMessage}
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => setShowPopup(false)}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'white',
+                            fontSize: '1.25rem',
+                            cursor: 'pointer',
+                            padding: '0',
+                            marginLeft: 'auto'
+                        }}
+                    >
+                        ×
+                    </button>
+                </div>
+            )}
+
+            {/* Confirm Popup */}
+            {showConfirmPopup && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0, 0, 0, 0.5)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 9999
+                }}>
+                    <div style={{
+                        background: 'white',
+                        borderRadius: '1rem',
+                        padding: '2rem',
+                        maxWidth: '400px',
+                        width: '90%',
+                        textAlign: 'center',
+                        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)'
+                    }}>
+                        <div style={{
+                            fontSize: '3rem',
+                            marginBottom: '1rem'
+                        }}>
+                            ⚠️
+                        </div>
+                        <h3 style={{
+                            fontSize: '1.25rem',
+                            fontWeight: '600',
+                            color: '#1f2937',
+                            marginBottom: '1rem'
+                        }}>
+                            {language === 'ar' ? 'تأكيد الحذف' : 'Confirm Delete'}
+                        </h3>
+                        <p style={{
+                            color: '#6b7280',
+                            marginBottom: '2rem',
+                            lineHeight: '1.5'
+                        }}>
+                            {confirmMessage}
+                        </p>
+                        <div style={{
+                            display: 'flex',
+                            gap: '1rem',
+                            justifyContent: 'center'
+                        }}>
+                            <button
+                                onClick={() => setShowConfirmPopup(false)}
+                                style={{
+                                    padding: '0.75rem 1.5rem',
+                                    background: 'rgba(107, 114, 128, 0.1)',
+                                    color: 'rgb(107 114 128)',
+                                    border: 'none',
+                                    borderRadius: '0.75rem',
+                                    fontSize: '0.875rem',
+                                    fontWeight: '600',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                {language === 'ar' ? 'إلغاء' : 'Cancel'}
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setShowConfirmPopup(false);
+                                    if (confirmAction) {
+                                        confirmAction();
+                                    }
+                                }}
+                                style={{
+                                    padding: '0.75rem 1.5rem',
+                                    background: '#ef4444',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '0.75rem',
+                                    fontSize: '0.875rem',
+                                    fontWeight: '600',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                {language === 'ar' ? 'حذف' : 'Delete'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <style jsx>{`
+                @keyframes slideInRight {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+            `}</style>
         </div>
     );
 };

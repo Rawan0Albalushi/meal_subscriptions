@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار عرض وقت التوصيل في بطاقات الوجبات</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .meal-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .meal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        .meal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+        }
+        .meal-status {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .meal-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+        .meal-description {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        .meal-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            font-size: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .detail-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+        .detail-value {
+            color: #374151;
+            margin-top: 0.25rem;
+            font-weight: 600;
+        }
+        .meal-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .edit-btn {
+            background: rgba(79, 70, 229, 0.1);
+        }
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.1);
+        }
+        .debug-info {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍽️ اختبار عرض وقت التوصيل في بطاقات الوجبات</h1>
+        
+        <div id="mealsContainer"></div>
+    </div>
+
+    <script>
+        // بيانات تجريبية لوجبات مع أوقات مختلفة
+        const testMeals = [
+            {
+                id: 1,
+                name_ar: 'إفطار عماني',
+                name_en: 'Omani Breakfast',
+                description_ar: 'عسل، جبن، لبنه زيتون، خبز براتا، عصير',
+                description_en: 'Honey, cheese, labneh, olives, paratha bread, juice',
+                price: '0.00',
+                meal_type: 'breakfast',
+                is_available: true,
+                image: null,
+                delivery_time: '2024-01-01T08:30:00.000000Z',
+                delivery_time_formatted: '08:30'
+            },
+            {
+                id: 2,
+                name_ar: 'برجر الدجاج المشوي',
+                name_en: 'Grilled Chicken Burger',
+                description_ar: 'برجر دجاج مشوي طازج مع الخضروات والصلصة الخاصة',
+                description_en: 'Fresh grilled chicken burger with vegetables and special sauce',
+                price: '5.50',
+                meal_type: 'lunch',
+                is_available: true,
+                image: null,
+                delivery_time: '2024-01-01T14:30:00.000000Z',
+                delivery_time_formatted: '14:30'
+            },
+            {
+                id: 3,
+                name_ar: 'سلطة طازجة',
+                name_en: 'Fresh Salad',
+                description_ar: 'سلطة خضروات طازجة مع صلصة زيت الزيتون',
+                description_en: 'Fresh vegetable salad with olive oil dressing',
+                price: '3.00',
+                meal_type: 'dinner',
+                is_available: false,
+                image: null,
+                delivery_time: null,
+                delivery_time_formatted: null
+            },
+            {
+                id: 4,
+                name_ar: 'بيتزا إيطالية',
+                name_en: 'Italian Pizza',
+                description_ar: 'بيتزا إيطالية تقليدية مع الجبن والطماطم',
+                description_en: 'Traditional Italian pizza with cheese and tomatoes',
+                price: '8.00',
+                meal_type: 'dinner',
+                is_available: true,
+                image: null,
+                delivery_time: '2024-01-01T19:45:00.000000Z',
+                delivery_time_formatted: '19:45'
+            }
+        ];
+
+        function renderMealCard(meal) {
+            const card = document.createElement('div');
+            card.className = 'meal-card';
+            
+            card.innerHTML = `
+                <div class="meal-header">
+                    <div style="flex: 1;">
+                        <h3 class="meal-title">${meal.name_ar}</h3>
+                        <div class="meal-description">${meal.description_ar}</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="meal-status">
+                            ${meal.is_available ? 'متاح' : 'غير متاح'}
+                        </div>
+                        <div class="meal-image">
+                            ${meal.image ? '🖼️' : '🍽️'}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="meal-details">
+                    <div class="detail-item">
+                        <span class="detail-label">💰 السعر:</span>
+                        <div class="detail-value">${meal.price} ريال</div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">⏰ وقت التوصيل:</span>
+                        <div class="detail-value">${meal.delivery_time_formatted || 'غير محدد'}</div>
+                    </div>
+                </div>
+                
+                <div class="meal-actions">
+                    <button class="action-btn edit-btn" onclick="editMeal(${meal.id})" title="تعديل">✏️</button>
+                    <button class="action-btn delete-btn" onclick="deleteMeal(${meal.id})" title="حذف">🗑️</button>
+                </div>
+                
+                <div class="debug-info">
+                    <strong>معلومات التصحيح:</strong><br>
+                    delivery_time: ${meal.delivery_time}<br>
+                    delivery_time_formatted: ${meal.delivery_time_formatted}<br>
+                    type: ${typeof meal.delivery_time}<br>
+                    formatted_type: ${typeof meal.delivery_time_formatted}
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function renderMeals() {
+            const container = document.getElementById('mealsContainer');
+            container.innerHTML = '';
+            
+            testMeals.forEach(meal => {
+                const card = renderMealCard(meal);
+                container.appendChild(card);
+            });
+        }
+
+        function editMeal(mealId) {
+            const meal = testMeals.find(m => m.id === mealId);
+            console.log('🔍 تحميل بيانات الوجبة للتعديل:', meal);
+            alert(`تعديل الوجبة: ${meal.name_ar}\nوقت التوصيل: ${meal.delivery_time_formatted || 'غير محدد'}`);
+        }
+
+        function deleteMeal(mealId) {
+            const meal = testMeals.find(m => m.id === mealId);
+            if (confirm(`هل أنت متأكد من حذف الوجبة: ${meal.name_ar}؟`)) {
+                console.log('🗑️ حذف الوجبة:', meal);
+                alert('تم حذف الوجبة');
+            }
+        }
+
+        // تحميل البيانات تلقائياً عند فتح الصفحة
+        window.onload = function() {
+            console.log('🚀 تم تحميل صفحة اختبار عرض الوجبات');
+            console.log('📋 بيانات الاختبار:', testMeals);
+            renderMeals();
+        };
+    </script>
+</body>
+</html>

@@ -237,7 +237,7 @@ class ReportsController extends Controller
 
     private function getRecentOrders($restaurantIds)
     {
-        return Subscription::with(['user', 'restaurant'])
+        return Subscription::with(['user', 'restaurant', 'deliveryAddress'])
             ->whereIn('restaurant_id', $restaurantIds)
             ->orderBy('created_at', 'desc')
             ->limit(10)
@@ -246,6 +246,8 @@ class ReportsController extends Controller
                 return [
                     'id' => $subscription->id,
                     'customer_name' => $subscription->user->name,
+                    'customer_phone' => $subscription->deliveryAddress->phone ?? null,
+                    'customer_email' => $subscription->user->email,
                     'restaurant_name' => $subscription->restaurant->name,
                     'subscription_type' => $subscription->subscription_type,
                     'start_date' => $subscription->start_date,

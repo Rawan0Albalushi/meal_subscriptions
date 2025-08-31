@@ -33,6 +33,18 @@ class MealController extends Controller
                 'meals_count' => $meals->count()
             ]);
 
+            // مراقبة بيانات وقت التوصيل
+            foreach ($meals as $meal) {
+                Log::info('MealController@index: تفاصيل وقت التوصيل', [
+                    'meal_id' => $meal->id,
+                    'meal_name' => $meal->name_ar,
+                    'delivery_time' => $meal->delivery_time,
+                    'delivery_time_formatted' => $meal->delivery_time_formatted,
+                    'delivery_time_type' => gettype($meal->delivery_time),
+                    'formatted_type' => gettype($meal->delivery_time_formatted)
+                ]);
+            }
+
             return response()->json([
                 'success' => true,
                 'data' => $meals

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار تعديل الوجبات</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .data-display {
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .data-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍽️ اختبار تحميل بيانات تعديل الوجبات</h1>
+        
+        <div class="form-group">
+            <label>اسم الوجبة (عربي):</label>
+            <input type="text" id="name_ar" placeholder="أدخل اسم الوجبة بالعربية">
+        </div>
+        
+        <div class="form-group">
+            <label>اسم الوجبة (إنجليزي):</label>
+            <input type="text" id="name_en" placeholder="أدخل اسم الوجبة بالإنجليزية">
+        </div>
+        
+        <div class="form-group">
+            <label>الوصف (عربي):</label>
+            <textarea id="description_ar" rows="3" placeholder="أدخل وصف الوجبة بالعربية"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label>الوصف (إنجليزي):</label>
+            <textarea id="description_en" rows="3" placeholder="أدخل وصف الوجبة بالإنجليزية"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label>نوع الوجبة:</label>
+            <select id="meal_type">
+                <option value="breakfast">فطور</option>
+                <option value="lunch">غداء</option>
+                <option value="dinner">عشاء</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>السعر:</label>
+            <input type="number" id="price" step="0.01" min="0" placeholder="أدخل السعر">
+        </div>
+        
+        <div class="form-group">
+            <label>وقت التوصيل:</label>
+            <input type="time" id="delivery_time">
+        </div>
+        
+        <div class="form-group">
+            <label class="checkbox-group">
+                <input type="checkbox" id="is_available">
+                متاح
+            </label>
+        </div>
+        
+        <div class="form-group">
+            <label>صورة الوجبة:</label>
+            <input type="file" id="meal_image" accept="image/*">
+            <img id="image_preview" class="image-preview" style="display: none;">
+        </div>
+        
+        <button class="btn" onclick="loadTestData()">📥 تحميل بيانات تجريبية</button>
+        <button class="btn" onclick="clearForm()">🗑️ مسح النموذج</button>
+        <button class="btn" onclick="showFormData()">👁️ عرض البيانات الحالية</button>
+        
+        <div id="dataDisplay" class="data-display" style="display: none;">
+            <h3>📊 البيانات المحملة:</h3>
+            <div id="dataContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // بيانات تجريبية لوجبة
+        const testMealData = {
+            name_ar: 'برجر الدجاج المشوي',
+            name_en: 'Grilled Chicken Burger',
+            description_ar: 'برجر دجاج مشوي طازج مع الخضروات والصلصة الخاصة',
+            description_en: 'Fresh grilled chicken burger with vegetables and special sauce',
+            meal_type: 'lunch',
+            price: 5.50,
+            delivery_time: '14:30',
+            is_available: true,
+            image: 'meals/burger.jpg'
+        };
+
+        function loadTestData() {
+            console.log('🔍 تحميل البيانات التجريبية للوجبة:', testMealData);
+            
+            // تحميل البيانات في النموذج
+            document.getElementById('name_ar').value = testMealData.name_ar;
+            document.getElementById('name_en').value = testMealData.name_en;
+            document.getElementById('description_ar').value = testMealData.description_ar;
+            document.getElementById('description_en').value = testMealData.description_en;
+            document.getElementById('meal_type').value = testMealData.meal_type;
+            document.getElementById('price').value = testMealData.price;
+            document.getElementById('delivery_time').value = testMealData.delivery_time;
+            document.getElementById('is_available').checked = testMealData.is_available;
+            
+            // محاكاة تحميل الصورة
+            const imagePreview = document.getElementById('image_preview');
+            imagePreview.src = '/storage/' + testMealData.image;
+            imagePreview.style.display = 'block';
+            imagePreview.onerror = function() {
+                this.style.display = 'none';
+                console.log('⚠️ الصورة غير موجودة، سيتم عرض أيقونة بديلة');
+            };
+            
+            console.log('✅ تم تحميل البيانات في النموذج');
+            alert('تم تحميل البيانات التجريبية بنجاح!');
+        }
+
+        function clearForm() {
+            // مسح جميع الحقول
+            document.getElementById('name_ar').value = '';
+            document.getElementById('name_en').value = '';
+            document.getElementById('description_ar').value = '';
+            document.getElementById('description_en').value = '';
+            document.getElementById('meal_type').value = 'lunch';
+            document.getElementById('price').value = '';
+            document.getElementById('delivery_time').value = '';
+            document.getElementById('is_available').checked = true;
+            document.getElementById('meal_image').value = '';
+            document.getElementById('image_preview').style.display = 'none';
+            
+            console.log('🗑️ تم مسح النموذج');
+            alert('تم مسح النموذج بنجاح!');
+        }
+
+        function showFormData() {
+            // جمع البيانات من النموذج
+            const formData = {
+                name_ar: document.getElementById('name_ar').value,
+                name_en: document.getElementById('name_en').value,
+                description_ar: document.getElementById('description_ar').value,
+                description_en: document.getElementById('description_en').value,
+                meal_type: document.getElementById('meal_type').value,
+                price: document.getElementById('price').value,
+                delivery_time: document.getElementById('delivery_time').value,
+                is_available: document.getElementById('is_available').checked,
+                has_image: document.getElementById('meal_image').files.length > 0
+            };
+
+            console.log('📊 البيانات الحالية في النموذج:', formData);
+
+            // عرض البيانات
+            const dataContent = document.getElementById('dataContent');
+            dataContent.innerHTML = '';
+
+            Object.entries(formData).forEach(([key, value]) => {
+                const dataItem = document.createElement('div');
+                dataItem.className = 'data-item';
+                dataItem.innerHTML = `
+                    <strong>${key}:</strong> 
+                    <span>${typeof value === 'boolean' ? (value ? 'نعم' : 'لا') : value}</span>
+                `;
+                dataContent.appendChild(dataItem);
+            });
+
+            document.getElementById('dataDisplay').style.display = 'block';
+        }
+
+        // معاينة الصورة عند اختيارها
+        document.getElementById('meal_image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imagePreview = document.getElementById('image_preview');
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // تحميل البيانات تلقائياً عند فتح الصفحة
+        window.onload = function() {
+            console.log('🚀 تم تحميل صفحة اختبار الوجبات');
+        };
+    </script>
+</body>
+</html>

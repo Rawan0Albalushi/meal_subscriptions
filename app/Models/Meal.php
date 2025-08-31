@@ -28,7 +28,7 @@ class Meal extends Model
         'is_available' => 'boolean',
     ];
 
-    protected $appends = ['name', 'description', 'meal_type_text'];
+    protected $appends = ['name', 'description', 'meal_type_text', 'delivery_time_formatted'];
 
     public function restaurant()
     {
@@ -59,5 +59,29 @@ class Meal extends Model
         ];
 
         return $types[$this->meal_type][app()->getLocale()] ?? $this->meal_type;
+    }
+
+    public function getDeliveryTimeFormattedAttribute()
+    {
+        if (!$this->delivery_time) {
+            return null;
+        }
+        
+        // إذا كان delivery_time كائن Carbon
+        if (is_object($this->delivery_time) && method_exists($this->delivery_time, 'format')) {
+            return $this->delivery_time->format('H:i');
+        }
+        
+        // إذا كان string، نحاول تحويله
+        if (is_string($this->delivery_time)) {
+            try {
+                $time = \Carbon\Carbon::parse($this->delivery_time);
+                return $time->format('H:i');
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
+        
+        return null;
     }
 }

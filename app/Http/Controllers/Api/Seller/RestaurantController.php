@@ -16,7 +16,7 @@ class RestaurantController extends Controller
     public function index(Request $request)
     {
         $restaurants = $request->user()->restaurants()
-            ->with(['meals', 'subscriptionTypes'])
+            ->with(['meals', 'subscriptionTypes', 'subscriptions'])
             ->get();
 
         return response()->json([

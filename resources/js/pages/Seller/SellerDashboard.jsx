@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
 
 const SellerDashboard = () => {
     const { t, dir, language } = useLanguage();
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [stats, setStats] = useState({
         totalRestaurants: 0,
         activeRestaurants: 0,
         totalMeals: 0,
         activeMeals: 0,
         totalSubscriptions: 0,
-        activeSubscriptions: 0,
         totalRevenue: 0
     });
     const [loading, setLoading] = useState(true);
@@ -24,42 +25,28 @@ const SellerDashboard = () => {
     const fetchDashboardData = async () => {
         try {
             setLoading(true);
-            // Fetch seller's restaurants
-            const restaurantsResponse = await fetch('/api/seller/restaurants', {
+            // Fetch dashboard data
+            const dashboardResponse = await fetch('/api/seller/dashboard', {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
                     'Content-Type': 'application/json'
                 }
             });
             
-            if (restaurantsResponse.ok) {
-                const restaurantsData = await restaurantsResponse.json();
-                const restaurants = restaurantsData.data || [];
+            if (dashboardResponse.ok) {
+                const dashboardData = await dashboardResponse.json();
+                const data = dashboardData.data || {};
                 
-                // Calculate stats
-                const totalRestaurants = restaurants.length;
-                const activeRestaurants = restaurants.filter(r => r.is_active).length;
-                let totalMeals = 0;
-                let activeMeals = 0;
-                let totalSubscriptions = 0;
-                let activeSubscriptions = 0;
-                
-                restaurants.forEach(restaurant => {
-                    totalMeals += restaurant.meals?.length || 0;
-                    activeMeals += restaurant.meals?.filter(m => m.is_available).length || 0;
-                    totalSubscriptions += restaurant.subscriptions?.length || 0;
-                    activeSubscriptions += restaurant.subscriptions?.filter(s => s.status === 'active').length || 0;
+                setStats({
+                    totalRestaurants: data.totalRestaurants || 0,
+                    activeRestaurants: data.activeRestaurants || 0,
+                    totalMeals: data.totalMeals || 0,
+                    activeMeals: data.activeMeals || 0,
+                    totalSubscriptions: data.totalSubscriptions || 0,
+                    totalRevenue: data.totalRevenue || 0
                 });
 
-                setStats({
-                    totalRestaurants,
-                    activeRestaurants,
-                    totalMeals,
-                    activeMeals,
-                    totalSubscriptions,
-                    activeSubscriptions,
-                    totalRevenue: 0 // Placeholder for future implementation
-                });
+                setRecentActivity(data.recentActivity || []);
             }
         } catch (error) {
             console.error('Error fetching dashboard data:', error);
@@ -104,12 +91,16 @@ const SellerDashboard = () => {
             value: stats.totalSubscriptions,
             color: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
         },
+
         {
-            icon: '🟢',
-            titleAr: 'الاشتراكات النشطة',
-            titleEn: 'Active Subscriptions',
-            value: stats.activeSubscriptions,
-            color: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'
+            icon: '💰',
+            titleAr: 'إجمالي الإيرادات',
+            titleEn: 'Total Revenue',
+            value: new Intl.NumberFormat('ar-OM', {
+                style: 'currency',
+                currency: 'OMR'
+            }).format(stats.totalRevenue),
+            color: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)'
         }
     ];
 
@@ -120,7 +111,7 @@ const SellerDashboard = () => {
             titleEn: 'Add New Restaurant',
             descriptionAr: 'إنشاء مطعم جديد في النظام',
             descriptionEn: 'Create a new restaurant in the system',
-            action: () => window.location.href = '/seller/restaurants'
+            action: () => navigate('/seller/restaurants')
         },
         {
             icon: '🍽️',
@@ -128,7 +119,7 @@ const SellerDashboard = () => {
             titleEn: 'Add New Meal',
             descriptionAr: 'إضافة وجبة جديدة لأحد مطاعمك',
             descriptionEn: 'Add a new meal to one of your restaurants',
-            action: () => window.location.href = '/seller/meals'
+            action: () => navigate('/seller/meals')
         },
         {
             icon: '📊',
@@ -136,7 +127,23 @@ const SellerDashboard = () => {
             titleEn: 'View Reports',
             descriptionAr: 'عرض تقارير مفصلة عن نشاطك',
             descriptionEn: 'View detailed reports about your activity',
-            action: () => console.log('View Reports')
+            action: () => navigate('/seller/reports')
+        },
+        {
+            icon: '📦',
+            titleAr: 'طلبات الاشتراك',
+            titleEn: 'Subscription Requests',
+            descriptionAr: 'إدارة طلبات الاشتراك للعملاء',
+            descriptionEn: 'Manage customer subscription requests',
+            action: () => navigate('/seller/subscriptions')
+        },
+        {
+            icon: '📋',
+            titleAr: 'طلبات اليوم',
+            titleEn: 'Today\'s Orders',
+            descriptionAr: 'عرض وإدارة طلبات اليوم',
+            descriptionEn: 'View and manage today\'s orders',
+            action: () => navigate('/seller/today-orders')
         },
         {
             icon: '⚙️',
@@ -144,7 +151,7 @@ const SellerDashboard = () => {
             titleEn: 'Account Settings',
             descriptionAr: 'تعديل إعدادات حسابك الشخصي',
             descriptionEn: 'Modify your personal account settings',
-            action: () => window.location.href = '/seller/profile'
+            action: () => navigate('/seller/profile')
         }
     ];
 
@@ -315,7 +322,8 @@ const SellerDashboard = () => {
                     fontWeight: 'bold',
                     color: 'rgb(55 65 81)',
                     margin: 0,
-                    marginBottom: '1.5rem'
+                    marginBottom: '1.5rem',
+                    textAlign: dir === 'rtl' ? 'right' : 'left'
                 }}>
                     {language === 'ar' ? 'الإجراءات السريعة' : 'Quick Actions'}
                 </h2>
@@ -339,8 +347,9 @@ const SellerDashboard = () => {
                                 borderRadius: '0.75rem',
                                 cursor: 'pointer',
                                 transition: 'all 0.2s',
-                                textAlign: 'left',
-                                width: '100%'
+                                textAlign: dir === 'rtl' ? 'right' : 'left',
+                                width: '100%',
+                                direction: dir
                             }}
                             onMouseEnter={(e) => {
                                 e.target.style.background = 'rgba(79, 70, 229, 0.1)';
@@ -362,11 +371,15 @@ const SellerDashboard = () => {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 fontSize: '1.25rem',
-                                color: 'white'
+                                color: 'white',
+                                order: dir === 'rtl' ? 2 : 1
                             }}>
                                 {action.icon}
                             </div>
-                            <div>
+                            <div style={{
+                                order: dir === 'rtl' ? 1 : 2,
+                                flex: 1
+                            }}>
                                 <div style={{
                                     fontSize: '0.875rem',
                                     fontWeight: '600',

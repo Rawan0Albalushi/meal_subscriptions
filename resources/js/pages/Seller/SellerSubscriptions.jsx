@@ -781,7 +781,7 @@ const SellerSubscriptions = () => {
                                                   <strong>{language === 'ar' ? 'البريد الإلكتروني:' : 'Email:'}</strong> {subscription.user?.email}
                                               </div>
                                               <div>
-                                                  <strong>{language === 'ar' ? 'رقم الهاتف:' : 'Phone:'}</strong> {subscription.user?.phone || (language === 'ar' ? 'غير متوفر' : 'Not available')}
+                                                  <strong>{language === 'ar' ? 'رقم الهاتف:' : 'Phone:'}</strong> {subscription.delivery_address?.phone || (language === 'ar' ? 'غير متوفر' : 'Not available')}
                                               </div>
                                           </div>
                                       </div>
@@ -1130,45 +1130,23 @@ const SellerSubscriptions = () => {
                                                         {getItemStatusText(item.status)}
                                                     </span>
                                                     
-                                                    {item.status === 'pending' && (
-                                                        <select
-                                                            value={item.status}
-                                                            onChange={(e) => updateItemStatus(subscription.id, item.id, e.target.value)}
-                                                            style={{
-                                                                padding: '0.5rem',
-                                                                border: '1px solid rgb(209 213 219)',
-                                                                borderRadius: '0.375rem',
-                                                                fontSize: '0.75rem',
-                                                                background: 'white',
-                                                                minWidth: '120px'
-                                                            }}
-                                                        >
-                                                            <option value="pending">{language === 'ar' ? 'في الانتظار' : 'Pending'}</option>
-                                                            <option value="preparing">{language === 'ar' ? 'قيد التحضير' : 'Preparing'}</option>
-                                                            <option value="delivered">{language === 'ar' ? 'تم التوصيل' : 'Delivered'}</option>
-                                                            <option value="cancelled">{language === 'ar' ? 'ملغي' : 'Cancelled'}</option>
-                                                        </select>
-                                                    )}
-                                                    
-                                                    {item.status === 'preparing' && (
-                                                        <div style={{
+                                                    <select
+                                                        value={item.status}
+                                                        onChange={(e) => updateItemStatus(subscription.id, item.id, e.target.value)}
+                                                        style={{
+                                                            padding: '0.5rem',
+                                                            border: '1px solid rgb(209 213 219)',
+                                                            borderRadius: '0.375rem',
                                                             fontSize: '0.75rem',
-                                                            color: 'rgb(245 101 101)',
-                                                            fontWeight: '500'
-                                                        }}>
-                                                            {language === 'ar' ? 'قيد التحضير...' : 'Preparing...'}
-                                                        </div>
-                                                    )}
-                                                    
-                                                    {item.status === 'delivered' && (
-                                                        <div style={{
-                                                            fontSize: '0.75rem',
-                                                            color: 'rgb(34 197 94)',
-                                                            fontWeight: '500'
-                                                        }}>
-                                                            {language === 'ar' ? 'تم التوصيل' : 'Delivered'}
-                                                        </div>
-                                                    )}
+                                                            background: 'white',
+                                                            minWidth: '120px'
+                                                        }}
+                                                    >
+                                                        <option value="pending">{language === 'ar' ? 'في الانتظار' : 'Pending'}</option>
+                                                        <option value="preparing">{language === 'ar' ? 'قيد التحضير' : 'Preparing'}</option>
+                                                        <option value="delivered">{language === 'ar' ? 'تم التوصيل' : 'Delivered'}</option>
+                                                        <option value="cancelled">{language === 'ar' ? 'ملغي' : 'Cancelled'}</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                         ))
@@ -1370,7 +1348,7 @@ const SellerSubscriptions = () => {
                                          color: 'rgb(17 24 39)',
                                          textAlign: dir === 'rtl' ? 'right' : 'left'
                                      }}>
-                                         {selectedSubscription.user?.phone || (language === 'ar' ? 'غير متوفر' : 'Not available')}
+                                         {selectedSubscription.delivery_address?.phone || (language === 'ar' ? 'غير متوفر' : 'Not available')}
                                      </div>
                                  </div>
                              </div>
@@ -1465,24 +1443,22 @@ const SellerSubscriptions = () => {
                                                 {getItemStatusText(item.status)}
                                             </span>
                                             
-                                            {item.status === 'pending' && (
-                                                <select
-                                                    value={item.status}
-                                                    onChange={(e) => updateItemStatus(selectedSubscription.id, item.id, e.target.value)}
-                                                    style={{
-                                                        padding: '0.5rem',
-                                                        border: '1px solid rgb(209 213 219)',
-                                                        borderRadius: '0.375rem',
-                                                        fontSize: '0.875rem',
-                                                        background: 'white'
-                                                    }}
-                                                >
-                                                    <option value="pending">{language === 'ar' ? 'في الانتظار' : 'Pending'}</option>
-                                                    <option value="preparing">{language === 'ar' ? 'قيد التحضير' : 'Preparing'}</option>
-                                                    <option value="delivered">{language === 'ar' ? 'تم التوصيل' : 'Delivered'}</option>
-                                                    <option value="cancelled">{language === 'ar' ? 'ملغي' : 'Cancelled'}</option>
-                                                </select>
-                                            )}
+                                            <select
+                                                value={item.status}
+                                                onChange={(e) => updateItemStatus(selectedSubscription.id, item.id, e.target.value)}
+                                                style={{
+                                                    padding: '0.5rem',
+                                                    border: '1px solid rgb(209 213 219)',
+                                                    borderRadius: '0.375rem',
+                                                    fontSize: '0.875rem',
+                                                    background: 'white'
+                                                }}
+                                            >
+                                                <option value="pending">{language === 'ar' ? 'في الانتظار' : 'Pending'}</option>
+                                                <option value="preparing">{language === 'ar' ? 'قيد التحضير' : 'Preparing'}</option>
+                                                <option value="delivered">{language === 'ar' ? 'تم التوصيل' : 'Delivered'}</option>
+                                                <option value="cancelled">{language === 'ar' ? 'ملغي' : 'Cancelled'}</option>
+                                            </select>
                                         </div>
                                     </div>
                                 ))}

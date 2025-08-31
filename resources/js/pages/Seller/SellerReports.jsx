@@ -614,14 +614,21 @@ const SellerReports = () => {
                                         color: 'rgb(17 24 39)',
                                         marginBottom: '0.25rem'
                                     }}>
-                                                                                 {subscription.customer_name}
+                                        {subscription.customer_name}
                                     </div>
-                                                                         <div style={{
-                                         fontSize: '0.75rem',
-                                         color: 'rgb(107 114 128)'
-                                     }}>
-                                         {subscription.restaurant_name} • {subscription.subscription_type} • {formatDate(subscription.created_at)}
-                                     </div>
+                                    <div style={{
+                                        fontSize: '0.75rem',
+                                        color: 'rgb(107 114 128)',
+                                        marginBottom: '0.25rem'
+                                    }}>
+                                        📞 {subscription.customer_phone || (language === 'ar' ? 'غير متوفر' : 'Not available')}
+                                    </div>
+                                    <div style={{
+                                        fontSize: '0.75rem',
+                                        color: 'rgb(107 114 128)'
+                                    }}>
+                                        {subscription.restaurant_name} • {subscription.subscription_type} • {formatDate(subscription.created_at)}
+                                    </div>
                                 </div>
                                 <div style={{
                                     textAlign: 'right'

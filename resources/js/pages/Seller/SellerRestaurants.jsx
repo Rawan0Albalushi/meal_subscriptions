@@ -50,6 +50,7 @@ const SellerRestaurants = () => {
         address_en: '',
         locations: [],
         logo: null,
+        existingLogo: null,
         is_active: true
     });
 
@@ -112,7 +113,10 @@ const SellerRestaurants = () => {
             console.log('🔍 بيانات النموذج قبل الإرسال:', {
                 original_is_active: formData.is_active,
                 processed_is_active: requestData.is_active,
-                requestData: requestData
+                requestData: requestData,
+                editingRestaurant: editingRestaurant ? editingRestaurant.id : null,
+                hasLogo: !!formData.logo,
+                hasExistingLogo: !!formData.existingLogo
             });
 
             // إذا كان هناك ملف شعار، استخدم FormData
@@ -209,6 +213,7 @@ const SellerRestaurants = () => {
     };
 
     const handleEdit = (restaurant) => {
+        console.log('🔍 تحميل بيانات المطعم للتعديل:', restaurant);
         setEditingRestaurant(restaurant);
         setFormData({
             name_ar: restaurant.name_ar || '',
@@ -220,8 +225,18 @@ const SellerRestaurants = () => {
             address_ar: restaurant.address_ar || '',
             address_en: restaurant.address_en || '',
             locations: restaurant.locations || [],
-            logo: null,
+            logo: null, // سيتم الاحتفاظ بالشعار الموجود في الخادم
+            existingLogo: restaurant.logo, // إضافة الشعار الموجود
             is_active: restaurant.is_active
+        });
+        console.log('✅ تم تحميل البيانات في النموذج:', {
+            name_ar: restaurant.name_ar,
+            name_en: restaurant.name_en,
+            phone: restaurant.phone,
+            email: restaurant.email,
+            locations: restaurant.locations,
+            is_active: restaurant.is_active,
+            existingLogo: restaurant.logo
         });
         setShowAddModal(true);
     };
@@ -320,6 +335,7 @@ const SellerRestaurants = () => {
             address_en: '',
             locations: [],
             logo: null,
+            existingLogo: null,
             is_active: true
         });
     };
@@ -806,28 +822,7 @@ const SellerRestaurants = () => {
                                 }
                             </button>
                             
-                            <button
-                                onClick={() => handleManageAddresses(restaurant)}
-                                style={{
-                                    padding: '0.5rem 1rem',
-                                    background: 'rgba(59, 130, 246, 0.1)',
-                                    color: 'rgb(59 130 246)',
-                                    border: '1px solid rgba(59, 130, 246, 0.2)',
-                                    borderRadius: '0.5rem',
-                                    fontSize: '0.75rem',
-                                    fontWeight: '500',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s'
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.target.style.background = 'rgba(59, 130, 246, 0.2)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.target.style.background = 'rgba(59, 130, 246, 0.1)';
-                                }}
-                            >
-                                🏠
-                            </button>
+
                             
                             <button
                                 onClick={() => handleDelete(restaurant.id)}
@@ -1005,6 +1000,7 @@ const SellerRestaurants = () => {
                                         value={formData.name_ar}
                                         onChange={(e) => setFormData({...formData, name_ar: e.target.value})}
                                         required
+                                        placeholder={language === 'ar' ? 'أدخل اسم المطعم بالعربية' : 'Enter restaurant name in Arabic'}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -1029,6 +1025,7 @@ const SellerRestaurants = () => {
                                         value={formData.name_en}
                                         onChange={(e) => setFormData({...formData, name_en: e.target.value})}
                                         required
+                                        placeholder={language === 'ar' ? 'أدخل اسم المطعم بالإنجليزية' : 'Enter restaurant name in English'}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -1116,6 +1113,7 @@ const SellerRestaurants = () => {
                                         type="tel"
                                         value={formData.phone}
                                         onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                                        placeholder={language === 'ar' ? 'أدخل رقم الهاتف' : 'Enter phone number'}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -1139,6 +1137,7 @@ const SellerRestaurants = () => {
                                         type="email"
                                         value={formData.email}
                                         onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                        placeholder={language === 'ar' ? 'أدخل البريد الإلكتروني' : 'Enter email address'}
                                         style={{
                                             width: '100%',
                                             padding: '0.75rem',
@@ -1329,7 +1328,7 @@ const SellerRestaurants = () => {
                                                         fontWeight: '500',
                                                         marginBottom: '0.25rem'
                                                     }}>
-                                                        {language === 'ar' ? 'تم اختيار الملف' : 'File Selected'}
+                                                        {language === 'ar' ? 'تم اختيار ملف جديد' : 'New File Selected'}
                                                     </div>
                                                     <div style={{
                                                         color: 'rgb(107 114 128)',
@@ -1337,6 +1336,43 @@ const SellerRestaurants = () => {
                                                     }}>
                                                         {formData.logo.name}
                                                     </div>
+                                                </div>
+                                            ) : formData.existingLogo ? (
+                                                <div>
+                                                    <div style={{
+                                                        fontSize: '2rem',
+                                                        marginBottom: '0.5rem'
+                                                    }}>
+                                                        🖼️
+                                                    </div>
+                                                    <div style={{
+                                                        color: 'rgb(59 130 246)',
+                                                        fontWeight: '500',
+                                                        marginBottom: '0.25rem'
+                                                    }}>
+                                                        {language === 'ar' ? 'الشعار الحالي' : 'Current Logo'}
+                                                    </div>
+                                                    <div style={{
+                                                        color: 'rgb(107 114 128)',
+                                                        fontSize: '0.75rem'
+                                                    }}>
+                                                        {language === 'ar' ? 'اضغط لاختيار ملف جديد' : 'Click to choose new file'}
+                                                    </div>
+                                                    <img 
+                                                        src={`/storage/${formData.existingLogo}`}
+                                                        alt={language === 'ar' ? 'الشعار الحالي' : 'Current Logo'}
+                                                        style={{
+                                                            width: '100%',
+                                                            maxWidth: '150px',
+                                                            height: 'auto',
+                                                            borderRadius: '0.5rem',
+                                                            marginTop: '0.5rem',
+                                                            border: '2px solid rgba(59, 130, 246, 0.2)'
+                                                        }}
+                                                        onError={(e) => {
+                                                            e.target.style.display = 'none';
+                                                        }}
+                                                    />
                                                 </div>
                                             ) : (
                                                 <div>

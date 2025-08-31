@@ -70,6 +70,28 @@ function AppRoutes() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
+                    
+                    {/* Admin routes */}
+                    <Route 
+                        path="/admin/*" 
+                        element={
+                            <RequireRole role="admin">
+                                <AdminLayout />
+                            </RequireRole>
+                        } 
+                    />
+                    
+                    {/* Seller routes */}
+                    <Route 
+                        path="/seller/*" 
+                        element={
+                            <RequireRole role="seller">
+                                <SellerLayout />
+                            </RequireRole>
+                        } 
+                    />
+                    
+                    {/* Customer routes */}
                     <Route path="/restaurants" element={<Restaurants />} />
                     <Route path="/restaurants/:id" element={<RestaurantDetail />} />
                     <Route 
@@ -113,26 +135,6 @@ function AppRoutes() {
                         } 
                     />
                     <Route path="/contact-us" element={<ContactUs />} />
-                    
-                    {/* Admin routes */}
-                    <Route 
-                        path="/admin/*" 
-                        element={
-                            <RequireRole role="admin">
-                                <AdminLayout />
-                            </RequireRole>
-                        } 
-                    />
-                    
-                    {/* Seller routes */}
-                    <Route 
-                        path="/seller/*" 
-                        element={
-                            <RequireRole role="seller">
-                                <SellerLayout />
-                            </RequireRole>
-                        } 
-                    />
                 </Routes>
             </main>
         </>

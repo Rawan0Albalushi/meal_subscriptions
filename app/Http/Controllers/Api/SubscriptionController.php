@@ -11,6 +11,7 @@ use App\Models\Restaurant;
 use App\Models\DeliveryAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class SubscriptionController extends Controller
@@ -331,46 +332,100 @@ class SubscriptionController extends Controller
 
     public function getTodayOrders(Request $request, $restaurantId)
     {
-        // Check if the restaurant belongs to the seller
-        $restaurant = auth()->user()->restaurants()->findOrFail($restaurantId);
-        
-        $today = Carbon::today();
-        
-        // Get all subscription items for today for this restaurant
-        $todayOrders = SubscriptionItem::whereHas('subscription', function($query) use ($restaurantId) {
-            $query->where('restaurant_id', $restaurantId);
-        })
-        ->whereDate('delivery_date', $today)
-        ->with(['meal', 'subscription.user', 'subscription.deliveryAddress'])
-        ->orderBy('delivery_date', 'asc')
-        ->get();
+        try {
+            Log::info('TodayOrders: بدء جلب طلبات اليوم', [
+                'restaurant_id' => $restaurantId,
+                'user_id' => auth()->id(),
+                'user_role' => auth()->user()->role ?? 'غير محدد'
+            ]);
 
-        // Group orders by status for better organization
-        $groupedOrders = [
-            'pending' => $todayOrders->where('status', 'pending'),
-            'preparing' => $todayOrders->where('status', 'preparing'),
-            'delivered' => $todayOrders->where('status', 'delivered'),
-            'cancelled' => $todayOrders->where('status', 'cancelled'),
-        ];
+            // Check if the restaurant belongs to the seller
+            $restaurant = auth()->user()->restaurants()->findOrFail($restaurantId);
+            
+            Log::info('TodayOrders: تم العثور على المطعم', [
+                'restaurant_id' => $restaurant->id,
+                'restaurant_name' => $restaurant->name_ar
+            ]);
+            
+            $today = Carbon::today();
+            
+            Log::info('TodayOrders: التاريخ المستخدم', [
+                'today_date' => $today->format('Y-m-d'),
+                'today_timestamp' => $today->timestamp
+            ]);
+            
+            // Get all subscription items for today for this restaurant
+            $todayOrders = SubscriptionItem::whereHas('subscription', function($query) use ($restaurantId) {
+                $query->where('restaurant_id', $restaurantId);
+            })
+            ->whereDate('delivery_date', $today)
+            ->with(['meal', 'subscription.user', 'subscription.deliveryAddress'])
+            ->orderBy('delivery_date', 'asc')
+            ->get();
 
-        // Calculate statistics
-        $stats = [
-            'total' => $todayOrders->count(),
-            'pending' => $todayOrders->where('status', 'pending')->count(),
-            'preparing' => $todayOrders->where('status', 'preparing')->count(),
-            'delivered' => $todayOrders->where('status', 'delivered')->count(),
-            'cancelled' => $todayOrders->where('status', 'cancelled')->count(),
-        ];
+            Log::info('TodayOrders: تم جلب الطلبات', [
+                'total_orders' => $todayOrders->count(),
+                'orders_details' => $todayOrders->map(function($order) {
+                    return [
+                        'id' => $order->id,
+                        'status' => $order->status,
+                        'delivery_date' => $order->delivery_date,
+                        'meal_name' => $order->meal?->name_ar,
+                        'user_name' => $order->subscription?->user?->name
+                    ];
+                })
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'orders' => $todayOrders,
-                'grouped_orders' => $groupedOrders,
-                'stats' => $stats,
-                'date' => $today->format('Y-m-d'),
-                'date_formatted' => $today->format('l, F j, Y') // e.g., "Monday, January 15, 2024"
-            ]
-        ]);
+            // Group orders by status for better organization
+            $groupedOrders = [
+                'pending' => $todayOrders->where('status', 'pending'),
+                'preparing' => $todayOrders->where('status', 'preparing'),
+                'delivered' => $todayOrders->where('status', 'delivered'),
+                'cancelled' => $todayOrders->where('status', 'cancelled'),
+            ];
+
+            // Calculate statistics
+            $stats = [
+                'total' => $todayOrders->count(),
+                'pending' => $todayOrders->where('status', 'pending')->count(),
+                'preparing' => $todayOrders->where('status', 'preparing')->count(),
+                'delivered' => $todayOrders->where('status', 'delivered')->count(),
+                'cancelled' => $todayOrders->where('status', 'cancelled')->count(),
+            ];
+
+            Log::info('TodayOrders: الإحصائيات', $stats);
+
+            $response = [
+                'success' => true,
+                'data' => [
+                    'orders' => $todayOrders,
+                    'grouped_orders' => $groupedOrders,
+                    'stats' => $stats,
+                    'date' => $today->format('Y-m-d'),
+                    'date_formatted' => $today->format('l, F j, Y') // e.g., "Monday, January 15, 2024"
+                ]
+            ];
+
+            Log::info('TodayOrders: إرسال الاستجابة', [
+                'response_success' => $response['success'],
+                'orders_count' => count($response['data']['orders'])
+            ]);
+
+            return response()->json($response);
+        } catch (\Exception $e) {
+            Log::error('TodayOrders: خطأ في جلب طلبات اليوم', [
+                'restaurant_id' => $restaurantId,
+                'error' => $e->getMessage(),
+                'error_file' => $e->getFile(),
+                'error_line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ في جلب طلبات اليوم',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

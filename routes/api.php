@@ -119,11 +119,6 @@ Route::middleware(['auth:sanctum', 'role:seller', 'log.auth'])->prefix('seller')
     Route::get('/reports', [\App\Http\Controllers\Api\Seller\ReportsController::class, 'index']);
     
     // Dashboard stats
-    Route::get('/dashboard', function () {
-        return response()->json([
-            'success' => true,
-            'message' => 'مرحباً بك في لوحة تحكم البائع'
-        ]);
-    });
+    Route::get('/dashboard', [\App\Http\Controllers\Api\Seller\DashboardController::class, 'index']);
 });
 
