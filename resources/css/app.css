@@ -5,6 +5,7 @@
 @import "./special-effects.css";
 @import "./mobile-optimizations.css";
 @import "./mobile-responsive.css";
+@import "./mobile-filter-fix.css";
 
 html { 
   /* scroll-behavior: smooth; */ /* Disabled to prevent auto-scroll */

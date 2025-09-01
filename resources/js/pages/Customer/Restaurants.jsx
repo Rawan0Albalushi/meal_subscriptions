@@ -224,7 +224,8 @@ const Restaurants = () => {
           '@media (max-width: 768px)': {
             padding: '1rem',
             marginBottom: '1.5rem',
-            zIndex: 9997
+            zIndex: 9997,
+            position: 'relative'
           }
         }}>
           <div style={{ 
@@ -281,16 +282,17 @@ const Restaurants = () => {
             gap: '1.5rem',
             '@media (max-width: 768px)': {
               gridTemplateColumns: '1fr',
-              gap: '1rem'
+              gap: '1rem',
+              position: 'relative',
+              zIndex: 1
             }
           }}>
             {/* Location Filter Dropdown */}
-            <div style={{ 
-              position: 'relative',
-              '@media (max-width: 768px)': {
-                marginBottom: showLocationDropdown ? '3rem' : '0'
-              }
-            }}>
+            <div 
+              className={`filter-item ${showLocationDropdown ? 'open' : ''}`}
+              style={{ 
+                position: 'relative'
+              }}>
               <h3 style={{
                 fontSize: '1rem',
                 fontWeight: '600',
@@ -302,6 +304,7 @@ const Restaurants = () => {
               <div style={{ position: 'relative' }}>
                 <button
                   id="location-button"
+                  className="filter-button"
                   onClick={() => {
                     setShowLocationDropdown(!showLocationDropdown);
                     if (showMealTypeDropdown) {
@@ -322,12 +325,7 @@ const Restaurants = () => {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    textAlign: dir === 'rtl' ? 'right' : 'left',
-                    '@media (max-width: 768px)': {
-                      padding: '1rem',
-                      fontSize: '1rem',
-                      minHeight: '48px'
-                    }
+                    textAlign: dir === 'rtl' ? 'right' : 'left'
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.borderColor = '#4a757c';
@@ -359,6 +357,7 @@ const Restaurants = () => {
                 {showLocationDropdown && (
                   <div 
                     id="location-dropdown"
+                    className="location-dropdown"
                     onClick={(e) => e.stopPropagation()}
                     style={{
                       position: 'absolute',
@@ -369,24 +368,13 @@ const Restaurants = () => {
                       borderRadius: '0.5rem',
                       border: '2px solid rgb(209 213 219)',
                       boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
-                      zIndex: 1001,
+                      zIndex: 10000,
                       maxHeight: '200px',
                       overflowY: 'auto',
-                      marginTop: '0.25rem',
-                      '@media (max-width: 768px)': {
-                        zIndex: 9999,
-                        maxHeight: '150px',
-                        position: 'fixed',
-                        top: '50%',
-                        left: '1rem',
-                        right: '1rem',
-                        transform: 'translateY(-50%)',
-                        marginTop: '0',
-                        marginBottom: '0',
-                        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
-                      }
+                      marginTop: '0.25rem'
                     }}>
                     <div
+                      className="dropdown-item"
                       style={{
                         padding: '0.5rem 1rem',
                         cursor: 'pointer',
@@ -395,14 +383,7 @@ const Restaurants = () => {
                         fontSize: '0.875rem',
                         color: 'rgb(75 85 99)',
                         fontWeight: '500',
-                        textAlign: dir === 'rtl' ? 'right' : 'left',
-                        '@media (max-width: 768px)': {
-                          padding: '0.75rem 1rem',
-                          fontSize: '1rem',
-                          minHeight: '44px',
-                          display: 'flex',
-                          alignItems: 'center'
-                        }
+                        textAlign: dir === 'rtl' ? 'right' : 'left'
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.backgroundColor = 'rgb(249 250 251)';
@@ -420,6 +401,7 @@ const Restaurants = () => {
                     {availableFilters.locations.map(location => (
                       <div
                         key={location}
+                        className={`dropdown-item ${filters.locations === location ? 'selected' : ''}`}
                         style={{
                           padding: '0.75rem 1rem',
                           cursor: 'pointer',
@@ -429,14 +411,7 @@ const Restaurants = () => {
                           color: filters.locations === location ? '#4a757c' : 'rgb(75 85 99)',
                           fontWeight: filters.locations === location ? '600' : '500',
                           backgroundColor: filters.locations === location ? 'rgb(238 242 255)' : 'transparent',
-                          textAlign: dir === 'rtl' ? 'right' : 'left',
-                          '@media (max-width: 768px)': {
-                            padding: '0.875rem 1rem',
-                            fontSize: '1rem',
-                            minHeight: '48px',
-                            display: 'flex',
-                            alignItems: 'center'
-                          }
+                          textAlign: dir === 'rtl' ? 'right' : 'left'
                         }}
                         onMouseEnter={(e) => {
                           if (filters.locations !== location) {
@@ -463,12 +438,11 @@ const Restaurants = () => {
             </div>
 
             {/* Meal Type Filter Dropdown */}
-            <div style={{ 
-              position: 'relative',
-              '@media (max-width: 768px)': {
-                marginBottom: showMealTypeDropdown ? '3rem' : '0'
-              }
-            }}>
+            <div 
+              className={`filter-item ${showMealTypeDropdown ? 'open' : ''}`}
+              style={{ 
+                position: 'relative'
+              }}>
               <h3 style={{
                 fontSize: '1rem',
                 fontWeight: '600',
@@ -480,6 +454,7 @@ const Restaurants = () => {
               <div style={{ position: 'relative' }}>
                 <button
                   id="meal-type-button"
+                  className="filter-button meal-type"
                   onClick={() => {
                     setShowMealTypeDropdown(!showMealTypeDropdown);
                     if (showLocationDropdown) {
@@ -500,12 +475,7 @@ const Restaurants = () => {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    textAlign: dir === 'rtl' ? 'right' : 'left',
-                    '@media (max-width: 768px)': {
-                      padding: '1rem',
-                      fontSize: '1rem',
-                      minHeight: '48px'
-                    }
+                    textAlign: dir === 'rtl' ? 'right' : 'left'
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.borderColor = 'rgb(34 197 94)';
@@ -537,6 +507,7 @@ const Restaurants = () => {
                 {showMealTypeDropdown && (
                   <div 
                     id="meal-type-dropdown"
+                    className="meal-type-dropdown"
                     onClick={(e) => e.stopPropagation()}
                     style={{
                       position: 'absolute',
@@ -547,22 +518,10 @@ const Restaurants = () => {
                       borderRadius: '0.5rem',
                       border: '2px solid rgb(209 213 219)',
                       boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
-                      zIndex: 1002,
+                      zIndex: 9999,
                       maxHeight: '200px',
                       overflowY: 'auto',
-                      marginTop: '0.25rem',
-                      '@media (max-width: 768px)': {
-                        zIndex: 9998,
-                        maxHeight: '150px',
-                        position: 'fixed',
-                        top: '50%',
-                        left: '1rem',
-                        right: '1rem',
-                        transform: 'translateY(-50%)',
-                        marginTop: '0',
-                        marginBottom: '0',
-                        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
-                      }
+                      marginTop: '0.25rem'
                     }}>
                     <div
                       style={{
@@ -706,7 +665,8 @@ const Restaurants = () => {
             '@media (max-width: 768px)': {
               gridTemplateColumns: '1fr',
               gap: '1rem',
-              padding: '0'
+              padding: '0',
+              marginTop: '1rem'
             }
           }}>
             {restaurants.map((restaurant) => (

@@ -23,10 +23,11 @@ class RestaurantSeeder extends Seeder
                 'description_en' => 'Best traditional Eastern cuisine',
                 'logo' => null, // سيتم ملؤه لاحقاً بالصور الحقيقية
                 'is_active' => true,
-                'address_ar' => 'شارع السلطان قابوس، مسقط',
-                'address_en' => 'Sultan Qaboos Street, Muscat',
+                'address_ar' => 'شارع السلطان قابوس، بوشر، مسقط',
+                'address_en' => 'Sultan Qaboos Street, Bosher, Muscat',
                 'phone' => '+968 1234 5678',
                 'email' => 'info@middleeast.com',
+                'locations' => ['bosher'],
             ],
             [
                 'name_ar' => 'بيتزا إيطاليا',
@@ -35,10 +36,11 @@ class RestaurantSeeder extends Seeder
                 'description_en' => 'Authentic Italian pizza with the best ingredients',
                 'logo' => null, // سيتم ملؤه لاحقاً بالصور الحقيقية
                 'is_active' => true,
-                'address_ar' => 'شارع الروضة، مسقط',
-                'address_en' => 'Al Rawdah Street, Muscat',
+                'address_ar' => 'شارع 18 نوفمبر، المعبيلة، مسقط',
+                'address_en' => '18 November Street, Al Mabaila, Muscat',
                 'phone' => '+968 2345 6789',
                 'email' => 'info@pizzaitalia.com',
+                'locations' => ['maabilah'],
             ],
             [
                 'name_ar' => 'سوشي اليابان',
@@ -47,10 +49,11 @@ class RestaurantSeeder extends Seeder
                 'description_en' => 'Fresh sushi and authentic Japanese cuisine',
                 'logo' => null, // سيتم ملؤه لاحقاً بالصور الحقيقية
                 'is_active' => true,
-                'address_ar' => 'شارع السيب، مسقط',
-                'address_en' => 'Al Seeb Street, Muscat',
+                'address_ar' => 'شارع السلطان قابوس، بوشر، مسقط',
+                'address_en' => 'Sultan Qaboos Street, Bosher, Muscat',
                 'phone' => '+968 3456 7890',
                 'email' => 'info@sushijapan.com',
+                'locations' => ['bosher'],
             ],
             [
                 'name_ar' => 'برجر هاوس',

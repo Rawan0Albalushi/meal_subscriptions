@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار إصلاح الفلاتر على الهاتف</title>
+    <style>
+        body {
+            font-family: 'Calibri', 'Tajawal', sans-serif;
+            margin: 0;
+            padding: 1rem;
+            background: linear-gradient(135deg, #faeeee 0%, #eefafa 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 80rem;
+            margin: 0 auto;
+        }
+        
+        .filters-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .filter-item {
+            position: relative;
+        }
+        
+        .filter-button {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border-radius: 0.5rem;
+            border: 2px solid rgb(209 213 219);
+            background: rgba(255, 255, 255, 0.9);
+            color: rgb(75 85 99);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: right;
+        }
+        
+        .filter-button:hover {
+            border-color: #4a757c;
+            box-shadow: 0 0 0 3px rgba(74, 117, 124, 0.1);
+        }
+        
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 0.5rem;
+            border: 2px solid rgb(209 213 219);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            z-index: 1001;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 0.25rem;
+            display: none;
+        }
+        
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border-bottom: 1px solid rgb(243 244 246);
+            font-size: 0.875rem;
+            color: rgb(75 85 99);
+            font-weight: 500;
+            text-align: right;
+        }
+        
+        .dropdown-item:hover {
+            background-color: rgb(249 250 251);
+        }
+        
+        .dropdown-item.selected {
+            background-color: rgb(238 242 255);
+            color: #4a757c;
+            font-weight: 600;
+        }
+        
+        .restaurants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 0 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .restaurant-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 420px;
+        }
+        
+        .restaurant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .filters-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                position: relative;
+                z-index: 1;
+            }
+            
+            .filter-item {
+                position: relative;
+                z-index: 5;
+            }
+            
+            .filter-item.open {
+                z-index: 15;
+                margin-bottom: 1rem;
+            }
+            
+            .filter-button {
+                padding: 1rem;
+                font-size: 1rem;
+                min-height: 48px;
+            }
+            
+            .dropdown {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                transform: none;
+                z-index: 9999;
+                max-height: 200px;
+                border-radius: 0.5rem;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+                margin-top: 0.25rem;
+                margin-bottom: 0;
+                background: white;
+                border: 2px solid rgb(209 213 219);
+                overflow-y: auto;
+            }
+            
+            .dropdown-item {
+                padding: 0.875rem 1rem;
+                font-size: 1rem;
+                min-height: 48px;
+                display: flex;
+                align-items: center;
+            }
+            
+            .restaurants-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 0;
+                margin-top: 1rem;
+            }
+            
+            .restaurant-card {
+                padding: 1rem;
+                height: auto;
+                min-height: 380px;
+            }
+        }
+        
+        /* Extra small devices */
+        @media (max-width: 480px) {
+            .dropdown {
+                left: 0;
+                right: 0;
+                max-height: 180px;
+            }
+            
+            .dropdown-item {
+                padding: 0.75rem 1rem;
+                font-size: 0.95rem;
+                min-height: 44px;
+            }
+            
+            .filter-button {
+                padding: 0.875rem;
+                font-size: 0.95rem;
+                min-height: 44px;
+            }
+            
+            .filter-item.open {
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; color: #4a757c; margin-bottom: 2rem;">
+            اختبار إصلاح الفلاتر على الهاتف
+        </h1>
+        
+        <div class="filters-section">
+            <h2 style="color: #4a757c; margin-bottom: 1.5rem;">
+                🔍 فلاتر البحث
+            </h2>
+            
+            <div class="filters-grid">
+                <!-- فلتر العناوين -->
+                <div class="filter-item" id="location-filter">
+                    <h3 style="color: rgb(75 85 99); margin-bottom: 0.75rem;">
+                        📍 العناوين
+                    </h3>
+                    <button class="filter-button" onclick="toggleDropdown('location')">
+                        <span>اختر العنوان</span>
+                        <span id="location-arrow">▼</span>
+                    </button>
+                    <div class="dropdown" id="location-dropdown">
+                        <div class="dropdown-item" onclick="selectLocation('')">إلغاء الاختيار</div>
+                        <div class="dropdown-item" onclick="selectLocation('bosher')">بوشر</div>
+                        <div class="dropdown-item" onclick="selectLocation('khoudh')">الخوض</div>
+                        <div class="dropdown-item" onclick="selectLocation('maabilah')">المعبيلة</div>
+                    </div>
+                </div>
+                
+                <!-- فلتر أنواع الوجبات -->
+                <div class="filter-item" id="meal-type-filter">
+                    <h3 style="color: rgb(75 85 99); margin-bottom: 0.75rem;">
+                        🍽️ أنواع الوجبات
+                    </h3>
+                    <button class="filter-button" onclick="toggleDropdown('meal-type')">
+                        <span>اختر نوع الوجبة</span>
+                        <span id="meal-type-arrow">▼</span>
+                    </button>
+                    <div class="dropdown" id="meal-type-dropdown">
+                        <div class="dropdown-item" onclick="selectMealType('')">إلغاء الاختيار</div>
+                        <div class="dropdown-item" onclick="selectMealType('breakfast')">فطور</div>
+                        <div class="dropdown-item" onclick="selectMealType('lunch')">غداء</div>
+                        <div class="dropdown-item" onclick="selectMealType('dinner')">عشاء</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- شبكة المطاعم للاختبار -->
+        <div class="restaurants-grid">
+            <div class="restaurant-card">
+                <h3>مطعم تجريبي 1</h3>
+                <p>وصف المطعم التجريبي الأول للاختبار</p>
+            </div>
+            <div class="restaurant-card">
+                <h3>مطعم تجريبي 2</h3>
+                <p>وصف المطعم التجريبي الثاني للاختبار</p>
+            </div>
+            <div class="restaurant-card">
+                <h3>مطعم تجريبي 3</h3>
+                <p>وصف المطعم التجريبي الثالث للاختبار</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let selectedLocation = '';
+        let selectedMealType = '';
+        
+        function toggleDropdown(type) {
+            const locationDropdown = document.getElementById('location-dropdown');
+            const mealTypeDropdown = document.getElementById('meal-type-dropdown');
+            const locationFilter = document.getElementById('location-filter');
+            const mealTypeFilter = document.getElementById('meal-type-filter');
+            const locationArrow = document.getElementById('location-arrow');
+            const mealTypeArrow = document.getElementById('meal-type-arrow');
+            
+            if (type === 'location') {
+                const isOpen = locationDropdown.style.display === 'block';
+                
+                // إغلاق قائمة أنواع الوجبات
+                mealTypeDropdown.style.display = 'none';
+                mealTypeFilter.classList.remove('open');
+                mealTypeArrow.style.transform = 'rotate(0deg)';
+                
+                // تبديل حالة قائمة العناوين
+                if (isOpen) {
+                    locationDropdown.style.display = 'none';
+                    locationFilter.classList.remove('open');
+                    locationArrow.style.transform = 'rotate(0deg)';
+                } else {
+                    locationDropdown.style.display = 'block';
+                    locationFilter.classList.add('open');
+                    locationArrow.style.transform = 'rotate(180deg)';
+                }
+            } else if (type === 'meal-type') {
+                const isOpen = mealTypeDropdown.style.display === 'block';
+                
+                // إغلاق قائمة العناوين
+                locationDropdown.style.display = 'none';
+                locationFilter.classList.remove('open');
+                locationArrow.style.transform = 'rotate(0deg)';
+                
+                // تبديل حالة قائمة أنواع الوجبات
+                if (isOpen) {
+                    mealTypeDropdown.style.display = 'none';
+                    mealTypeFilter.classList.remove('open');
+                    mealTypeArrow.style.transform = 'rotate(0deg)';
+                } else {
+                    mealTypeDropdown.style.display = 'block';
+                    mealTypeFilter.classList.add('open');
+                    mealTypeArrow.style.transform = 'rotate(180deg)';
+                }
+            }
+        }
+        
+        function selectLocation(location) {
+            selectedLocation = location;
+            const button = document.querySelector('#location-filter .filter-button span');
+            const locationNames = {
+                '': 'اختر العنوان',
+                'bosher': 'بوشر',
+                'khoudh': 'الخوض',
+                'maabilah': 'المعبيلة'
+            };
+            button.textContent = locationNames[location];
+            
+            // إغلاق القائمة
+            toggleDropdown('location');
+        }
+        
+        function selectMealType(mealType) {
+            selectedMealType = mealType;
+            const button = document.querySelector('#meal-type-filter .filter-button span');
+            const mealTypeNames = {
+                '': 'اختر نوع الوجبة',
+                'breakfast': 'فطور',
+                'lunch': 'غداء',
+                'dinner': 'عشاء'
+            };
+            button.textContent = mealTypeNames[mealType];
+            
+            // إغلاق القائمة
+            toggleDropdown('meal-type');
+        }
+        
+        // إغلاق القوائم عند النقر خارجها
+        document.addEventListener('click', function(event) {
+            const locationFilter = document.getElementById('location-filter');
+            const mealTypeFilter = document.getElementById('meal-type-filter');
+            
+            if (!locationFilter.contains(event.target)) {
+                document.getElementById('location-dropdown').style.display = 'none';
+                locationFilter.classList.remove('open');
+                document.getElementById('location-arrow').style.transform = 'rotate(0deg)';
+            }
+            
+            if (!mealTypeFilter.contains(event.target)) {
+                document.getElementById('meal-type-dropdown').style.display = 'none';
+                mealTypeFilter.classList.remove('open');
+                document.getElementById('meal-type-arrow').style.transform = 'rotate(0deg)';
+            }
+        });
+    </script>
+</body>
+</html>
