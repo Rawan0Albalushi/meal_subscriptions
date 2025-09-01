@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { restaurantsAPI } from '../../services/api';
 
+
 const Home = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
@@ -231,22 +232,26 @@ const Home = () => {
                 borderRadius: '9999px',
                 padding: '0.5rem 1.25rem',
                 fontSize: '0.875rem',
-                color: 'rgb(67 56 202)',
+                color: 'white',
                 marginBottom: '1.5rem',
-                background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)',
-                border: '1px solid rgba(79, 70, 229, 0.2)',
+                background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
+                border: '1px solid rgba(74, 117, 124, 0.3)',
                 backdropFilter: 'blur(10px)',
                 animation: 'pulse 2s ease-in-out infinite',
                 cursor: 'pointer',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 15px rgba(74, 117, 124, 0.3)',
+                fontWeight: '600'
               }}
               onMouseEnter={(e) => {
                 e.target.style.transform = 'scale(1.05)';
-                e.target.style.background = 'linear-gradient(135deg, rgba(79, 70, 229, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)';
+                e.target.style.background = 'linear-gradient(135deg, #5a8a8f 0%, #c87a6a 100%)';
+                e.target.style.boxShadow = '0 6px 20px rgba(74, 117, 124, 0.4)';
               }}
               onMouseLeave={(e) => {
                 e.target.style.transform = 'scale(1)';
-                e.target.style.background = 'linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)';
+                e.target.style.background = 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)';
+                e.target.style.boxShadow = '0 4px 15px rgba(74, 117, 124, 0.3)';
               }}>
                 🎉 {t('discountBadge')}
                                     </div>
@@ -1152,7 +1157,7 @@ const Home = () => {
             </p>
                                     </div>
                                     
-          <div style={{ 
+          <div className="restaurants-grid" style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
             gap: '2rem',

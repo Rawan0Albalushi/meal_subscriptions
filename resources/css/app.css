@@ -4,6 +4,7 @@
 @import "./enhanced-components.css";
 @import "./special-effects.css";
 @import "./mobile-optimizations.css";
+@import "./mobile-responsive.css";
 
 html { 
   /* scroll-behavior: smooth; */ /* Disabled to prevent auto-scroll */
