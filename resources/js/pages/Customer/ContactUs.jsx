@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 const ContactUs = () => {
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
     const isRTL = language === 'ar';
     const [contactInfo, setContactInfo] = useState({
         phone: '+968 9999 9999',
@@ -322,17 +322,14 @@ const ContactUs = () => {
                             color: '#2f6e73',
                             marginBottom: '1rem'
                         }}>
-                            {language === 'ar' ? 'معلومات إضافية' : 'Additional Information'}
+                            {t('additionalInformation')}
                         </h3>
                         <p style={{
                             color: '#64748b',
                             fontSize: '1rem',
                             lineHeight: '1.6'
                         }}>
-                            {language === 'ar' 
-                                ? 'نحن متواجدون لمساعدتك في أي وقت. لا تتردد في التواصل معنا للحصول على الدعم أو الاستفسارات حول خدماتنا.'
-                                : 'We are here to help you anytime. Don\'t hesitate to contact us for support or inquiries about our services.'
-                            }
+                            {t('contactUsDescription')}
                         </p>
                     </div>
                 </div>

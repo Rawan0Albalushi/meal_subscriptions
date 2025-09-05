@@ -113,6 +113,17 @@ class SubscriptionController extends Controller
             ]);
 
             // Create payment link
+            $subscriptionData = [
+                'meal_ids' => $request->meal_ids,
+                'delivery_days' => $request->delivery_days,
+                'start_date' => $request->start_date
+            ];
+            
+            Log::info('Creating payment link with subscription data', [
+                'subscription_id' => $subscription->id,
+                'subscription_data' => $subscriptionData
+            ]);
+            
             $paymentResponse = $this->paymentService->createPaymentLink([
                 'user_id' => auth()->id(),
                 'model_type' => Subscription::class,
@@ -120,11 +131,7 @@ class SubscriptionController extends Controller
                 'amount' => $subscription->total_amount,
                 'currency' => 'OMR',
                 'description' => "اشتراك {$subscriptionType->name_ar} - {$subscription->restaurant->name_ar}",
-                'subscription_data' => [
-                    'meal_ids' => $request->meal_ids,
-                    'delivery_days' => $request->delivery_days,
-                    'start_date' => $request->start_date
-                ]
+                'subscription_data' => $subscriptionData
             ]);
 
             DB::commit();

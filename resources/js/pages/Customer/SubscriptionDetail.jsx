@@ -68,10 +68,10 @@ const SubscriptionDetail = () => {
             if (response.data.success) {
                 setSubscription(response.data.data);
             } else {
-                setError('فشل في جلب تفاصيل الاشتراك');
+                setError(t('subscriptionLoadError') || 'فشل في جلب تفاصيل الاشتراك');
             }
         } catch (err) {
-            setError('خطأ في جلب تفاصيل الاشتراك');
+            setError(t('subscriptionLoadError') || 'خطأ في جلب تفاصيل الاشتراك');
             console.error('Error fetching subscription:', err);
         } finally {
             setLoading(false);
@@ -79,7 +79,6 @@ const SubscriptionDetail = () => {
     };
 
     const handleMealTypeFilter = (mealType) => {
-        console.log('Meal type selected:', mealType);
         setMealTypeFilter(prev => prev === mealType ? '' : mealType);
         setShowMealTypeDropdown(false);
     };
@@ -829,7 +828,7 @@ const SubscriptionDetail = () => {
                                         fontSize: '0.8rem'
                                     }
                                 }}>
-                                    {filteredMeals.length} {language === 'ar' ? 'وجبة' : 'meal'}
+                                    {subscription?.subscription_items?.length || 0} {language === 'ar' ? 'وجبة' : 'meal'}
                                 </p>
                             </div>
                         </div>

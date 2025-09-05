@@ -11,6 +11,7 @@ use App\Models\PaymentTransaction;
 use App\Services\PaymentGateways\StripeGateway;
 use App\Services\PaymentGateways\PayPalGateway;
 use App\Services\PaymentGateways\ThawaniGateway;
+use App\Services\PaymentGateways\MockGateway;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
@@ -43,7 +44,8 @@ class PaymentService
                     );
                 } catch (Exception $e) {
                     Log::warning("Failed to load payment gateway: {$gatewayConfig->name}", [
-                        'error' => $e->getMessage()
+                        'error' => $e->getMessage(),
+                        'reason' => 'Missing API keys or configuration error'
                     ]);
                     // Continue loading other gateways
                 }
@@ -68,7 +70,8 @@ class PaymentService
                 $this->gateways[$gatewayName] = $this->createGatewayInstance($gatewayName, $gatewayConfig);
             } catch (Exception $e) {
                 Log::warning("Failed to load payment gateway from config: {$gatewayName}", [
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
+                    'reason' => 'Missing API keys or configuration error'
                 ]);
             }
         }
@@ -76,10 +79,14 @@ class PaymentService
 
     private function createGatewayInstance(string $gatewayName, array $config): PaymentGatewayInterface
     {
+        // Validate that required API keys are present
+        $this->validateGatewayConfig($gatewayName, $config);
+        
         return match($gatewayName) {
             'stripe' => $this->createStripeGateway($config),
             'paypal' => $this->createPayPalGateway($config),
             'thawani' => new ThawaniGateway($config),
+            'mock' => new MockGateway($config),
             default => throw new Exception("Unsupported gateway: {$gatewayName}")
         };
     }
@@ -98,10 +105,34 @@ class PaymentService
         return new PayPalGateway($config);
     }
 
+    private function validateGatewayConfig(string $gatewayName, array $config): void
+    {
+        $requiredKeys = match($gatewayName) {
+            'stripe' => ['public_key', 'secret_key'],
+            'paypal' => ['client_id', 'client_secret'],
+            'thawani' => ['public_key', 'secret_key'],
+            'mock' => [], // Mock gateway doesn't need API keys
+            default => []
+        };
+
+        foreach ($requiredKeys as $key) {
+            if (empty($config[$key])) {
+                throw new Exception("Missing required API key '{$key}' for {$gatewayName} gateway");
+            }
+        }
+    }
+
     private function setActiveGateway(): void
     {
-        // Get the first active gateway or use config
-        $this->activeGateway = config('payment.default_gateway', array_key_first($this->gateways));
+        // First try to use the configured default gateway if it's available
+        $defaultGateway = config('payment.default_gateway');
+        if ($defaultGateway && isset($this->gateways[$defaultGateway])) {
+            $this->activeGateway = $defaultGateway;
+            return;
+        }
+        
+        // If default gateway is not available, use the first available gateway
+        $this->activeGateway = array_key_first($this->gateways);
         
         if (!$this->activeGateway || !isset($this->gateways[$this->activeGateway])) {
             throw new Exception('No active payment gateway configured');
@@ -123,6 +154,17 @@ class PaymentService
 
         $response = $gateway->createPaymentLink($paymentData);
 
+        // Prepare gateway data with subscription data
+        $gatewayDataWithSubscription = array_merge($response->gatewayData, [
+            'subscription_data' => $data['subscription_data'] ?? []
+        ]);
+        
+        Log::info('Creating payment session with data', [
+            'session_id' => $response->sessionId,
+            'subscription_data' => $data['subscription_data'] ?? null,
+            'gateway_data_with_subscription' => $gatewayDataWithSubscription
+        ]);
+        
         // Create payment session record
         PaymentSession::create([
             'id' => $response->sessionId,
@@ -133,7 +175,7 @@ class PaymentService
             'amount' => $data['amount'],
             'currency' => $data['currency'],
             'payment_link' => $response->paymentLink,
-            'gateway_data' => $response->gatewayData,
+            'gateway_data' => $gatewayDataWithSubscription,
             'expires_at' => now()->addHours(24), // 24 hour expiry
             'status' => 'pending'
         ]);
@@ -142,7 +184,8 @@ class PaymentService
             'session_id' => $response->sessionId,
             'gateway' => $this->activeGateway,
             'amount' => $data['amount'],
-            'user_id' => $data['user_id']
+            'user_id' => $data['user_id'],
+            'subscription_data' => $data['subscription_data'] ?? null
         ]);
 
         return $response;
@@ -177,17 +220,22 @@ class PaymentService
         $gateway = $this->gateways[$paymentSession->gateway_name];
         $response = $gateway->validatePayment($sessionId);
 
-        // Update payment session
+        // Update payment session - preserve existing gateway_data including subscription_data
+        $existingGatewayData = $paymentSession->gateway_data ?? [];
+        $updatedGatewayData = array_merge($existingGatewayData, $response->gatewayData);
+        
         $paymentSession->update([
             'status' => $response->status,
-            'gateway_data' => array_merge($paymentSession->gateway_data, $response->gatewayData),
+            'gateway_data' => $updatedGatewayData,
             'paid_at' => $response->status === 'paid' ? now() : null
         ]);
 
         Log::info('Payment validation completed', [
             'session_id' => $sessionId,
             'status' => $response->status,
-            'is_valid' => $response->isValid
+            'is_valid' => $response->isValid,
+            'existing_gateway_data' => $existingGatewayData,
+            'updated_gateway_data' => $updatedGatewayData
         ]);
 
         return $response;

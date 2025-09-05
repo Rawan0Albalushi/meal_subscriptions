@@ -56,7 +56,7 @@ export const LanguageProvider = ({ children }) => {
             learnMore: 'تعرف أكثر',
             discountBadge: 'إشترك وخلي الباقي علينا',
             heroTitle: 'اشترك من مطاعمك المفضلة',
-            heroSubtitle: 'ووصل وجبتك في وقت ثابت',
+            heroSubtitle: 'وتوصلك وجبتك لين عندك',
             heroDescription: 'اختر مطعمًا واحدًا، خطّة أسبوعية أو شهرية، وحدّد وجبة كل يوم (الأحد–الأربعاء) مع عنوان توصيل واحد.',
             designPreview: 'معاينة التصميم',
             designDescription: 'تصميم حديث وجذاب',
@@ -304,6 +304,47 @@ export const LanguageProvider = ({ children }) => {
             mealTypeFilter: 'فلتر أنواع الوجبات',
             mealTypeFilterMessage: 'اختر نوع الوجبة لعرض الوجبات المتاحة فقط',
             showingMealsOnly: 'عرض وجبات {type} فقط',
+            
+            // Payment Success
+            paymentSuccessful: 'تم الدفع بنجاح!',
+            paymentSuccessMessage: 'تم تأكيد دفعتك بنجاح. يمكنك الآن الاستمتاع باشتراكك.',
+            paymentDetails: 'تفاصيل الدفع',
+            verifyingPayment: 'جاري التحقق من الدفع...',
+            refresh: 'إعادة تحميل',
+            goToSubscriptions: 'الذهاب للاشتراكات',
+            viewMySubscriptions: 'عرض اشتراكاتي',
+            amount: 'المبلغ',
+            paymentMethod: 'طريقة الدفع',
+            paidAt: 'تاريخ الدفع',
+            subscriptionStatus: 'حالة الاشتراك',
+            
+            // Payment Error Messages
+            subscriptionIdMissing: 'معرف الاشتراك مفقود',
+            paymentStillProcessing: 'الدفع قيد المعالجة. يرجى الانتظار قليلاً وتحديث الصفحة.',
+            paymentVerificationFailed: 'فشل في التحقق من الدفع',
+            paymentSessionNotFound: 'لم يتم العثور على جلسة الدفع. يرجى الاتصال بالدعم إذا كنت تعتقد أن هذا خطأ.',
+            failedToVerifyPayment: 'فشل في التحقق من حالة الدفع. يرجى المحاولة مرة أخرى.',
+            
+            // Payment Cancel
+            paymentCancelled: 'تم إلغاء الدفع',
+            paymentCancelledMessage: 'تم إلغاء دفعتك. يمكنك المحاولة مرة أخرى أو الاتصال بالدعم إذا كنت بحاجة إلى مساعدة.',
+            goHome: 'العودة للرئيسية',
+            
+            // Contact Us
+            additionalInformation: 'معلومات إضافية',
+            contactUsDescription: 'نحن متواجدون لمساعدتك في أي وقت. لا تتردد في التواصل معنا للحصول على الدعم أو الاستفسارات حول خدماتنا.',
+            
+            // Subscription Detail
+            subscriptionLoadError: 'فشل في جلب تفاصيل الاشتراك',
+            
+            // Meals and Subscriptions
+            noMealsInSubscription: 'لا توجد وجبات في هذا الاشتراك',
+            noMealsAvailable: 'لا توجد وجبات متاحة في هذا المطعم',
+            noMealsYet: 'لا توجد وجبات لهذا المطعم بعد',
+            noMealsTitle: 'لا توجد وجبات',
+            selectMealTypeToShow: 'يرجى اختيار نوع الوجبة لعرض الوجبات المتاحة',
+            noMealsOfTypeAvailable: 'لا توجد وجبات {type} متاحة',
+            reload: 'إعادة تحميل',
         },
         en: {
             // Navigation
@@ -345,7 +386,7 @@ export const LanguageProvider = ({ children }) => {
             learnMore: 'Learn More',
             discountBadge: 'Subscribe and leave the rest to us',
             heroTitle: 'Subscribe from your favorite restaurants',
-            heroSubtitle: 'And get your meal delivered at a fixed time',
+            heroSubtitle: 'And get your meal delivered right to you',
             heroDescription: 'Choose one restaurant, a weekly or monthly plan, and select a meal every day (Sunday-Wednesday) with one delivery address.',
             designPreview: 'Design Preview',
             designDescription: 'Modern and attractive design',
@@ -593,6 +634,46 @@ export const LanguageProvider = ({ children }) => {
             mealTypeFilter: 'Meal Type Filter',
             mealTypeFilterMessage: 'Choose meal type to show available meals only',
             showingMealsOnly: 'Showing {type} meals only',
+            
+            // Payment Success
+            paymentSuccessful: 'Payment Successful!',
+            paymentSuccessMessage: 'Your payment has been confirmed successfully. You can now enjoy your subscription.',
+            paymentDetails: 'Payment Details',
+            verifyingPayment: 'Verifying payment...',
+            refresh: 'Refresh',
+            goToSubscriptions: 'Go to Subscriptions',
+            viewMySubscriptions: 'View My Subscriptions',
+            amount: 'Amount',
+            paymentMethod: 'Payment Method',
+            paidAt: 'Paid At',
+            subscriptionStatus: 'Subscription Status',
+            
+            // Payment Error Messages
+            subscriptionIdMissing: 'Subscription ID is missing',
+            paymentStillProcessing: 'Payment is still being processed. Please wait a moment and refresh the page.',
+            paymentVerificationFailed: 'Payment verification failed',
+            paymentSessionNotFound: 'Payment session not found. Please contact support if you believe this is an error.',
+            failedToVerifyPayment: 'Failed to verify payment status. Please try again.',
+            
+            // Payment Cancel
+            paymentCancelled: 'Payment Cancelled',
+            paymentCancelledMessage: 'Your payment was cancelled. You can try again or contact support if you need assistance.',
+            goHome: 'Go Home',
+            
+            // Contact Us
+            additionalInformation: 'Additional Information',
+            contactUsDescription: 'We are here to help you anytime. Don\'t hesitate to contact us for support or inquiries about our services.',
+            
+            // Subscription Detail
+            subscriptionLoadError: 'Failed to load subscription details',
+            
+            // Meals and Subscriptions
+            noMealsInSubscription: 'No meals in this subscription',
+            noMealsAvailable: 'No meals available in this restaurant',
+            noMealsYet: 'No meals available for this restaurant yet',
+            selectMealTypeToShow: 'Please select a meal type to show available meals',
+            noMealsOfTypeAvailable: 'No {type} meals available',
+            reload: 'Reload',
         }
     };
 

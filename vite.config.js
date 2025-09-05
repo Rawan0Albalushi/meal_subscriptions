@@ -13,10 +13,10 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
-        host: '0.0.0.0',
+        host: 'localhost',
         port: 5173,
         hmr: {
-            host: '192.168.100.103'
+            host: 'localhost'
         }
     },
     optimizeDeps: {
