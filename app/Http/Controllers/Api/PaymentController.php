@@ -84,18 +84,44 @@ class PaymentController extends Controller
         $subscriptionId = $request->subscription_id;
         
         if ($subscriptionId) {
-            // Find and update payment session status
-            $paymentSession = PaymentSession::where('model_type', Subscription::class)
-                ->where('model_id', $subscriptionId)
-                ->where('status', 'pending')
-                ->latest()
-                ->first();
-            
-            if ($paymentSession) {
-                $paymentSession->update(['status' => 'failed']);
-                Log::info('Payment cancelled by user', [
-                    'session_id' => $paymentSession->id,
-                    'subscription_id' => $subscriptionId
+            try {
+                DB::beginTransaction();
+                
+                // Find and update payment session status
+                $paymentSession = PaymentSession::where('model_type', Subscription::class)
+                    ->where('model_id', $subscriptionId)
+                    ->where('status', 'pending')
+                    ->latest()
+                    ->first();
+                
+                if ($paymentSession) {
+                    $paymentSession->update(['status' => 'failed']);
+                    Log::info('Payment cancelled by user', [
+                        'session_id' => $paymentSession->id,
+                        'subscription_id' => $subscriptionId
+                    ]);
+                }
+                
+                // Cancel the subscription
+                $subscription = Subscription::find($subscriptionId);
+                if ($subscription && $subscription->status === 'pending') {
+                    $subscription->update([
+                        'status' => 'cancelled',
+                        'payment_status' => 'failed'
+                    ]);
+                    
+                    Log::info('Subscription cancelled due to payment cancellation', [
+                        'subscription_id' => $subscriptionId
+                    ]);
+                }
+                
+                DB::commit();
+                
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Error cancelling subscription', [
+                    'subscription_id' => $subscriptionId,
+                    'error' => $e->getMessage()
                 ]);
             }
         }

@@ -136,7 +136,7 @@ const PaymentSuccess = () => {
         {/* Payment Details */}
         {paymentData && (
           <div className="bg-white/85 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl border border-white/20 mb-6 sm:mb-8">
-            <h2 className={`text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6 ${dir === 'rtl' ? 'font-arabic' : 'font-latin'}`} style={{
+            <h2 className={`text-xl sm:text-2xl font-bold mb-4 sm:mb-6 ${dir === 'rtl' ? 'font-arabic text-right' : 'font-latin text-left'}`} style={{
               background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -145,9 +145,9 @@ const PaymentSuccess = () => {
               {t('paymentDetails')}
             </h2>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              <div className="space-y-3 sm:space-y-4">
-                <div className={`flex justify-between items-center p-3 sm:p-4 rounded-xl sm:rounded-2xl ${dir === 'rtl' ? 'flex-row-reverse' : ''}`} style={{
+            <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 ${dir === 'rtl' ? 'sm:grid-flow-col-dense' : ''}`}>
+              <div className={`space-y-3 sm:space-y-4 ${dir === 'rtl' ? 'sm:order-2' : ''}`}>
+                <div className={`flex items-center p-3 sm:p-4 rounded-xl sm:rounded-2xl justify-between ${dir === 'rtl' ? 'text-right' : 'text-left'}`} style={{
                   background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(74, 138, 143, 0.05) 100%)',
                   border: '1px solid rgba(47, 110, 115, 0.2)'
                 }}>
@@ -157,7 +157,7 @@ const PaymentSuccess = () => {
                   </span>
                 </div>
                 
-                <div className={`flex justify-between items-center p-3 sm:p-4 rounded-xl sm:rounded-2xl ${dir === 'rtl' ? 'flex-row-reverse' : ''}`} style={{
+                <div className={`flex items-center p-3 sm:p-4 rounded-xl sm:rounded-2xl justify-between ${dir === 'rtl' ? 'text-right' : 'text-left'}`} style={{
                   background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(74, 138, 143, 0.05) 100%)',
                   border: '1px solid rgba(47, 110, 115, 0.2)'
                 }}>
@@ -168,8 +168,8 @@ const PaymentSuccess = () => {
                 </div>
               </div>
               
-              <div className="space-y-3 sm:space-y-4">
-                <div className={`flex justify-between items-center p-3 sm:p-4 rounded-xl sm:rounded-2xl ${dir === 'rtl' ? 'flex-row-reverse' : ''}`} style={{
+              <div className={`space-y-3 sm:space-y-4 ${dir === 'rtl' ? 'sm:order-1' : ''}`}>
+                <div className={`flex items-center p-3 sm:p-4 rounded-xl sm:rounded-2xl justify-between ${dir === 'rtl' ? 'text-right' : 'text-left'}`} style={{
                   background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(74, 138, 143, 0.05) 100%)',
                   border: '1px solid rgba(47, 110, 115, 0.2)'
                 }}>
@@ -182,7 +182,7 @@ const PaymentSuccess = () => {
                   </span>
                 </div>
                 
-                <div className={`flex justify-between items-center p-3 sm:p-4 rounded-xl sm:rounded-2xl ${dir === 'rtl' ? 'flex-row-reverse' : ''}`} style={{
+                <div className={`flex items-center p-3 sm:p-4 rounded-xl sm:rounded-2xl justify-between ${dir === 'rtl' ? 'text-right' : 'text-left'}`} style={{
                   background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(74, 138, 143, 0.05) 100%)',
                   border: '1px solid rgba(47, 110, 115, 0.2)'
                 }}>
@@ -194,7 +194,7 @@ const PaymentSuccess = () => {
                   </span>
                 </div>
                 
-                <div className={`flex justify-between items-center p-3 sm:p-4 rounded-xl sm:rounded-2xl ${dir === 'rtl' ? 'flex-row-reverse' : ''}`} style={{
+                <div className={`flex items-center p-3 sm:p-4 rounded-xl sm:rounded-2xl justify-between ${dir === 'rtl' ? 'text-right' : 'text-left'}`} style={{
                   background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05) 0%, rgba(74, 138, 143, 0.05) 100%)',
                   border: '1px solid rgba(47, 110, 115, 0.2)'
                 }}>

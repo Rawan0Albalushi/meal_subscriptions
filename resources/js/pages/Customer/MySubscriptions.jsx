@@ -24,7 +24,11 @@ const MySubscriptions = () => {
             const response = await subscriptionsAPI.getAll();
             
             if (response.data.success) {
-                setSubscriptions(response.data.data);
+                // Filter out cancelled and pending subscriptions
+                const activeSubscriptions = response.data.data.filter(subscription => 
+                    subscription.status === 'active' || subscription.status === 'completed'
+                );
+                setSubscriptions(activeSubscriptions);
             } else {
                 setError('فشل في جلب الاشتراكات');
             }

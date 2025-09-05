@@ -66,6 +66,10 @@ const SubscriptionDetail = () => {
             setLoading(true);
             const response = await subscriptionsAPI.getById(id);
             if (response.data.success) {
+                console.log('Subscription data received:', response.data.data);
+                console.log('Total amount:', response.data.data.total_amount);
+                console.log('Delivery price:', response.data.data.delivery_price);
+                console.log('Subscription type:', response.data.data.subscription_type);
                 setSubscription(response.data.data);
             } else {
                 setError(t('subscriptionLoadError') || 'فشل في جلب تفاصيل الاشتراك');
@@ -559,7 +563,7 @@ const SubscriptionDetail = () => {
                                         {language === 'ar' ? 'سعر الاشتراك' : 'Subscription Price'}
                                     </span>
                                     <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#1f2937' }}>
-                                        {subscription.total_amount} {language === 'ar' ? 'ريال' : 'OMR'}
+                                        {(parseFloat(subscription.total_amount) - parseFloat(subscription.delivery_price)).toFixed(2)} {language === 'ar' ? 'ريال' : 'OMR'}
                                     </span>
                                 </div>
                                 <div style={{
@@ -598,7 +602,7 @@ const SubscriptionDetail = () => {
                                         fontWeight: '800', 
                                         color: 'white'
                                     }}>
-                                        {(parseFloat(subscription.total_amount) + parseFloat(subscription.delivery_price)).toFixed(2)} {language === 'ar' ? 'ريال' : 'OMR'}
+                                        {parseFloat(subscription.total_amount).toFixed(2)} {language === 'ar' ? 'ريال' : 'OMR'}
                                     </span>
                                 </div>
                             </div>

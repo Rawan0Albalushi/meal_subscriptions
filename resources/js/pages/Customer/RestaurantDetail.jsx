@@ -409,11 +409,11 @@ const RestaurantDetail = () => {
   const [showMealTypeDropdown, setShowMealTypeDropdown] = useState(false);
 
   const weekDays = [
-    { key: 'sunday', label: language === 'ar' ? 'الأحد' : 'Sunday', icon: '🌅' },
-    { key: 'monday', label: language === 'ar' ? 'الاثنين' : 'Monday', icon: '🌞' },
-    { key: 'tuesday', label: language === 'ar' ? 'الثلاثاء' : 'Tuesday', icon: '☀️' },
-    { key: 'wednesday', label: language === 'ar' ? 'الأربعاء' : 'Wednesday', icon: '🌤️' },
-    { key: 'thursday', label: language === 'ar' ? 'الخميس' : 'Thursday', icon: '🌅' }
+    { key: 'sunday', label: language === 'ar' ? 'الأحد' : 'Sunday' },
+    { key: 'monday', label: language === 'ar' ? 'الاثنين' : 'Monday' },
+    { key: 'tuesday', label: language === 'ar' ? 'الثلاثاء' : 'Tuesday' },
+    { key: 'wednesday', label: language === 'ar' ? 'الأربعاء' : 'Wednesday' },
+    { key: 'thursday', label: language === 'ar' ? 'الخميس' : 'Thursday' }
   ];
 
   // أسماء أنواع الوجبات حسب اللغة
@@ -744,10 +744,11 @@ const RestaurantDetail = () => {
     return selectedMeals[dayKey] || null;
   };
 
-  // Get next valid weekday (Sunday to Thursday)
+  // Get next valid weekday (Sunday to Thursday) - starting from tomorrow
   const getNextValidDate = () => {
     const today = new Date();
     let nextDate = new Date(today);
+    nextDate.setDate(today.getDate() + 1); // Start from tomorrow
     
     // Find the next valid weekday (Sunday to Thursday)
     // Friday = 5, Saturday = 6
@@ -787,7 +788,7 @@ const RestaurantDetail = () => {
       ? ['الوجبة الأولى', 'الوجبة الثانية', 'الوجبة الثالثة', 'الوجبة الرابعة', 'الوجبة الخامسة', 'الوجبة السادسة', 'الوجبة السابعة', 'الوجبة الثامنة', 'الوجبة التاسعة', 'الوجبة العاشرة', 'الوجبة الحادية عشر', 'الوجبة الثانية عشر', 'الوجبة الثالثة عشر', 'الوجبة الرابعة عشر', 'الوجبة الخامسة عشر', 'الوجبة السادسة عشر']
       : ['Meal 1', 'Meal 2', 'Meal 3', 'Meal 4', 'Meal 5', 'Meal 6', 'Meal 7', 'Meal 8', 'Meal 9', 'Meal 10', 'Meal 11', 'Meal 12', 'Meal 13', 'Meal 14', 'Meal 15', 'Meal 16'];
     
-    const dayIcons = ['🌅', '🌞', '☀️', '🌤️', '🍽️', '🥘', '🍲', '🥗', '🍜', '🍛', '🍱', '🥪', '🍕', '🍔', '🌮', '🥙'];
+    const dayIcons = [];
     
     const mealLabels = [];
     const mealIcons = [];
@@ -846,15 +847,25 @@ const RestaurantDetail = () => {
     return days;
   };
 
-  // Check if a date is a valid weekday (Sunday to Thursday)
+  // Check if a date is a valid weekday (Sunday to Thursday) and not today
   const isValidWeekday = (dateString) => {
     if (!dateString) return false;
     const date = new Date(dateString);
+    const today = new Date();
     const dayOfWeek = date.getDay();
-    console.log('Checking date:', dateString, 'Day of week:', dayOfWeek);
+    
+    // Check if it's today (compare dates without time)
+    const todayString = today.toISOString().split('T')[0];
+    const dateStringOnly = dateString;
+    const isToday = dateStringOnly === todayString;
+    
+    console.log('Checking date:', dateString, 'Today:', todayString, 'Day of week:', dayOfWeek, 'Is today:', isToday);
+    
     // Sunday = 0, Monday = 1, Tuesday = 2, Wednesday = 3, Thursday = 4
     // Friday = 5, Saturday = 6
-    return dayOfWeek >= 0 && dayOfWeek <= 4;
+    const isValidDay = dayOfWeek >= 0 && dayOfWeek <= 4;
+    
+    return isValidDay && !isToday;
   };
 
   if (loading) {
@@ -869,7 +880,7 @@ const RestaurantDetail = () => {
         gap: 'clamp(0.5rem, 3vw, 1rem)',
         padding: '1rem'
       }}>
-        <div style={{ fontSize: 'clamp(2rem, 8vw, 3rem)' }}>🍽️</div>
+        <div style={{ fontSize: 'clamp(2rem, 8vw, 3rem)' }}></div>
         <div style={{ 
           fontSize: 'clamp(1rem, 4vw, 1.25rem)', 
           color: '#2f6e73', 
@@ -901,7 +912,7 @@ const RestaurantDetail = () => {
         gap: 'clamp(0.5rem, 3vw, 1rem)',
         padding: '1rem'
       }}>
-        <div style={{ fontSize: 'clamp(2rem, 8vw, 3rem)' }}>❌</div>
+        <div style={{ fontSize: 'clamp(2rem, 8vw, 3rem)' }}></div>
         <div style={{ 
           fontSize: 'clamp(1rem, 4vw, 1.25rem)', 
           color: 'rgb(239 68 68)', 
@@ -959,7 +970,7 @@ const RestaurantDetail = () => {
         flexDirection: 'column',
         gap: '1rem'
       }}>
-        <div style={{ fontSize: '3rem' }}>🔍</div>
+        <div style={{ fontSize: '3rem' }}></div>
         <div style={{ 
           fontSize: '1.25rem', 
           color: 'rgb(75 85 99)', 
@@ -1078,7 +1089,7 @@ const RestaurantDetail = () => {
               border: '2px solid rgba(79, 70, 229, 0.08)',
               transition: 'all 0.3s ease',
               position: 'relative',
-              background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.02), rgba(139, 92, 246, 0.02))'
+              background: 'transparent'
             }}
                           onMouseEnter={(e) => {
                 e.target.style.transform = 'scale(1.01)';
@@ -1098,7 +1109,7 @@ const RestaurantDetail = () => {
                       height: '100%',
                       objectFit: 'contain',
                       transition: 'transform 0.3s ease',
-                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      backgroundColor: 'transparent',
                       padding: '0.5rem'
                     }}
                     onLoad={(e) => {
@@ -1122,7 +1133,6 @@ const RestaurantDetail = () => {
                     fontSize: 'clamp(1.25rem, 3vw, 1.5rem)',
                     color: 'white'
                   }}>
-                    🍽️
                   </div>
                 </>
               ) : (
@@ -1136,7 +1146,6 @@ const RestaurantDetail = () => {
                   fontSize: 'clamp(1.25rem, 3vw, 1.5rem)',
                   color: 'white'
                 }}>
-                  🍽️
                 </div>
               )}
             </div>
@@ -1198,7 +1207,7 @@ const RestaurantDetail = () => {
                   e.target.style.transform = 'translateY(0)';
                   e.target.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.05)';
                 }}>
-                  📍 {restaurant.address || (language === 'ar' ? restaurant.address_ar : restaurant.address_en)}
+                  {restaurant.address || (language === 'ar' ? restaurant.address_ar : restaurant.address_en)}
                 </div>
                 
                 <div style={{ 
@@ -1225,7 +1234,7 @@ const RestaurantDetail = () => {
                   e.target.style.transform = 'translateY(0)';
                   e.target.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.05)';
                 }}>
-                  📞 {restaurant.phone}
+                  {restaurant.phone}
                 </div>
               </div>
             </div>
@@ -1249,16 +1258,6 @@ const RestaurantDetail = () => {
             borderRadius: '1rem'
           }
         }}>
-          {/* Decorative Background */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.02), rgba(99, 102, 241, 0.02))',
-            opacity: 0.5
-          }}></div>
           <h2 style={{ 
             fontSize: 'clamp(1.25rem, 4vw, 2rem)', 
             fontWeight: 'bold', 
@@ -1269,43 +1268,6 @@ const RestaurantDetail = () => {
             {t('selectSubscriptionType')}
           </h2>
           
-          {/* Selection Instructions */}
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.9)',
-            border: '2px solid rgba(74, 117, 124, 0.2)',
-            borderRadius: 'clamp(0.5rem, 2vw, 1rem)',
-            padding: 'clamp(0.75rem, 3vw, 1rem) clamp(1rem, 4vw, 1.5rem)',
-            marginBottom: 'clamp(1.5rem, 4vw, 2rem)',
-            textAlign: 'center'
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem',
-              marginBottom: '0.5rem'
-            }}>
-              <span style={{ fontSize: '1.25rem' }}>👆</span>
-              <span style={{ 
-                fontSize: '1rem', 
-                fontWeight: '600', 
-                color: 'var(--color-primary)'
-              }}>
-                {language === 'ar' ? 'اختر نوع الاشتراك المناسب لك' : 'Choose the subscription type that suits you'}
-              </span>
-            </div>
-            <p style={{ 
-              fontSize: '1rem', 
-              color: 'rgb(107, 114, 128)',
-              margin: 0,
-              fontWeight: '500'
-            }}>
-              {language === 'ar' 
-                ? 'اضغط على البطاقة المفضلة لديك للمتابعة' 
-                : 'Click on your preferred card to continue'
-              }
-            </p>
-          </div>
           
           <p style={{ 
             fontSize: 'clamp(0.75rem, 3vw, 1rem)', 
@@ -1341,7 +1303,7 @@ const RestaurantDetail = () => {
                 period: language === 'ar' 
                   ? (subscriptionType.type === 'weekly' ? 'أسبوعياً' : 'شهرياً')
                   : (subscriptionType.type === 'weekly' ? 'Weekly' : 'Monthly'),
-                icon: subscriptionType.type === 'weekly' ? '📅' : '📆',
+                icon: '',
 
                 gradient: subscriptionType.type === 'weekly' 
                   ? 'var(--gradient-primary)' 
@@ -1359,44 +1321,25 @@ const RestaurantDetail = () => {
                 className="subscription-card"
                 onClick={() => handleSubscriptionTypeSelect(subscriptionType)}
                 style={{
-                  background: selectedSubscriptionType?.type === subscription.type 
-                    ? subscription.bgGradient
-                    : 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95))',
-                  borderRadius: 'clamp(0.75rem, 3vw, 1.5rem)',
-                  padding: 'clamp(1.5rem, 4vw, 2rem)',
+                  background: 'transparent',
+                  borderRadius: '1rem',
+                  padding: '1.5rem',
                   boxShadow: selectedSubscriptionType?.type === subscription.type 
-                    ? `0 20px 40px ${subscription.borderColor}25` 
-                    : '0 8px 25px rgba(0, 0, 0, 0.12)',
+                    ? `0 8px 20px ${subscription.borderColor}20` 
+                    : '0 2px 8px rgba(0, 0, 0, 0.06)',
                   border: selectedSubscriptionType?.type === subscription.type 
-                    ? `3px solid ${subscription.borderColor}` 
-                    : '2px solid rgba(74, 117, 124, 0.2)',
-                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                    ? `2px solid ${subscription.borderColor}` 
+                    : '1px solid rgba(0, 0, 0, 0.06)',
+                  transition: 'all 0.3s ease',
                   cursor: 'pointer',
                   position: 'relative',
                   overflow: 'hidden',
-                  minHeight: 'clamp(280px, 60vh, 320px)',
+                  minHeight: '280px',
                   display: 'flex',
                   flexDirection: 'column',
-                  backdropFilter: 'blur(20px)',
                   '@media (max-width: 768px)': {
-                    minHeight: 'auto',
-                    padding: '1.5rem'
-                  }
-                }}
-                onMouseEnter={(e) => {
-                  if (selectedSubscriptionType?.type !== subscription.type) {
-                    e.target.style.transform = 'translateY(-8px) scale(1.02)';
-                    e.target.style.boxShadow = `0 25px 50px ${subscription.borderColor}20`;
-                    e.target.style.borderColor = subscription.borderColor;
-                    e.target.style.background = subscription.bgGradient;
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (selectedSubscriptionType?.type !== subscription.type) {
-                    e.target.style.transform = 'translateY(0) scale(1)';
-                    e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.12)';
-                    e.target.style.borderColor = 'rgba(74, 117, 124, 0.2)';
-                    e.target.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95))';
+                    minHeight: '240px',
+                    padding: '1rem'
                   }
                 }}
               >
@@ -1404,15 +1347,16 @@ const RestaurantDetail = () => {
                  {subscription.type === 'monthly' && (
                    <div className="popular-badge" style={{
                      position: 'absolute',
-                     top: '0.75rem',
-                     left: '0.75rem',
-                     background: subscription.gradient,
+                     top: '-1px',
+                     left: '-1px',
+                     background: 'linear-gradient(135deg, #ff6b6b, #ee5a24)',
                      color: 'white',
-                     padding: '0.5rem 0.75rem',
-                     borderRadius: '0.75rem',
-                     fontSize: '0.875rem',
-                     fontWeight: '600',
-                     zIndex: 2
+                     padding: '0.5rem 1rem',
+                     borderRadius: '1.5rem 0 1.5rem 0',
+                     fontSize: '0.75rem',
+                     fontWeight: '700',
+                     zIndex: 2,
+                     boxShadow: '0 2px 8px rgba(255, 107, 107, 0.3)'
                    }}>
                      {t('mostPopular')}
                    </div>
@@ -1422,8 +1366,8 @@ const RestaurantDetail = () => {
                 {selectedSubscriptionType?.type === subscription.type && (
                   <div className="selection-indicator" style={{
                     position: 'absolute',
-                    top: '1rem',
-                    right: '1rem',
+                    top: '0.75rem',
+                    right: '0.75rem',
                     background: subscription.borderColor,
                     color: 'white',
                     borderRadius: '50%',
@@ -1434,9 +1378,7 @@ const RestaurantDetail = () => {
                     justifyContent: 'center',
                     fontSize: '1rem',
                     fontWeight: 'bold',
-                    zIndex: 2,
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-                    animation: 'pulse 2s infinite'
+                    zIndex: 2
                   }}>
                     ✓
                   </div>
@@ -1446,10 +1388,10 @@ const RestaurantDetail = () => {
                 {selectedSubscriptionType?.type !== subscription.type && (
                   <div className="selection-indicator" style={{
                     position: 'absolute',
-                    top: '1rem',
-                    right: '1rem',
-                    background: 'rgba(47, 110, 115, 0.1)',
-                    color: '#2f6e73',
+                    top: '0.75rem',
+                    right: '0.75rem',
+                    background: 'transparent',
+                    color: subscription.borderColor,
                     borderRadius: '50%',
                     width: '2rem',
                     height: '2rem',
@@ -1459,41 +1401,34 @@ const RestaurantDetail = () => {
                     fontSize: '1rem',
                     fontWeight: 'bold',
                     zIndex: 2,
-                    border: '2px solid rgba(47, 110, 115, 0.3)',
-                    animation: 'bounce 2s infinite'
+                    border: `1px solid ${subscription.borderColor}`
                   }}>
-                    👆
                   </div>
                 )}
 
                 {/* Header Section */}
                 <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
                   <div className="subscription-icon" style={{ 
-                    fontSize: '2.5rem', 
-                    marginBottom: '1rem',
-                    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
-                    transition: 'all 0.3s ease'
+                    fontSize: '2rem', 
+                    marginBottom: '1rem'
                   }}>
                     {subscription.icon}
                   </div>
                   
                   <h3 className="subscription-title" style={{ 
-                    fontSize: '1.375rem', 
+                    fontSize: '1.25rem', 
                     fontWeight: '700', 
-                    marginBottom: '0.375rem',
-                    background: subscription.gradient,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
+                    marginBottom: '0.25rem',
+                    color: '#1f2937'
                   }}>
                     {subscription.title}
                   </h3>
                   
                   <p className="subscription-subtitle" style={{ 
-                    fontSize: '1rem', 
-                    color: 'rgb(107 114 128)', 
+                    fontSize: '0.9rem', 
+                    color: '#6b7280', 
                     marginBottom: '0',
-                    lineHeight: '1.5',
+                    lineHeight: '1.4',
                     fontWeight: '500'
                   }}>
                     {subscription.subtitle}
@@ -1503,14 +1438,14 @@ const RestaurantDetail = () => {
                 {/* Price Section */}
                 <div style={{ 
                   textAlign: 'center', 
-                  marginBottom: '1rem'
+                  marginBottom: '1.5rem'
                 }}>
                   <div style={{ 
                     display: 'flex', 
                     alignItems: 'baseline',
                     justifyContent: 'center',
                     gap: '0.25rem',
-                    marginBottom: '0.125rem'
+                    marginBottom: '0.25rem'
                   }}>
                     <span className="subscription-price" style={{ 
                       fontSize: '1.75rem', 
@@ -1522,14 +1457,14 @@ const RestaurantDetail = () => {
                     <span className="subscription-currency" style={{ 
                       fontSize: '1rem', 
                       fontWeight: '600',
-                      color: 'rgb(107 114 128)'
+                      color: '#64748b'
                     }}>
                       {subscription.currency}
                     </span>
                   </div>
                   <div className="subscription-period" style={{ 
                     fontSize: '0.875rem', 
-                    color: 'rgb(156 163 175)',
+                    color: '#64748b',
                     fontWeight: '500',
                     marginBottom: '0.5rem'
                   }}>
@@ -1537,8 +1472,8 @@ const RestaurantDetail = () => {
                   </div>
                   {/* Delivery Price Info */}
                   <div className="delivery-info" style={{ 
-                    fontSize: '0.875rem', 
-                    color: subscription.deliveryPrice > 0 ? 'rgb(245 158 11)' : 'rgb(34 197 94)',
+                    fontSize: '0.8rem', 
+                    color: subscription.deliveryPrice > 0 ? '#f59e0b' : '#10b981',
                     fontWeight: '600'
                   }}>
                     {subscription.deliveryPrice > 0 
@@ -1552,39 +1487,38 @@ const RestaurantDetail = () => {
                 <div style={{
                   textAlign: 'center',
                   marginTop: 'auto',
-                  paddingTop: '1rem'
+                  paddingTop: '0.5rem'
                 }}>
                   {selectedSubscriptionType?.type === subscription.type ? (
                     <div className="selection-button" style={{
                       background: subscription.borderColor,
                       color: 'white',
-                      padding: '0.75rem 1.25rem',
+                      padding: '0.75rem 1.5rem',
                       borderRadius: '2rem',
-                      fontSize: '1rem',
+                      fontSize: '0.9rem',
                       fontWeight: '600',
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '0.5rem',
-                      boxShadow: `0 4px 12px ${subscription.borderColor}40`
+                      border: 'none'
                     }}>
                       <span>✓</span>
                       {language === 'ar' ? 'تم الاختيار' : 'Selected'}
                     </div>
                   ) : (
                     <div className="selection-button" style={{
-                      background: 'rgba(47, 110, 115, 0.1)',
-                      color: '#2f6e73',
-                      padding: '0.75rem 1.25rem',
+                      background: 'transparent',
+                      color: subscription.borderColor,
+                      padding: '0.75rem 1.5rem',
                       borderRadius: '2rem',
-                      fontSize: '1rem',
+                      fontSize: '0.9rem',
                       fontWeight: '600',
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '0.5rem',
-                      border: '1px solid rgba(47, 110, 115, 0.3)',
-                      transition: 'all 0.3s ease'
+                      border: `1px solid ${subscription.borderColor}`
                     }}>
-                      <span>👆</span>
+                      <span></span>
                       {language === 'ar' ? 'اضغط للاختيار' : 'Click to Select'}
                     </div>
                   )}
@@ -1680,7 +1614,7 @@ const RestaurantDetail = () => {
                     borderRadius: '50%',
                     marginBottom: '1rem'
                   }}>
-                    <span style={{ fontSize: '1.25rem', color: 'white' }}>📅</span>
+                    <span style={{ fontSize: '1.25rem', color: 'white' }}></span>
                   </div>
                   
                   <h3 style={{ 
@@ -1722,7 +1656,22 @@ const RestaurantDetail = () => {
                         setSelectedMeals({});
                         setErrors(prev => ({ ...prev, startDate: '' }));
                       } else {
-                        setErrors(prev => ({ ...prev, startDate: t('selectWeekdayOnly') }));
+                        // Check if it's today or weekend
+                        const date = new Date(selectedDate);
+                        const today = new Date();
+                        const todayString = today.toISOString().split('T')[0];
+                        const isToday = selectedDate === todayString;
+                        const isWeekend = date.getDay() === 5 || date.getDay() === 6;
+                        
+                        console.log('Validation - Selected:', selectedDate, 'Today:', todayString, 'Is today:', isToday, 'Is weekend:', isWeekend);
+                        
+                        if (isToday) {
+                          setErrors(prev => ({ ...prev, startDate: language === 'ar' ? 'لا يمكن اختيار تاريخ اليوم - يجب اختيار تاريخ من الغد فما بعد' : 'Cannot select today\'s date - Please select a date from tomorrow onwards' }));
+                        } else if (isWeekend) {
+                          setErrors(prev => ({ ...prev, startDate: t('selectWeekdayOnly') }));
+                        } else {
+                          setErrors(prev => ({ ...prev, startDate: t('selectWeekdayOnly') }));
+                        }
                         // Don't reset the input value, let user see their selection
                       }
                     }} 
@@ -1906,7 +1855,7 @@ const RestaurantDetail = () => {
                     borderRadius: '50%',
                     marginBottom: '1rem'
                   }}>
-                    <span style={{ fontSize: '1.25rem', color: 'white' }}>🍽️</span>
+                    <span style={{ fontSize: '1.25rem', color: 'white' }}></span>
                   </div>
                   
                   <h3 style={{ 
@@ -1947,10 +1896,10 @@ const RestaurantDetail = () => {
                   {availableMealTypes.length > 0 ? availableMealTypes.map(mealType => {
                     const isSelected = mealTypeFilter === mealType;
                     const mealTypeIcon = {
-                      'breakfast': '🌅',
-                      'lunch': '☀️',
-                      'dinner': '🌙'
-                    }[mealType] || '🍽️';
+                      'breakfast': '',
+                      'lunch': '',
+                      'dinner': ''
+                    }[mealType] || '';
                     
                     return (
                       <button
@@ -1988,20 +1937,6 @@ const RestaurantDetail = () => {
                             padding: '1rem',
                             fontSize: '1rem',
                             minHeight: '48px'
-                          }
-                        }}
-                        onMouseEnter={(e) => {
-                          if (!isSelected) {
-                            e.target.style.borderColor = '#2f6e73';
-                            e.target.style.background = 'rgba(47, 110, 115, 0.05)';
-                            e.target.style.transform = 'translateY(-2px)';
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (!isSelected) {
-                            e.target.style.borderColor = '#d1d5db';
-                            e.target.style.background = 'white';
-                            e.target.style.transform = 'translateY(0)';
                           }
                         }}
                       >
@@ -2065,7 +2000,7 @@ const RestaurantDetail = () => {
                 border: '1px solid #e5e7eb',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
               }}>
-                <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🍽️</div>
+                <div style={{ fontSize: '2rem', marginBottom: '1rem' }}></div>
                 <p style={{ 
                   color: '#6b7280', 
                   fontSize: '1rem',
@@ -2090,7 +2025,7 @@ const RestaurantDetail = () => {
                 border: '1px solid #e5e7eb',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
               }}>
-                <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🍽️</div>
+                <div style={{ fontSize: '2rem', marginBottom: '1rem' }}></div>
                 <p style={{ 
                   color: '#6b7280', 
                   fontSize: '1rem',
@@ -2114,7 +2049,7 @@ const RestaurantDetail = () => {
                 border: '1px solid #e5e7eb',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
               }}>
-                <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📅</div>
+                <div style={{ fontSize: '2rem', marginBottom: '1rem' }}></div>
                 <p style={{ 
                   color: '#6b7280', 
                   fontSize: '1rem',
@@ -2138,7 +2073,7 @@ const RestaurantDetail = () => {
                 border: '1px solid #e5e7eb',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
               }}>
-                <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🍽️</div>
+                <div style={{ fontSize: '2rem', marginBottom: '1rem' }}></div>
                 <p style={{ 
                   color: '#6b7280', 
                   fontSize: '1rem',
@@ -2205,9 +2140,9 @@ const RestaurantDetail = () => {
                     <div style={{ 
                       display: 'flex', 
                       alignItems: 'center', 
-                      gap: '0.75rem',
-                      marginBottom: '1.5rem',
-                      padding: '0.75rem',
+                      gap: '0.5rem',
+                      marginBottom: '1rem',
+                      padding: '0.5rem',
                       background: selectedSubscriptionType?.type === 'monthly' && day.weekNumber 
                         ? `linear-gradient(135deg, ${day.weekNumber === 1 ? 'rgba(47, 110, 115, 0.1)' : day.weekNumber === 2 ? 'rgba(74, 138, 143, 0.1)' : day.weekNumber === 3 ? 'rgba(182, 84, 73, 0.1)' : 'rgba(200, 106, 90, 0.1)'}, ${day.weekNumber === 1 ? 'rgba(47, 110, 115, 0.05)' : day.weekNumber === 2 ? 'rgba(74, 138, 143, 0.05)' : day.weekNumber === 3 ? 'rgba(182, 84, 73, 0.05)' : 'rgba(200, 106, 90, 0.05)'})`
                         : 'transparent',
@@ -2217,25 +2152,25 @@ const RestaurantDetail = () => {
                         : '1px solid rgba(229, 231, 235, 0.3)',
                       '@media (max-width: 768px)': {
                         flexDirection: 'column',
-                        gap: '0.5rem',
-                        marginBottom: '1rem',
-                        padding: '1rem',
+                        gap: '0.375rem',
+                        marginBottom: '0.75rem',
+                        padding: '0.75rem',
                         textAlign: 'center'
                       }
                     }}>
                       <div style={{ fontSize: '1.5rem' }}>{day.icon}</div>
                       <div style={{ flex: 1 }}>
                         <h3 style={{ 
-                          fontSize: '1.25rem', 
+                          fontSize: '1.125rem', 
                           fontWeight: '600', 
                           color: '#2f6e73',
                           margin: 0,
-                          marginBottom: '0.25rem'
+                          marginBottom: '0.125rem'
                         }}>
                           {day.label}
                         </h3>
                         <div style={{
-                          fontSize: '0.875rem',
+                          fontSize: '0.75rem',
                           color: 'rgb(107 114 128)',
                           fontWeight: '500'
                         }}>
@@ -2306,22 +2241,7 @@ const RestaurantDetail = () => {
                             }
                           }}
                             onClick={() => handleMealSelection(day.key, meal)}
-                            onMouseEnter={(e) => {
-                              if (!isSelected) {
-                                e.target.style.transform = 'translateY(-8px) scale(1.02)';
-                                e.target.style.boxShadow = '0 20px 40px rgba(47, 110, 115, 0.15)';
-                                e.target.style.borderColor = '#2f6e73';
-                                e.target.style.background = 'rgba(47, 110, 115, 0.05)';
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (!isSelected) {
-                                e.target.style.transform = 'translateY(0) scale(1)';
-                                e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.12)';
-                                e.target.style.borderColor = 'rgba(47, 110, 115, 0.2)';
-                                e.target.style.background = 'rgba(255, 255, 255, 0.95)';
-                              }
-                            }}>
+>
                             
                             {/* Selection Indicator */}
                             {isSelected && (
@@ -2366,7 +2286,6 @@ const RestaurantDetail = () => {
                                 animation: 'bounce 2s infinite',
                                 zIndex: 10
                               }}>
-                                👆
                               </div>
                             )}
                             
@@ -2376,7 +2295,7 @@ const RestaurantDetail = () => {
                               height: '70%',
                               position: 'relative',
                               overflow: 'hidden',
-                              background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05), rgba(182, 84, 73, 0.05))'
+                              borderRadius: 'clamp(0.75rem, 3vw, 1.25rem) clamp(0.75rem, 3vw, 1.25rem) 0 0'
                             }}>
                               {meal.image ? (
                                 <>
@@ -2410,7 +2329,6 @@ const RestaurantDetail = () => {
                                     fontSize: 'clamp(2rem, 6vw, 3rem)',
                                     color: 'white'
                                   }}>
-                                    🍽️
                                   </div>
                                 </>
                               ) : (
@@ -2424,7 +2342,6 @@ const RestaurantDetail = () => {
                                   fontSize: 'clamp(2rem, 6vw, 3rem)',
                                   color: 'white'
                                 }}>
-                                  🍽️
                                 </div>
                               )}
                             </div>
@@ -2437,7 +2354,8 @@ const RestaurantDetail = () => {
                               flexDirection: 'column',
                               justifyContent: 'space-between',
                               background: 'rgba(255, 255, 255, 0.95)',
-                              backdropFilter: 'blur(10px)'
+                              backdropFilter: 'blur(10px)',
+                              borderRadius: '0 0 clamp(0.75rem, 3vw, 1.25rem) clamp(0.75rem, 3vw, 1.25rem)'
                             }}>
                               <div>
                                 <h4 className="meal-title" style={{ 
@@ -2484,14 +2402,6 @@ const RestaurantDetail = () => {
                                   boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
                                   marginTop: 'auto'
                                 }}
-                                onMouseEnter={(e) => {
-                                  e.target.style.transform = 'translateY(-1px)';
-                                  e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-                                }}
-                                onMouseLeave={(e) => {
-                                  e.target.style.transform = 'translateY(0)';
-                                  e.target.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-                                }}
                               >
                                 {isSelected ? t('selected') : t('selectThisMeal')}
                               </button>
@@ -2523,36 +2433,7 @@ const RestaurantDetail = () => {
                   transition: 'all 0.3s ease',
                   cursor: 'pointer'
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'translateY(-3px)';
-                  e.target.style.boxShadow = '0 12px 30px rgba(220, 38, 38, 0.18)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 6px 20px rgba(220, 38, 38, 0.12)';
-                }}
               >
-                {/* Decorative background elements */}
-                <div style={{
-                  position: 'absolute',
-                  top: '-15px',
-                  right: '-15px',
-                  width: '60px',
-                  height: '60px',
-                  background: 'rgba(220, 38, 38, 0.08)',
-                  borderRadius: '50%',
-                  filter: 'blur(12px)'
-                }}></div>
-                <div style={{
-                  position: 'absolute',
-                  bottom: '-12px',
-                  left: '-12px',
-                  width: '50px',
-                  height: '50px',
-                  background: 'rgba(239, 68, 68, 0.06)',
-                  borderRadius: '50%',
-                  filter: 'blur(10px)'
-                }}></div>
                 
                 <div style={{
                   display: 'flex',
@@ -2593,34 +2474,13 @@ const RestaurantDetail = () => {
                 textAlign: 'center', 
                 marginTop: '2rem',
                 padding: '2rem',
-                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(249, 250, 251, 0.95))',
+                background: 'rgba(255, 255, 255, 0.95)',
                 borderRadius: '1.5rem',
                 border: '1px solid rgba(229, 231, 235, 0.5)',
                 boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
                 position: 'relative',
                 overflow: 'hidden'
               }}>
-                {/* Decorative Elements */}
-                <div style={{
-                  position: 'absolute',
-                  top: '-20px',
-                  right: '-20px',
-                  width: '100px',
-                  height: '100px',
-                  background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(99, 102, 241, 0.1))',
-                  borderRadius: '50%',
-                  filter: 'blur(20px)'
-                }}></div>
-                <div style={{
-                  position: 'absolute',
-                  bottom: '-15px',
-                  left: '-15px',
-                  width: '80px',
-                  height: '80px',
-                  background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(5, 150, 105, 0.08))',
-                  borderRadius: '50%',
-                  filter: 'blur(15px)'
-                }}></div>
                 <div style={{ 
                   display: 'flex', 
                   alignItems: 'center', 
@@ -2655,14 +2515,6 @@ const RestaurantDetail = () => {
                     position: 'relative',
                     overflow: 'hidden'
                   }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-3px) scale(1.02)';
-                    e.target.style.boxShadow = '0 15px 35px rgba(47, 110, 115, 0.4)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0) scale(1)';
-                    e.target.style.boxShadow = '0 10px 25px rgba(47, 110, 115, 0.3)';
-                  }}
                 >
                   <span style={{ position: 'relative', zIndex: 2 }}>
                     🚀 {t('continueToSubscription')}
@@ -2684,7 +2536,7 @@ const RestaurantDetail = () => {
                 textAlign: 'center', 
                 marginTop: '2rem',
                 padding: '2rem',
-                background: 'linear-gradient(135deg, rgba(254, 242, 242, 0.95), rgba(254, 226, 226, 0.95))',
+                background: 'rgba(254, 242, 242, 0.95)',
                 borderRadius: '1.5rem',
                 border: '1px solid rgba(254, 202, 202, 0.5)',
                 boxShadow: '0 10px 30px rgba(220, 38, 38, 0.1)',
@@ -2827,14 +2679,6 @@ const RestaurantDetail = () => {
                     transition: 'all 0.2s ease',
                     minWidth: 'clamp(100px, 25vw, 120px)'
                   }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = 'rgba(75, 85, 99, 0.1)';
-                    e.target.style.transform = 'translateY(-2px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = 'rgba(255, 255, 255, 0.9)';
-                    e.target.style.transform = 'translateY(0)';
-                  }}
                 >
                   {t('cancel')}
                 </button>
@@ -2855,14 +2699,6 @@ const RestaurantDetail = () => {
                     transition: 'all 0.2s ease',
                     boxShadow: '0 4px 15px rgba(47, 110, 115, 0.3)',
                     minWidth: 'clamp(100px, 25vw, 120px)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 8px 25px rgba(47, 110, 115, 0.4)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 4px 15px rgba(47, 110, 115, 0.3)';
                   }}
                 >
                   {t('login')}
