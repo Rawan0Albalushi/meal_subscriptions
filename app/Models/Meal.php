@@ -20,15 +20,17 @@ class Meal extends Model
         'meal_type',
         'delivery_time',
         'is_available',
+        'subscription_type_ids',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'delivery_time' => 'datetime',
         'is_available' => 'boolean',
+        'subscription_type_ids' => 'array',
     ];
 
-    protected $appends = ['name', 'description', 'meal_type_text', 'delivery_time_formatted'];
+    protected $appends = ['name', 'description', 'meal_type_text', 'delivery_time_formatted', 'linked_subscription_types'];
 
     public function restaurant()
     {
@@ -38,6 +40,11 @@ class Meal extends Model
     public function subscriptionItems()
     {
         return $this->hasMany(SubscriptionItem::class);
+    }
+
+    public function subscriptionTypes()
+    {
+        return $this->belongsToMany(SubscriptionType::class, 'meal_subscription_type', 'meal_id', 'subscription_type_id');
     }
 
     public function getNameAttribute()
@@ -83,5 +90,16 @@ class Meal extends Model
         }
         
         return null;
+    }
+
+    public function getLinkedSubscriptionTypesAttribute()
+    {
+        if (!$this->subscription_type_ids || !is_array($this->subscription_type_ids)) {
+            return collect();
+        }
+
+        return SubscriptionType::whereIn('id', $this->subscription_type_ids)
+            ->where('restaurant_id', $this->restaurant_id)
+            ->get();
     }
 }

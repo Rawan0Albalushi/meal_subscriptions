@@ -6,6 +6,7 @@ const SellerMeals = () => {
     const [restaurants, setRestaurants] = useState([]);
     const [selectedRestaurant, setSelectedRestaurant] = useState('');
     const [meals, setMeals] = useState([]);
+    const [subscriptionTypes, setSubscriptionTypes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
     const [editingMeal, setEditingMeal] = useState(null);
@@ -14,10 +15,10 @@ const SellerMeals = () => {
         name_en: '',
         description_ar: '',
         description_en: '',
-        price: '',
         meal_type: 'lunch',
         delivery_time: '',
-        is_available: true
+        is_available: true,
+        subscription_type_ids: []
     });
     const [selectedImage, setSelectedImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
@@ -35,6 +36,7 @@ const SellerMeals = () => {
     useEffect(() => {
         if (selectedRestaurant) {
             fetchMeals(selectedRestaurant);
+            fetchSubscriptionTypes(selectedRestaurant);
         }
     }, [selectedRestaurant]);
 
@@ -91,6 +93,24 @@ const SellerMeals = () => {
         }
     };
 
+    const fetchSubscriptionTypes = async (restaurantId) => {
+        try {
+            const response = await fetch(`/api/seller/restaurants/${restaurantId}/subscription-types`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                setSubscriptionTypes(data.data || []);
+            }
+        } catch (error) {
+            console.error('Error fetching subscription types:', error);
+        }
+    };
+
     // دوال إدارة الـ popup messages
     const showMessage = (message, type = 'success') => {
         setPopupMessage(message);
@@ -125,10 +145,17 @@ const SellerMeals = () => {
             formDataToSend.append('name_en', formData.name_en);
             formDataToSend.append('description_ar', formData.description_ar);
             formDataToSend.append('description_en', formData.description_en);
-            formDataToSend.append('price', parseFloat(formData.price));
+            formDataToSend.append('price', '0.00');
             formDataToSend.append('meal_type', formData.meal_type);
             formDataToSend.append('delivery_time', formData.delivery_time);
             formDataToSend.append('is_available', formData.is_available ? '1' : '0');
+            
+            // إضافة أنواع الاشتراكات المختارة
+            if (formData.subscription_type_ids && formData.subscription_type_ids.length > 0) {
+                formData.subscription_type_ids.forEach((id, index) => {
+                    formDataToSend.append(`subscription_type_ids[${index}]`, id);
+                });
+            }
             
             // إضافة الصورة إذا تم اختيارها
             if (selectedImage) {
@@ -206,10 +233,10 @@ const SellerMeals = () => {
             name_en: meal.name_en || '',
             description_ar: meal.description_ar || '',
             description_en: meal.description_en || '',
-            price: meal.price ? meal.price.toString() : '',
             meal_type: meal.meal_type || 'lunch',
             delivery_time: meal.delivery_time_formatted || '',
             is_available: meal.is_available !== undefined ? meal.is_available : true,
+            subscription_type_ids: meal.subscription_type_ids || [],
         });
         setSelectedImage(null);
         setImagePreview(meal.image ? `/storage/${meal.image}` : null);
@@ -266,10 +293,10 @@ const SellerMeals = () => {
             name_en: '',
             description_ar: '',
             description_en: '',
-            price: '',
             meal_type: 'lunch',
             delivery_time: '',
-            is_available: true
+            is_available: true,
+            subscription_type_ids: []
         });
         setSelectedImage(null);
         setImagePreview(null);
@@ -615,34 +642,14 @@ const SellerMeals = () => {
                                 {language === 'ar' ? meal.description_ar : meal.description_en}
                             </p>
                             
+                            {/* Meal Details */}
                             <div style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'flex-end',
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr',
+                                gap: '0.75rem',
+                                fontSize: '0.75rem',
                                 marginBottom: '1rem'
                             }}>
-                                <div style={{
-                                    display: 'grid',
-                                    gridTemplateColumns: '1fr 1fr',
-                                    gap: '0.75rem',
-                                    fontSize: '0.75rem',
-                                    flex: 1
-                                }}>
-                                <div>
-                                    <span style={{
-                                        color: 'rgb(107 114 128)',
-                                        fontWeight: '500'
-                                    }}>
-                                        💰 {language === 'ar' ? 'السعر' : 'Price'}:
-                                    </span>
-                                    <div style={{
-                                        color: 'rgb(55 65 81)',
-                                        marginTop: '0.25rem',
-                                        fontWeight: '600'
-                                    }}>
-                                        {meal.price} {language === 'ar' ? 'ريال' : 'OMR'}
-                                    </div>
-                                </div>
                                 <div>
                                     <span style={{
                                         color: 'rgb(107 114 128)',
@@ -657,7 +664,57 @@ const SellerMeals = () => {
                                         {meal.delivery_time_formatted || (language === 'ar' ? 'غير محدد' : 'Not specified')}
                                     </div>
                                 </div>
+                                <div>
+                                    <span style={{
+                                        color: 'rgb(107 114 128)',
+                                        fontWeight: '500'
+                                    }}>
+                                        🍽️ {language === 'ar' ? 'نوع الوجبة' : 'Meal Type'}:
+                                    </span>
+                                    <div style={{
+                                        color: 'rgb(55 65 81)',
+                                        marginTop: '0.25rem',
+                                        fontWeight: '600'
+                                    }}>
+                                        {meal.meal_type_text}
+                                    </div>
+                                </div>
                             </div>
+                            
+                            {/* Subscription Types */}
+                            {meal.linked_subscription_types && meal.linked_subscription_types.length > 0 && (
+                                <div style={{
+                                    marginBottom: '1rem'
+                                }}>
+                                    <div style={{
+                                        fontSize: '0.75rem',
+                                        color: 'rgb(107 114 128)',
+                                        fontWeight: '500',
+                                        marginBottom: '0.5rem'
+                                    }}>
+                                        📋 {language === 'ar' ? 'أنواع الاشتراكات المرتبطة' : 'Linked Subscription Types'}:
+                                    </div>
+                                    <div style={{
+                                        display: 'flex',
+                                        flexWrap: 'wrap',
+                                        gap: '0.25rem'
+                                    }}>
+                                        {meal.linked_subscription_types.map((subscriptionType) => (
+                                            <span key={subscriptionType.id} style={{
+                                                padding: '0.25rem 0.5rem',
+                                                background: 'rgba(79, 70, 229, 0.1)',
+                                                color: 'rgb(79 70 229)',
+                                                borderRadius: '0.375rem',
+                                                fontSize: '0.75rem',
+                                                fontWeight: '500',
+                                                border: '1px solid rgba(79, 70, 229, 0.2)'
+                                            }}>
+                                                {language === 'ar' ? subscriptionType.name_ar : subscriptionType.name_en}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                             <div style={{
                                 display: 'flex',
                                 gap: '0.5rem'
@@ -691,7 +748,6 @@ const SellerMeals = () => {
                                     🗑️
                                 </button>
                             </div>
-                        </div>
                         </div>
                     ))}
                 </div>
@@ -1071,7 +1127,7 @@ const SellerMeals = () => {
 
                             <div style={{
                                 display: 'grid',
-                                gridTemplateColumns: '1fr 1fr 1fr',
+                                gridTemplateColumns: '1fr 1fr',
                                 gap: '1rem',
                                 marginBottom: '1rem'
                             }}>
@@ -1111,32 +1167,6 @@ const SellerMeals = () => {
                                         fontWeight: '500',
                                         color: 'rgb(55 65 81)'
                                     }}>
-                                        {language === 'ar' ? 'السعر' : 'Price'} *
-                                    </label>
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        min="0"
-                                        value={formData.price}
-                                        onChange={(e) => setFormData({...formData, price: e.target.value})}
-                                        required
-                                        style={{
-                                            width: '100%',
-                                            padding: '0.75rem',
-                                            border: '1px solid rgba(0, 0, 0, 0.1)',
-                                            borderRadius: '0.5rem',
-                                            fontSize: '0.875rem'
-                                        }}
-                                    />
-                                </div>
-                                <div>
-                                    <label style={{
-                                        display: 'block',
-                                        marginBottom: '0.5rem',
-                                        fontSize: '0.875rem',
-                                        fontWeight: '500',
-                                        color: 'rgb(55 65 81)'
-                                    }}>
                                         {language === 'ar' ? 'وقت التوصيل' : 'Delivery Time'} *
                                     </label>
                                     <input
@@ -1152,6 +1182,96 @@ const SellerMeals = () => {
                                             fontSize: '0.875rem'
                                         }}
                                     />
+                                </div>
+                            </div>
+
+                            {/* Subscription Types Selection */}
+                            <div style={{
+                                marginBottom: '1rem'
+                            }}>
+                                <label style={{
+                                    display: 'block',
+                                    marginBottom: '0.5rem',
+                                    fontSize: '0.875rem',
+                                    fontWeight: '500',
+                                    color: 'rgb(55 65 81)'
+                                }}>
+                                    📋 {language === 'ar' ? 'أنواع الاشتراكات المرتبطة' : 'Linked Subscription Types'}
+                                </label>
+                                <div style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                                    gap: '0.5rem',
+                                    maxHeight: '200px',
+                                    overflowY: 'auto',
+                                    border: '1px solid rgba(0, 0, 0, 0.1)',
+                                    borderRadius: '0.5rem',
+                                    padding: '0.75rem',
+                                    background: 'rgba(0, 0, 0, 0.02)'
+                                }}>
+                                    {subscriptionTypes.length > 0 ? (
+                                        subscriptionTypes.map((subscriptionType) => (
+                                            <label key={subscriptionType.id} style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.5rem',
+                                                padding: '0.5rem',
+                                                borderRadius: '0.375rem',
+                                                background: formData.subscription_type_ids.includes(subscriptionType.id) 
+                                                    ? 'rgba(34, 197, 94, 0.1)' 
+                                                    : 'white',
+                                                border: formData.subscription_type_ids.includes(subscriptionType.id) 
+                                                    ? '1px solid rgba(34, 197, 94, 0.3)' 
+                                                    : '1px solid rgba(0, 0, 0, 0.1)',
+                                                cursor: 'pointer',
+                                                transition: 'all 0.2s'
+                                            }}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={formData.subscription_type_ids.includes(subscriptionType.id)}
+                                                    onChange={(e) => {
+                                                        const isChecked = e.target.checked;
+                                                        const newIds = isChecked
+                                                            ? [...formData.subscription_type_ids, subscriptionType.id]
+                                                            : formData.subscription_type_ids.filter(id => id !== subscriptionType.id);
+                                                        setFormData({...formData, subscription_type_ids: newIds});
+                                                    }}
+                                                    style={{
+                                                        width: '1rem',
+                                                        height: '1rem'
+                                                    }}
+                                                />
+                                                <div style={{ flex: 1 }}>
+                                                    <div style={{
+                                                        fontSize: '0.875rem',
+                                                        fontWeight: '500',
+                                                        color: 'rgb(55 65 81)'
+                                                    }}>
+                                                        {language === 'ar' ? subscriptionType.name_ar : subscriptionType.name_en}
+                                                    </div>
+                                                    <div style={{
+                                                        fontSize: '0.75rem',
+                                                        color: 'rgb(107 114 128)'
+                                                    }}>
+                                                        {subscriptionType.type_text} - {subscriptionType.price} {language === 'ar' ? 'ريال' : 'OMR'}
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        ))
+                                    ) : (
+                                        <div style={{
+                                            gridColumn: '1 / -1',
+                                            textAlign: 'center',
+                                            padding: '1rem',
+                                            color: 'rgb(107 114 128)',
+                                            fontSize: '0.875rem'
+                                        }}>
+                                            {language === 'ar' 
+                                                ? 'لا توجد أنواع اشتراكات متاحة لهذا المطعم' 
+                                                : 'No subscription types available for this restaurant'
+                                            }
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
