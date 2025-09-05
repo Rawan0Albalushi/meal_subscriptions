@@ -150,6 +150,9 @@ class RestaurantController extends Controller
                 $logoPath = $request->file('logo')->store('restaurants/logos', 'public');
                 $validated['logo'] = $logoPath;
 
+                // مزامنة الملفات مع مجلد public
+                exec('php ' . base_path('sync_storage.php'));
+
                 \Log::info('✅ تم رفع الشعار بنجاح', [
                     'logo_path' => $logoPath
                 ]);

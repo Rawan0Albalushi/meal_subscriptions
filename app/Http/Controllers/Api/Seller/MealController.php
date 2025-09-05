@@ -105,16 +105,34 @@ class MealController extends Controller
                 'name_en' => 'required|string|max:255',
                 'description_ar' => 'nullable|string',
                 'description_en' => 'nullable|string',
-                'price' => 'required|numeric|min:0',
+                'price' => 'nullable|numeric|min:0',
                 'meal_type' => 'required|in:breakfast,lunch,dinner',
                 'delivery_time' => 'required|date_format:H:i',
                 'is_available' => 'boolean',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'subscription_type_ids' => 'nullable|array',
+                'subscription_type_ids.*' => 'integer|exists:subscription_types,id'
             ]);
 
             // تحويل is_available إلى boolean
             if (isset($validated['is_available'])) {
                 $validated['is_available'] = filter_var($validated['is_available'], FILTER_VALIDATE_BOOLEAN);
+            }
+
+            // تعيين السعر كصفر دائماً (النظام يعتمد على سعر الاشتراك)
+            $validated['price'] = 0.00;
+
+            // التحقق من أن أنواع الاشتراكات تنتمي للمطعم نفسه
+            if (isset($validated['subscription_type_ids']) && !empty($validated['subscription_type_ids'])) {
+                $restaurantSubscriptionTypes = $restaurant->subscriptionTypes()->pluck('id')->toArray();
+                $invalidTypes = array_diff($validated['subscription_type_ids'], $restaurantSubscriptionTypes);
+                
+                if (!empty($invalidTypes)) {
+                    return response()->json([
+                        'message' => 'بعض أنواع الاشتراكات المختارة لا تنتمي لهذا المطعم',
+                        'errors' => ['subscription_type_ids' => ['أنواع الاشتراكات المختارة غير صحيحة']]
+                    ], 422);
+                }
             }
 
             Log::info('MealController@store: تم التحقق من البيانات بنجاح', [
@@ -136,6 +154,9 @@ class MealController extends Controller
 
                     $imagePath = $request->file('image')->store('meals/images', 'public');
                     $validated['image'] = $imagePath;
+
+                    // مزامنة الملفات مع مجلد public
+                    exec('php ' . base_path('sync_storage.php'));
 
                     Log::info('MealController@store: تم رفع الصورة بنجاح', [
                         'user_id' => $request->user()->id,
@@ -236,16 +257,34 @@ class MealController extends Controller
                 'name_en' => 'sometimes|required|string|max:255',
                 'description_ar' => 'nullable|string',
                 'description_en' => 'nullable|string',
-                'price' => 'sometimes|required|numeric|min:0',
+                'price' => 'nullable|numeric|min:0',
                 'meal_type' => 'sometimes|required|in:breakfast,lunch,dinner',
                 'delivery_time' => 'sometimes|required|date_format:H:i',
                 'is_available' => 'boolean',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'subscription_type_ids' => 'nullable|array',
+                'subscription_type_ids.*' => 'integer|exists:subscription_types,id'
             ]);
 
             // تحويل is_available إلى boolean
             if (isset($validated['is_available'])) {
                 $validated['is_available'] = filter_var($validated['is_available'], FILTER_VALIDATE_BOOLEAN);
+            }
+
+            // تعيين السعر كصفر دائماً (النظام يعتمد على سعر الاشتراك)
+            $validated['price'] = 0.00;
+
+            // التحقق من أن أنواع الاشتراكات تنتمي للمطعم نفسه
+            if (isset($validated['subscription_type_ids']) && !empty($validated['subscription_type_ids'])) {
+                $restaurantSubscriptionTypes = $restaurant->subscriptionTypes()->pluck('id')->toArray();
+                $invalidTypes = array_diff($validated['subscription_type_ids'], $restaurantSubscriptionTypes);
+                
+                if (!empty($invalidTypes)) {
+                    return response()->json([
+                        'message' => 'بعض أنواع الاشتراكات المختارة لا تنتمي لهذا المطعم',
+                        'errors' => ['subscription_type_ids' => ['أنواع الاشتراكات المختارة غير صحيحة']]
+                    ], 422);
+                }
             }
 
             Log::info('MealController@update: تم التحقق من البيانات بنجاح', [
@@ -279,6 +318,9 @@ class MealController extends Controller
                     
                     $imagePath = $request->file('image')->store('meals/images', 'public');
                     $validated['image'] = $imagePath;
+
+                    // مزامنة الملفات مع مجلد public
+                    exec('php ' . base_path('sync_storage.php'));
 
                     Log::info('MealController@update: تم رفع الصورة الجديدة بنجاح', [
                         'user_id' => $request->user()->id,
