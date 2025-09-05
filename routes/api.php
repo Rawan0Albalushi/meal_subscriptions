@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\SubscriptionTypeController;
 use App\Http\Controllers\Api\DeliveryAddressController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\Seller\RestaurantController as SellerRestaurantController;
 use App\Http\Controllers\Api\Seller\MealController as SellerMealController;
 use App\Http\Controllers\Api\ContactInformationController;
@@ -51,6 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Subscription routes
     Route::get('/subscriptions', [SubscriptionController::class, 'index']);
     Route::post('/subscriptions', [SubscriptionController::class, 'store']);
+    Route::post('/subscriptions/initiate-payment', [SubscriptionController::class, 'initiatePayment']);
     Route::get('/subscriptions/{id}', [SubscriptionController::class, 'show']);
     Route::put('/subscriptions/{id}', [SubscriptionController::class, 'update']);
     Route::put('/subscriptions/{subscriptionId}/items/{itemId}/status', [SubscriptionController::class, 'updateItemStatus']);
@@ -62,6 +64,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/delivery-addresses/{id}', [DeliveryAddressController::class, 'update']);
     Route::delete('/delivery-addresses/{id}', [DeliveryAddressController::class, 'destroy']);
 });
+
+// Public payment routes (no authentication required for callbacks)
+Route::post('/payments/webhook', [PaymentController::class, 'webhook'])->name('payment.webhook');
+Route::get('/payments/success', [PaymentController::class, 'success'])->name('payment.success');
+Route::get('/payments/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
+Route::get('/payments/status/{subscriptionId}', [PaymentController::class, 'checkStatus']);
 
 // Admin routes
 Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {

@@ -72,6 +72,7 @@ export const subscriptionsAPI = {
     getAll: () => api.get('/subscriptions'),
     getById: (id) => api.get(`/subscriptions/${id}`),
     create: (subscriptionData) => api.post('/subscriptions', subscriptionData),
+    initiatePayment: (subscriptionData) => api.post('/subscriptions/initiate-payment', subscriptionData),
     update: (id, subscriptionData) => api.put(`/subscriptions/${id}`, subscriptionData),
     updateItemStatus: (subscriptionId, itemId, status) => api.put(`/subscriptions/${subscriptionId}/items/${itemId}/status`, { status }),
     delete: (id) => api.delete(`/subscriptions/${id}`),
@@ -123,6 +124,13 @@ export const deliveryAddressesAPI = {
     create: (addressData) => api.post('/delivery-addresses', addressData),
     update: (id, addressData) => api.put(`/delivery-addresses/${id}`, addressData),
     delete: (id) => api.delete(`/delivery-addresses/${id}`),
+};
+
+// Payment APIs
+export const paymentsAPI = {
+    checkStatus: (subscriptionId) => api.get(`/payments/status/${subscriptionId}`),
+    success: (subscriptionId) => api.get(`/payments/success?subscription_id=${subscriptionId}`),
+    cancel: (subscriptionId) => api.get(`/payments/cancel?subscription_id=${subscriptionId}`),
 };
 
 // Admin APIs

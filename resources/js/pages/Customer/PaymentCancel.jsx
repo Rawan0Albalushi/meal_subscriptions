@@ -1,0 +1,74 @@
+import React, { useEffect, useState } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useLanguage } from '../../contexts/LanguageContext';
+
+const PaymentCancel = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { t, language, dir } = useLanguage();
+  const [loading, setLoading] = useState(false);
+
+  const subscriptionId = searchParams.get('subscription_id');
+
+  useEffect(() => {
+    console.log('PaymentCancel: subscriptionId =', subscriptionId);
+  }, [subscriptionId]);
+
+  const handleRetry = () => {
+    if (subscriptionId) {
+      navigate(`/my-subscriptions`);
+    } else {
+      navigate('/');
+    }
+  };
+
+  const handleGoHome = () => {
+    navigate('/');
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4" style={{
+      background: 'linear-gradient(135deg, #faeeee 0%, #eefafa 100%)'
+    }}>
+      <div className="text-center max-w-md">
+        <div className="text-6xl mb-4">❌</div>
+        <h1 className="text-3xl font-bold mb-4" style={{
+          background: 'linear-gradient(135deg, #ba6c5d 0%, #4a757c 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text'
+        }}>
+          {t('paymentCancelled') || 'Payment Cancelled'}
+        </h1>
+        <p className="text-gray-600 text-lg mb-8">
+          {t('paymentCancelledMessage') || 'Your payment was cancelled. You can try again or contact support if you need assistance.'}
+        </p>
+        
+        <div className="space-y-4">
+          <button 
+            onClick={handleRetry}
+            className="w-full text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            style={{
+              background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)'
+            }}
+          >
+            {t('goToSubscriptions') || 'Go to Subscriptions'}
+          </button>
+          
+          <button 
+            onClick={handleGoHome}
+            className="w-full text-gray-700 px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-2 border-gray-300 hover:border-gray-400"
+            style={{
+              background: 'rgba(255, 255, 255, 0.8)'
+            }}
+          >
+            {t('goHome') || 'Go Home'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PaymentCancel;
+

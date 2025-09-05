@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { restaurantsAPI, deliveryAddressesAPI, subscriptionsAPI, subscriptionTypesAPI } from '../../services/api';
+import { restaurantsAPI, deliveryAddressesAPI, subscriptionsAPI, subscriptionTypesAPI, paymentsAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import PopupMessage from '../../components/PopupMessage';
@@ -412,12 +412,13 @@ const SubscriptionForm = () => {
         total_amount: totalAmount
       };
 
-      const response = await subscriptionsAPI.create(subscriptionData);
+      // Use the new payment initiation flow
+      const response = await subscriptionsAPI.initiatePayment(subscriptionData);
+      
       if (response.data.success) {
-        // Show success popup
-        setPopupTitle(t('subscriptionCreatedSuccess'));
-        setPopupMessage(t('subscriptionCreatedMessage'));
-        setShowSuccessPopup(true);
+        // Redirect to payment gateway immediately
+        window.location.href = response.data.payment_link;
+        return; // Exit early to prevent any other code from running
       } else {
         // Show error popup
         setPopupTitle(t('subscriptionCreationFailed'));

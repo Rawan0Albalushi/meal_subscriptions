@@ -13,6 +13,8 @@ import MySubscriptions from './pages/Customer/MySubscriptions';
 import SubscriptionDetail from './pages/Customer/SubscriptionDetail';
 import DeliveryAddresses from './pages/Customer/DeliveryAddresses';
 import ContactUs from './pages/Customer/ContactUs';
+import PaymentSuccess from './pages/Customer/PaymentSuccess';
+import PaymentCancel from './pages/Customer/PaymentCancel';
 import ContactInformationManagement from './pages/Admin/ContactInformationManagement';
 import AdminLayout from './pages/Admin/AdminLayout';
 import SellerLayout from './pages/Seller/SellerLayout';
@@ -135,6 +137,10 @@ function AppRoutes() {
                         } 
                     />
                     <Route path="/contact-us" element={<ContactUs />} />
+                    
+                    {/* Payment routes */}
+                    <Route path="/payment/success" element={<PaymentSuccess />} />
+                    <Route path="/payment/cancel" element={<PaymentCancel />} />
                 </Routes>
             </main>
         </>

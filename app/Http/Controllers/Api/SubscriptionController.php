@@ -9,6 +9,7 @@ use App\Models\SubscriptionType;
 use App\Models\Meal;
 use App\Models\Restaurant;
 use App\Models\DeliveryAddress;
+use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -16,6 +17,12 @@ use Carbon\Carbon;
 
 class SubscriptionController extends Controller
 {
+    private PaymentService $paymentService;
+
+    public function __construct(PaymentService $paymentService)
+    {
+        $this->paymentService = $paymentService;
+    }
     public function index(Request $request)
     {
         $subscriptions = Subscription::where('user_id', auth()->id())
@@ -39,6 +46,120 @@ class SubscriptionController extends Controller
             'success' => true,
             'data' => $subscription
         ]);
+    }
+
+    public function initiatePayment(Request $request)
+    {
+        $request->validate([
+            'restaurant_id' => 'required|exists:restaurants,id',
+            'meal_ids' => 'required|array|min:1',
+            'meal_ids.*' => 'exists:meals,id',
+            'delivery_address_id' => 'required|exists:delivery_addresses,id',
+            'subscription_type' => 'required|in:weekly,monthly',
+            'delivery_days' => 'required|array|min:1',
+            'delivery_days.*' => 'in:sunday,monday,tuesday,wednesday,thursday,friday,saturday',
+            'start_date' => 'required|date|after_or_equal:tomorrow',
+            'special_instructions' => 'nullable|string|max:500',
+        ], [
+            'restaurant_id.required' => 'معرف المطعم مطلوب',
+            'meal_ids.required' => 'معرف الوجبة مطلوب',
+            'meal_ids.min' => 'يجب اختيار وجبة واحدة على الأقل',
+            'delivery_address_id.required' => 'معرف عنوان التوصيل مطلوب',
+            'subscription_type.required' => 'نوع الاشتراك مطلوب',
+            'delivery_days.required' => 'أيام التوصيل مطلوبة',
+            'delivery_days.min' => 'يجب اختيار يوم واحد على الأقل',
+            'start_date.required' => 'تاريخ البداية مطلوب',
+            'start_date.after_or_equal' => 'تاريخ البداية يجب أن يكون غداً أو بعده',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            // Get subscription type and calculate total amount
+            $subscriptionType = SubscriptionType::where('type', $request->subscription_type)
+                ->where('restaurant_id', $request->restaurant_id)
+                ->where('is_active', true)
+                ->first();
+
+            if (!$subscriptionType) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'نوع الاشتراك غير موجود لهذا المطعم'
+                ], 404);
+            }
+
+            // Validate meal count
+            if (count($request->delivery_days) !== $subscriptionType->meals_count) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "يجب اختيار {$subscriptionType->meals_count} وجبة لاشتراك {$subscriptionType->name_ar}"
+                ], 422);
+            }
+
+            // Create subscription with pending status
+            $subscription = Subscription::create([
+                'user_id' => auth()->id(),
+                'restaurant_id' => $request->restaurant_id,
+                'delivery_address_id' => $request->delivery_address_id,
+                'subscription_type_id' => $subscriptionType->id,
+                'subscription_type' => $request->subscription_type,
+                'start_date' => $request->start_date,
+                'end_date' => $this->calculateEndDate($request->start_date, $request->subscription_type),
+                'total_amount' => $subscriptionType->price + $subscriptionType->delivery_price,
+                'delivery_price' => $subscriptionType->delivery_price,
+                'status' => 'pending',
+                'payment_status' => 'pending',
+                'special_instructions' => $request->special_instructions,
+            ]);
+
+            // Create payment link
+            $paymentResponse = $this->paymentService->createPaymentLink([
+                'user_id' => auth()->id(),
+                'model_type' => Subscription::class,
+                'model_id' => $subscription->id,
+                'amount' => $subscription->total_amount,
+                'currency' => 'OMR',
+                'description' => "اشتراك {$subscriptionType->name_ar} - {$subscription->restaurant->name_ar}",
+                'subscription_data' => [
+                    'meal_ids' => $request->meal_ids,
+                    'delivery_days' => $request->delivery_days,
+                    'start_date' => $request->start_date
+                ]
+            ]);
+
+            DB::commit();
+
+            Log::info('Payment initiation successful', [
+                'subscription_id' => $subscription->id,
+                'payment_link' => $paymentResponse->paymentLink,
+                'session_id' => $paymentResponse->sessionId,
+                'gateway' => $this->paymentService->getActiveGateway()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'payment_link' => $paymentResponse->paymentLink,
+                'session_id' => $paymentResponse->sessionId,
+                'subscription_id' => $subscription->id,
+                'amount' => $subscription->total_amount,
+                'currency' => 'OMR',
+                'gateway' => $this->paymentService->getActiveGateway()
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            
+            Log::error('Payment initiation failed: ' . $e->getMessage(), [
+                'user_id' => auth()->id(),
+                'request_data' => $request->all(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'فشل في إنشاء رابط الدفع: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function store(Request $request)
