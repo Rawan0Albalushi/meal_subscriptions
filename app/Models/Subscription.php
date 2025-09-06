@@ -32,6 +32,8 @@ class Subscription extends Model
         'delivery_price' => 'decimal:2',
     ];
 
+    protected $appends = ['subscription_type_text', 'status_text', 'total_with_delivery', 'items'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -82,5 +84,10 @@ class Subscription extends Model
     public function getTotalWithDeliveryAttribute()
     {
         return $this->total_amount + $this->delivery_price;
+    }
+
+    public function getItemsAttribute()
+    {
+        return $this->subscriptionItems;
     }
 }

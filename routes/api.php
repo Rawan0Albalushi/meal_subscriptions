@@ -73,12 +73,65 @@ Route::get('/payments/status/{subscriptionId}', [PaymentController::class, 'chec
 
 // Admin routes
 Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/stats', function () {
-        return response()->json(['ok' => true]);
-    });
+    // Dashboard
+    Route::get('/dashboard', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'index']);
+    
+    // User management
+    Route::apiResource('users', \App\Http\Controllers\Api\Admin\UserController::class);
+    Route::put('users/{id}/toggle-status', [\App\Http\Controllers\Api\Admin\UserController::class, 'toggleStatus']);
+    
+    // Restaurant management
+    Route::apiResource('restaurants', \App\Http\Controllers\Api\Admin\RestaurantController::class);
+    Route::put('restaurants/{id}/toggle-status', [\App\Http\Controllers\Api\Admin\RestaurantController::class, 'toggleStatus']);
+    Route::get('restaurants/sellers/list', [\App\Http\Controllers\Api\Admin\RestaurantController::class, 'getSellers']);
+    
+    // Meal management
+    Route::apiResource('meals', \App\Http\Controllers\Api\Admin\MealController::class);
+    Route::put('meals/{id}/toggle-availability', [\App\Http\Controllers\Api\Admin\MealController::class, 'toggleAvailability']);
+    Route::get('meals/restaurants/list', [\App\Http\Controllers\Api\Admin\MealController::class, 'getRestaurants']);
+    Route::get('meals/types/list', [\App\Http\Controllers\Api\Admin\MealController::class, 'getMealTypes']);
+    Route::get('meals/subscription-types/list', [\App\Http\Controllers\Api\Admin\MealController::class, 'getSubscriptionTypes']);
+    
+    // Subscription management
+    Route::get('subscriptions/statistics', [\App\Http\Controllers\Api\Admin\SubscriptionController::class, 'getStatistics']);
+    Route::get('subscriptions/restaurants/list', [\App\Http\Controllers\Api\Admin\SubscriptionController::class, 'getRestaurants']);
+    Route::get('subscriptions/users/list', [\App\Http\Controllers\Api\Admin\SubscriptionController::class, 'getUsers']);
+    Route::get('subscriptions/status-options', [\App\Http\Controllers\Api\Admin\SubscriptionController::class, 'getStatusOptions']);
+    Route::apiResource('subscriptions', \App\Http\Controllers\Api\Admin\SubscriptionController::class);
+    Route::put('subscriptions/{subscriptionId}/items/{itemId}/status', [\App\Http\Controllers\Api\Admin\SubscriptionController::class, 'updateItemStatus']);
+    
+    // Payment management
+    Route::get('payments/statistics', [\App\Http\Controllers\Api\Admin\PaymentController::class, 'getStatistics']);
+    Route::get('payments/restaurants/list', [\App\Http\Controllers\Api\Admin\PaymentController::class, 'getRestaurants']);
+    Route::get('payments/users/list', [\App\Http\Controllers\Api\Admin\PaymentController::class, 'getUsers']);
+    Route::get('payments/methods/list', [\App\Http\Controllers\Api\Admin\PaymentController::class, 'getPaymentMethods']);
+    Route::get('payments/status-options', [\App\Http\Controllers\Api\Admin\PaymentController::class, 'getStatusOptions']);
+    Route::apiResource('payments', \App\Http\Controllers\Api\Admin\PaymentController::class);
+    Route::post('payments/{id}/refund', [\App\Http\Controllers\Api\Admin\PaymentController::class, 'refund']);
+    
+    // Address management
+    Route::apiResource('addresses', \App\Http\Controllers\Api\Admin\AddressController::class);
+    Route::put('addresses/{id}/set-primary', [\App\Http\Controllers\Api\Admin\AddressController::class, 'setPrimary']);
+    Route::get('addresses/areas/list', [\App\Http\Controllers\Api\Admin\AddressController::class, 'getAreas']);
+    Route::get('addresses/users/list', [\App\Http\Controllers\Api\Admin\AddressController::class, 'getUsers']);
+    Route::get('addresses/statistics', [\App\Http\Controllers\Api\Admin\AddressController::class, 'getStatistics']);
+    Route::get('addresses/restaurants', [\App\Http\Controllers\Api\Admin\AddressController::class, 'getRestaurantAddresses']);
+    
+    // Settings management
+    Route::get('settings', [\App\Http\Controllers\Api\Admin\SettingsController::class, 'index']);
+    Route::put('settings', [\App\Http\Controllers\Api\Admin\SettingsController::class, 'update']);
+    Route::get('settings/system-info', [\App\Http\Controllers\Api\Admin\SettingsController::class, 'getSystemInfo']);
+    Route::post('settings/clear-cache', [\App\Http\Controllers\Api\Admin\SettingsController::class, 'clearCache']);
+    Route::get('settings/logs', [\App\Http\Controllers\Api\Admin\SettingsController::class, 'getLogs']);
+    Route::get('settings/logs/{filename}/download', [\App\Http\Controllers\Api\Admin\SettingsController::class, 'downloadLog']);
+    
+    // Reports
+    Route::get('/reports', [\App\Http\Controllers\Api\Admin\ReportsController::class, 'index']);
+    Route::get('/reports/export', [\App\Http\Controllers\Api\Admin\ReportsController::class, 'export']);
     
     // Subscription type management
     Route::apiResource('subscription-types', \App\Http\Controllers\Api\Admin\SubscriptionTypeController::class);
+    Route::get('subscription-types/restaurants/list', [\App\Http\Controllers\Api\Admin\SubscriptionTypeController::class, 'getRestaurants']);
     
     // Contact information management
     Route::put('/contact-information', [ContactInformationController::class, 'update']);

@@ -1,29 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { subscriptionsAPI } from '../../services/api';
+import { adminSubscriptionsAPI } from '../../services/api';
 import { useLanguage } from '../../contexts/LanguageContext';
-import OrderStatusBadge from '../../components/OrderStatusBadge';
-import OrderStatusControl from '../../components/OrderStatusControl';
+import PopupMessage from '../../components/PopupMessage';
+import { usePopupMessage } from '../../hooks/usePopupMessage';
 
 const OrderManagement = () => {
     const { language } = useLanguage();
     const [subscriptions, setSubscriptions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [filter, setFilter] = useState('all');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [restaurantFilter, setRestaurantFilter] = useState('all');
+    const [userFilter, setUserFilter] = useState('all');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [restaurants, setRestaurants] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [exportLoading, setExportLoading] = useState(false);
+    const { showPopup, hidePopup, popup } = usePopupMessage();
 
-    // Scroll to top when component mounts
     useEffect(() => {
-        window.scrollTo(0, 0);
+        fetchSubscriptions();
+        fetchRestaurants();
+        fetchUsers();
     }, []);
 
     useEffect(() => {
         fetchSubscriptions();
-    }, []);
+    }, [searchTerm, restaurantFilter, userFilter, statusFilter]);
 
     const fetchSubscriptions = async () => {
         try {
             setLoading(true);
-            const response = await subscriptionsAPI.getAll();
+            const params = new URLSearchParams({
+                search: searchTerm,
+                restaurant_id: restaurantFilter !== 'all' ? restaurantFilter : '',
+                user_id: userFilter !== 'all' ? userFilter : '',
+                status: statusFilter !== 'all' ? statusFilter : ''
+            });
+
+            const response = await adminSubscriptionsAPI.getAll(params.toString());
             
             if (response.data.success) {
                 setSubscriptions(response.data.data);
@@ -38,349 +53,304 @@ const OrderManagement = () => {
         }
     };
 
-    const handleStatusUpdate = (subscriptionId, itemId, newStatus) => {
-        setSubscriptions(prev => prev.map(subscription => {
-            if (subscription.id === subscriptionId) {
-                return {
-                    ...subscription,
-                    subscription_items: subscription.subscription_items.map(item => {
-                        if (item.id === itemId) {
-                            return { ...item, status: newStatus };
-                        }
-                        return item;
-                    })
-                };
+    const fetchRestaurants = async () => {
+        try {
+            const response = await adminSubscriptionsAPI.getRestaurants();
+            if (response.data.success) {
+                setRestaurants(response.data.data);
             }
-            return subscription;
-        }));
+        } catch (err) {
+            console.error('Error fetching restaurants:', err);
+        }
     };
 
-    const filteredSubscriptions = subscriptions.filter(subscription => {
-        if (filter === 'all') return true;
-        return subscription.subscription_items.some(item => item.status === filter);
-    });
+    const fetchUsers = async () => {
+        try {
+            const response = await adminSubscriptionsAPI.getUsers();
+            if (response.data.success) {
+                setUsers(response.data.data);
+            }
+        } catch (err) {
+            console.error('Error fetching users:', err);
+        }
+    };
 
-    const getFilterOptions = () => [
-        { value: 'all', label: language === 'ar' ? 'جميع الطلبات' : 'All Orders', icon: '📋' },
-        { value: 'pending', label: language === 'ar' ? 'قيد الانتظار' : 'Pending', icon: '⏳' },
-        { value: 'preparing', label: language === 'ar' ? 'قيد التحضير' : 'Preparing', icon: '👨‍🍳' },
-        { value: 'delivered', label: language === 'ar' ? 'تم التوصيل' : 'Delivered', icon: '✅' },
-        { value: 'cancelled', label: language === 'ar' ? 'ملغي' : 'Cancelled', icon: '❌' }
-    ];
+    const handleSearch = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const handleFilterChange = (filterType, value) => {
+        switch (filterType) {
+            case 'restaurant':
+                setRestaurantFilter(value);
+                break;
+            case 'user':
+                setUserFilter(value);
+                break;
+            case 'status':
+                setStatusFilter(value);
+                break;
+            default:
+                break;
+        }
+    };
+
+    const clearFilters = () => {
+        setSearchTerm('');
+        setRestaurantFilter('all');
+        setUserFilter('all');
+        setStatusFilter('all');
+    };
+
+    const exportToExcel = async () => {
+        try {
+            setExportLoading(true);
+            
+            const excelData = subscriptions.map(subscription => ({
+                'رقم الطلب': subscription.id,
+                'اسم العميل': subscription.user?.name || 'غير محدد',
+                'المطعم': subscription.restaurant?.name_ar || 'غير محدد',
+                'نوع الاشتراك': subscription.subscription_type_text || 'غير محدد',
+                'تاريخ الطلب': new Date(subscription.created_at).toLocaleDateString('en-US'),
+                'تاريخ البداية': new Date(subscription.start_date).toLocaleDateString('en-US'),
+                'تاريخ النهاية': new Date(subscription.end_date).toLocaleDateString('en-US'),
+                'المبلغ الإجمالي': subscription.total_amount,
+                'حالة الطلب': subscription.status === 'active' ? 'نشط' :
+                              subscription.status === 'pending' ? 'في الانتظار' :
+                              subscription.status === 'cancelled' ? 'ملغي' : subscription.status,
+                'حالة الدفع': subscription.payment_status === 'paid' ? 'مدفوع' :
+                              subscription.payment_status === 'pending' ? 'في الانتظار' :
+                              subscription.payment_status === 'failed' ? 'فشل' : subscription.payment_status,
+                'عدد العناصر': subscription.items?.length || 0
+            }));
+
+            const headers = Object.keys(excelData[0] || {});
+            const csvContent = [
+                headers.join(','),
+                ...excelData.map(row => headers.map(header => `"${row[header] || ''}"`).join(','))
+            ].join('\n');
+
+            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `orders_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showPopup('نجح التصدير', 'تم تصدير البيانات بنجاح', 'success');
+        } catch (err) {
+            showPopup('خطأ في التصدير', 'فشل في تصدير البيانات', 'error');
+            console.error('Error exporting data:', err);
+        } finally {
+            setExportLoading(false);
+        }
+    };
 
     if (loading) {
         return (
-            <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
-                    <p style={{ color: 'rgb(75 85 99)', fontSize: '1.125rem' }}>
-                        {language === 'ar' ? 'جاري تحميل الطلبات...' : 'Loading orders...'}
-                    </p>
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">جاري تحميل الطلبات...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="text-red-500 text-6xl mb-4">⚠️</div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">خطأ في تحميل الطلبات</h2>
+                    <p className="text-gray-600 mb-4">{error}</p>
+                    <button
+                        onClick={fetchSubscriptions}
+                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                        إعادة المحاولة
+                    </button>
                 </div>
             </div>
         );
     }
 
     return (
-        <div style={{ minHeight: '100vh' }}>
-            {/* Hero Section */}
-            <section style={{ 
-                background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',
-                position: 'relative',
-                overflow: 'hidden',
-                padding: '2rem 0 3rem 0'
-            }}>
-                <div style={{ width: '100%', padding: '0 2rem' }}>
-                    <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
-                        <h1 style={{ 
-                            fontSize: 'clamp(2rem, 5vw, 3.5rem)', 
-                            fontWeight: 'bold', 
-                            lineHeight: '1.2', 
-                            marginBottom: '1.5rem',
-                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            backgroundClip: 'text'
-                        }}>
-                            {language === 'ar' ? 'إدارة الطلبات' : 'Order Management'}
+        <div className="min-h-screen bg-gray-50 p-6">
+            <div className="max-w-7xl mx-auto">
+                {/* Header */}
+                <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-3xl font-bold text-gray-900">
+                                إدارة الطلبات
                         </h1>
-                        <p style={{ 
-                            marginTop: '1rem', 
-                            color: 'rgb(75 85 99)', 
-                            marginBottom: '2rem', 
-                            fontSize: '1.125rem', 
-                            lineHeight: '1.7',
-                            maxWidth: '600px',
-                            margin: '0 auto 2rem auto'
-                        }}>
-                            {language === 'ar' 
-                                ? 'إدارة وتتبع جميع الطلبات وتحديث حالاتها' 
-                                : 'Manage and track all orders and update their status'
-                            }
+                            <p className="text-gray-600 mt-1">
+                                إدارة ومتابعة جميع طلبات الاشتراكات
                         </p>
                     </div>
+                        <div className="flex items-center space-x-6 space-x-reverse">
+                            <div className="text-center">
+                                <p className="text-sm text-gray-500">إجمالي الطلبات</p>
+                                <p className="text-2xl font-bold text-blue-600">{subscriptions.length}</p>
+                            </div>
+                            <div className="text-center">
+                                <p className="text-sm text-gray-500">الطلبات النشطة</p>
+                                <p className="text-2xl font-bold text-green-600">
+                                    {subscriptions.filter(s => s.status === 'active').length}
+                                </p>
                 </div>
-            </section>
-
-            {/* Filter Section */}
-            <section style={{ padding: '2rem 0' }}>
-                <div style={{ width: '100%', padding: '0 2rem' }}>
-                    <div style={{
-                        display: 'flex',
-                        gap: '1rem',
-                        flexWrap: 'wrap',
-                        justifyContent: 'center',
-                        marginBottom: '2rem'
-                    }}>
-                        {getFilterOptions().map((option) => (
                             <button
-                                key={option.value}
-                                onClick={() => setFilter(option.value)}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem',
-                                    padding: '0.75rem 1.5rem',
-                                    borderRadius: '1rem',
-                                    border: 'none',
-                                    background: filter === option.value 
-                                        ? 'linear-gradient(135deg, #2f6e73, #4a8a8f)'
-                                        : 'rgba(255, 255, 255, 0.9)',
-                                    color: filter === option.value ? 'white' : 'rgb(75 85 99)',
-                                    fontSize: '0.875rem',
-                                    fontWeight: '600',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.3s ease',
-                                    boxShadow: filter === option.value 
-                                        ? '0 8px 25px rgba(47, 110, 115, 0.3)'
-                                        : '0 4px 12px rgba(0, 0, 0, 0.1)'
-                                }}
-                                onMouseEnter={(e) => {
-                                    if (filter !== option.value) {
-                                        e.target.style.transform = 'translateY(-2px)';
-                                        e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
-                                    }
-                                }}
-                                onMouseLeave={(e) => {
-                                    if (filter !== option.value) {
-                                        e.target.style.transform = 'translateY(0)';
-                                        e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
-                                    }
-                                }}
+                                onClick={exportToExcel}
+                                disabled={exportLoading || subscriptions.length === 0}
+                                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 space-x-reverse"
                             >
-                                <span style={{ fontSize: '1.25rem' }}>{option.icon}</span>
-                                <span>{option.label}</span>
+                                {exportLoading ? (
+                                    <>
+                                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                        <span>جاري التصدير...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        <span>تصدير Excel</span>
+                                    </>
+                                )}
                             </button>
-                        ))}
+                        </div>
                     </div>
                 </div>
-            </section>
 
-            {/* Orders Section */}
-            <section style={{ padding: '0 0 3rem 0' }}>
-                <div style={{ width: '100%', padding: '0 2rem' }}>
-                    {error && (
-                        <div style={{
-                            background: 'linear-gradient(135deg, rgb(239 68 68), rgb(236 72 153))',
-                            color: 'white',
-                            padding: '1rem',
-                            borderRadius: '1rem',
-                            textAlign: 'center',
-                            marginBottom: '2rem'
-                        }}>
-                            {error}
+                {/* Advanced Filters */}
+                <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold text-gray-900">فلترة متقدمة</h3>
+                        <button
+                            onClick={clearFilters}
+                            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                        >
+                            مسح جميع الفلاتر
+                        </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {/* Search */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">البحث</label>
+                            <input
+                                type="text"
+                                value={searchTerm}
+                                onChange={handleSearch}
+                                placeholder="ابحث بالرقم أو الاسم..."
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
                         </div>
-                    )}
 
-                    {filteredSubscriptions.length === 0 ? (
-                        <div style={{ 
-                            textAlign: 'center', 
-                            padding: '4rem 2rem',
-                            background: 'rgba(255, 255, 255, 0.95)',
-                            backdropFilter: 'blur(20px)',
-                            borderRadius: '1.25rem',
-                            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-                            border: '1px solid rgba(229, 231, 235, 0.5)'
-                        }}>
-                            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📋</div>
-                            <h2 style={{ 
-                                fontSize: '2rem', 
-                                fontWeight: 'bold', 
-                                marginBottom: '1rem',
-                                color: 'rgb(79 70 229)'
-                            }}>
-                                {language === 'ar' ? 'لا توجد طلبات' : 'No Orders'}
-                            </h2>
-                            <p style={{ 
-                                fontSize: '1.125rem', 
-                                color: 'rgb(75 85 99)', 
-                                marginBottom: '2rem'
-                            }}>
-                                {language === 'ar' 
-                                    ? 'لا توجد طلبات تطابق المعايير المحددة' 
-                                    : 'No orders match the selected criteria'
-                                }
-                            </p>
+                        {/* Restaurant Filter */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">المطعم</label>
+                            <select
+                                value={restaurantFilter}
+                                onChange={(e) => handleFilterChange('restaurant', e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            >
+                                <option value="all">جميع المطاعم</option>
+                                {restaurants.map(restaurant => (
+                                    <option key={restaurant.id} value={restaurant.id}>
+                                        {restaurant.name_ar}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* User Filter */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">العميل</label>
+                            <select
+                                value={userFilter}
+                                onChange={(e) => handleFilterChange('user', e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            >
+                                <option value="all">جميع العملاء</option>
+                                {users.map(user => (
+                                    <option key={user.id} value={user.id}>
+                                        {user.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Status Filter */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">الحالة</label>
+                            <select
+                                value={statusFilter}
+                                onChange={(e) => handleFilterChange('status', e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            >
+                                <option value="all">جميع الحالات</option>
+                                <option value="active">نشط</option>
+                                <option value="pending">في الانتظار</option>
+                                <option value="cancelled">ملغي</option>
+                                <option value="completed">مكتمل</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Orders List */}
+                <div className="bg-white rounded-lg shadow-sm p-6">
+
+                    {subscriptions.length === 0 ? (
+                        <div className="text-center py-12">
+                            <div className="text-gray-400 text-6xl mb-4">📋</div>
+                            <h3 className="text-xl font-semibold text-gray-900 mb-2">لا توجد طلبات</h3>
+                            <p className="text-gray-600">لم يتم العثور على أي طلبات في النظام</p>
                         </div>
                     ) : (
-                        <div style={{ 
-                            display: 'grid', 
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', 
-                            gap: '2rem' 
-                        }}>
-                            {filteredSubscriptions.map((subscription) => (
-                                <div key={subscription.id} style={{
-                                    background: 'rgba(255, 255, 255, 0.9)',
-                                    backdropFilter: 'blur(15px)',
-                                    borderRadius: '1.25rem',
-                                    padding: '2rem',
-                                    boxShadow: '0 15px 30px rgba(0, 0, 0, 0.08)',
-                                    border: '1px solid rgba(229, 231, 235, 0.3)',
-                                    transition: 'transform 0.3s ease, box-shadow 0.3s ease'
-                                }}>
-                                    {/* Subscription Header */}
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-                                        <div style={{
-                                            width: '3rem',
-                                            height: '3rem',
-                                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
-                                            borderRadius: '0.75rem',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            color: 'white',
-                                            fontSize: '1.5rem'
-                                        }}>
-                                            🍽️
-                                        </div>
+                        <div className="space-y-4">
+                            {subscriptions.map(subscription => (
+                                <div key={subscription.id} className="border border-gray-200 rounded-lg p-4">
+                                    <div className="flex justify-between items-start">
                                         <div>
-                                            <h3 style={{ 
-                                                fontSize: '1.25rem', 
-                                                fontWeight: 'bold', 
-                                                marginBottom: '0.25rem',
-                                                color: 'rgb(31 41 55)'
-                                            }}>
-                                                {language === 'ar' ? subscription.restaurant?.name_ar : subscription.restaurant?.name_en}
-                                            </h3>
-                                            <p style={{ 
-                                                fontSize: '0.875rem', 
-                                                color: 'rgb(75 85 99)' 
-                                            }}>
-                                                {subscription.subscription_type_text} • {subscription.subscription_items?.length || 0} {language === 'ar' ? 'وجبة' : 'meals'}
-                                            </p>
+                                            <h3 className="text-lg font-semibold">طلب #{subscription.id}</h3>
+                                            <p className="text-gray-600">العميل: {subscription.user?.name || 'غير محدد'}</p>
+                                            <p className="text-gray-600">المطعم: {subscription.restaurant?.name_ar || 'غير محدد'}</p>
+                                            <p className="text-gray-600">المبلغ: {subscription.total_amount} ر.ع</p>
+                                            <p className="text-gray-600">تاريخ الطلب: {new Date(subscription.created_at).toLocaleDateString('en-US')}</p>
                                         </div>
-                                    </div>
-
-                                    {/* Order Items */}
-                                    <div style={{ marginBottom: '1.5rem' }}>
-                                        <h4 style={{ 
-                                            fontSize: '1rem', 
-                                            fontWeight: '600', 
-                                            marginBottom: '1rem',
-                                            color: 'rgb(31 41 55)'
-                                        }}>
-                                            {language === 'ar' ? 'تفاصيل الطلب:' : 'Order Details:'}
-                                        </h4>
-                                        
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                                            {subscription.subscription_items?.map((item, index) => (
-                                                <div key={index} style={{
-                                                    padding: '1rem',
-                                                    background: 'rgb(249 250 251)',
-                                                    borderRadius: '0.75rem',
-                                                    border: '1px solid rgb(229 231 235)'
-                                                }}>
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
-                                                        <div style={{
-                                                            width: '2rem',
-                                                            height: '2rem',
-                                                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
-                                                            borderRadius: '0.5rem',
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            justifyContent: 'center',
-                                                            color: 'white',
-                                                            fontSize: '1rem'
-                                                        }}>
-                                                            🍽️
-                                                        </div>
-                                                        <div style={{ flex: 1 }}>
-                                                            <h5 style={{ 
-                                                                fontSize: '0.875rem', 
-                                                                fontWeight: '600', 
-                                                                marginBottom: '0.25rem',
-                                                                color: 'rgb(31 41 55)'
-                                                            }}>
-                                                                {language === 'ar' ? item.meal?.name_ar : item.meal?.name_en}
-                                                            </h5>
-                                                            <p style={{ 
-                                                                fontSize: '0.75rem', 
-                                                                color: 'rgb(75 85 99)' 
-                                                            }}>
-                                                                {item.day_of_week_text} • {new Date(item.delivery_date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-})}
-                                                            </p>
-                                                        </div>
-                                                        <OrderStatusBadge status={item.status} language={language} />
-                                                    </div>
-                                                    
-                                                    <OrderStatusControl 
-                                                        subscriptionId={subscription.id}
-                                                        itemId={item.id}
-                                                        currentStatus={item.status}
-                                                        onStatusUpdate={(newStatus) => handleStatusUpdate(subscription.id, item.id, newStatus)}
-                                                    />
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* Customer Info */}
-                                    <div style={{
-                                        padding: '1rem',
-                                        background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.05), rgba(74, 138, 143, 0.05))',
-                                        borderRadius: '0.75rem',
-                                        border: '1px solid rgba(47, 110, 115, 0.1)'
-                                    }}>
-                                        <h5 style={{ 
-                                            fontSize: '0.875rem', 
-                                            fontWeight: '600', 
-                                            marginBottom: '0.5rem',
-                                            color: '#2f6e73'
-                                        }}>
-                                            {language === 'ar' ? 'معلومات العميل:' : 'Customer Info:'}
-                                        </h5>
-                                        <p style={{ 
-                                            fontSize: '0.75rem', 
-                                            color: 'rgb(75 85 99)',
-                                            marginBottom: '0.25rem'
-                                        }}>
-                                            {language === 'ar' ? 'الاسم:' : 'Name:'} {subscription.user?.name}
-                                        </p>
-                                        <p style={{ 
-                                            fontSize: '0.75rem', 
-                                            color: 'rgb(75 85 99)',
-                                            marginBottom: '0.25rem',
-                                            direction: 'ltr'
-                                        }}>
-                                            {language === 'ar' ? 'الهاتف:' : 'Phone:'} {subscription.delivery_address?.phone}
-                                        </p>
-                                        <p style={{ 
-                                            fontSize: '0.75rem', 
-                                            color: 'rgb(75 85 99)'
-                                        }}>
-                                            {language === 'ar' ? 'العنوان:' : 'Address:'} {subscription.delivery_address?.address}
-                                        </p>
+                                        <span className={`px-3 py-1 rounded-full text-sm ${
+                                            subscription.status === 'active' ? 'bg-green-100 text-green-800' :
+                                            subscription.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                            subscription.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                                            'bg-gray-100 text-gray-800'
+                                        }`}>
+                                            {subscription.status === 'active' ? 'نشط' :
+                                             subscription.status === 'pending' ? 'في الانتظار' :
+                                             subscription.status === 'cancelled' ? 'ملغي' :
+                                             subscription.status}
+                                        </span>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     )}
                 </div>
-            </section>
+            </div>
+
+            {/* Popup Message */}
+            <PopupMessage
+                show={popup.show}
+                title={popup.title}
+                message={popup.message}
+                type={popup.type}
+                onClose={hidePopup}
+            />
         </div>
     );
 };

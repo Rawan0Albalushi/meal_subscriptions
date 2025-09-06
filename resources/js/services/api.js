@@ -140,6 +140,20 @@ export const adminSubscriptionTypesAPI = {
     create: (typeData) => api.post('/admin/subscription-types', typeData),
     update: (id, typeData) => api.put(`/admin/subscription-types/${id}`, typeData),
     delete: (id) => api.delete(`/admin/subscription-types/${id}`),
+    getRestaurants: () => api.get('/admin/subscription-types/restaurants/list'),
+};
+
+// Admin Subscriptions API
+export const adminSubscriptionsAPI = {
+    getAll: (params = '') => api.get(`/admin/subscriptions${params ? '?' + params : ''}`),
+    getById: (id) => api.get(`/admin/subscriptions/${id}`),
+    update: (id, subscriptionData) => api.put(`/admin/subscriptions/${id}`, subscriptionData),
+    updateItemStatus: (subscriptionId, itemId, status) => api.put(`/admin/subscriptions/${subscriptionId}/items/${itemId}/status`, { status }),
+    delete: (id) => api.delete(`/admin/subscriptions/${id}`),
+    getStatistics: () => api.get('/admin/subscriptions/statistics'),
+    getRestaurants: () => api.get('/admin/subscriptions/restaurants/list'),
+    getUsers: () => api.get('/admin/subscriptions/users/list'),
+    getStatusOptions: () => api.get('/admin/subscriptions/status-options'),
 };
 
 export default api;

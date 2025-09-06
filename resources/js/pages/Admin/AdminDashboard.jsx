@@ -3,15 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
 
-const SellerDashboard = () => {
+const AdminDashboard = () => {
     const { t, dir, language } = useLanguage();
     const { user } = useAuth();
     const navigate = useNavigate();
     const [stats, setStats] = useState({
+        totalUsers: 0,
+        totalSellers: 0,
         totalRestaurants: 0,
-        activeRestaurants: 0,
         totalMeals: 0,
-        activeMeals: 0,
         totalSubscriptions: 0,
         totalRevenue: 0
     });
@@ -25,8 +25,8 @@ const SellerDashboard = () => {
     const fetchDashboardData = async () => {
         try {
             setLoading(true);
-            // Fetch dashboard data
-            const dashboardResponse = await fetch('/api/seller/dashboard', {
+            // Fetch admin dashboard data
+            const dashboardResponse = await fetch('/api/admin/dashboard', {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
                     'Content-Type': 'application/json'
@@ -38,10 +38,10 @@ const SellerDashboard = () => {
                 const data = dashboardData.data || {};
                 
                 setStats({
+                    totalUsers: data.totalUsers || 0,
+                    totalSellers: data.totalSellers || 0,
                     totalRestaurants: data.totalRestaurants || 0,
-                    activeRestaurants: data.activeRestaurants || 0,
                     totalMeals: data.totalMeals || 0,
-                    activeMeals: data.activeMeals || 0,
                     totalSubscriptions: data.totalSubscriptions || 0,
                     totalRevenue: data.totalRevenue || 0
                 });
@@ -49,7 +49,7 @@ const SellerDashboard = () => {
                 setRecentActivity(data.recentActivity || []);
             }
         } catch (error) {
-            console.error('Error fetching dashboard data:', error);
+            console.error('Error fetching admin dashboard data:', error);
         } finally {
             setLoading(false);
         }
@@ -57,31 +57,31 @@ const SellerDashboard = () => {
 
     const statCards = [
         {
-            icon: '🏪',
-            titleAr: 'إجمالي المطاعم',
-            titleEn: 'Total Restaurants',
-            value: stats.totalRestaurants,
+            icon: '👥',
+            titleAr: 'إجمالي المستخدمين',
+            titleEn: 'Total Users',
+            value: stats.totalUsers,
             color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
         },
         {
-            icon: '✅',
-            titleAr: 'المطاعم النشطة',
-            titleEn: 'Active Restaurants',
-            value: stats.activeRestaurants,
+            icon: '🏪',
+            titleAr: 'إجمالي البائعين',
+            titleEn: 'Total Sellers',
+            value: stats.totalSellers,
             color: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
         },
         {
             icon: '🍽️',
-            titleAr: 'إجمالي الوجبات',
-            titleEn: 'Total Meals',
-            value: stats.totalMeals,
+            titleAr: 'إجمالي المطاعم',
+            titleEn: 'Total Restaurants',
+            value: stats.totalRestaurants,
             color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
         },
         {
-            icon: '✅',
-            titleAr: 'الوجبات المتاحة',
-            titleEn: 'Available Meals',
-            value: stats.activeMeals,
+            icon: '🍴',
+            titleAr: 'إجمالي الوجبات',
+            titleEn: 'Total Meals',
+            value: stats.totalMeals,
             color: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
         },
         {
@@ -91,7 +91,6 @@ const SellerDashboard = () => {
             value: stats.totalSubscriptions,
             color: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
         },
-
         {
             icon: '💰',
             titleAr: 'إجمالي الإيرادات',
@@ -106,52 +105,52 @@ const SellerDashboard = () => {
 
     const quickActions = [
         {
-            icon: '➕',
-            titleAr: 'إضافة مطعم جديد',
-            titleEn: 'Add New Restaurant',
-            descriptionAr: 'إنشاء مطعم جديد في النظام',
-            descriptionEn: 'Create a new restaurant in the system',
-            action: () => navigate('/seller/restaurants')
+            icon: '👥',
+            titleAr: 'إدارة المستخدمين',
+            titleEn: 'Manage Users',
+            descriptionAr: 'إدارة جميع المستخدمين في النظام',
+            descriptionEn: 'Manage all users in the system',
+            action: () => navigate('/admin/users')
         },
         {
-            icon: '🍽️',
-            titleAr: 'إضافة وجبة جديدة',
-            titleEn: 'Add New Meal',
-            descriptionAr: 'إضافة وجبة جديدة لأحد مطاعمك',
-            descriptionEn: 'Add a new meal to one of your restaurants',
-            action: () => navigate('/seller/meals')
+            icon: '🏪',
+            titleAr: 'إدارة المطاعم',
+            titleEn: 'Manage Restaurants',
+            descriptionAr: 'إدارة جميع المطاعم في النظام',
+            descriptionEn: 'Manage all restaurants in the system',
+            action: () => navigate('/admin/restaurants')
         },
         {
             icon: '📊',
-            titleAr: 'عرض التقارير',
-            titleEn: 'View Reports',
-            descriptionAr: 'عرض تقارير مفصلة عن نشاطك',
-            descriptionEn: 'View detailed reports about your activity',
-            action: () => navigate('/seller/reports')
-        },
-        {
-            icon: '📦',
-            titleAr: 'طلبات الاشتراك',
-            titleEn: 'Subscription Requests',
-            descriptionAr: 'إدارة طلبات الاشتراك للعملاء',
-            descriptionEn: 'Manage customer subscription requests',
-            action: () => navigate('/seller/subscriptions')
+            titleAr: 'التقارير والإحصائيات',
+            titleEn: 'Reports & Analytics',
+            descriptionAr: 'عرض التقارير والإحصائيات الشاملة',
+            descriptionEn: 'View comprehensive reports and analytics',
+            action: () => navigate('/admin/reports')
         },
         {
             icon: '📋',
-            titleAr: 'طلبات اليوم',
-            titleEn: 'Today\'s Orders',
-            descriptionAr: 'عرض وإدارة طلبات اليوم',
-            descriptionEn: 'View and manage today\'s orders',
-            action: () => navigate('/seller/today-orders')
+            titleAr: 'أنواع الاشتراكات',
+            titleEn: 'Subscription Types',
+            descriptionAr: 'إدارة أنواع الاشتراكات والأسعار',
+            descriptionEn: 'Manage subscription types and prices',
+            action: () => navigate('/admin/subscription-types')
+        },
+        {
+            icon: '📞',
+            titleAr: 'معلومات التواصل',
+            titleEn: 'Contact Information',
+            descriptionAr: 'إدارة معلومات التواصل مع العملاء',
+            descriptionEn: 'Manage contact information with customers',
+            action: () => navigate('/admin/contact-information')
         },
         {
             icon: '⚙️',
-            titleAr: 'إعدادات الحساب',
-            titleEn: 'Account Settings',
-            descriptionAr: 'تعديل إعدادات حسابك الشخصي',
-            descriptionEn: 'Modify your personal account settings',
-            action: () => navigate('/seller/profile')
+            titleAr: 'إعدادات النظام',
+            titleEn: 'System Settings',
+            descriptionAr: 'إدارة إعدادات النظام العامة',
+            descriptionEn: 'Manage general system settings',
+            action: () => navigate('/admin/settings')
         }
     ];
 
@@ -214,7 +213,7 @@ const SellerDashboard = () => {
                         fontSize: '1.5rem',
                         color: 'white'
                     }}>
-                        👋
+                        👑
                     </div>
                     <div>
                         <h1 style={{
@@ -224,7 +223,7 @@ const SellerDashboard = () => {
                             margin: 0,
                             marginBottom: '0.25rem'
                         }}>
-                            {t('welcome')} {user?.full_name || user?.name || t('seller')}!
+                            {language === 'ar' ? 'مرحباً بك في لوحة تحكم الأدمن' : 'Welcome to Admin Dashboard'} {user?.full_name || user?.name || (language === 'ar' ? 'الأدمن' : 'Admin')}!
                         </h1>
                         <p style={{
                             color: 'rgb(107 114 128)',
@@ -232,8 +231,8 @@ const SellerDashboard = () => {
                             fontSize: '0.875rem'
                         }}>
                             {language === 'ar' 
-                                ? 'مرحباً بك في لوحة تحكم البائع. هنا يمكنك إدارة مطاعمك ووجباتك ومتابعة نشاطك.'
-                                : 'Welcome to your seller dashboard. Here you can manage your restaurants, meals, and track your activity.'
+                                ? 'مرحباً بك في لوحة تحكم الأدمن. هنا يمكنك إدارة النظام بالكامل ومتابعة جميع الأنشطة.'
+                                : 'Welcome to your admin dashboard. Here you can manage the entire system and monitor all activities.'
                             }
                         </p>
                     </div>
@@ -403,4 +402,4 @@ const SellerDashboard = () => {
     );
 };
 
-export default SellerDashboard;
+export default AdminDashboard;

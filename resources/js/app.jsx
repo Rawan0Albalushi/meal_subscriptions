@@ -26,8 +26,9 @@ function AppRoutes() {
     const { isAuthenticated, user } = useAuth();
     const location = useLocation();
 
-    // Check if current path is seller dashboard
+    // Check if current path is seller or admin dashboard
     const isSellerPath = location.pathname.startsWith('/seller');
+    const isAdminPath = location.pathname.startsWith('/admin');
 
     return (
         <>
@@ -59,8 +60,8 @@ function AppRoutes() {
                 zIndex: -1
             }}></div>
             
-            {/* Show Navbar on all pages except seller dashboard */}
-            {!isSellerPath && <Navbar />}
+            {/* Show Navbar on all pages except seller and admin dashboards */}
+            {!isSellerPath && !isAdminPath && <Navbar />}
             <main style={{ 
                 width: '100%', 
                 padding: (location.pathname === '/' && !isAuthenticated) ? '0' : '1rem',

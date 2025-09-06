@@ -1193,7 +1193,7 @@ const TodayOrders = () => {
                                                          // Handle ISO string format
                                                          if (deliveryTime.includes('T')) {
                                                              const date = new Date(deliveryTime);
-                                                             return date.toLocaleTimeString('ar-SA', {
+                                                             return date.toLocaleTimeString('en-US', {
                                                                  hour: '2-digit',
                                                                  minute: '2-digit',
                                                                  hour12: true

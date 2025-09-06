@@ -71,7 +71,7 @@ const SellerSubscriptions = () => {
                             items: sub.subscription_items?.map(item => {
                                 const date = new Date(item.delivery_date);
                                 const isoDate = date.toISOString().split('T')[0];
-                                const europeanDate = date.toLocaleDateString('en-GB').split('/').reverse().join('-');
+                                const europeanDate = date.toLocaleDateString('en-US').split('/').reverse().join('-');
                                 const usDate = date.toLocaleDateString('en-US');
                                 
                                 const day = String(date.getDate()).padStart(2, '0');
@@ -216,7 +216,7 @@ const SellerSubscriptions = () => {
                     const itemDateISO = itemDateObj.toISOString().split('T')[0];
                     
                     // Format 2: DD-MM-YYYY (European format)
-                    const itemDateEuropean = itemDateObj.toLocaleDateString('en-GB').split('/').reverse().join('-');
+                    const itemDateEuropean = itemDateObj.toLocaleDateString('en-US').split('/').reverse().join('-');
                     
                     // Format 3: MM/DD/YYYY (US format)
                     const itemDateUS = itemDateObj.toLocaleDateString('en-US');
@@ -590,7 +590,7 @@ const SellerSubscriptions = () => {
                                     
                                     // Add multiple date formats
                                     availableDates.add(date.toISOString().split('T')[0]); // YYYY-MM-DD
-                                    availableDates.add(date.toLocaleDateString('en-GB').split('/').reverse().join('-')); // DD-MM-YYYY
+                                    availableDates.add(date.toLocaleDateString('en-US').split('/').reverse().join('-')); // DD-MM-YYYY
                                     availableDates.add(date.toLocaleDateString('en-US')); // MM/DD/YYYY
                                     
                                     // Add DD-MM-YYYY with leading zeros

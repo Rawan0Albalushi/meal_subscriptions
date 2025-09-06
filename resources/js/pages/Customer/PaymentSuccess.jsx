@@ -200,7 +200,7 @@ const PaymentSuccess = () => {
                 }}>
                   <span className={`font-medium text-gray-700 text-sm sm:text-base ${dir === 'rtl' ? 'font-arabic' : 'font-latin'}`}>{t('paidAt')}:</span>
                   <span className={`font-bold text-sm sm:text-base ${dir === 'rtl' ? 'font-arabic' : 'font-latin'}`} style={{ color: '#4a757c' }}>
-                    {new Date(paymentData.paid_at).toLocaleDateString('en-GB')}
+                    {new Date(paymentData.paid_at).toLocaleDateString('en-US')}
                   </span>
                 </div>
               </div>
