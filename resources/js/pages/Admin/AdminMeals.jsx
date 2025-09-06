@@ -557,7 +557,7 @@ const AdminMeals = () => {
                                 }}>
                                     {meal.image && (
                                         <img
-                                            src={meal.image}
+                                            src={`/storage/${meal.image}`}
                                             alt={language === 'ar' ? meal.name_ar : meal.name_en}
                                             style={{
                                                 width: '100%',

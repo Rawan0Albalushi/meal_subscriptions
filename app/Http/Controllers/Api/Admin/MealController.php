@@ -103,8 +103,8 @@ class MealController extends Controller
 
             // Handle image upload
             if ($request->hasFile('image')) {
-                $imagePath = $request->file('image')->store('meals', 'public');
-                $data['image'] = Storage::url($imagePath);
+                $imagePath = $request->file('image')->store('meals/images', 'public');
+                $data['image'] = $imagePath;
             }
 
             // Set price to 0 (system uses subscription pricing)
@@ -203,8 +203,8 @@ class MealController extends Controller
                     Storage::disk('public')->delete($oldImagePath);
                 }
 
-                $imagePath = $request->file('image')->store('meals', 'public');
-                $data['image'] = Storage::url($imagePath);
+                $imagePath = $request->file('image')->store('meals/images', 'public');
+                $data['image'] = $imagePath;
             }
 
             // Set price to 0 (system uses subscription pricing)

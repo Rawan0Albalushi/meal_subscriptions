@@ -995,7 +995,7 @@ const AdminRestaurants = () => {
                                             {language === 'ar' ? 'الشعار الحالي:' : 'Current Logo:'}
                                         </div>
                                         <img 
-                                            src={editingRestaurant.logo} 
+                                            src={`/storage/${editingRestaurant.logo}`} 
                                             alt="Current Logo"
                                             style={{
                                                 width: '100px',

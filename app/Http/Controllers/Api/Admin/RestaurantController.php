@@ -92,8 +92,8 @@ class RestaurantController extends Controller
 
             // Handle logo upload
             if ($request->hasFile('logo')) {
-                $imagePath = $request->file('logo')->store('restaurants', 'public');
-                $data['logo'] = Storage::url($imagePath);
+                $imagePath = $request->file('logo')->store('restaurants/logos', 'public');
+                $data['logo'] = $imagePath;
             }
 
             $restaurant = Restaurant::create($data);
@@ -173,8 +173,8 @@ class RestaurantController extends Controller
                     Storage::disk('public')->delete($oldImagePath);
                 }
 
-                $imagePath = $request->file('logo')->store('restaurants', 'public');
-                $data['logo'] = Storage::url($imagePath);
+                $imagePath = $request->file('logo')->store('restaurants/logos', 'public');
+                $data['logo'] = $imagePath;
             }
 
             $restaurant->update($data);
