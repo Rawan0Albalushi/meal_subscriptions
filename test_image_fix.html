@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار إصلاح الصور</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+        }
+        .test-section h2 {
+            color: #4a5568;
+            margin-bottom: 20px;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .image-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .image-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .image-item p {
+            margin: 0;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+        .error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #feb2b2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 اختبار إصلاح مشكلة عرض الصور</h1>
+        
+        <div class="test-section">
+            <h2>📊 حالة الإصلاح</h2>
+            <div class="status success">
+                ✅ تم إصلاح جميع ملفات التحكم (Controllers) لتخزين المسارات النسبية
+            </div>
+            <div class="status success">
+                ✅ تم إصلاح جميع ملفات الواجهة الأمامية (Frontend) لعرض الصور بالطريقة الصحيحة
+            </div>
+            <div class="status success">
+                ✅ تم إصلاح البيانات الموجودة في قاعدة البيانات
+            </div>
+            <div class="status success">
+                ✅ تم مزامنة الملفات مع مجلد public
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🍽️ صور الوجبات</h2>
+            <div class="image-grid">
+                <div class="image-item">
+                    <img src="/storage/meals/images/VM15o29jVQ7QUWV7q5lyowvlmqwJbgAKwOyKkglv.jpg" 
+                         alt="وجبة 1" 
+                         onload="this.parentElement.querySelector('.status').innerHTML='✅ تم تحميل الصورة بنجاح'"
+                         onerror="this.parentElement.querySelector('.status').innerHTML='❌ فشل في تحميل الصورة'">
+                    <p>وجبة 1</p>
+                    <div class="status">جاري التحميل...</div>
+                </div>
+                <div class="image-item">
+                    <img src="/storage/meals/images/jjfzniACuWrTRAkzz55CpW0f861jroxrDZr6CfX3.jpg" 
+                         alt="وجبة 2" 
+                         onload="this.parentElement.querySelector('.status').innerHTML='✅ تم تحميل الصورة بنجاح'"
+                         onerror="this.parentElement.querySelector('.status').innerHTML='❌ فشل في تحميل الصورة'">
+                    <p>وجبة 2</p>
+                    <div class="status">جاري التحميل...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🏪 شعارات المطاعم</h2>
+            <div class="image-grid">
+                <div class="image-item">
+                    <img src="/storage/restaurants/logos/tPOD6UuDn6AXdnPwk0JkOg0tTE1wdQad9DeXqDC3.png" 
+                         alt="مطعم 1" 
+                         onload="this.parentElement.querySelector('.status').innerHTML='✅ تم تحميل الشعار بنجاح'"
+                         onerror="this.parentElement.querySelector('.status').innerHTML='❌ فشل في تحميل الشعار'">
+                    <p>مطعم 1</p>
+                    <div class="status">جاري التحميل...</div>
+                </div>
+                <div class="image-item">
+                    <img src="/storage/restaurants/logos/mM2tJpRtbkTVwVqP1sap8lr5vxK5ypn7KbNRLOQH.png" 
+                         alt="مطعم 2" 
+                         onload="this.parentElement.querySelector('.status').innerHTML='✅ تم تحميل الشعار بنجاح'"
+                         onerror="this.parentElement.querySelector('.status').innerHTML='❌ فشل في تحميل الشعار'">
+                    <p>مطعم 2</p>
+                    <div class="status">جاري التحميل...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 ملخص الإصلاحات</h2>
+            <ul style="color: #4a5568; line-height: 1.8;">
+                <li><strong>إصلاح AdminMealController:</strong> تغيير من Storage::url() إلى مسار نسبي</li>
+                <li><strong>إصلاح AdminRestaurantController:</strong> تغيير من Storage::url() إلى مسار نسبي</li>
+                <li><strong>إصلاح AdminMeals.jsx:</strong> إضافة /storage/ قبل مسار الصورة</li>
+                <li><strong>إصلاح AdminRestaurants.jsx:</strong> إضافة /storage/ قبل مسار الشعار</li>
+                <li><strong>إصلاح قاعدة البيانات:</strong> إزالة /storage/ من المسارات المخزنة</li>
+                <li><strong>تنظيم الملفات:</strong> نقل الملفات إلى المجلدات الصحيحة</li>
+                <li><strong>مزامنة الملفات:</strong> تحديث مجلد public/storage</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

@@ -14,7 +14,13 @@ class SubscriptionController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Subscription::with(['user', 'restaurant', 'subscriptionType', 'subscriptionItems.meal']);
+            $query = Subscription::with([
+                'user:id,name,email', 
+                'restaurant', 
+                'subscriptionType', 
+                'subscriptionItems.meal',
+                'deliveryAddress'
+            ]);
 
             // Search functionality
             if ($request->has('search') && $request->search) {
@@ -82,7 +88,7 @@ class SubscriptionController extends Controller
     {
         try {
             $subscription = Subscription::with([
-                'user', 
+                'user:id,name,email', 
                 'restaurant', 
                 'subscriptionType', 
                 'items.meal',
@@ -121,7 +127,7 @@ class SubscriptionController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'تم تحديث الاشتراك بنجاح',
-                'data' => $subscription->load(['user', 'restaurant', 'subscriptionType', 'items.meal'])
+                'data' => $subscription->load(['user:id,name,email', 'restaurant', 'subscriptionType', 'items.meal', 'deliveryAddress'])
             ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -171,28 +177,50 @@ class SubscriptionController extends Controller
     public function updateItemStatus(Request $request, $subscriptionId, $itemId)
     {
         try {
+            \Log::info('Admin updateItemStatus called', [
+                'subscription_id' => $subscriptionId,
+                'item_id' => $itemId,
+                'request_data' => $request->all(),
+                'user_id' => auth()->id()
+            ]);
+
             $subscription = Subscription::findOrFail($subscriptionId);
-            $item = $subscription->items()->findOrFail($itemId);
+            \Log::info('Subscription found', ['subscription' => $subscription->toArray()]);
+            
+            $item = $subscription->subscriptionItems()->findOrFail($itemId);
+            \Log::info('Subscription item found', ['item' => $item->toArray()]);
 
             $request->validate([
-                'status' => 'required|in:pending,preparing,ready,delivered'
+                'status' => 'required|in:pending,preparing,delivered,cancelled'
             ]);
 
             $item->update(['status' => $request->status]);
+            \Log::info('Item status updated successfully', ['new_status' => $request->status]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'تم تحديث حالة الوجبة بنجاح',
-                'data' => $item
+                'data' => $item->fresh()
             ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation error in updateItemStatus', [
+                'errors' => $e->errors(),
+                'request_data' => $request->all()
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'بيانات غير صحيحة',
                 'errors' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
+            \Log::error('Error in updateItemStatus', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'subscription_id' => $subscriptionId,
+                'item_id' => $itemId,
+                'request_data' => $request->all()
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'حدث خطأ في تحديث حالة الوجبة',

@@ -12,6 +12,10 @@ const AdminRestaurants = () => {
     const [filterStatus, setFilterStatus] = useState('all');
     const [showAddModal, setShowAddModal] = useState(false);
     const [editingRestaurant, setEditingRestaurant] = useState(null);
+    const [sortField, setSortField] = useState('created_at');
+    const [sortDirection, setSortDirection] = useState('desc');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const [formData, setFormData] = useState({
         name_ar: '',
         name_en: '',
@@ -246,6 +250,45 @@ const AdminRestaurants = () => {
         return matchesSearch && matchesStatus;
     });
 
+    // Sort restaurants
+    const sortedRestaurants = [...filteredRestaurants].sort((a, b) => {
+        let aValue = a[sortField];
+        let bValue = b[sortField];
+        
+        if (sortField === 'created_at') {
+            aValue = new Date(aValue);
+            bValue = new Date(bValue);
+        } else if (typeof aValue === 'string') {
+            aValue = aValue.toLowerCase();
+            bValue = bValue.toLowerCase();
+        }
+        
+        if (sortDirection === 'asc') {
+            return aValue > bValue ? 1 : -1;
+        } else {
+            return aValue < bValue ? 1 : -1;
+        }
+    });
+
+    // Pagination
+    const totalPages = Math.ceil(sortedRestaurants.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedRestaurants = sortedRestaurants.slice(startIndex, startIndex + itemsPerPage);
+
+    const handleSort = (field) => {
+        if (sortField === field) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortField(field);
+            setSortDirection('asc');
+        }
+        setCurrentPage(1);
+    };
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+
     if (loading) {
         return (
             <div style={{
@@ -372,260 +415,562 @@ const AdminRestaurants = () => {
                 </div>
             </div>
 
-            {/* Restaurants Grid */}
+            {/* Restaurants Table */}
             <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
-                gap: '1.5rem'
-            }}>
-                {filteredRestaurants.map((restaurant) => (
-                    <div
-                        key={restaurant.id}
-                        style={{
-                            background: 'rgba(255, 255, 255, 0.9)',
+                background: 'rgba(255, 255, 255, 0.95)',
                             backdropFilter: 'blur(20px)',
                             borderRadius: '1rem',
-                            padding: '1.5rem',
                             boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
                             border: '1px solid rgba(255, 255, 255, 0.2)',
-                            transition: 'transform 0.2s'
+                overflow: 'hidden'
+            }}>
+                {/* Table Header */}
+                <div style={{
+                    padding: '1.5rem',
+                    borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
+                    background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
+                }}>
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '1rem'
+                    }}>
+                        <h3 style={{
+                            margin: 0,
+                            color: '#2d3748',
+                            fontWeight: '600',
+                            fontSize: '1.25rem'
+                        }}>
+                            {language === 'ar' ? `المطاعم (${filteredRestaurants.length})` : `Restaurants (${filteredRestaurants.length})`}
+                        </h3>
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            fontSize: '0.875rem',
+                            color: '#64748b'
+                        }}>
+                            <span>{language === 'ar' ? 'عرض:' : 'Show:'}</span>
+                            <select
+                                value={itemsPerPage}
+                                onChange={(e) => {
+                                    setItemsPerPage(parseInt(e.target.value));
+                                    setCurrentPage(1);
+                                }}
+                                style={{
+                                    padding: '0.25rem 0.5rem',
+                                    border: '1px solid #cbd5e0',
+                                    borderRadius: '0.25rem',
+                                    fontSize: '0.875rem',
+                                    background: 'white'
+                                }}
+                            >
+                                <option value={5}>5</option>
+                                <option value={10}>10</option>
+                                <option value={20}>20</option>
+                                <option value={50}>50</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Table */}
+                <div style={{ overflowX: 'auto' }}>
+                    <table style={{
+                        width: '100%',
+                        borderCollapse: 'collapse',
+                        fontSize: '0.875rem'
+                    }}>
+                        <thead>
+                            <tr style={{
+                                background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
+                                borderBottom: '2px solid #cbd5e0'
+                            }}>
+                                <th style={{
+                                    padding: '1rem 0.75rem',
+                                    textAlign: 'left',
+                                    fontWeight: '600',
+                                    color: '#374151',
+                                    cursor: 'pointer',
+                                    userSelect: 'none',
+                                    position: 'relative'
+                                }}
+                                onClick={() => handleSort('logo')}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                        {language === 'ar' ? 'الشعار' : 'Logo'}
+                                        {sortField === 'logo' && (
+                                            <span style={{ fontSize: '0.75rem' }}>
+                                                {sortDirection === 'asc' ? '↑' : '↓'}
+                                            </span>
+                                        )}
+                                    </div>
+                                </th>
+                                <th style={{
+                                    padding: '1rem 0.75rem',
+                                    textAlign: 'left',
+                                    fontWeight: '600',
+                                    color: '#374151',
+                                    cursor: 'pointer',
+                                    userSelect: 'none'
+                                }}
+                                onClick={() => handleSort('name')}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                        {language === 'ar' ? 'اسم المطعم' : 'Restaurant Name'}
+                                        {sortField === 'name' && (
+                                            <span style={{ fontSize: '0.75rem' }}>
+                                                {sortDirection === 'asc' ? '↑' : '↓'}
+                                            </span>
+                                        )}
+                                    </div>
+                                </th>
+                                <th style={{
+                                    padding: '1rem 0.75rem',
+                                    textAlign: 'left',
+                                    fontWeight: '600',
+                                    color: '#374151',
+                                    cursor: 'pointer',
+                                    userSelect: 'none'
+                                }}
+                                onClick={() => handleSort('phone')}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                        {language === 'ar' ? 'الهاتف' : 'Phone'}
+                                        {sortField === 'phone' && (
+                                            <span style={{ fontSize: '0.75rem' }}>
+                                                {sortDirection === 'asc' ? '↑' : '↓'}
+                                            </span>
+                                        )}
+                                    </div>
+                                </th>
+                                <th style={{
+                                    padding: '1rem 0.75rem',
+                                    textAlign: 'left',
+                                    fontWeight: '600',
+                                    color: '#374151',
+                                    cursor: 'pointer',
+                                    userSelect: 'none'
+                                }}
+                                onClick={() => handleSort('email')}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                        {language === 'ar' ? 'البريد الإلكتروني' : 'Email'}
+                                        {sortField === 'email' && (
+                                            <span style={{ fontSize: '0.75rem' }}>
+                                                {sortDirection === 'asc' ? '↑' : '↓'}
+                                            </span>
+                                        )}
+                                    </div>
+                                </th>
+                                <th style={{
+                                    padding: '1rem 0.75rem',
+                                    textAlign: 'left',
+                                    fontWeight: '600',
+                                    color: '#374151',
+                                    cursor: 'pointer',
+                                    userSelect: 'none'
+                                }}
+                                onClick={() => handleSort('meals_count')}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                        {language === 'ar' ? 'عدد الوجبات' : 'Meals Count'}
+                                        {sortField === 'meals_count' && (
+                                            <span style={{ fontSize: '0.75rem' }}>
+                                                {sortDirection === 'asc' ? '↑' : '↓'}
+                                            </span>
+                                        )}
+                                    </div>
+                                </th>
+                                <th style={{
+                                    padding: '1rem 0.75rem',
+                                    textAlign: 'left',
+                                    fontWeight: '600',
+                                    color: '#374151',
+                                    cursor: 'pointer',
+                                    userSelect: 'none'
+                                }}
+                                onClick={() => handleSort('is_active')}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                        {language === 'ar' ? 'الحالة' : 'Status'}
+                                        {sortField === 'is_active' && (
+                                            <span style={{ fontSize: '0.75rem' }}>
+                                                {sortDirection === 'asc' ? '↑' : '↓'}
+                                            </span>
+                                        )}
+                                    </div>
+                                </th>
+                                <th style={{
+                                    padding: '1rem 0.75rem',
+                                    textAlign: 'left',
+                                    fontWeight: '600',
+                                    color: '#374151',
+                                    cursor: 'pointer',
+                                    userSelect: 'none'
+                                }}
+                                onClick={() => handleSort('created_at')}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                        {language === 'ar' ? 'تاريخ الإنشاء' : 'Created Date'}
+                                        {sortField === 'created_at' && (
+                                            <span style={{ fontSize: '0.75rem' }}>
+                                                {sortDirection === 'asc' ? '↑' : '↓'}
+                                            </span>
+                                        )}
+                                    </div>
+                                </th>
+                                <th style={{
+                                    padding: '1rem 0.75rem',
+                                    textAlign: 'center',
+                                    fontWeight: '600',
+                                    color: '#374151'
+                                }}>
+                                    {language === 'ar' ? 'الإجراءات' : 'Actions'}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {paginatedRestaurants.map((restaurant, index) => (
+                                <tr
+                                    key={restaurant.id}
+                                    style={{
+                                        borderBottom: '1px solid #e2e8f0',
+                                        transition: 'all 0.2s ease',
+                                        background: index % 2 === 0 ? 'white' : '#f8fafc'
                         }}
                         onMouseEnter={(e) => {
-                            e.target.style.transform = 'translateY(-4px)';
+                                        e.currentTarget.style.background = '#f1f5f9';
+                                        e.currentTarget.style.transform = 'translateY(-1px)';
+                                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
                         }}
                         onMouseLeave={(e) => {
-                            e.target.style.transform = 'translateY(0)';
+                                        e.currentTarget.style.background = index % 2 === 0 ? 'white' : '#f8fafc';
+                                        e.currentTarget.style.transform = 'translateY(0)';
+                                        e.currentTarget.style.boxShadow = 'none';
                         }}
                     >
-                        {/* Restaurant Logo */}
+                                    {/* Logo */}
+                                    <td style={{ padding: '1rem 0.75rem' }}>
                         <div style={{
-                            width: '100%',
-                            height: '200px',
+                                            width: '50px',
+                                            height: '50px',
+                                            borderRadius: '0.5rem',
                             background: restaurant.logo 
                                 ? `url(${restaurant.logo})` 
                                 : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
-                            borderRadius: '0.75rem',
-                            marginBottom: '1rem',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            fontSize: '3rem',
-                            color: 'white'
+                                            fontSize: '1.5rem',
+                                            color: 'white',
+                                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
                         }}>
                             {!restaurant.logo && '🍽️'}
                         </div>
+                                    </td>
 
+                                    {/* Restaurant Name */}
+                                    <td style={{ padding: '1rem 0.75rem' }}>
+                                        <div>
                         <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'flex-start',
-                            marginBottom: '1rem'
-                        }}>
-                            <div style={{
-                                flex: 1
-                            }}>
-                                <h3 style={{
-                                    fontSize: '1.125rem',
-                                    fontWeight: 'bold',
-                                    color: 'rgb(55 65 81)',
-                                    margin: 0,
-                                    marginBottom: '0.5rem'
+                                                fontWeight: '600',
+                                                color: '#1f2937',
+                                                marginBottom: '0.25rem',
+                                                fontSize: '0.875rem'
                                 }}>
                                     {restaurant.name}
-                                </h3>
-                                <p style={{
-                                    fontSize: '0.875rem',
-                                    color: 'rgb(107 114 128)',
-                                    margin: 0,
+                                            </div>
+                                            <div style={{
+                                                color: '#6b7280',
+                                                fontSize: '0.75rem',
                                     lineHeight: 1.4,
                                     display: '-webkit-box',
                                     WebkitLineClamp: 2,
                                     WebkitBoxOrient: 'vertical',
-                                    overflow: 'hidden'
+                                                overflow: 'hidden',
+                                                maxWidth: '200px'
                                 }}>
                                     {restaurant.description}
-                                </p>
                             </div>
-                            <div style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.5rem'
-                            }}>
-                                <span style={{
-                                    padding: '0.25rem 0.5rem',
-                                    borderRadius: '0.25rem',
-                                    fontSize: '0.75rem',
-                                    fontWeight: '600',
-                                    background: restaurant.is_active ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                                    color: restaurant.is_active ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)'
-                                }}>
-                                    {restaurant.is_active ? (language === 'ar' ? 'نشط' : 'Active') : (language === 'ar' ? 'غير نشط' : 'Inactive')}
-                                </span>
-                            </div>
-                        </div>
+                                        </div>
+                                    </td>
 
+                                    {/* Phone */}
+                                    <td style={{ padding: '1rem 0.75rem' }}>
+                            <div style={{
+                                            color: '#374151',
+                                            fontSize: '0.875rem'
+                                        }}>
+                                            {restaurant.phone || (
+                                                <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>
+                                                    {language === 'ar' ? 'غير محدد' : 'Not specified'}
+                                </span>
+                                            )}
+                            </div>
+                                    </td>
+
+                                    {/* Email */}
+                                    <td style={{ padding: '1rem 0.75rem' }}>
                         <div style={{
-                            marginBottom: '1rem'
-                        }}>
-                            <div style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                marginBottom: '0.5rem'
-                            }}>
-                                <span style={{
-                                    fontSize: '0.75rem',
-                                    color: 'rgb(107 114 128)'
-                                }}>
-                                    {language === 'ar' ? 'الهاتف:' : 'Phone:'}
+                                            color: '#374151',
+                                            fontSize: '0.875rem'
+                                        }}>
+                                            {restaurant.email || (
+                                                <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>
+                                                    {language === 'ar' ? 'غير محدد' : 'Not specified'}
                                 </span>
-                                <span style={{
-                                    fontSize: '0.75rem',
-                                    color: 'rgb(55 65 81)',
-                                    fontWeight: '500'
-                                }}>
-                                    {restaurant.phone || (language === 'ar' ? 'غير محدد' : 'Not specified')}
-                                </span>
+                                            )}
                             </div>
-                            <div style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                marginBottom: '0.5rem'
-                            }}>
-                                <span style={{
-                                    fontSize: '0.75rem',
-                                    color: 'rgb(107 114 128)'
-                                }}>
-                                    {language === 'ar' ? 'البريد الإلكتروني:' : 'Email:'}
-                                </span>
-                                <span style={{
-                                    fontSize: '0.75rem',
-                                    color: 'rgb(55 65 81)',
-                                    fontWeight: '500'
-                                }}>
-                                    {restaurant.email || (language === 'ar' ? 'غير محدد' : 'Not specified')}
-                                </span>
-                            </div>
-                            <div style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                marginBottom: '0.5rem'
-                            }}>
-                                <span style={{
-                                    fontSize: '0.75rem',
-                                    color: 'rgb(107 114 128)'
-                                }}>
-                                    {language === 'ar' ? 'عدد الوجبات:' : 'Meals Count:'}
-                                </span>
-                                <span style={{
-                                    fontSize: '0.75rem',
-                                    color: 'rgb(55 65 81)',
-                                    fontWeight: '500'
-                                }}>
-                                    {restaurant.meals_count || 0}
-                                </span>
-                            </div>
-                            
-                            {restaurant.seller && (
-                            <div style={{
-                                display: 'flex',
-                                    justifyContent: 'space-between',
-                                    marginBottom: '0.5rem'
-                            }}>
-                                <span style={{
-                                    fontSize: '0.75rem',
-                                    color: 'rgb(107 114 128)'
-                                }}>
-                                        {language === 'ar' ? 'البائع:' : 'Seller:'}
-                                </span>
-                                <span style={{
-                                    fontSize: '0.75rem',
-                                    color: 'rgb(55 65 81)',
-                                    fontWeight: '500'
-                                }}>
-                                        {restaurant.seller.name}
-                                </span>
-                            </div>
-                            )}
-                        </div>
+                                    </td>
 
+                                    {/* Meals Count */}
+                                    <td style={{ padding: '1rem 0.75rem' }}>
+                            <div style={{
+                                display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '0.5rem'
+                            }}>
+                                <span style={{
+                                                background: '#dbeafe',
+                                                color: '#1e40af',
+                                                padding: '0.25rem 0.5rem',
+                                                borderRadius: '0.375rem',
+                                    fontSize: '0.75rem',
+                                                fontWeight: '600'
+                                }}>
+                                                {restaurant.meals_count || 0}
+                                </span>
+                                <span style={{
+                                                color: '#6b7280',
+                                                fontSize: '0.75rem'
+                                }}>
+                                                {language === 'ar' ? 'وجبة' : 'meals'}
+                                </span>
+                            </div>
+                                    </td>
+
+                                    {/* Status */}
+                                    <td style={{ padding: '1rem 0.75rem' }}>
+                                <span style={{
+                                            padding: '0.375rem 0.75rem',
+                                            borderRadius: '0.5rem',
+                                    fontSize: '0.75rem',
+                                            fontWeight: '600',
+                                            background: restaurant.is_active 
+                                                ? 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)' 
+                                                : 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
+                                            color: restaurant.is_active ? '#166534' : '#dc2626',
+                                            border: `1px solid ${restaurant.is_active ? '#bbf7d0' : '#fecaca'}`,
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                            gap: '0.25rem'
+                                        }}>
+                                <span style={{
+                                                width: '6px',
+                                                height: '6px',
+                                                borderRadius: '50%',
+                                                background: restaurant.is_active ? '#22c55e' : '#ef4444'
+                                            }}></span>
+                                            {restaurant.is_active ? (language === 'ar' ? 'نشط' : 'Active') : (language === 'ar' ? 'غير نشط' : 'Inactive')}
+                                </span>
+                                    </td>
+                            
+                                    {/* Created Date */}
+                                    <td style={{ padding: '1rem 0.75rem' }}>
+                            <div style={{
+                                            color: '#6b7280',
+                                            fontSize: '0.875rem'
+                                        }}>
+                                            {new Date(restaurant.created_at).toLocaleDateString('en-GB')}
+                            </div>
+                                    </td>
+
+                                    {/* Actions */}
+                                    <td style={{ padding: '1rem 0.75rem' }}>
                         <div style={{
                             display: 'flex',
-                            gap: '0.5rem'
+                                            gap: '0.5rem',
+                                            justifyContent: 'center'
                         }}>
                             <button
                                 onClick={() => handleEdit(restaurant)}
                                 style={{
-                                    flex: 1,
                                     padding: '0.5rem',
-                                    background: 'rgba(59, 130, 246, 0.1)',
-                                    color: 'rgb(59 130 246)',
-                                    border: 'none',
+                                                    background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+                                                    color: '#1e40af',
+                                                    border: '1px solid #93c5fd',
                                     borderRadius: '0.375rem',
                                     fontSize: '0.75rem',
                                     fontWeight: '500',
                                     cursor: 'pointer',
-                                    transition: 'all 0.2s'
+                                                    transition: 'all 0.2s',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.25rem'
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.target.style.background = 'rgba(59, 130, 246, 0.2)';
+                                                    e.target.style.background = 'linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%)';
+                                                    e.target.style.transform = 'translateY(-1px)';
                                 }}
                                 onMouseLeave={(e) => {
-                                    e.target.style.background = 'rgba(59, 130, 246, 0.1)';
+                                                    e.target.style.background = 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)';
+                                                    e.target.style.transform = 'translateY(0)';
                                 }}
+                                                title={language === 'ar' ? 'تعديل' : 'Edit'}
                             >
-                                {language === 'ar' ? 'تعديل' : 'Edit'}
+                                                ✏️
                             </button>
                             <button
                                 onClick={() => handleToggleRestaurantStatus(restaurant.id, restaurant.is_active)}
                                 style={{
-                                    flex: 1,
                                     padding: '0.5rem',
-                                    background: restaurant.is_active ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)',
-                                    color: restaurant.is_active ? 'rgb(239, 68, 68)' : 'rgb(34, 197, 94)',
-                                    border: 'none',
+                                                    background: restaurant.is_active 
+                                                        ? 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)' 
+                                                        : 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)',
+                                                    color: restaurant.is_active ? '#dc2626' : '#166534',
+                                                    border: `1px solid ${restaurant.is_active ? '#fecaca' : '#bbf7d0'}`,
                                     borderRadius: '0.375rem',
                                     fontSize: '0.75rem',
                                     fontWeight: '500',
                                     cursor: 'pointer',
-                                    transition: 'all 0.2s'
+                                                    transition: 'all 0.2s',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.25rem'
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.target.style.background = restaurant.is_active ? 'rgba(239, 68, 68, 0.2)' : 'rgba(34, 197, 94, 0.2)';
+                                                    e.target.style.transform = 'translateY(-1px)';
                                 }}
                                 onMouseLeave={(e) => {
-                                    e.target.style.background = restaurant.is_active ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)';
+                                                    e.target.style.transform = 'translateY(0)';
                                 }}
+                                                title={restaurant.is_active ? (language === 'ar' ? 'إلغاء تفعيل' : 'Deactivate') : (language === 'ar' ? 'تفعيل' : 'Activate')}
                             >
-                                {restaurant.is_active ? (language === 'ar' ? 'إلغاء تفعيل' : 'Deactivate') : (language === 'ar' ? 'تفعيل' : 'Activate')}
+                                                {restaurant.is_active ? '⏸️' : '▶️'}
                             </button>
                             <button
                                 onClick={() => handleDeleteRestaurant(restaurant.id)}
                                 style={{
-                                    flex: 1,
                                     padding: '0.5rem',
-                                    background: 'rgba(239, 68, 68, 0.1)',
-                                    color: 'rgb(239, 68, 68)',
-                                    border: 'none',
+                                                    background: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
+                                                    color: '#dc2626',
+                                                    border: '1px solid #fecaca',
                                     borderRadius: '0.375rem',
                                     fontSize: '0.75rem',
                                     fontWeight: '500',
                                     cursor: 'pointer',
-                                    transition: 'all 0.2s'
+                                                    transition: 'all 0.2s',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.25rem'
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.target.style.background = 'rgba(239, 68, 68, 0.2)';
+                                                    e.target.style.background = 'linear-gradient(135deg, #fecaca 0%, #fca5a5 100%)';
+                                                    e.target.style.transform = 'translateY(-1px)';
                                 }}
                                 onMouseLeave={(e) => {
-                                    e.target.style.background = 'rgba(239, 68, 68, 0.1)';
+                                                    e.target.style.background = 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)';
+                                                    e.target.style.transform = 'translateY(0)';
+                                }}
+                                                title={language === 'ar' ? 'حذف' : 'Delete'}
+                            >
+                                                🗑️
+                            </button>
+                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                    <div style={{
+                        padding: '1.5rem',
+                        borderTop: '1px solid #e2e8f0',
+                        background: '#f8fafc',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                    }}>
+                        <div style={{
+                            color: '#6b7280',
+                            fontSize: '0.875rem'
+                        }}>
+                            {language === 'ar' 
+                                ? `عرض ${startIndex + 1} إلى ${Math.min(startIndex + itemsPerPage, sortedRestaurants.length)} من ${sortedRestaurants.length} مطعم`
+                                : `Showing ${startIndex + 1} to ${Math.min(startIndex + itemsPerPage, sortedRestaurants.length)} of ${sortedRestaurants.length} restaurants`
+                            }
+                        </div>
+                        <div style={{
+                            display: 'flex',
+                            gap: '0.5rem',
+                            alignItems: 'center'
+                        }}>
+                            <button
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                style={{
+                                    padding: '0.5rem 0.75rem',
+                                    background: currentPage === 1 ? '#f3f4f6' : 'white',
+                                    color: currentPage === 1 ? '#9ca3af' : '#374151',
+                                    border: '1px solid #d1d5db',
+                                    borderRadius: '0.375rem',
+                                    fontSize: '0.875rem',
+                                    cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                                    transition: 'all 0.2s'
                                 }}
                             >
-                                {language === 'ar' ? 'حذف' : 'Delete'}
+                                {language === 'ar' ? 'السابق' : 'Previous'}
+                            </button>
+                            
+                            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                const pageNum = i + 1;
+                                return (
+                                    <button
+                                        key={pageNum}
+                                        onClick={() => handlePageChange(pageNum)}
+                                        style={{
+                                            padding: '0.5rem 0.75rem',
+                                            background: currentPage === pageNum ? '#3b82f6' : 'white',
+                                            color: currentPage === pageNum ? 'white' : '#374151',
+                                            border: '1px solid #d1d5db',
+                                            borderRadius: '0.375rem',
+                                            fontSize: '0.875rem',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s',
+                                            fontWeight: currentPage === pageNum ? '600' : '400'
+                                        }}
+                                    >
+                                        {pageNum}
+                                    </button>
+                                );
+                            })}
+                            
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                style={{
+                                    padding: '0.5rem 0.75rem',
+                                    background: currentPage === totalPages ? '#f3f4f6' : 'white',
+                                    color: currentPage === totalPages ? '#9ca3af' : '#374151',
+                                    border: '1px solid #d1d5db',
+                                    borderRadius: '0.375rem',
+                                    fontSize: '0.875rem',
+                                    cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                                    transition: 'all 0.2s'
+                                }}
+                            >
+                                {language === 'ar' ? 'التالي' : 'Next'}
                             </button>
                         </div>
                     </div>
-                ))}
+                )}
             </div>
 
             {filteredRestaurants.length === 0 && (

@@ -17,6 +17,10 @@ const AdminMeals = () => {
         per_page: 20,
         total: 0
     });
+    const [sortField, setSortField] = useState('id');
+    const [sortDirection, setSortDirection] = useState('desc');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const [restaurants, setRestaurants] = useState([]);
     const [mealTypes, setMealTypes] = useState([]);
     const [subscriptionTypes, setSubscriptionTypes] = useState([]);
@@ -147,9 +151,6 @@ const AdminMeals = () => {
         setPagination(prev => ({ ...prev, current_page: 1 }));
     };
 
-    const handlePageChange = (page) => {
-        setPagination(prev => ({ ...prev, current_page: page }));
-    };
 
     const handleEdit = (meal) => {
         setEditingMeal(meal);
@@ -303,6 +304,68 @@ const AdminMeals = () => {
         return restaurant ? (language === 'ar' ? restaurant.name_ar : restaurant.name_en) : 'Unknown';
     };
 
+    // Filter meals based on search and filters
+    const filteredMeals = meals.filter(meal => {
+        const matchesSearch = !searchTerm || 
+            meal.name_ar?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            meal.name_en?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            meal.description_ar?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            meal.description_en?.toLowerCase().includes(searchTerm.toLowerCase());
+        
+        const matchesRestaurant = !filters.restaurant_id || meal.restaurant_id == filters.restaurant_id;
+        const matchesMealType = filters.meal_type === 'all' || meal.meal_type === filters.meal_type;
+        const matchesAvailability = filters.is_available === 'all' || 
+            (filters.is_available === 'available' && meal.is_available) ||
+            (filters.is_available === 'unavailable' && !meal.is_available);
+        
+        return matchesSearch && matchesRestaurant && matchesMealType && matchesAvailability;
+    });
+
+    // Sort meals
+    const sortedMeals = [...filteredMeals].sort((a, b) => {
+        let aValue = a[sortField];
+        let bValue = b[sortField];
+        
+        if (sortField === 'created_at') {
+            aValue = new Date(aValue);
+            bValue = new Date(bValue);
+        } else if (sortField === 'id') {
+            aValue = parseInt(aValue);
+            bValue = parseInt(bValue);
+        } else if (sortField === 'restaurant') {
+            aValue = getRestaurantName(a.restaurant_id);
+            bValue = getRestaurantName(b.restaurant_id);
+        } else if (typeof aValue === 'string') {
+            aValue = aValue.toLowerCase();
+            bValue = bValue.toLowerCase();
+        }
+        
+        if (sortDirection === 'asc') {
+            return aValue > bValue ? 1 : -1;
+        } else {
+            return aValue < bValue ? 1 : -1;
+        }
+    });
+
+    // Pagination
+    const totalPages = Math.ceil(sortedMeals.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedMeals = sortedMeals.slice(startIndex, startIndex + itemsPerPage);
+
+    const handleSort = (field) => {
+        if (sortField === field) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortField(field);
+            setSortDirection('asc');
+        }
+        setCurrentPage(1);
+    };
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+
     return (
         <div style={{ direction: dir }}>
             {/* Header */}
@@ -339,7 +402,7 @@ const AdminMeals = () => {
                             margin: 0,
                             fontSize: '1.1rem'
                         }}>
-                            {language === 'ar' ? `إدارة جميع الوجبات في النظام (${meals.length} وجبة)` : `Manage all meals in the system (${meals.length} meals)`}
+                            {language === 'ar' ? `إدارة جميع الوجبات في النظام (${filteredMeals.length} وجبة)` : `Manage all meals in the system (${filteredMeals.length} meals)`}
                         </p>
                     </div>
                     <button
@@ -521,7 +584,7 @@ const AdminMeals = () => {
                 </div>
             </div>
 
-            {/* Meals List */}
+            {/* Meals Table */}
             <div style={{
                 background: 'rgba(255, 255, 255, 0.9)',
                 backdropFilter: 'blur(20px)',
@@ -530,6 +593,64 @@ const AdminMeals = () => {
                 boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
                 border: '1px solid rgba(255, 255, 255, 0.2)'
             }}>
+                {/* Table Header Controls */}
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '1.5rem',
+                    flexWrap: 'wrap',
+                    gap: '1rem'
+                }}>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        flexWrap: 'wrap'
+                    }}>
+                        <span style={{
+                            fontSize: '1.1rem',
+                            fontWeight: '600',
+                            color: '#374151'
+                        }}>
+                            {language === 'ar' ? `عرض ${filteredMeals.length} وجبة` : `Showing ${filteredMeals.length} meals`}
+                        </span>
+                    </div>
+                    
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                    }}>
+                        <label style={{
+                            fontSize: '0.9rem',
+                            fontWeight: '500',
+                            color: '#6b7280'
+                        }}>
+                            {language === 'ar' ? 'عدد العناصر:' : 'Items per page:'}
+                        </label>
+                        <select
+                            value={itemsPerPage}
+                            onChange={(e) => {
+                                setItemsPerPage(parseInt(e.target.value));
+                                setCurrentPage(1);
+                            }}
+                            style={{
+                                padding: '0.5rem',
+                                border: '2px solid #e5e7eb',
+                                borderRadius: '0.5rem',
+                                fontSize: '0.9rem',
+                                backgroundColor: 'white',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={50}>50</option>
+                        </select>
+                    </div>
+                </div>
                 {loading ? (
                     <div style={{
                         textAlign: 'center',
@@ -540,138 +661,261 @@ const AdminMeals = () => {
                     </div>
                 ) : (
                     <>
+                        {/* Meals Table */}
                         <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
-                            gap: '1.5rem',
-                            marginBottom: '2rem'
+                            overflowX: 'auto',
+                            borderRadius: '0.75rem',
+                            border: '1px solid #e5e7eb',
+                            backgroundColor: 'white'
                         }}>
-                            {meals.map(meal => (
-                                <div key={meal.id} style={{
-                                    background: 'rgba(255, 255, 255, 0.8)',
-                                    borderRadius: '1rem',
-                                    padding: '1.5rem',
-                                    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
-                                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                                    transition: 'all 0.3s ease'
-                                }}>
-                                    {meal.image && (
+                            <table style={{
+                                width: '100%',
+                                borderCollapse: 'collapse',
+                                fontSize: '0.9rem'
+                            }}>
+                                <thead>
+                                    <tr style={{
+                                        background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+                                        borderBottom: '2px solid #e5e7eb'
+                                    }}>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'right',
+                                            fontWeight: '600',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em'
+                                        }}>
+                                            {language === 'ar' ? 'الصورة' : 'Image'}
+                                        </th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'right',
+                                            fontWeight: '600',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em'
+                                        }}>
+                                            {language === 'ar' ? 'اسم الوجبة' : 'Meal Name'}
+                                        </th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'right',
+                                            fontWeight: '600',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em'
+                                        }}>
+                                            {language === 'ar' ? 'المطعم' : 'Restaurant'}
+                                        </th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'right',
+                                            fontWeight: '600',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em'
+                                        }}>
+                                            {language === 'ar' ? 'النوع' : 'Type'}
+                                        </th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'right',
+                                            fontWeight: '600',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em'
+                                        }}>
+                                            {language === 'ar' ? 'وقت التوصيل' : 'Delivery Time'}
+                                        </th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'right',
+                                            fontWeight: '600',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em'
+                                        }}>
+                                            {language === 'ar' ? 'الحالة' : 'Status'}
+                                        </th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
+                                            fontWeight: '600',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em'
+                                        }}>
+                                            {language === 'ar' ? 'الإجراءات' : 'Actions'}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {paginatedMeals.length > 0 ? paginatedMeals.map((meal, index) => (
+                                        <tr key={meal.id} style={{
+                                            borderBottom: '1px solid #f1f5f9',
+                                            backgroundColor: index % 2 === 0 ? '#ffffff' : '#f8fafc',
+                                            transition: 'all 0.2s ease'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.backgroundColor = '#f1f5f9';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.backgroundColor = index % 2 === 0 ? '#ffffff' : '#f8fafc';
+                                        }}>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'center'
+                                            }}>
+                                                {meal.image ? (
                                         <img
                                             src={`/storage/${meal.image}`}
                                             alt={language === 'ar' ? meal.name_ar : meal.name_en}
                                             style={{
-                                                width: '100%',
-                                                height: '200px',
+                                                            width: '60px',
+                                                            height: '60px',
                                                 objectFit: 'cover',
-                                                borderRadius: '0.75rem',
-                                                marginBottom: '1rem'
+                                                            borderRadius: '0.5rem',
+                                                            border: '2px solid #e5e7eb'
                                             }}
                                         />
-                                    )}
-                                    
+                                                ) : (
                                     <div style={{
+                                                        width: '60px',
+                                                        height: '60px',
+                                                        backgroundColor: '#f3f4f6',
+                                                        borderRadius: '0.5rem',
                                         display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'flex-start',
-                                        marginBottom: '1rem'
-                                    }}>
-                                        <h3 style={{
-                                            fontSize: '1.25rem',
-                                            fontWeight: 'bold',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        color: '#9ca3af',
+                                                        fontSize: '1.5rem'
+                                                    }}>
+                                                        🍽️
+                                                    </div>
+                                                )}
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'right'
+                                            }}>
+                                                <div style={{
+                                                    fontWeight: '600',
                                             color: '#1f2937',
-                                            margin: 0
+                                                    fontSize: '0.95rem'
                                         }}>
                                             {language === 'ar' ? meal.name_ar : meal.name_en}
-                                        </h3>
-                                        <span style={{
-                                            background: meal.is_available 
-                                                ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
-                                                : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                                            color: 'white',
-                                            padding: '0.25rem 0.75rem',
-                                            borderRadius: '1rem',
-                                            fontSize: '0.875rem',
-                                            fontWeight: '600'
-                                        }}>
-                                            {meal.is_available 
-                                                ? (language === 'ar' ? 'متاح' : 'Available')
-                                                : (language === 'ar' ? 'غير متاح' : 'Unavailable')
-                                            }
-                                        </span>
+                                                </div>
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'right'
+                                            }}>
+                                                <div style={{
+                                                    color: '#374151',
+                                                    fontSize: '0.9rem',
+                                                    fontWeight: '500'
+                                                }}>
+                                                    {getRestaurantName(meal.restaurant_id)}
                                     </div>
-
-                                    <div style={{ marginBottom: '1rem' }}>
-                                        <p style={{
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'right'
+                                            }}>
+                                                <div style={{
                                             color: '#6b7280',
-                                            fontSize: '0.875rem',
-                                            margin: '0.25rem 0'
-                                        }}>
-                                            <strong>{language === 'ar' ? 'المطعم:' : 'Restaurant:'}</strong> {getRestaurantName(meal.restaurant_id)}
-                                        </p>
-                                        <p style={{
-                                            color: '#6b7280',
-                                            fontSize: '0.875rem',
-                                            margin: '0.25rem 0'
-                                        }}>
-                                            <strong>{language === 'ar' ? 'النوع:' : 'Type:'}</strong> {getMealTypeLabel(meal.meal_type)}
-                                        </p>
-                                        <p style={{
-                                            color: '#6b7280',
-                                            fontSize: '0.875rem',
-                                            margin: '0.25rem 0'
-                                        }}>
-                                            <strong>{language === 'ar' ? 'وقت التوصيل:' : 'Delivery Time:'}</strong> {meal.delivery_time}
-                                        </p>
+                                                    fontSize: '0.9rem'
+                                                }}>
+                                                    {getMealTypeLabel(meal.meal_type)}
+                                                </div>
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'right'
+                                            }}>
+                                                <div style={{
+                                                    color: '#374151',
+                                                    fontSize: '0.9rem',
+                                                    fontWeight: '500'
+                                                }}>
+                                                    {meal.delivery_time}
                                     </div>
-
-                                    {(language === 'ar' ? meal.description_ar : meal.description_en) && (
-                                        <p style={{
-                                            color: '#6b7280',
-                                            fontSize: '0.875rem',
-                                            marginBottom: '1rem',
-                                            lineHeight: '1.5'
-                                        }}>
-                                            {language === 'ar' ? meal.description_ar : meal.description_en}
-                                        </p>
-                                    )}
-
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'right'
+                                            }}>
+                                                <div style={{
+                                                    color: meal.is_available ? '#10b981' : '#ef4444',
+                                                    fontSize: '0.9rem',
+                                                    fontWeight: '500'
+                                                }}>
+                                                    {meal.is_available 
+                                                        ? (language === 'ar' ? 'متاح' : 'Available')
+                                                        : (language === 'ar' ? 'غير متاح' : 'Unavailable')
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'center'
+                                            }}>
                                     <div style={{
                                         display: 'flex',
                                         gap: '0.5rem',
+                                                    justifyContent: 'center',
                                         flexWrap: 'wrap'
                                     }}>
                                         <button
                                             onClick={() => handleEdit(meal)}
                                             style={{
-                                                background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                                                            background: '#3b82f6',
                                                 color: 'white',
                                                 border: 'none',
-                                                borderRadius: '0.5rem',
-                                                padding: '0.5rem 1rem',
-                                                fontSize: '0.875rem',
+                                                            borderRadius: '0.375rem',
+                                                            padding: '0.5rem 0.75rem',
+                                                            fontSize: '0.8rem',
                                                 cursor: 'pointer',
-                                                transition: 'all 0.3s ease'
-                                            }}
-                                        >
-                                            ✏️ {language === 'ar' ? 'تعديل' : 'Edit'}
+                                                            transition: 'all 0.2s ease'
+                                                        }}
+                                                        onMouseOver={(e) => {
+                                                            e.target.style.backgroundColor = '#2563eb';
+                                                        }}
+                                                        onMouseOut={(e) => {
+                                                            e.target.style.backgroundColor = '#3b82f6';
+                                                        }}
+                                                    >
+                                                        {language === 'ar' ? 'تعديل' : 'Edit'}
                                         </button>
                                         
                                         <button
                                             onClick={() => handleToggleAvailability(meal.id)}
                                             style={{
-                                                background: meal.is_available 
-                                                    ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
-                                                    : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                                            background: meal.is_available ? '#f59e0b' : '#10b981',
                                                 color: 'white',
                                                 border: 'none',
-                                                borderRadius: '0.5rem',
-                                                padding: '0.5rem 1rem',
-                                                fontSize: '0.875rem',
+                                                            borderRadius: '0.375rem',
+                                                            padding: '0.5rem 0.75rem',
+                                                            fontSize: '0.8rem',
                                                 cursor: 'pointer',
-                                                transition: 'all 0.3s ease'
-                                            }}
-                                        >
-                                            {meal.is_available ? '⏸️' : '▶️'} {meal.is_available 
+                                                            transition: 'all 0.2s ease'
+                                                        }}
+                                                        onMouseOver={(e) => {
+                                                            e.target.style.backgroundColor = meal.is_available ? '#d97706' : '#059669';
+                                                        }}
+                                                        onMouseOut={(e) => {
+                                                            e.target.style.backgroundColor = meal.is_available ? '#f59e0b' : '#10b981';
+                                                        }}
+                                                    >
+                                                        {meal.is_available 
                                                 ? (language === 'ar' ? 'إيقاف' : 'Disable')
                                                 : (language === 'ar' ? 'تفعيل' : 'Enable')
                                             }
@@ -680,61 +924,114 @@ const AdminMeals = () => {
                                         <button
                                             onClick={() => handleDelete(meal.id)}
                                             style={{
-                                                background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                                                            background: '#ef4444',
                                                 color: 'white',
                                                 border: 'none',
-                                                borderRadius: '0.5rem',
-                                                padding: '0.5rem 1rem',
-                                                fontSize: '0.875rem',
+                                                            borderRadius: '0.375rem',
+                                                            padding: '0.5rem 0.75rem',
+                                                            fontSize: '0.8rem',
                                                 cursor: 'pointer',
-                                                transition: 'all 0.3s ease'
-                                            }}
-                                        >
-                                            🗑️ {language === 'ar' ? 'حذف' : 'Delete'}
+                                                            transition: 'all 0.2s ease'
+                                                        }}
+                                                        onMouseOver={(e) => {
+                                                            e.target.style.backgroundColor = '#dc2626';
+                                                        }}
+                                                        onMouseOut={(e) => {
+                                                            e.target.style.backgroundColor = '#ef4444';
+                                                        }}
+                                                    >
+                                                        {language === 'ar' ? 'حذف' : 'Delete'}
                                         </button>
                                     </div>
-                                </div>
-                            ))}
+                                            </td>
+                                        </tr>
+                                    )) : (
+                                        <tr>
+                                            <td colSpan="7" style={{
+                                                padding: '3rem',
+                                                textAlign: 'center',
+                                                color: '#6b7280',
+                                                fontSize: '1.1rem'
+                                            }}>
+                                                {language === 'ar' ? 'لا توجد وجبات مطابقة للبحث' : 'No meals found matching your search'}
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
                         </div>
 
                         {/* Pagination */}
-                        {pagination.last_page > 1 && (
+                        {totalPages > 1 && (
                             <div style={{
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 gap: '0.5rem',
-                                marginTop: '2rem'
+                                marginTop: '2rem',
+                                padding: '1.5rem',
+                                background: 'rgba(248, 250, 252, 0.8)',
+                                borderRadius: '0.75rem',
+                                border: '1px solid #e5e7eb'
                             }}>
                                 <button
-                                    onClick={() => handlePageChange(pagination.current_page - 1)}
-                                    disabled={pagination.current_page === 1}
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                    disabled={currentPage === 1}
                                     style={{
-                                        padding: '0.5rem 1rem',
+                                        padding: '0.75rem 1rem',
                                         border: '2px solid #e5e7eb',
                                         borderRadius: '0.5rem',
-                                        backgroundColor: pagination.current_page === 1 ? '#f9fafb' : 'white',
-                                        color: pagination.current_page === 1 ? '#9ca3af' : '#374151',
-                                        cursor: pagination.current_page === 1 ? 'not-allowed' : 'pointer',
-                                        transition: 'all 0.3s ease'
+                                        backgroundColor: currentPage === 1 ? '#f9fafb' : 'white',
+                                        color: currentPage === 1 ? '#9ca3af' : '#374151',
+                                        cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                                        transition: 'all 0.3s ease',
+                                        fontWeight: '500',
+                                        fontSize: '0.9rem'
+                                    }}
+                                    onMouseOver={(e) => {
+                                        if (currentPage !== 1) {
+                                            e.target.style.borderColor = '#667eea';
+                                            e.target.style.backgroundColor = '#f8fafc';
+                                        }
+                                    }}
+                                    onMouseOut={(e) => {
+                                        if (currentPage !== 1) {
+                                            e.target.style.borderColor = '#e5e7eb';
+                                            e.target.style.backgroundColor = 'white';
+                                        }
                                     }}
                                 >
                                     {language === 'ar' ? 'السابق' : 'Previous'}
                                 </button>
 
-                                {Array.from({ length: pagination.last_page }, (_, i) => i + 1).map(page => (
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                                     <button
                                         key={page}
                                         onClick={() => handlePageChange(page)}
                                         style={{
-                                            padding: '0.5rem 1rem',
+                                            padding: '0.75rem 1rem',
                                             border: '2px solid',
-                                            borderColor: page === pagination.current_page ? '#667eea' : '#e5e7eb',
+                                            borderColor: page === currentPage ? '#667eea' : '#e5e7eb',
                                             borderRadius: '0.5rem',
-                                            backgroundColor: page === pagination.current_page ? '#667eea' : 'white',
-                                            color: page === pagination.current_page ? 'white' : '#374151',
+                                            backgroundColor: page === currentPage ? '#667eea' : 'white',
+                                            color: page === currentPage ? 'white' : '#374151',
                                             cursor: 'pointer',
-                                            transition: 'all 0.3s ease'
+                                            transition: 'all 0.3s ease',
+                                            fontWeight: '500',
+                                            fontSize: '0.9rem',
+                                            minWidth: '2.5rem'
+                                        }}
+                                        onMouseOver={(e) => {
+                                            if (page !== currentPage) {
+                                                e.target.style.borderColor = '#667eea';
+                                                e.target.style.backgroundColor = '#f8fafc';
+                                            }
+                                        }}
+                                        onMouseOut={(e) => {
+                                            if (page !== currentPage) {
+                                                e.target.style.borderColor = '#e5e7eb';
+                                                e.target.style.backgroundColor = 'white';
+                                            }
                                         }}
                                     >
                                         {page}
@@ -742,16 +1039,30 @@ const AdminMeals = () => {
                                 ))}
 
                                 <button
-                                    onClick={() => handlePageChange(pagination.current_page + 1)}
-                                    disabled={pagination.current_page === pagination.last_page}
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
                                     style={{
-                                        padding: '0.5rem 1rem',
+                                        padding: '0.75rem 1rem',
                                         border: '2px solid #e5e7eb',
                                         borderRadius: '0.5rem',
-                                        backgroundColor: pagination.current_page === pagination.last_page ? '#f9fafb' : 'white',
-                                        color: pagination.current_page === pagination.last_page ? '#9ca3af' : '#374151',
-                                        cursor: pagination.current_page === pagination.last_page ? 'not-allowed' : 'pointer',
-                                        transition: 'all 0.3s ease'
+                                        backgroundColor: currentPage === totalPages ? '#f9fafb' : 'white',
+                                        color: currentPage === totalPages ? '#9ca3af' : '#374151',
+                                        cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                                        transition: 'all 0.3s ease',
+                                        fontWeight: '500',
+                                        fontSize: '0.9rem'
+                                    }}
+                                    onMouseOver={(e) => {
+                                        if (currentPage !== totalPages) {
+                                            e.target.style.borderColor = '#667eea';
+                                            e.target.style.backgroundColor = '#f8fafc';
+                                        }
+                                    }}
+                                    onMouseOut={(e) => {
+                                        if (currentPage !== totalPages) {
+                                            e.target.style.borderColor = '#e5e7eb';
+                                            e.target.style.backgroundColor = 'white';
+                                        }
                                     }}
                                 >
                                     {language === 'ar' ? 'التالي' : 'Next'}

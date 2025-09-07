@@ -14,6 +14,10 @@ const SubscriptionTypes = () => {
     search: ''
   });
   const [searchInput, setSearchInput] = useState('');
+  const [sortField, setSortField] = useState('id');
+  const [sortDirection, setSortDirection] = useState('desc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [formData, setFormData] = useState({
     restaurant_id: '',
     name_ar: '',
@@ -176,6 +180,51 @@ const SubscriptionTypes = () => {
     
     return true;
   });
+
+  // Sort subscription types
+  const sortedSubscriptionTypes = [...filteredSubscriptionTypes].sort((a, b) => {
+    let aValue = a[sortField];
+    let bValue = b[sortField];
+    
+    if (sortField === 'created_at') {
+      aValue = new Date(aValue);
+      bValue = new Date(bValue);
+    } else if (sortField === 'id') {
+      aValue = parseInt(aValue);
+      bValue = parseInt(bValue);
+    } else if (sortField === 'restaurant') {
+      aValue = a.restaurant ? a.restaurant.name_ar : '';
+      bValue = b.restaurant ? b.restaurant.name_ar : '';
+    } else if (typeof aValue === 'string') {
+      aValue = aValue.toLowerCase();
+      bValue = bValue.toLowerCase();
+    }
+    
+    if (sortDirection === 'asc') {
+      return aValue > bValue ? 1 : -1;
+    } else {
+      return aValue < bValue ? 1 : -1;
+    }
+  });
+
+  // Pagination
+  const totalPages = Math.ceil(sortedSubscriptionTypes.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedSubscriptionTypes = sortedSubscriptionTypes.slice(startIndex, startIndex + itemsPerPage);
+
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   if (loading && subscriptionTypes.length === 0) {
     return (
@@ -663,55 +712,144 @@ const SubscriptionTypes = () => {
 
       {/* Subscription Types List */}
       <div style={{
-        background: 'white',
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(20px)',
         borderRadius: '1rem',
-        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
         overflow: 'hidden'
       }}>
         <div style={{
           padding: '1.5rem',
-          borderBottom: '1px solid rgb(229 231 235)',
-          background: 'rgb(249 250 251)'
+          borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
+          background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
         }}>
-          <h3 style={{ margin: 0, color: '#2f6e73', fontWeight: '600' }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '1rem'
+          }}>
+            <h3 style={{
+              margin: 0,
+              color: '#2d3748',
+              fontWeight: '600',
+              fontSize: '1.25rem'
+            }}>
             أنواع الاشتراك ({filteredSubscriptionTypes.length} من {subscriptionTypes.length})
           </h3>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              fontSize: '0.875rem',
+              color: '#64748b'
+            }}>
+              <span>عرض:</span>
+              <select
+                value={itemsPerPage}
+                onChange={(e) => {
+                  setItemsPerPage(parseInt(e.target.value));
+                  setCurrentPage(1);
+                }}
+                style={{
+                  padding: '0.25rem 0.5rem',
+                  border: '1px solid #cbd5e0',
+                  borderRadius: '0.25rem',
+                  fontSize: '0.875rem',
+                  background: 'white'
+                }}
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+              </select>
+            </div>
+          </div>
         </div>
         
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table style={{
+            width: '100%',
+            borderCollapse: 'collapse',
+            fontSize: '0.875rem'
+          }}>
             <thead>
-              <tr style={{ background: 'rgb(249 250 251)' }}>
-                <th style={{ padding: '1rem', textAlign: 'right', borderBottom: '1px solid rgb(229 231 235)' }}>
+              <tr style={{
+                background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
+                borderBottom: '2px solid #cbd5e0'
+              }}>
+                <th style={{
+                  padding: '1rem 0.75rem',
+                  textAlign: 'right',
+                  fontWeight: '600',
+                  color: '#374151'
+                }}>
                   المطعم
                 </th>
-                <th style={{ padding: '1rem', textAlign: 'right', borderBottom: '1px solid rgb(229 231 235)' }}>
+                <th style={{
+                  padding: '1rem 0.75rem',
+                  textAlign: 'right',
+                  fontWeight: '600',
+                  color: '#374151'
+                }}>
                   الاسم
                 </th>
-                <th style={{ padding: '1rem', textAlign: 'right', borderBottom: '1px solid rgb(229 231 235)' }}>
+                <th style={{
+                  padding: '1rem 0.75rem',
+                  textAlign: 'right',
+                  fontWeight: '600',
+                  color: '#374151'
+                }}>
                   النوع
                 </th>
-                <th style={{ padding: '1rem', textAlign: 'right', borderBottom: '1px solid rgb(229 231 235)' }}>
+                <th style={{
+                  padding: '1rem 0.75rem',
+                  textAlign: 'right',
+                  fontWeight: '600',
+                  color: '#374151'
+                }}>
                   السعر
                 </th>
-                <th style={{ padding: '1rem', textAlign: 'right', borderBottom: '1px solid rgb(229 231 235)' }}>
+                <th style={{
+                  padding: '1rem 0.75rem',
+                  textAlign: 'right',
+                  fontWeight: '600',
+                  color: '#374151'
+                }}>
                   سعر التوصيل
                 </th>
-                <th style={{ padding: '1rem', textAlign: 'right', borderBottom: '1px solid rgb(229 231 235)' }}>
+                <th style={{
+                  padding: '1rem 0.75rem',
+                  textAlign: 'right',
+                  fontWeight: '600',
+                  color: '#374151'
+                }}>
                   عدد الوجبات
                 </th>
-                <th style={{ padding: '1rem', textAlign: 'right', borderBottom: '1px solid rgb(229 231 235)' }}>
+                <th style={{
+                  padding: '1rem 0.75rem',
+                  textAlign: 'right',
+                  fontWeight: '600',
+                  color: '#374151'
+                }}>
                   الحالة
                 </th>
-                <th style={{ padding: '1rem', textAlign: 'right', borderBottom: '1px solid rgb(229 231 235)' }}>
+                <th style={{
+                  padding: '1rem 0.75rem',
+                  textAlign: 'center',
+                  fontWeight: '600',
+                  color: '#374151'
+                }}>
                   الإجراءات
                 </th>
               </tr>
             </thead>
             <tbody>
-              {filteredSubscriptionTypes.length === 0 ? (
+              {paginatedSubscriptionTypes.length === 0 ? (
                 <tr>
-                  <td colSpan="7" style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
+                  <td colSpan="8" style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
                     <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🔍</div>
                     <div>لا توجد نتائج مطابقة للفلاتر المحددة</div>
                     <div style={{ fontSize: '0.875rem', marginTop: '0.25rem' }}>
@@ -720,90 +858,257 @@ const SubscriptionTypes = () => {
                   </td>
                 </tr>
               ) : (
-                filteredSubscriptionTypes.map((type) => (
-                <tr key={type.id} style={{ borderBottom: '1px solid rgb(229 231 235)' }}>
-                  <td style={{ padding: '1rem' }}>
+                paginatedSubscriptionTypes.map((type, index) => (
+                <tr
+                  key={type.id}
+                  style={{
+                    borderBottom: '1px solid #e2e8f0',
+                    transition: 'all 0.2s ease',
+                    background: index % 2 === 0 ? 'white' : '#f8fafc'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#f1f5f9';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = index % 2 === 0 ? 'white' : '#f8fafc';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  {/* Restaurant */}
+                  <td style={{ padding: '1rem 0.75rem' }}>
                     <div>
-                      <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>
+                      <div style={{
+                        fontWeight: '600',
+                        color: '#1f2937',
+                        marginBottom: '0.25rem',
+                        fontSize: '0.875rem'
+                      }}>
                         {type.restaurant ? type.restaurant.name_ar : 'غير محدد'}
                       </div>
-                      <div style={{ fontSize: '0.875rem', color: 'rgb(107 114 128)' }}>
+                      <div style={{
+                        fontSize: '0.75rem',
+                        color: '#6b7280'
+                      }}>
                         {type.restaurant ? type.restaurant.name_en : 'Not specified'}
                       </div>
                     </div>
                   </td>
-                  <td style={{ padding: '1rem' }}>
+
+                  {/* Name */}
+                  <td style={{ padding: '1rem 0.75rem' }}>
                     <div>
-                      <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>
+                      <div style={{
+                        fontWeight: '600',
+                        color: '#1f2937',
+                        marginBottom: '0.25rem',
+                        fontSize: '0.875rem'
+                      }}>
                         {type.name_ar}
                       </div>
-                      <div style={{ fontSize: '0.875rem', color: 'rgb(107 114 128)' }}>
+                      <div style={{
+                        fontSize: '0.75rem',
+                        color: '#6b7280'
+                      }}>
                         {type.name_en}
                       </div>
                     </div>
                   </td>
-                  <td style={{ padding: '1rem' }}>
+
+                  {/* Type */}
+                  <td style={{ padding: '1rem 0.75rem' }}>
                     <span style={{
-                      padding: '0.25rem 0.75rem',
-                      borderRadius: '9999px',
-                      fontSize: '0.875rem',
-                      fontWeight: '500',
-                      background: type.type === 'weekly' ? 'rgb(220 252 231)' : 'rgb(219 234 254)',
-                      color: type.type === 'weekly' ? 'rgb(21 128 61)' : 'rgb(30 64 175)'
+                      padding: '0.375rem 0.75rem',
+                      borderRadius: '0.5rem',
+                      fontSize: '0.75rem',
+                      fontWeight: '600',
+                      background: type.type === 'weekly' 
+                        ? 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)' 
+                        : 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+                      color: type.type === 'weekly' ? '#166534' : '#1e40af',
+                      border: `1px solid ${type.type === 'weekly' ? '#bbf7d0' : '#bfdbfe'}`,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.25rem'
                     }}>
+                      <span style={{
+                        width: '6px',
+                        height: '6px',
+                        borderRadius: '50%',
+                        background: type.type === 'weekly' ? '#22c55e' : '#3b82f6'
+                      }}></span>
                       {type.type === 'weekly' ? 'أسبوعي' : 'شهري'}
                     </span>
                   </td>
-                  <td style={{ padding: '1rem', fontWeight: '600', color: '#2f6e73' }}>
-                    {type.price} ريال عماني
-                  </td>
-                  <td style={{ padding: '1rem', fontWeight: '600', color: '#059669' }}>
-                    {type.delivery_price || 0} ريال عماني
-                  </td>
-                  <td style={{ padding: '1rem' }}>
-                    {type.meals_count} وجبة
-                  </td>
-                  <td style={{ padding: '1rem' }}>
-                    <span style={{
-                      padding: '0.25rem 0.75rem',
-                      borderRadius: '9999px',
-                      fontSize: '0.875rem',
-                      fontWeight: '500',
-                      background: type.is_active ? 'rgb(220 252 231)' : 'rgb(254 242 242)',
-                      color: type.is_active ? 'rgb(21 128 61)' : 'rgb(153 27 27)'
+
+                  {/* Price */}
+                  <td style={{ padding: '1rem 0.75rem' }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
                     }}>
+                      <span style={{
+                        background: '#fef3c7',
+                        color: '#92400e',
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '0.375rem',
+                        fontSize: '0.75rem',
+                        fontWeight: '600'
+                      }}>
+                        {type.price}
+                      </span>
+                      <span style={{
+                        color: '#6b7280',
+                        fontSize: '0.75rem'
+                      }}>
+                        ريال
+                      </span>
+                    </div>
+                  </td>
+
+                  {/* Delivery Price */}
+                  <td style={{ padding: '1rem 0.75rem' }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      <span style={{
+                        background: '#d1fae5',
+                        color: '#065f46',
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '0.375rem',
+                        fontSize: '0.75rem',
+                        fontWeight: '600'
+                      }}>
+                        {type.delivery_price || 0}
+                      </span>
+                      <span style={{
+                        color: '#6b7280',
+                        fontSize: '0.75rem'
+                      }}>
+                        ريال
+                      </span>
+                    </div>
+                  </td>
+
+                  {/* Meals Count */}
+                  <td style={{ padding: '1rem 0.75rem' }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      <span style={{
+                        background: '#dbeafe',
+                        color: '#1e40af',
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '0.375rem',
+                        fontSize: '0.75rem',
+                        fontWeight: '600'
+                      }}>
+                        {type.meals_count}
+                      </span>
+                      <span style={{
+                        color: '#6b7280',
+                        fontSize: '0.75rem'
+                      }}>
+                        وجبة
+                      </span>
+                    </div>
+                  </td>
+
+                  {/* Status */}
+                  <td style={{ padding: '1rem 0.75rem' }}>
+                    <span style={{
+                      padding: '0.375rem 0.75rem',
+                      borderRadius: '0.5rem',
+                      fontSize: '0.75rem',
+                      fontWeight: '600',
+                      background: type.is_active 
+                        ? 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)' 
+                        : 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
+                      color: type.is_active ? '#166534' : '#dc2626',
+                      border: `1px solid ${type.is_active ? '#bbf7d0' : '#fecaca'}`,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.25rem'
+                    }}>
+                      <span style={{
+                        width: '6px',
+                        height: '6px',
+                        borderRadius: '50%',
+                        background: type.is_active ? '#22c55e' : '#ef4444'
+                      }}></span>
                       {type.is_active ? 'نشط' : 'غير نشط'}
                     </span>
                   </td>
-                  <td style={{ padding: '1rem' }}>
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+
+                  {/* Actions */}
+                  <td style={{ padding: '1rem 0.75rem' }}>
+                    <div style={{
+                      display: 'flex',
+                      gap: '0.5rem',
+                      justifyContent: 'center'
+                    }}>
                       <button
                         onClick={() => handleEdit(type)}
                         style={{
                           padding: '0.5rem',
-                          background: 'rgb(59 130 246)',
-                          color: 'white',
-                          border: 'none',
+                          background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+                          color: '#1e40af',
+                          border: '1px solid #93c5fd',
                           borderRadius: '0.375rem',
+                          fontSize: '0.75rem',
+                          fontWeight: '500',
                           cursor: 'pointer',
-                          fontSize: '0.875rem'
+                          transition: 'all 0.2s',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.25rem'
                         }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = 'linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%)';
+                          e.target.style.transform = 'translateY(-1px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)';
+                          e.target.style.transform = 'translateY(0)';
+                        }}
+                        title="تعديل"
                       >
-                        ✏️ تعديل
+                        ✏️
                       </button>
                       <button
                         onClick={() => handleDelete(type.id)}
                         style={{
                           padding: '0.5rem',
-                          background: 'rgb(239 68 68)',
-                          color: 'white',
-                          border: 'none',
+                          background: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
+                          color: '#dc2626',
+                          border: '1px solid #fecaca',
                           borderRadius: '0.375rem',
+                          fontSize: '0.75rem',
+                          fontWeight: '500',
                           cursor: 'pointer',
-                          fontSize: '0.875rem'
+                          transition: 'all 0.2s',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.25rem'
                         }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = 'linear-gradient(135deg, #fecaca 0%, #fca5a5 100%)';
+                          e.target.style.transform = 'translateY(-1px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)';
+                          e.target.style.transform = 'translateY(0)';
+                        }}
+                        title="حذف"
                       >
-                        🗑️ حذف
+                        🗑️
                       </button>
                     </div>
                   </td>
@@ -813,6 +1118,87 @@ const SubscriptionTypes = () => {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div style={{
+            padding: '1.5rem',
+            borderTop: '1px solid #e2e8f0',
+            background: '#f8fafc',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <div style={{
+              color: '#6b7280',
+              fontSize: '0.875rem'
+            }}>
+              عرض {startIndex + 1} إلى {Math.min(startIndex + itemsPerPage, sortedSubscriptionTypes.length)} من {sortedSubscriptionTypes.length} نوع اشتراك
+            </div>
+            <div style={{
+              display: 'flex',
+              gap: '0.5rem',
+              alignItems: 'center'
+            }}>
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                style={{
+                  padding: '0.5rem 0.75rem',
+                  background: currentPage === 1 ? '#f3f4f6' : 'white',
+                  color: currentPage === 1 ? '#9ca3af' : '#374151',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '0.375rem',
+                  fontSize: '0.875rem',
+                  cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                السابق
+              </button>
+              
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                const pageNum = i + 1;
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => handlePageChange(pageNum)}
+                    style={{
+                      padding: '0.5rem 0.75rem',
+                      background: currentPage === pageNum ? '#3b82f6' : 'white',
+                      color: currentPage === pageNum ? 'white' : '#374151',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '0.375rem',
+                      fontSize: '0.875rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      fontWeight: currentPage === pageNum ? '600' : '400'
+                    }}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+              
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: '0.5rem 0.75rem',
+                  background: currentPage === totalPages ? '#f3f4f6' : 'white',
+                  color: currentPage === totalPages ? '#9ca3af' : '#374151',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '0.375rem',
+                  fontSize: '0.875rem',
+                  cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                التالي
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

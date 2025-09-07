@@ -189,20 +189,43 @@ const SubscriptionDetail = () => {
                 return '';
             }
             
-            const formattedDate = date.toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-            
-            // Check if the formatted date is valid and doesn't contain "Invalid"
-            if (formattedDate === 'Invalid Date' || formattedDate.includes('Invalid') || formattedDate === 'NaN') {
-                console.warn('Formatted date is invalid:', dateString);
-                return '';
+            // Format date based on language preference
+            if (language === 'ar') {
+                // Arabic date formatting with Gregorian calendar
+                const options = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    calendar: 'gregory' // Ensure Gregorian calendar
+                };
+                
+                const formattedDate = date.toLocaleDateString('ar-SA', options);
+                
+                // Check if the formatted date is valid and doesn't contain "Invalid"
+                if (formattedDate === 'Invalid Date' || formattedDate.includes('Invalid') || formattedDate === 'NaN') {
+                    console.warn('Formatted date is invalid:', dateString);
+                    return '';
+                }
+                
+                return formattedDate;
+            } else {
+                // English date formatting
+                const formattedDate = date.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                // Check if the formatted date is valid and doesn't contain "Invalid"
+                if (formattedDate === 'Invalid Date' || formattedDate.includes('Invalid') || formattedDate === 'NaN') {
+                    console.warn('Formatted date is invalid:', dateString);
+                    return '';
+                }
+                
+                return formattedDate;
             }
-            
-            return formattedDate;
         } catch (error) {
             console.error('Error formatting date:', error, 'Date string:', dateString);
             return '';
@@ -1046,7 +1069,7 @@ const SubscriptionDetail = () => {
                                             zIndex: 1
                                         }}>
                                             <div>
-                                                {/* Enhanced Meal Name */}
+                                                {/* Enhanced Meal Name with Date */}
                                                 <h4 style={{
                                                     fontSize: 'clamp(0.875rem, 3vw, 1rem)',
                                                     fontWeight: '700',
@@ -1057,6 +1080,21 @@ const SubscriptionDetail = () => {
                                                 }}>
                                                     {language === 'ar' ? item.meal?.name_ar : item.meal?.name_en}
                                                 </h4>
+                                                
+                                                {/* Meal Date Display */}
+                                                <div style={{
+                                                    fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
+                                                    color: '#4f46e5',
+                                                    fontWeight: '600',
+                                                    textAlign: 'center',
+                                                    marginBottom: 'clamp(0.25rem, 1vw, 0.375rem)',
+                                                    background: 'rgba(79, 70, 229, 0.1)',
+                                                    padding: '0.25rem 0.5rem',
+                                                    borderRadius: '0.5rem',
+                                                    border: '1px solid rgba(79, 70, 229, 0.2)'
+                                                }}>
+                                                    📅 {formatDate(item.delivery_date) || (language === 'ar' ? 'غير محدد' : 'Not set')}
+                                                </div>
                                                 
                                                 {/* Compact Info Row */}
                                                 <div style={{
@@ -1103,32 +1141,41 @@ const SubscriptionDetail = () => {
                                                 {/* Delivery Date */}
                                                 <div style={{
                                                     flex: 1,
-                                                    background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%)',
+                                                    background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.12) 100%)',
                                                     borderRadius: '0.75rem',
                                                     padding: '0.75rem',
-                                                    border: '1px solid rgba(102, 126, 234, 0.15)',
+                                                    border: '2px solid rgba(102, 126, 234, 0.2)',
                                                     textAlign: 'center',
-                                                    minHeight: '60px',
+                                                    minHeight: '70px',
                                                     display: 'flex',
                                                     flexDirection: 'column',
-                                                    justifyContent: 'center'
+                                                    justifyContent: 'center',
+                                                    boxShadow: '0 2px 8px rgba(102, 126, 234, 0.1)'
                                                 }}>
                                                     <div style={{ 
                                                         fontSize: 'clamp(0.625rem, 2vw, 0.75rem)', 
-                                                        color: '#6b7280', 
-                                                        marginBottom: '0.25rem',
-                                                        fontWeight: '600',
+                                                        color: '#4f46e5', 
+                                                        marginBottom: '0.375rem',
+                                                        fontWeight: '700',
                                                         textTransform: 'uppercase',
-                                                        letterSpacing: '0.5px'
+                                                        letterSpacing: '0.5px',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        gap: '0.25rem'
                                                     }}>
-                                                        {language === 'ar' ? 'التاريخ' : 'Date'}
+                                                        📅 {language === 'ar' ? 'تاريخ التوصيل' : 'Delivery Date'}
                                                     </div>
                                                     <div style={{ 
                                                         fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)', 
                                                         fontWeight: '700', 
                                                         color: '#1f2937',
                                                         lineHeight: '1.3',
-                                                        wordBreak: 'break-word'
+                                                        wordBreak: 'break-word',
+                                                        background: 'rgba(255, 255, 255, 0.7)',
+                                                        padding: '0.25rem 0.5rem',
+                                                        borderRadius: '0.5rem',
+                                                        border: '1px solid rgba(102, 126, 234, 0.1)'
                                                     }}>
                                                         {formatDate(item.delivery_date) || (language === 'ar' ? 'غير محدد' : 'Not set')}
                                                     </div>
