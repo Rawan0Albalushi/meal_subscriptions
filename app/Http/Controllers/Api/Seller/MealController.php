@@ -444,7 +444,7 @@ class MealController extends Controller
                 'meal_id' => $mealId
             ]);
 
-            $meal->delete();
+            $meal->delete(); // This will now use soft delete
 
             Log::info('MealController@destroy: تم حذف الوجبة بنجاح', [
                 'user_id' => $request->user()->id,

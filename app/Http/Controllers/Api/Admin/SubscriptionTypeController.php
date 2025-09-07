@@ -122,7 +122,7 @@ class SubscriptionTypeController extends Controller
             ], 400);
         }
 
-        $subscriptionType->delete();
+        $subscriptionType->delete(); // This will now use soft delete
 
         return response()->json([
             'success' => true,

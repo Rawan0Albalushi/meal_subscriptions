@@ -211,7 +211,7 @@ class RestaurantController extends Controller
                 Storage::disk('public')->delete($imagePath);
             }
 
-            $restaurant->delete();
+            $restaurant->delete(); // This will now use soft delete
 
             return response()->json([
                 'success' => true,

@@ -185,7 +185,7 @@ class AddressController extends Controller
         try {
             $address = DeliveryAddress::findOrFail($id);
 
-            $address->delete();
+            $address->delete(); // This will now use soft delete
 
             return response()->json([
                 'success' => true,

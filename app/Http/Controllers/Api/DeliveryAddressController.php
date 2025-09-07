@@ -119,7 +119,7 @@ class DeliveryAddressController extends Controller
         $address = DeliveryAddress::where('user_id', auth()->id())
             ->findOrFail($id);
 
-        $address->delete();
+        $address->delete(); // This will now use soft delete
 
         return response()->json([
             'success' => true,

@@ -249,7 +249,7 @@ class MealController extends Controller
                 Storage::disk('public')->delete($imagePath);
             }
 
-            $meal->delete();
+            $meal->delete(); // This will now use soft delete
 
             return response()->json([
                 'success' => true,

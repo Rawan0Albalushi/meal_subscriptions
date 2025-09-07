@@ -181,7 +181,7 @@ class UserController extends Controller
                 ], 400);
             }
 
-            $user->delete();
+            $user->delete(); // This will now use soft delete
 
             return response()->json([
                 'success' => true,
