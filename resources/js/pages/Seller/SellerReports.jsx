@@ -45,6 +45,12 @@ const SellerReports = () => {
         fetchRestaurants();
     }, [selectedPeriod, selectedRestaurant]);
 
+    useEffect(() => {
+        if (restaurants && restaurants.length >= 0) {
+            fetchAllSubscriptionOrders();
+        }
+    }, [selectedRestaurant, restaurants]);
+
     const fetchRestaurants = async () => {
         try {
             const response = await fetch('/api/seller/restaurants', {
@@ -57,6 +63,8 @@ const SellerReports = () => {
             if (response.ok) {
                 const data = await response.json();
                 setRestaurants(data.data || []);
+                // After restaurants load, fetch all subscription orders
+                setTimeout(fetchAllSubscriptionOrders, 0);
             }
         } catch (error) {
             console.error('Error fetching restaurants:', error);
@@ -83,13 +91,42 @@ const SellerReports = () => {
             if (response.ok) {
                 const data = await response.json();
                 setReports(data.reports || {});
-                setRecentSubscriptions(data.recentOrders || []);
                 setTopSubscriptionTypes(data.topMeals || []);
             }
         } catch (error) {
             console.error('Error fetching reports data:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchAllSubscriptionOrders = async () => {
+        try {
+            let aggregated = [];
+            const token = localStorage.getItem('auth_token');
+            const headers = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+
+            const fetchForRestaurant = async (restaurantId) => {
+                const resp = await fetch(`/api/seller/restaurants/${restaurantId}/subscriptions`, { headers });
+                if (!resp.ok) return [];
+                const json = await resp.json();
+                return Array.isArray(json.data) ? json.data : [];
+            };
+
+            if (selectedRestaurant === 'all') {
+                const ids = (restaurants || []).map(r => r.id);
+                const results = await Promise.all(ids.map(id => fetchForRestaurant(id)));
+                aggregated = results.flat();
+            } else if (selectedRestaurant) {
+                aggregated = await fetchForRestaurant(selectedRestaurant);
+            }
+
+            // Sort by created_at desc
+            aggregated.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            setRecentSubscriptions(aggregated);
+        } catch (e) {
+            console.error('Error fetching all subscription orders for seller:', e);
+            setRecentSubscriptions([]);
         }
     };
 
@@ -106,6 +143,100 @@ const SellerReports = () => {
             month: 'long',
             day: 'numeric'
         });
+    };
+
+    const downloadCSV = (filename, rows) => {
+        const delimiter = '\t';
+        const content = rows
+            .map(r => r.map(v => {
+                if (v === null || v === undefined) return '';
+                const s = String(v).replace(/"/g, '""');
+                return /["\t\n]/.test(s) ? `"${s}"` : s;
+            }).join(delimiter))
+            .join('\r\n');
+        let blob;
+        try {
+            // Prefer UTF-16LE which Excel handles reliably for Arabic
+            // @ts-ignore
+            const enc = new TextEncoder('utf-16le');
+            const bom = new Uint8Array([0xFF, 0xFE]);
+            const encoded = enc.encode(content);
+            const buffer = new Uint8Array(bom.length + encoded.length);
+            buffer.set(bom, 0);
+            buffer.set(encoded, bom.length);
+            blob = new Blob([buffer], { type: 'text/csv;charset=utf-16le;' });
+        } catch (e) {
+            blob = new Blob(["\uFEFF" + content], { type: 'text/csv;charset=utf-8;' });
+        }
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    };
+
+    const downloadExcelHTML = (filename, rows) => {
+        const htmlRows = rows.map((r, idx) => {
+            const tag = idx === 0 ? 'th' : 'td';
+            const tds = r.map(cell => `<${tag} style="border:1px solid #ddd;padding:6px;white-space:nowrap;">${String(cell).replace(/&/g,'&amp;').replace(/</g,'&lt;')}</${tag}>`).join('');
+            return `<tr>${tds}</tr>`;
+        }).join('');
+        const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>table{border-collapse:collapse;font-family:Segoe UI,Arial,sans-serif;font-size:12pt} th{background:#f3f4f6;text-align:center} td{text-align:center}</style></head><body><table dir="${dir}">${htmlRows}</table></body></html>`;
+        const blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename.replace(/\.csv$/i, '.xls');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+    const handleExportExcel = () => {
+        const currencyLabel = language === 'ar' ? 'ريال' : 'OMR';
+        const formatCurrencyText = (n) => `${parseFloat(n || 0).toFixed(2)} ${currencyLabel}`;
+        const formatDeliveryText = (n) => {
+            const v = parseFloat(n || 0);
+            if (v > 0) return `${v.toFixed(2)} ${currencyLabel}`;
+            return language === 'ar' ? 'مجاني' : 'Free';
+        };
+        const formatDateTime = (val) => {
+            const d = new Date(val);
+            if (isNaN(d.getTime())) return '';
+            return d.toLocaleString(language === 'ar' ? 'ar-EG' : 'en-US', {
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit'
+            });
+        };
+        const headers = [
+            language === 'ar' ? 'رقم' : 'ID',
+            language === 'ar' ? 'العميل' : 'Customer',
+            language === 'ar' ? 'الهاتف' : 'Phone',
+            language === 'ar' ? 'المطعم' : 'Restaurant',
+            language === 'ar' ? 'نوع الاشتراك' : 'Subscription Type',
+            language === 'ar' ? 'سعر الوجبة (بالريال)' : 'Meal Price (OMR)',
+            language === 'ar' ? 'سعر التوصيل (بالريال)' : 'Delivery Price (OMR)',
+            language === 'ar' ? 'الإجمالي (بالريال)' : 'Total (OMR)',
+            language === 'ar' ? 'تاريخ البدء' : 'Start Date',
+            language === 'ar' ? 'تاريخ الإنشاء' : 'Created At'
+        ];
+        const rows = [headers, ...recentSubscriptions.map((s) => [
+            s.id || '',
+            (s.user?.name || s.customer_name || ''),
+            (s.deliveryAddress?.phone || s.delivery_address?.phone || s.customer_phone || ''),
+            resolveRestaurantName(s),
+            s.subscription_type || '',
+            formatCurrencyText((s.total_amount || 0) - (s.delivery_price || 0)),
+            formatDeliveryText(s.delivery_price || 0),
+            formatCurrencyText(s.total_amount || 0),
+            s.start_date ? formatDateTime(s.start_date) : '',
+            s.created_at ? formatDateTime(s.created_at) : ''
+        ])];
+        downloadExcelHTML(`seller_subscriptions_${new Date().toISOString().slice(0,10)}.xls`, rows);
     };
 
     const getPeriodLabel = () => {
@@ -135,6 +266,14 @@ const SellerReports = () => {
             default:
                 return 'rgb(107 114 128)';
         }
+    };
+
+    const resolveRestaurantName = (subscription) => {
+        const fromRel = subscription?.restaurant?.name_ar || subscription?.restaurant?.name_en || subscription?.restaurant?.name;
+        if (fromRel) return fromRel;
+        if (subscription?.restaurant_name) return subscription.restaurant_name;
+        const found = (restaurants || []).find(r => r.id === subscription?.restaurant_id);
+        return found?.name_ar || found?.name_en || found?.name || '-';
     };
 
     const getDisplayValue = (data, key) => {
@@ -547,6 +686,7 @@ const SellerReports = () => {
                     <div style={{
                         display: 'flex',
                         alignItems: 'center',
+                        justifyContent: 'space-between',
                         gap: '0.75rem',
                         marginBottom: '1.5rem'
                     }}>
@@ -562,14 +702,14 @@ const SellerReports = () => {
                         }}>
                             📋
                         </div>
-                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                              <h3 style={{
                                  fontSize: '1.25rem',
                                  fontWeight: '600',
                                  color: 'rgb(17 24 39)',
                                  margin: '0'
                              }}>
-                                 {language === 'ar' ? 'جميع طلبات الاشتراكات' : 'All Subscription Orders'}
+                                 {language === 'ar' ? 'جميع طلبات الاشتراك' : 'All Subscription Orders'}
                              </h3>
                              <span style={{
                                  padding: '0.25rem 0.75rem',
@@ -581,7 +721,20 @@ const SellerReports = () => {
                              }}>
                                                                    {recentSubscriptions.length} {language === 'ar' ? 'اشتراك' : 'subscriptions'}
                              </span>
-                         </div>
+                        </div>
+                        <div>
+                            <button onClick={handleExportExcel} style={{
+                                padding: '0.5rem 0.85rem',
+                                borderRadius: '0.5rem',
+                                border: '1px solid rgba(47, 110, 115, 0.3)',
+                                background: 'rgba(47, 110, 115, 0.08)',
+                                color: '#2f6e73',
+                                fontSize: '0.85rem',
+                                cursor: 'pointer'
+                            }}>
+                                {language === 'ar' ? 'تصدير (Excel)' : 'Export (Excel)'}
+                            </button>
+                        </div>
                     </div>
                     
                 {recentSubscriptions.length > 0 ? (
@@ -608,7 +761,7 @@ const SellerReports = () => {
                                         color: '#2f6e73',
                                         borderRight: '1px solid rgba(0, 0, 0, 0.1)'
                                     }}>
-                                        #
+                                        {language === 'ar' ? 'رقم الاشتراك' : 'ID'}
                                     </th>
                                     <th style={{
                                         padding: '1rem',
@@ -646,14 +799,14 @@ const SellerReports = () => {
                                     }}>
                                         {language === 'ar' ? 'نوع الاشتراك' : 'Subscription Type'}
                                     </th>
-                                    <th style={{
-                                        padding: '1rem',
-                                        textAlign: 'center',
-                                        fontWeight: '600',
-                                        color: 'rgb(79 70 229)',
-                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
-                                    }}>
-                                        {language === 'ar' ? 'المبلغ' : 'Amount'}
+                                    <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>
+                                        {language === 'ar' ? 'سعر الوجبة' : 'Meal Price'}
+                                    </th>
+                                    <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>
+                                        {language === 'ar' ? 'سعر التوصيل' : 'Delivery Price'}
+                                    </th>
+                                    <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>
+                                        {language === 'ar' ? 'الإجمالي' : 'Total'}
                                     </th>
                                     <th style={{
                                         padding: '1rem',
@@ -703,24 +856,24 @@ const SellerReports = () => {
                                             color: 'rgb(17 24 39)',
                                             borderRight: '1px solid rgba(0, 0, 0, 0.1)'
                                         }}>
-                                            {index + 1}
+                                            {subscription.id}
                                         </td>
                                         <td style={{
                                             padding: '1rem',
                                             textAlign: 'center',
-                                        fontWeight: '600',
-                                        color: 'rgb(17 24 39)',
-                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
-                                    }}>
-                                        {subscription.customer_name}
+                                         fontWeight: '600',
+                                             color: 'rgb(17 24 39)',
+                                             borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                     }}>
+                                        {subscription.user?.name || subscription.customer_name || '-'}
                                         </td>
                                         <td style={{
                                             padding: '1rem',
                                             textAlign: 'center',
-                                        color: 'rgb(107 114 128)',
-                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
-                                        }}>
-                                            {subscription.customer_phone || (language === 'ar' ? 'غير متوفر' : 'Not available')}
+                                         color: 'rgb(107 114 128)',
+                                             borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                         }}>
+                                            {subscription.deliveryAddress?.phone || subscription.delivery_address?.phone || subscription.customer_phone || (language === 'ar' ? 'غير متوفر' : 'Not available')}
                                         </td>
                                         <td style={{
                                             padding: '1rem',
@@ -728,7 +881,7 @@ const SellerReports = () => {
                                             color: 'rgb(107 114 128)',
                                             borderRight: '1px solid rgba(0, 0, 0, 0.1)'
                                         }}>
-                                            {subscription.restaurant_name}
+                                            {resolveRestaurantName(subscription)}
                                         </td>
                                         <td style={{
                                             padding: '1rem',
@@ -745,7 +898,23 @@ const SellerReports = () => {
                                             color: '#2f6e73',
                                             borderRight: '1px solid rgba(0, 0, 0, 0.1)'
                                     }}>
-                                        {formatCurrency(subscription.total_amount)}
+                                        {formatCurrency((subscription.total_amount || 0) - (subscription.delivery_price || 0))}
+                                        </td>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
+                                            color: subscription.delivery_price > 0 ? '#f59e0b' : '#10b981',
+                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                        }}>
+                                            {subscription.delivery_price > 0 ? formatCurrency(subscription.delivery_price) : (language === 'ar' ? 'مجاني' : 'Free')}
+                                        </td>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
+                                            color: 'rgb(107 114 128)',
+                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                        }}>
+                                            {formatCurrency(subscription.total_amount || 0)}
                                         </td>
                                         <td style={{
                                             padding: '1rem',

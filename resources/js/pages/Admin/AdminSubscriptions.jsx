@@ -449,8 +449,14 @@ const AdminSubscriptions = () => {
             aValue = getUserName(a.user_id);
             bValue = getUserName(b.user_id);
         } else if (sortField === 'total_amount') {
-            aValue = parseFloat(aValue);
-            bValue = parseFloat(bValue);
+            aValue = parseFloat(a.total_amount || 0);
+            bValue = parseFloat(b.total_amount || 0);
+        } else if (sortField === 'subscription_amount') {
+            aValue = (parseFloat(a.total_amount || 0) - parseFloat(a.delivery_price || 0)) || 0;
+            bValue = (parseFloat(b.total_amount || 0) - parseFloat(b.delivery_price || 0)) || 0;
+        } else if (sortField === 'delivery_price') {
+            aValue = parseFloat(a.delivery_price || 0) || 0;
+            bValue = parseFloat(b.delivery_price || 0) || 0;
         } else if (typeof aValue === 'string') {
             aValue = aValue.toLowerCase();
             bValue = bValue.toLowerCase();
@@ -952,9 +958,40 @@ const AdminSubscriptions = () => {
                                             color: '#374151',
                                             fontSize: '0.9rem',
                                             textTransform: 'uppercase',
-                                            letterSpacing: '0.05em'
-                                        }}>
-                                            {language === 'ar' ? 'المبلغ' : 'Amount'}
+                                            letterSpacing: '0.05em',
+                                            cursor: 'pointer',
+                                            userSelect: 'none'
+                                        }}
+                                        onClick={() => handleSort('subscription_amount')}>
+                                            {language === 'ar' ? 'مبلغ الاشتراك' : 'Subscription Amount'}
+                                        </th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'right',
+                                            fontWeight: '600',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em',
+                                            cursor: 'pointer',
+                                            userSelect: 'none'
+                                        }}
+                                        onClick={() => handleSort('delivery_price')}>
+                                            {language === 'ar' ? 'سعر التوصيل' : 'Delivery Price'}
+                                        </th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'right',
+                                            fontWeight: '600',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em',
+                                            cursor: 'pointer',
+                                            userSelect: 'none'
+                                        }}
+                                        onClick={() => handleSort('total_amount')}>
+                                            {language === 'ar' ? 'المبلغ الإجمالي' : 'Total Amount'}
                                         </th>
                                         <th style={{
                                             padding: '1rem',
@@ -1056,12 +1093,38 @@ const AdminSubscriptions = () => {
                                                 textAlign: 'right'
                                             }}>
                                                 <div style={{
+                                                    color: '#3b82f6',
+                                                    fontSize: '0.9rem',
+                                                    fontWeight: '600'
+                                                }}>
+                                                    {formatCurrency((parseFloat(subscription.total_amount || 0) - parseFloat(subscription.delivery_price || 0)).toFixed(2))}
+                                                </div>
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'right'
+                                            }}>
+                                                <div style={{
+                                                    color: parseFloat(subscription.delivery_price || 0) > 0 ? '#f59e0b' : '#10b981',
+                                                    fontSize: '0.9rem',
+                                                    fontWeight: '600'
+                                                }}>
+                                                    {parseFloat(subscription.delivery_price || 0) > 0 
+                                                        ? formatCurrency(parseFloat(subscription.delivery_price || 0).toFixed(2))
+                                                        : (language === 'ar' ? 'مجاني' : 'Free')}
+                                                </div>
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'right'
+                                            }}>
+                                                <div style={{
                                                     color: '#059669',
                                                     fontSize: '0.9rem',
-                                                                fontWeight: '600'
-                                                            }}>
-                                                    {formatCurrency(subscription.total_amount)}
-                                                        </div>
+                                                    fontWeight: '600'
+                                                }}>
+                                                    {formatCurrency(parseFloat(subscription.total_amount || 0).toFixed(2))}
+                                                </div>
                                             </td>
                                             <td style={{
                                                 padding: '1rem',
@@ -1182,7 +1245,7 @@ const AdminSubscriptions = () => {
                                         </tr>
                                     )) : (
                                         <tr>
-                                            <td colSpan="8" style={{
+                                            <td colSpan="10" style={{
                                                 padding: '3rem',
                                                 textAlign: 'center',
                                                 color: '#6b7280',

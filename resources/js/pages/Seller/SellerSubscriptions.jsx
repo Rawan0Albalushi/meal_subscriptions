@@ -2,15 +2,34 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 const SellerSubscriptions = () => {
-    const { t, dir, language } = useLanguage();
-    const [restaurants, setRestaurants] = useState([]);
-    const [selectedRestaurant, setSelectedRestaurant] = useState('');
-    const [subscriptions, setSubscriptions] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [selectedSubscription, setSelectedSubscription] = useState(null);
-    const [showDetailsModal, setShowDetailsModal] = useState(false);
-    const [statusFilter, setStatusFilter] = useState('all');
-    const [dateFilter, setDateFilter] = useState('');
+    try {
+        const { t, dir, language } = useLanguage();
+        const [restaurants, setRestaurants] = useState([]);
+        const [selectedRestaurant, setSelectedRestaurant] = useState('');
+        const [subscriptions, setSubscriptions] = useState([]);
+        const [loading, setLoading] = useState(true);
+        const [selectedSubscription, setSelectedSubscription] = useState(null);
+        const [showDetailsModal, setShowDetailsModal] = useState(false);
+        const [statusFilter, setStatusFilter] = useState('all');
+        const [dateFilter, setDateFilter] = useState('');
+        const [currentPage, setCurrentPage] = useState(1);
+        const [itemsPerPage, setItemsPerPage] = useState(10);
+        const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filters, setFilters] = useState({
+        status: 'all',
+        date_from: '',
+        date_to: ''
+    });
+    const [sortField, setSortField] = useState('id');
+    const [sortDirection, setSortDirection] = useState('desc');
+
+
+    useEffect(() => {
+        const handleResize = () => setWindowWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         fetchRestaurants();
@@ -186,61 +205,140 @@ const SellerSubscriptions = () => {
         return statuses[status] || status;
     };
 
+    const handleSearch = (e) => {
+        setSearchTerm(e.target.value);
+        setCurrentPage(1);
+    };
+
+    const handleFilterChange = (filterType, value) => {
+        setFilters(prev => ({
+            ...prev,
+            [filterType]: value
+        }));
+        setCurrentPage(1);
+    };
+
+    const clearFilters = () => {
+        setSearchTerm('');
+        setFilters({
+            status: 'all',
+            date_from: '',
+            date_to: ''
+        });
+        setStatusFilter('all');
+        setDateFilter('');
+        setCurrentPage(1);
+    };
+
+    const handleSort = (field) => {
+        if (sortField === field) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortField(field);
+            setSortDirection('asc');
+        }
+        setCurrentPage(1);
+    };
+
+    const sortSubscriptions = (subscriptions) => {
+        return [...subscriptions].sort((a, b) => {
+            let aValue, bValue;
+            
+            switch (sortField) {
+                case 'id':
+                    aValue = a.id;
+                    bValue = b.id;
+                    break;
+                case 'customer':
+                    aValue = a.user?.name || '';
+                    bValue = b.user?.name || '';
+                    break;
+                case 'subscription_amount':
+                    aValue = (parseFloat(a.total_amount || 0) - parseFloat(a.delivery_price || 0)) || 0;
+                    bValue = (parseFloat(b.total_amount || 0) - parseFloat(b.delivery_price || 0)) || 0;
+                    break;
+                case 'delivery_price':
+                    aValue = parseFloat(a.delivery_price || 0) || 0;
+                    bValue = parseFloat(b.delivery_price || 0) || 0;
+                    break;
+                case 'total_amount':
+                    aValue = parseFloat(a.total_amount || 0) || 0;
+                    bValue = parseFloat(b.total_amount || 0) || 0;
+                    break;
+                case 'date':
+                    aValue = new Date(a.created_at);
+                    bValue = new Date(b.created_at);
+                    break;
+                case 'status':
+                    aValue = a.status;
+                    bValue = b.status;
+                    break;
+                default:
+                    aValue = a.id;
+                    bValue = b.id;
+            }
+            
+            if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+            if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+            return 0;
+        });
+    };
+
     const filteredSubscriptions = subscriptions.filter(subscription => {
-        // Debug logging for subscription
-        if (process.env.NODE_ENV === 'development') {
-            console.log(`Checking subscription ${subscription.id}:`, {
-                statusFilter,
-                dateFilter,
-                itemsCount: subscription.subscription_items?.length || 0
-            });
+        // Search filter
+        if (searchTerm) {
+            const searchLower = searchTerm.toLowerCase();
+            const matchesSearch = 
+                subscription.id.toString().includes(searchLower) ||
+                subscription.user?.name?.toLowerCase().includes(searchLower) ||
+                subscription.user?.email?.toLowerCase().includes(searchLower) ||
+                subscription.delivery_address?.address?.toLowerCase().includes(searchLower);
+            
+            if (!matchesSearch) return false;
         }
         
         // Filter by status
+        if (filters.status !== 'all') {
+            const hasMatchingStatus = subscription.subscription_items?.some(item => item.status === filters.status);
+            if (!hasMatchingStatus) return false;
+        }
+        
+        // Filter by date range
+        if (filters.date_from || filters.date_to) {
+            const hasMatchingDate = subscription.subscription_items?.some(item => {
+                if (!item.delivery_date) return false;
+                
+                try {
+                    const itemDate = new Date(item.delivery_date);
+                    const fromDate = filters.date_from ? new Date(filters.date_from) : null;
+                    const toDate = filters.date_to ? new Date(filters.date_to) : null;
+                    
+                    if (fromDate && itemDate < fromDate) return false;
+                    if (toDate && itemDate > toDate) return false;
+                    
+                    return true;
+                } catch (error) {
+                    console.error('Error processing date:', item.delivery_date, error);
+                    return false;
+                }
+            });
+            if (!hasMatchingDate) return false;
+        }
+        
+        // Legacy filters for backward compatibility
         if (statusFilter !== 'all') {
             const hasMatchingStatus = subscription.subscription_items?.some(item => item.status === statusFilter);
             if (!hasMatchingStatus) return false;
         }
         
-        // Filter by date
         if (dateFilter) {
             const hasMatchingDate = subscription.subscription_items?.some(item => {
-                // Ensure delivery_date exists and is valid
                 if (!item.delivery_date) return false;
                 
                 try {
-                    // Convert delivery_date to multiple formats for comparison
-                    const itemDateObj = new Date(item.delivery_date);
-                    
-                    // Format 1: YYYY-MM-DD (ISO)
-                    const itemDateISO = itemDateObj.toISOString().split('T')[0];
-                    
-                    // Format 2: DD-MM-YYYY (European format)
-                    const itemDateEuropean = itemDateObj.toLocaleDateString('en-US').split('/').reverse().join('-');
-                    
-                    // Format 3: MM/DD/YYYY (US format)
-                    const itemDateUS = itemDateObj.toLocaleDateString('en-US');
-                    
-                    // Format 4: DD-MM-YYYY (with leading zeros)
-                    const day = String(itemDateObj.getDate()).padStart(2, '0');
-                    const month = String(itemDateObj.getMonth() + 1).padStart(2, '0');
-                    const year = itemDateObj.getFullYear();
-                    const itemDateFormatted = `${day}-${month}-${year}`;
-                    
-                    // Try to match the dateFilter with any of these formats
-                    const matches = itemDateISO === dateFilter || 
-                                   itemDateEuropean === dateFilter || 
-                                   itemDateUS === dateFilter ||
-                                   itemDateFormatted === dateFilter;
-                    
-                    // Debug logging (remove in production)
-                    if (process.env.NODE_ENV === 'development') {
-                        console.log(`Item ${item.id}: delivery_date=${item.delivery_date}, ISO=${itemDateISO}, European=${itemDateEuropean}, US=${itemDateUS}, Formatted=${itemDateFormatted}, filter=${dateFilter}, matches=${matches}`);
-                    }
-                    
-                    return matches;
+                    const itemDate = new Date(item.delivery_date).toISOString().split('T')[0];
+                    return itemDate === dateFilter;
                 } catch (error) {
-                    console.error('Error processing date:', item.delivery_date, error);
                     return false;
                 }
             });
@@ -259,12 +357,28 @@ const SellerSubscriptions = () => {
                 let matchesDate = true;
                 
                 // Filter by status
-                if (statusFilter !== 'all') {
-                    matchesStatus = item.status === statusFilter;
+                const currentStatusFilter = filters.status !== 'all' ? filters.status : statusFilter;
+                if (currentStatusFilter !== 'all') {
+                    matchesStatus = item.status === currentStatusFilter;
                 }
                 
                 // Filter by date
-                if (dateFilter) {
+                if (filters.date_from || filters.date_to) {
+                    if (!item.delivery_date) {
+                        matchesDate = false;
+                    } else {
+                        try {
+                            const itemDate = new Date(item.delivery_date);
+                            const fromDate = filters.date_from ? new Date(filters.date_from) : null;
+                            const toDate = filters.date_to ? new Date(filters.date_to) : null;
+                            
+                            if (fromDate && itemDate < fromDate) matchesDate = false;
+                            if (toDate && itemDate > toDate) matchesDate = false;
+                        } catch (error) {
+                            matchesDate = false;
+                        }
+                    }
+                } else if (dateFilter) {
                     if (!item.delivery_date) {
                         matchesDate = false;
                     } else {
@@ -283,6 +397,16 @@ const SellerSubscriptions = () => {
         
         return filteredSubscription;
     });
+
+    // Sort and pagination logic
+    const sortedSubscriptions = sortSubscriptions(filteredSubscriptions);
+    const totalPages = Math.ceil(sortedSubscriptions.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedSubscriptions = sortedSubscriptions.slice(startIndex, startIndex + itemsPerPage);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
     if (loading && restaurants.length === 0) {
         return (
@@ -308,32 +432,172 @@ const SellerSubscriptions = () => {
         <div style={{
             maxWidth: '1400px',
             margin: '0 auto',
-            padding: window.innerWidth <= 768 ? '1rem 0.5rem' : '1rem',
-            background: 'transparent'
+            padding: windowWidth <= 768 ? '1rem 0.5rem' : '1rem',
+            background: 'transparent',
+            minHeight: '100vh'
         }}>
             {/* Header */}
             <div style={{
-                marginBottom: window.innerWidth <= 768 ? '1.5rem' : '2rem',
-                background: 'transparent'
+                background: 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(20px)',
+                borderRadius: '1rem',
+                padding: '2rem',
+                marginBottom: '2rem',
+                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)'
             }}>
-                <h1 style={{
-                    fontSize: window.innerWidth <= 768 ? '1.5rem' : '2rem',
-                    fontWeight: '700',
-                    marginBottom: '0.5rem',
-                    color: 'rgb(17 24 39)',
-                    textAlign: dir === 'rtl' ? 'right' : 'left',
-                    background: 'transparent'
-                }}>
-                    {language === 'ar' ? 'إدارة طلبات الاشتراك' : 'Subscription Management'}
-                </h1>
-                <p style={{
-                    fontSize: '1rem',
-                    color: 'rgb(107 114 128)',
-                    textAlign: dir === 'rtl' ? 'right' : 'left',
-                    background: 'transparent'
-                }}>
-                    {language === 'ar' ? 'عرض وإدارة طلبات الاشتراك لمطاعمك' : 'View and manage subscription requests for your restaurants'}
-                </p>
+                <div>
+                    <h1 style={{
+                        fontSize: '2rem',
+                        fontWeight: 'bold',
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        margin: 0,
+                        marginBottom: '0.5rem'
+                    }}>
+                        📋 {language === 'ar' ? 'إدارة طلبات الاشتراك' : 'Subscription Management'}
+                    </h1>
+                    <p style={{
+                        color: '#6b7280',
+                        margin: 0,
+                        fontSize: '1.1rem'
+                    }}>
+                        {language === 'ar' ? 'عرض وإدارة طلبات الاشتراك لمطاعمك' : 'View and manage subscription requests for your restaurants'}
+                    </p>
+                </div>
+            </div>
+
+            {/* Statistics */}
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '1.5rem',
+                marginBottom: '2rem'
+            }}>
+                <div style={{
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    backdropFilter: 'blur(20px)',
+                    borderRadius: '1rem',
+                    padding: '1.5rem',
+                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    textAlign: 'center',
+                    transition: 'transform 0.2s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
+                    <div style={{
+                        fontSize: '2.5rem',
+                        fontWeight: 'bold',
+                        background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        marginBottom: '0.5rem'
+                    }}>
+                        {subscriptions.length}
+                    </div>
+                    <div style={{
+                        color: '#6b7280',
+                        fontSize: '0.875rem',
+                        fontWeight: '500'
+                    }}>
+                        {language === 'ar' ? 'إجمالي الاشتراكات' : 'Total Subscriptions'}
+                    </div>
+                </div>
+
+                <div style={{
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    backdropFilter: 'blur(20px)',
+                    borderRadius: '1rem',
+                    padding: '1.5rem',
+                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    textAlign: 'center',
+                    transition: 'transform 0.2s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
+                    <div style={{
+                        fontSize: '2.5rem',
+                        fontWeight: 'bold',
+                        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        marginBottom: '0.5rem'
+                    }}>
+                        {subscriptions.filter(sub => sub.subscription_items?.some(item => item.status === 'delivered')).length}
+                    </div>
+                    <div style={{
+                        color: '#6b7280',
+                        fontSize: '0.875rem',
+                        fontWeight: '500'
+                    }}>
+                        {language === 'ar' ? 'وجبات مسلمة' : 'Delivered Meals'}
+                    </div>
+                </div>
+
+                <div style={{
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    backdropFilter: 'blur(20px)',
+                    borderRadius: '1rem',
+                    padding: '1.5rem',
+                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    textAlign: 'center',
+                    transition: 'transform 0.2s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
+                    <div style={{
+                        fontSize: '2.5rem',
+                        fontWeight: 'bold',
+                        background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        marginBottom: '0.5rem'
+                    }}>
+                        {subscriptions.filter(sub => sub.subscription_items?.some(item => item.status === 'pending')).length}
+                    </div>
+                    <div style={{
+                        color: '#6b7280',
+                        fontSize: '0.875rem',
+                        fontWeight: '500'
+                    }}>
+                        {language === 'ar' ? 'في الانتظار' : 'Pending'}
+                    </div>
+                </div>
+
+                <div style={{
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    backdropFilter: 'blur(20px)',
+                    borderRadius: '1rem',
+                    padding: '1.5rem',
+                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    textAlign: 'center',
+                    transition: 'transform 0.2s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
+                    <div style={{
+                        fontSize: '2.5rem',
+                        fontWeight: 'bold',
+                        background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        marginBottom: '0.5rem'
+                    }}>
+                        {subscriptions.reduce((sum, sub) => sum + (parseFloat(sub.total_amount) || 0), 0).toFixed(2)}
+                    </div>
+                    <div style={{
+                        color: '#6b7280',
+                        fontSize: '0.875rem',
+                        fontWeight: '500'
+                    }}>
+                        {language === 'ar' ? 'إجمالي الإيرادات (ريال)' : 'Total Revenue (OMR)'}
+                    </div>
+                </div>
             </div>
 
             {/* Restaurant Selector */}
@@ -377,45 +641,70 @@ const SellerSubscriptions = () => {
                 </div>
             )}
 
-            {/* Filters */}
+            {/* Search and Filters */}
             <div style={{
-                marginBottom: '1.5rem',
-                background: 'transparent'
+                background: 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(20px)',
+                borderRadius: '1rem',
+                padding: '1.5rem',
+                marginBottom: '2rem',
+                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)'
             }}>
                 <div style={{
-                    display: 'flex',
-                    gap: '1.5rem',
-                    flexWrap: 'wrap',
-                    alignItems: 'flex-end'
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gap: '1rem',
+                    alignItems: 'end'
                 }}>
-                    {/* Status Filter */}
-                    <div style={{
-                        flex: '1',
-                        minWidth: '200px'
-                    }}>
+                    <div>
                         <label style={{
                             display: 'block',
-                            fontSize: '0.875rem',
-                            fontWeight: '600',
                             marginBottom: '0.5rem',
-                            color: 'rgb(55 65 81)',
-                            textAlign: dir === 'rtl' ? 'right' : 'left',
-                            background: 'transparent'
+                            fontWeight: '600',
+                            color: '#374151'
                         }}>
-                            {language === 'ar' ? 'تصفية حسب حالة الوجبات:' : 'Filter by Meal Status:'}
+                            {language === 'ar' ? 'البحث' : 'Search'}
                         </label>
-                        <select
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={handleSearch}
+                            placeholder={language === 'ar' ? 'البحث في الاشتراكات...' : 'Search subscriptions...'}
                             style={{
                                 width: '100%',
                                 padding: '0.75rem',
-                                border: '1px solid rgb(209 213 219)',
+                                border: '2px solid #e5e7eb',
                                 borderRadius: '0.5rem',
-                                fontSize: '0.875rem',
-                                background: 'white',
-                                color: 'rgb(55 65 81)',
-                                direction: dir
+                                fontSize: '1rem',
+                                transition: 'border-color 0.3s ease',
+                                outline: 'none'
+                            }}
+                            onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                            onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+                        />
+                    </div>
+
+                    <div>
+                        <label style={{
+                            display: 'block',
+                            marginBottom: '0.5rem',
+                            fontWeight: '600',
+                            color: '#374151'
+                        }}>
+                            {language === 'ar' ? 'تصفية حسب حالة الوجبات' : 'Filter by Meal Status'}
+                        </label>
+                        <select
+                            value={filters.status}
+                            onChange={(e) => handleFilterChange('status', e.target.value)}
+                            style={{
+                                width: '100%',
+                                padding: '0.75rem',
+                                border: '2px solid #e5e7eb',
+                                borderRadius: '0.5rem',
+                                fontSize: '1rem',
+                                backgroundColor: 'white',
+                                cursor: 'pointer'
                             }}
                         >
                             <option value="all">{language === 'ar' ? 'جميع الوجبات' : 'All Meals'}</option>
@@ -426,51 +715,57 @@ const SellerSubscriptions = () => {
                         </select>
                     </div>
 
-                    {/* Date Filter */}
-                    <div style={{
-                        flex: '1',
-                        minWidth: '200px'
-                    }}>
+                    <div>
                         <label style={{
                             display: 'block',
-                            fontSize: '0.875rem',
-                            fontWeight: '600',
                             marginBottom: '0.5rem',
-                            color: 'rgb(55 65 81)',
-                            textAlign: dir === 'rtl' ? 'right' : 'left',
-                            background: 'transparent'
+                            fontWeight: '600',
+                            color: '#374151'
                         }}>
-                            {language === 'ar' ? 'تصفية حسب تاريخ التوصيل:' : 'Filter by Delivery Date:'}
+                            {language === 'ar' ? 'من تاريخ' : 'From Date'}
                         </label>
                         <input
                             type="date"
-                            value={dateFilter}
-                            onChange={(e) => setDateFilter(e.target.value)}
+                            value={filters.date_from}
+                            onChange={(e) => handleFilterChange('date_from', e.target.value)}
                             style={{
                                 width: '100%',
                                 padding: '0.75rem',
-                                border: '1px solid rgb(209 213 219)',
+                                border: '2px solid #e5e7eb',
                                 borderRadius: '0.5rem',
-                                fontSize: '0.875rem',
-                                background: 'white',
-                                color: 'rgb(55 65 81)',
-                                direction: dir
+                                fontSize: '1rem'
+                            }}
+                        />
+                    </div>
+
+                    <div>
+                        <label style={{
+                            display: 'block',
+                            marginBottom: '0.5rem',
+                            fontWeight: '600',
+                            color: '#374151'
+                        }}>
+                            {language === 'ar' ? 'إلى تاريخ' : 'To Date'}
+                        </label>
+                        <input
+                            type="date"
+                            value={filters.date_to}
+                            onChange={(e) => handleFilterChange('date_to', e.target.value)}
+                            style={{
+                                width: '100%',
+                                padding: '0.75rem',
+                                border: '2px solid #e5e7eb',
+                                borderRadius: '0.5rem',
+                                fontSize: '1rem'
                             }}
                         />
                     </div>
 
                     {/* Clear Filters Button */}
-                    {(statusFilter !== 'all' || dateFilter) && (
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'flex-end',
-                            gap: '0.5rem'
-                        }}>
+                    {(searchTerm || filters.status !== 'all' || filters.date_from || filters.date_to || statusFilter !== 'all' || dateFilter) && (
+                        <div>
                             <button
-                                onClick={() => {
-                                    setStatusFilter('all');
-                                    setDateFilter('');
-                                }}
+                                onClick={clearFilters}
                                 style={{
                                     padding: '0.75rem 1.5rem',
                                     backgroundColor: '#ef4444',
@@ -500,73 +795,13 @@ const SellerSubscriptions = () => {
                                 <span>🗑️</span>
                                 {language === 'ar' ? 'مسح الفلاتر' : 'Clear Filters'}
                             </button>
-                            
-                            {/* Test Date Button */}
-                            <button
-                                onClick={() => {
-                                    // Get first available date from subscriptions
-                                    let firstAvailableDate = null;
-                                    subscriptions.forEach(sub => {
-                                        sub.subscription_items?.forEach(item => {
-                                            if (item.delivery_date && !firstAvailableDate) {
-                                                const date = new Date(item.delivery_date);
-                                                const day = String(date.getDate()).padStart(2, '0');
-                                                const month = String(date.getMonth() + 1).padStart(2, '0');
-                                                const year = date.getFullYear();
-                                                firstAvailableDate = `${day}-${month}-${year}`;
-                                            }
-                                        });
-                                    });
-                                    
-                                    if (firstAvailableDate) {
-                                        setDateFilter(firstAvailableDate);
-                                        setStatusFilter('all');
-                                    } else {
-                                        // Fallback to today's date
-                                        const today = new Date();
-                                        const day = String(today.getDate()).padStart(2, '0');
-                                        const month = String(today.getMonth() + 1).padStart(2, '0');
-                                        const year = today.getFullYear();
-                                        setDateFilter(`${day}-${month}-${year}`);
-                                        setStatusFilter('all');
-                                    }
-                                }}
-                                style={{
-                                    padding: '0.75rem 1.5rem',
-                                    backgroundColor: '#10b981',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '0.5rem',
-                                    fontSize: '0.875rem',
-                                    fontWeight: '600',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem',
-                                    transition: 'all 0.2s ease',
-                                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.target.style.backgroundColor = '#059669';
-                                    e.target.style.transform = 'translateY(-1px)';
-                                    e.target.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.target.style.backgroundColor = '#10b981';
-                                    e.target.style.transform = 'translateY(0)';
-                                    e.target.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
-                                }}
-                            >
-                                <span>🧪</span>
-                                {language === 'ar' ? 'اختبار التاريخ' : 'Test Date'}
-                            </button>
                         </div>
                     )}
                 </div>
             </div>
 
             {/* Filter Results Info */}
-            {(statusFilter !== 'all' || dateFilter) && (
+            {(searchTerm || filters.status !== 'all' || filters.date_from || filters.date_to || statusFilter !== 'all' || dateFilter) && (
                 <div style={{
                     marginBottom: '1rem',
                     padding: '0.75rem',
@@ -581,27 +816,6 @@ const SellerSubscriptions = () => {
                         const totalItems = subscriptions.reduce((sum, sub) => sum + (sub.subscription_items?.length || 0), 0);
                         const filteredItems = filteredSubscriptions.reduce((sum, sub) => sum + (sub.subscription_items?.length || 0), 0);
                         
-                        // Get available dates for debugging
-                        const availableDates = new Set();
-                        subscriptions.forEach(sub => {
-                            sub.subscription_items?.forEach(item => {
-                                if (item.delivery_date) {
-                                    const date = new Date(item.delivery_date);
-                                    
-                                    // Add multiple date formats
-                                    availableDates.add(date.toISOString().split('T')[0]); // YYYY-MM-DD
-                                    availableDates.add(date.toLocaleDateString('en-US').split('/').reverse().join('-')); // DD-MM-YYYY
-                                    availableDates.add(date.toLocaleDateString('en-US')); // MM/DD/YYYY
-                                    
-                                    // Add DD-MM-YYYY with leading zeros
-                                    const day = String(date.getDate()).padStart(2, '0');
-                                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                                    const year = date.getFullYear();
-                                    availableDates.add(`${day}-${month}-${year}`);
-                                }
-                            });
-                        });
-                        
                         return (
                             <div>
                                 <div style={{ marginBottom: '0.5rem' }}>
@@ -610,11 +824,11 @@ const SellerSubscriptions = () => {
                                         : `Found ${filteredSubscriptions.length} subscriptions out of ${subscriptions.length} (${filteredItems} meals out of ${totalItems})`
                                     }
                                 </div>
-                                {dateFilter && (
+                                {(filters.date_from || filters.date_to || dateFilter) && (
                                     <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>
                                         {language === 'ar' 
-                                            ? `التواريخ المتاحة: ${Array.from(availableDates).sort().slice(0, 5).join(', ')}${availableDates.size > 5 ? '...' : ''}`
-                                            : `Available dates: ${Array.from(availableDates).sort().slice(0, 5).join(', ')}${availableDates.size > 5 ? '...' : ''}`
+                                            ? `تم تطبيق فلترة التاريخ`
+                                            : `Date filtering applied`
                                         }
                                     </div>
                                 )}
@@ -624,597 +838,638 @@ const SellerSubscriptions = () => {
                 </div>
             )}
 
-            {/* Subscriptions List */}
-            {loading ? (
+            {/* Subscriptions Table */}
+            <div style={{
+                background: 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(20px)',
+                borderRadius: '1rem',
+                padding: '2rem',
+                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)'
+            }}>
+                {/* Table Header Controls */}
                 <div style={{
                     display: 'flex',
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
                     alignItems: 'center',
-                    minHeight: '200px',
-                    background: 'transparent'
+                    marginBottom: '1.5rem',
+                    flexWrap: 'wrap',
+                    gap: '1rem'
                 }}>
                     <div style={{
-                        fontSize: '1rem',
-                        color: 'rgb(107 114 128)',
-                        textAlign: 'center'
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        flexWrap: 'wrap'
+                    }}>
+                        <span style={{
+                            fontSize: '1.1rem',
+                            fontWeight: '600',
+                            color: '#374151'
+                        }}>
+                            {language === 'ar' ? `عرض ${filteredSubscriptions.length} اشتراك` : `Showing ${filteredSubscriptions.length} subscriptions`}
+                        </span>
+                    </div>
+                    
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                    }}>
+                        <label style={{
+                            fontSize: '0.9rem',
+                            fontWeight: '500',
+                            color: '#6b7280'
+                        }}>
+                            {language === 'ar' ? 'عدد العناصر:' : 'Items per page:'}
+                        </label>
+                        <select
+                            value={itemsPerPage}
+                            onChange={(e) => {
+                                setItemsPerPage(parseInt(e.target.value));
+                                setCurrentPage(1);
+                            }}
+                            style={{
+                                padding: '0.5rem',
+                                border: '2px solid #e5e7eb',
+                                borderRadius: '0.5rem',
+                                fontSize: '0.9rem',
+                                backgroundColor: 'white',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={50}>50</option>
+                        </select>
+                    </div>
+                </div>
+
+                {loading ? (
+                    <div style={{
+                        textAlign: 'center',
+                        padding: '3rem',
+                        color: '#6b7280'
                     }}>
                         {language === 'ar' ? 'جاري التحميل...' : 'Loading...'}
                     </div>
-                </div>
-            ) : filteredSubscriptions.length === 0 ? (
-                <div style={{
-                    textAlign: 'center',
-                    padding: '3rem 1rem',
-                    background: 'transparent'
-                }}>
+                ) : filteredSubscriptions.length === 0 ? (
                     <div style={{
-                        fontSize: '1.125rem',
-                        color: 'rgb(107 114 128)',
-                        marginBottom: '1rem'
+                        textAlign: 'center',
+                        padding: '3rem 1rem'
                     }}>
-                        {(statusFilter !== 'all' || dateFilter) 
-                            ? (language === 'ar' ? 'لا توجد نتائج تطابق الفلتر المحدد' : 'No results match the selected filter')
-                            : (language === 'ar' ? 'لا توجد طلبات اشتراك' : 'No subscription requests')
-                        }
-                    </div>
-                    <div style={{
-                        fontSize: '0.875rem',
-                        color: 'rgb(156 163 175)',
-                        marginBottom: '1.5rem'
-                    }}>
-                        {(statusFilter !== 'all' || dateFilter)
-                            ? (language === 'ar' ? 'جرب تغيير معايير الفلترة أو مسح الفلاتر' : 'Try changing filter criteria or clear filters')
-                            : (language === 'ar' ? 'ستظهر هنا طلبات الاشتراك الجديدة' : 'New subscription requests will appear here')
-                        }
-                    </div>
-                    {(statusFilter !== 'all' || dateFilter) && (
-                        <button
-                            onClick={() => {
-                                setStatusFilter('all');
-                                setDateFilter('');
-                            }}
-                            style={{
-                                padding: '0.75rem 1.5rem',
-                                backgroundColor: '#3b82f6',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '0.5rem',
-                                fontSize: '0.875rem',
-                                fontWeight: '600',
-                                cursor: 'pointer',
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '0.5rem',
-                                transition: 'all 0.2s ease',
-                                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-                            }}
-                            onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = '#2563eb';
-                                e.target.style.transform = 'translateY(-1px)';
-                                e.target.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = '#3b82f6';
-                                e.target.style.transform = 'translateY(0)';
-                                e.target.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
-                            }}
-                        >
-                            <span>🔄</span>
-                            {language === 'ar' ? 'عرض جميع الاشتراكات' : 'Show All Subscriptions'}
-                        </button>
-                    )}
-                </div>
-            ) : (
-                <div style={{
-                    display: 'grid',
-                    gap: '1rem',
-                    background: 'transparent'
-                }}>
-                    {filteredSubscriptions.map(subscription => (
-                        <div key={subscription.id} style={{
-                            background: 'rgba(255, 255, 255, 0.9)',
-                            backdropFilter: 'blur(20px)',
-                            border: '1px solid rgba(0, 0, 0, 0.1)',
-                            borderRadius: '1rem',
-                            padding: '1.5rem',
-                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
-                            transition: 'all 0.2s ease'
+                        <div style={{
+                            fontSize: '1.125rem',
+                            color: '#6b7280',
+                            marginBottom: '1rem'
                         }}>
-                                                         {/* Subscription Header */}
-                             <div style={{
-                                 display: 'flex',
-                                 justifyContent: 'space-between',
-                                 alignItems: 'flex-start',
-                                 marginBottom: '1.5rem',
-                                 flexWrap: window.innerWidth <= 768 ? 'wrap' : 'nowrap',
-                                 gap: '1rem'
-                             }}>
-                                 <div style={{
-                                     flex: 1,
-                                     minWidth: 0
-                                 }}>
-                                     <div style={{
-                                         fontSize: '1.25rem',
-                                         fontWeight: '700',
-                                         marginBottom: '0.5rem',
-                                         color: 'rgb(17 24 39)',
-                                         textAlign: dir === 'rtl' ? 'right' : 'left',
-                                         display: 'flex',
-                                         alignItems: 'center',
-                                         gap: '0.5rem'
-                                     }}>
-                                         <span style={{ fontSize: '1rem' }}>📦</span>
-                                         {language === 'ar' ? `طلب #${subscription.id}` : `Request #${subscription.id}`}
-                                     </div>
-                                     
-                                                                           {/* Customer Info */}
-                                      <div style={{
-                                          background: 'rgba(239, 246, 255, 0.8)',
-                                          border: '1px solid rgba(59, 130, 246, 0.2)',
-                                          borderRadius: '0.5rem',
-                                          padding: '0.75rem',
-                                          marginBottom: '0.75rem'
-                                      }}>
-                                          <div style={{
-                                              fontSize: '0.875rem',
+                            {(searchTerm || filters.status !== 'all' || filters.date_from || filters.date_to || statusFilter !== 'all' || dateFilter) 
+                                ? (language === 'ar' ? 'لا توجد نتائج تطابق الفلتر المحدد' : 'No results match the selected filter')
+                                : (language === 'ar' ? 'لا توجد طلبات اشتراك' : 'No subscription requests')
+                            }
+                        </div>
+                        <div style={{
+                            fontSize: '0.875rem',
+                            color: '#9ca3af',
+                            marginBottom: '1.5rem'
+                        }}>
+                            {(searchTerm || filters.status !== 'all' || filters.date_from || filters.date_to || statusFilter !== 'all' || dateFilter)
+                                ? (language === 'ar' ? 'جرب تغيير معايير الفلترة أو مسح الفلاتر' : 'Try changing filter criteria or clear filters')
+                                : (language === 'ar' ? 'ستظهر هنا طلبات الاشتراك الجديدة' : 'New subscription requests will appear here')
+                            }
+                        </div>
+                        {(searchTerm || filters.status !== 'all' || filters.date_from || filters.date_to || statusFilter !== 'all' || dateFilter) && (
+                            <button
+                                onClick={clearFilters}
+                                style={{
+                                    padding: '0.75rem 1.5rem',
+                                    backgroundColor: '#3b82f6',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '0.5rem',
+                                    fontSize: '0.875rem',
+                                    fontWeight: '600',
+                                    cursor: 'pointer',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    transition: 'all 0.2s ease',
+                                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.backgroundColor = '#2563eb';
+                                    e.target.style.transform = 'translateY(-1px)';
+                                    e.target.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.backgroundColor = '#3b82f6';
+                                    e.target.style.transform = 'translateY(0)';
+                                    e.target.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+                                }}
+                            >
+                                <span>🔄</span>
+                                {language === 'ar' ? 'عرض جميع الاشتراكات' : 'Show All Subscriptions'}
+                            </button>
+                        )}
+                    </div>
+                ) : (
+                    <>
+                        {/* Subscriptions Table */}
+                    <div style={{
+                            overflowX: 'auto',
+                            borderRadius: '0.75rem',
+                            border: '1px solid #e5e7eb',
+                            backgroundColor: 'white'
+                        }}>
+                            <table style={{
+                                width: '100%',
+                                borderCollapse: 'collapse',
+                                fontSize: '0.9rem'
+                            }}>
+                                <thead>
+                                    <tr style={{
+                                        background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+                                        borderBottom: '2px solid #e5e7eb'
+                                    }}>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'right',
                                               fontWeight: '600',
-                                              color: 'rgb(59 130 246)',
-                                              marginBottom: '0.5rem',
-                                              textAlign: dir === 'rtl' ? 'right' : 'left',
-                                              display: 'flex',
-                                              alignItems: 'center',
-                                              gap: '0.5rem'
-                                          }}>
-                                              <span style={{ fontSize: '0.75rem' }}>👤</span>
-                                              {language === 'ar' ? 'معلومات العميل' : 'Customer Information'}
-                                          </div>
-                                          <div style={{
-                                              fontSize: '0.875rem',
-                                              color: 'rgb(17 24 39)',
-                                              textAlign: dir === 'rtl' ? 'right' : 'left',
-                                              lineHeight: '1.4'
-                                          }}>
-                                              <div style={{ marginBottom: '0.25rem' }}>
-                                                  <strong>{language === 'ar' ? 'الاسم:' : 'Name:'}</strong> {subscription.user?.name}
-                                              </div>
-                                              <div style={{ marginBottom: '0.25rem' }}>
-                                                  <strong>{language === 'ar' ? 'البريد الإلكتروني:' : 'Email:'}</strong> {subscription.user?.email}
-                                              </div>
-                                              <div>
-                                                  <strong>{language === 'ar' ? 'رقم الهاتف:' : 'Phone:'}</strong> {subscription.delivery_address?.phone || (language === 'ar' ? 'غير متوفر' : 'Not available')}
-                                              </div>
-                                          </div>
-                                      </div>
-                                     
-                                     {/* Delivery Address */}
-                                     <div style={{
-                                         background: 'rgba(240, 253, 244, 0.8)',
-                                         border: '1px solid rgba(34, 197, 94, 0.2)',
-                                         borderRadius: '0.5rem',
-                                         padding: '0.75rem'
-                                     }}>
-                                         <div style={{
-                                             fontSize: '0.875rem',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em',
+                                            cursor: 'pointer',
+                                            userSelect: 'none'
+                                        }}
+                                        onClick={() => handleSort('id')}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#f1f5f9'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}>
+                                            {language === 'ar' ? 'رقم الاشتراك' : 'Subscription ID'}
+                                            {sortField === 'id' && (
+                                                <span style={{ marginLeft: '0.5rem' }}>
+                                                    {sortDirection === 'asc' ? '↑' : '↓'}
+                                                </span>
+                                            )}
+                                        </th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'right',
                                              fontWeight: '600',
-                                             color: 'rgb(34 197 94)',
-                                             marginBottom: '0.5rem',
-                                             textAlign: dir === 'rtl' ? 'right' : 'left',
-                                             display: 'flex',
-                                             alignItems: 'center',
-                                             gap: '0.5rem'
-                                         }}>
-                                             <span style={{ fontSize: '0.75rem' }}>📍</span>
-                                             {language === 'ar' ? 'عنوان التوصيل' : 'Delivery Address'}
-                                         </div>
-                                         <div style={{
-                                             fontSize: '0.875rem',
-                                             color: 'rgb(17 24 39)',
-                                             textAlign: dir === 'rtl' ? 'right' : 'left',
-                                             lineHeight: '1.4'
-                                         }}>
-                                             {subscription.delivery_address?.address}
-                                         </div>
-                                     </div>
-                                 </div>
-                                 
-                                 
-                             </div>
-
-                                                         {/* Subscription Details */}
-                             <div style={{
-                                 background: 'rgba(255, 251, 235, 0.8)',
-                                 border: '1px solid rgba(245, 158, 11, 0.2)',
-                                 borderRadius: '0.75rem',
-                                 padding: '1rem',
-                                 marginBottom: '1.5rem'
-                             }}>
-                                 <div style={{
-                                     fontSize: '0.875rem',
-                                     fontWeight: '600',
-                                     color: 'rgb(245, 158, 11)',
-                                     marginBottom: '1rem',
-                                     textAlign: dir === 'rtl' ? 'right' : 'left',
-                                     display: 'flex',
-                                     alignItems: 'center',
-                                     gap: '0.5rem'
-                                 }}>
-                                     <span style={{ fontSize: '1rem' }}>📋</span>
-                                     {language === 'ar' ? 'تفاصيل الاشتراك' : 'Subscription Details'}
-                                 </div>
-                                 
-                                                                   <div style={{
-                                      display: 'grid',
-                                      gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : 'repeat(5, 1fr)',
-                                      gap: '0.75rem'
-                                  }}>
-                                                                           <div style={{
-                                          background: 'rgba(255, 255, 255, 0.6)',
-                                          padding: '0.5rem',
-                                          borderRadius: '0.375rem',
-                                          border: '1px solid rgba(245, 158, 11, 0.1)'
-                                      }}>
-                                          <div style={{
-                                              fontSize: '0.625rem',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em',
+                                            cursor: 'pointer',
+                                            userSelect: 'none'
+                                        }}
+                                        onClick={() => handleSort('customer')}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#f1f5f9'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}>
+                                            {language === 'ar' ? 'العميل' : 'Customer'}
+                                            {sortField === 'customer' && (
+                                                <span style={{ marginLeft: '0.5rem' }}>
+                                                    {sortDirection === 'asc' ? '↑' : '↓'}
+                                                </span>
+                                            )}
+                                        </th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'right',
+                                             fontWeight: '600',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em',
+                                            cursor: 'pointer',
+                                            userSelect: 'none'
+                                        }}
+                                        onClick={() => handleSort('subscription_amount')}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#f1f5f9'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}>
+                                            {language === 'ar' ? 'مبلغ الاشتراك' : 'Subscription Amount'}
+                                            {sortField === 'subscription_amount' && (
+                                                <span style={{ marginLeft: '0.5rem' }}>
+                                                    {sortDirection === 'asc' ? '↑' : '↓'}
+                                                </span>
+                                            )}
+                                        </th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'right',
+                                             fontWeight: '600',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em',
+                                            cursor: 'pointer',
+                                            userSelect: 'none'
+                                        }}
+                                        onClick={() => handleSort('delivery_price')}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#f1f5f9'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}>
+                                            {language === 'ar' ? 'سعر التوصيل' : 'Delivery Price'}
+                                            {sortField === 'delivery_price' && (
+                                                <span style={{ marginLeft: '0.5rem' }}>
+                                                    {sortDirection === 'asc' ? '↑' : '↓'}
+                                                </span>
+                                            )}
+                                        </th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'right',
+                                             fontWeight: '600',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em',
+                                            cursor: 'pointer',
+                                            userSelect: 'none'
+                                        }}
+                                        onClick={() => handleSort('total_amount')}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#f1f5f9'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}>
+                                            {language === 'ar' ? 'المبلغ الإجمالي' : 'Total Amount'}
+                                            {sortField === 'total_amount' && (
+                                                <span style={{ marginLeft: '0.5rem' }}>
+                                                    {sortDirection === 'asc' ? '↑' : '↓'}
+                                                </span>
+                                            )}
+                                        </th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'right',
                                               fontWeight: '600',
-                                              color: 'rgb(107 114 128)',
-                                              marginBottom: '0.25rem',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
                                               textTransform: 'uppercase',
-                                              textAlign: dir === 'rtl' ? 'right' : 'left'
-                                          }}>
-                                              {language === 'ar' ? 'نوع الاشتراك' : 'Subscription Type'}
-                                          </div>
-                                          <div style={{
-                                              fontSize: '0.75rem',
-                                              color: 'rgb(17 24 39)',
-                                              textAlign: dir === 'rtl' ? 'right' : 'left',
-                                              fontWeight: '500'
-                                          }}>
-                                              {subscription.subscription_type === 'weekly' ? 
-                                                  (language === 'ar' ? 'أسبوعي' : 'Weekly') : 
-                                                  (language === 'ar' ? 'شهري' : 'Monthly')}
-                                          </div>
-                                      </div>
-                                     
-                                                                           <div style={{
-                                          background: 'rgba(255, 255, 255, 0.6)',
-                                          padding: '0.5rem',
-                                          borderRadius: '0.375rem',
-                                          border: '1px solid rgba(245, 158, 11, 0.1)'
-                                      }}>
-                                          <div style={{
-                                              fontSize: '0.625rem',
+                                            letterSpacing: '0.05em',
+                                            cursor: 'pointer',
+                                            userSelect: 'none'
+                                        }}
+                                        onClick={() => handleSort('date')}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#f1f5f9'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}>
+                                            {language === 'ar' ? 'التاريخ' : 'Date'}
+                                            {sortField === 'date' && (
+                                                <span style={{ marginLeft: '0.5rem' }}>
+                                                    {sortDirection === 'asc' ? '↑' : '↓'}
+                                                </span>
+                                            )}
+                                        </th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'right',
                                               fontWeight: '600',
-                                              color: 'rgb(107 114 128)',
-                                              marginBottom: '0.25rem',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
                                               textTransform: 'uppercase',
-                                              textAlign: dir === 'rtl' ? 'right' : 'left'
-                                          }}>
-                                              {language === 'ar' ? 'المبلغ الإجمالي' : 'Total Amount'}
-                                          </div>
-                                          <div style={{
-                                              fontSize: '0.75rem',
-                                              color: 'rgb(17 24 39)',
-                                              textAlign: dir === 'rtl' ? 'right' : 'left',
-                                              fontWeight: '500'
-                                          }}>
-                                              {subscription.total_amount} {language === 'ar' ? 'ريال' : 'OMR'}
-                                          </div>
-                                      </div>
-                                     
-                                                                           <div style={{
-                                          background: 'rgba(255, 255, 255, 0.6)',
-                                          padding: '0.5rem',
-                                          borderRadius: '0.375rem',
-                                          border: '1px solid rgba(245, 158, 11, 0.1)'
-                                      }}>
-                                          <div style={{
-                                              fontSize: '0.625rem',
+                                            letterSpacing: '0.05em',
+                                            cursor: 'pointer',
+                                            userSelect: 'none'
+                                        }}
+                                        onClick={() => handleSort('status')}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#f1f5f9'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}>
+                                            {language === 'ar' ? 'الحالة' : 'Status'}
+                                            {sortField === 'status' && (
+                                                <span style={{ marginLeft: '0.5rem' }}>
+                                                    {sortDirection === 'asc' ? '↑' : '↓'}
+                                                </span>
+                                            )}
+                                        </th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
                                               fontWeight: '600',
-                                              color: 'rgb(107 114 128)',
-                                              marginBottom: '0.25rem',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
                                               textTransform: 'uppercase',
-                                              textAlign: dir === 'rtl' ? 'right' : 'left'
-                                          }}>
-                                              {language === 'ar' ? 'تاريخ البداية' : 'Start Date'}
-                                          </div>
-                                          <div style={{
-                                              fontSize: '0.75rem',
-                                              color: 'rgb(17 24 39)',
-                                              textAlign: dir === 'rtl' ? 'right' : 'left',
-                                              fontWeight: '500'
-                                          }}>
-                                              {new Date(subscription.start_date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-})}
-                                          </div>
-                                      </div>
-                                     
-                                                                                                                  <div style={{
-                                           background: 'rgba(255, 255, 255, 0.6)',
-                                           padding: '0.5rem',
-                                           borderRadius: '0.375rem',
-                                           border: '1px solid rgba(245, 158, 11, 0.1)'
-                                       }}>
-                                           <div style={{
-                                               fontSize: '0.625rem',
+                                            letterSpacing: '0.05em'
+                                        }}>
+                                            {language === 'ar' ? 'الوجبات' : 'Meals'}
+                                        </th>
+                                        <th style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
                                                fontWeight: '600',
-                                               color: 'rgb(107 114 128)',
-                                               marginBottom: '0.25rem',
+                                            color: '#374151',
+                                            fontSize: '0.9rem',
                                                textTransform: 'uppercase',
-                                               textAlign: dir === 'rtl' ? 'right' : 'left'
-                                           }}>
-                                               {language === 'ar' ? 'عدد الوجبات' : 'Meals Count'}
-                                           </div>
-                                           <div style={{
-                                               fontSize: '0.75rem',
-                                               color: 'rgb(17 24 39)',
-                                               textAlign: dir === 'rtl' ? 'right' : 'left',
-                                               fontWeight: '500'
-                                           }}>
-                                               {subscription.subscription_items?.length || 0}
-                                           </div>
-                                       </div>
-                                      
-                                                                             <div style={{
-                                           background: 'rgba(255, 255, 255, 0.6)',
-                                           padding: '0.5rem',
-                                           borderRadius: '0.375rem',
-                                           border: '1px solid rgba(245, 158, 11, 0.1)'
-                                       }}>
-                                           <div style={{
-                                               fontSize: '0.625rem',
-                                               fontWeight: '600',
-                                               color: 'rgb(107 114 128)',
-                                               marginBottom: '0.25rem',
-                                               textTransform: 'uppercase',
-                                               textAlign: dir === 'rtl' ? 'right' : 'left'
-                                           }}>
-                                               {language === 'ar' ? 'تاريخ الطلب' : 'Order Date'}
-                                           </div>
-                                           <div style={{
-                                               fontSize: '0.75rem',
-                                               color: 'rgb(17 24 39)',
-                                               textAlign: dir === 'rtl' ? 'right' : 'left',
-                                               fontWeight: '500'
-                                           }}>
-                                               {new Date(subscription.created_at).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-})}
-                                           </div>
-                                       </div>
-                                 </div>
-                             </div>
-
-                            {/* Meal Details Section */}
-                            {subscription.subscription_items && subscription.subscription_items.length > 0 && (
-                                <div style={{
-                                    marginBottom: '1.5rem',
-                                    background: 'transparent'
-                                }}>
-                                    <div style={{
-                                        fontSize: '0.875rem',
-                                        fontWeight: '600',
-                                        color: 'rgb(55 65 81)',
-                                        marginBottom: '1rem',
-                                        textAlign: dir === 'rtl' ? 'right' : 'left',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '0.5rem'
-                                    }}>
-                                        <span style={{ fontSize: '1rem' }}>🍽️</span>
-                                        {language === 'ar' ? 'تفاصيل الوجبات المطلوبة' : 'Requested Meals Details'}
-                                    </div>
-                                    
-                                    <div style={{
-                                        display: 'grid',
-                                        gap: '0.75rem',
-                                        background: 'transparent'
-                                    }}>
-                                        {subscription.subscription_items.length > 0 ? (
-                                            subscription.subscription_items.map((item, index) => (
-                                            <div key={item.id} style={{
-                                                background: 'rgba(249, 250, 251, 0.8)',
-                                                border: '1px solid rgba(209, 213, 219, 0.5)',
-                                                borderRadius: '0.75rem',
+                                            letterSpacing: '0.05em'
+                                        }}>
+                                            {language === 'ar' ? 'الإجراءات' : 'Actions'}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {paginatedSubscriptions.length > 0 ? paginatedSubscriptions.map((subscription, index) => (
+                                        <tr key={subscription.id} style={{
+                                            borderBottom: '1px solid #f1f5f9',
+                                            backgroundColor: index % 2 === 0 ? '#ffffff' : '#f8fafc',
+                                            transition: 'all 0.2s ease'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.backgroundColor = '#f1f5f9';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.backgroundColor = index % 2 === 0 ? '#ffffff' : '#f8fafc';
+                                        }}>
+                                            <td style={{
                                                 padding: '1rem',
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                                flexWrap: window.innerWidth <= 768 ? 'wrap' : 'nowrap',
-                                                gap: '1rem',
-                                                transition: 'all 0.2s ease'
+                                                textAlign: 'right'
+                                       }}>
+                                           <div style={{
+                                               fontWeight: '600',
+                                                    color: '#1f2937',
+                                                    fontSize: '0.95rem'
+                                                }}>
+                                                    #{subscription.id}
+                                           </div>
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'right'
+                                            }}>
+                                           <div style={{
+                                                    color: '#374151',
+                                                    fontSize: '0.9rem',
+                                               fontWeight: '500'
+                                           }}>
+                                                    {subscription.user?.name}
+                                           </div>
+                                <div style={{
+                                                    color: '#6b7280',
+                                                    fontSize: '0.8rem'
+                                                }}>
+                                                    {subscription.user?.email}
+                                    </div>
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'right'
                                             }}>
                                                 <div style={{
-                                                    flex: 1,
-                                                    minWidth: 0
+                                                    color: '#3b82f6',
+                                                    fontSize: '0.9rem',
+                                                    fontWeight: '600'
                                                 }}>
-                                                    <div style={{
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        gap: '0.5rem',
-                                                        marginBottom: '0.5rem'
-                                                    }}>
-                                                        <div style={{
-                                                            width: '2rem',
-                                                            height: '2rem',
-                                                            background: 'linear-gradient(135deg, rgb(79 70 229), rgb(147 51 234))',
-                                                            borderRadius: '50%',
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            justifyContent: 'center',
-                                                            color: 'white',
-                                                            fontSize: '0.75rem',
-                                                            fontWeight: '600'
-                                                        }}>
-                                                            {index + 1}
-                                                        </div>
-                                                        <div style={{
-                                                            fontSize: '1rem',
-                                                            fontWeight: '600',
-                                                            color: 'rgb(17 24 39)',
-                                                            textAlign: dir === 'rtl' ? 'right' : 'left'
-                                                        }}>
-                                                            {language === 'ar' ? item.meal?.name_ar : item.meal?.name_en}
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div style={{
-                                                        display: 'flex',
-                                                        flexWrap: 'wrap',
-                                                        gap: '1rem',
-                                                        fontSize: '0.875rem',
-                                                        color: 'rgb(107 114 128)'
-                                                    }}>
-                                                        <div style={{
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            gap: '0.25rem'
-                                                        }}>
-                                                            <span style={{ fontSize: '0.75rem' }}>📅</span>
-                                                            <span>{new Date(item.delivery_date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-})}</span>
-                                                        </div>
-                                                        
-                                                        <div style={{
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            gap: '0.25rem'
-                                                        }}>
-                                                            <span style={{ fontSize: '0.75rem' }}>💰</span>
-                                                            <span>{item.meal?.price} {language === 'ar' ? 'ريال' : 'OMR'}</span>
-                                                        </div>
-                                                        
-                                                        <div style={{
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            gap: '0.25rem'
-                                                        }}>
-                                                            <span style={{ fontSize: '0.75rem' }}>🍽️</span>
-                                                            <span>{language === 'ar' ? 
-                                                                (item.meal?.type === 'breakfast' ? 'فطور' : 
-                                                                 item.meal?.type === 'lunch' ? 'غداء' : 'عشاء') : 
-                                                                 (item.meal?.type === 'breakfast' ? 'Breakfast' : 
-                                                                  item.meal?.type === 'lunch' ? 'Lunch' : 'Dinner')}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    {item.meal?.description_ar || item.meal?.description_en ? (
-                                                        <div style={{
-                                                            fontSize: '0.75rem',
-                                                            color: 'rgb(156 163 175)',
-                                                            marginTop: '0.5rem',
-                                                            textAlign: dir === 'rtl' ? 'right' : 'left',
-                                                            fontStyle: 'italic'
-                                                        }}>
-                                                            {language === 'ar' ? item.meal?.description_ar : item.meal?.description_en}
-                                                        </div>
-                                                    ) : null}
+                                                    {(parseFloat(subscription.total_amount || 0) - parseFloat(subscription.delivery_price || 0)).toFixed(2)} {language === 'ar' ? 'ريال' : 'OMR'}
                                                 </div>
-                                                
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'right'
+                                            }}>
+                                                <div style={{
+                                                    color: parseFloat(subscription.delivery_price || 0) > 0 ? '#f59e0b' : '#10b981',
+                                                    fontSize: '0.9rem',
+                                                    fontWeight: '600'
+                                                }}>
+                                                    {parseFloat(subscription.delivery_price || 0) > 0 
+                                                        ? `${parseFloat(subscription.delivery_price || 0).toFixed(2)} ${language === 'ar' ? 'ريال' : 'OMR'}`
+                                                        : (language === 'ar' ? 'مجاني' : 'Free')
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'right'
+                                            }}>
+                                                <div style={{
+                                                    color: '#059669',
+                                                    fontSize: '0.9rem',
+                                                    fontWeight: '600'
+                                                }}>
+                                                    {parseFloat(subscription.total_amount || 0).toFixed(2)} {language === 'ar' ? 'ريال' : 'OMR'}
+                                                </div>
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'right'
+                                            }}>
+                                                    <div style={{
+                                                    color: '#6b7280',
+                                                    fontSize: '0.9rem'
+                                                }}>
+                                                    {new Date(subscription.created_at).toLocaleDateString('en-US', {
+    year: 'numeric',
+                                                        month: 'short',
+    day: 'numeric'
+                                                    })}
+                                                        </div>
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'right'
+                                            }}>
+                                                        <div style={{
+                                                    color: subscription.status === 'active' ? '#10b981' : 
+                                                          subscription.status === 'pending' ? '#f59e0b' :
+                                                          subscription.status === 'completed' ? '#3b82f6' : '#ef4444',
+                                                    fontSize: '0.9rem',
+                                                    fontWeight: '500'
+                                                }}>
+                                                    {getStatusText(subscription.status)}
+                                                        </div>
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'center'
+                                            }}>
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedSubscription(subscription);
+                                                        setShowDetailsModal(true);
+                                                    }}
+                                                    style={{
+                                                        background: '#8b5cf6',
+                                                        color: 'white',
+                                                        border: 'none',
+                                                        borderRadius: '0.375rem',
+                                                        padding: '0.5rem 0.75rem',
+                                                        fontSize: '0.8rem',
+                                                        cursor: 'pointer',
+                                                        transition: 'all 0.2s ease',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: '0.25rem'
+                                                    }}
+                                                    onMouseOver={(e) => {
+                                                        e.target.style.backgroundColor = '#7c3aed';
+                                                    }}
+                                                    onMouseOut={(e) => {
+                                                        e.target.style.backgroundColor = '#8b5cf6';
+                                                    }}
+                                                >
+                                                    🍽️ {language === 'ar' ? 'عرض الوجبات' : 'View Meals'}
+                                                </button>
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                textAlign: 'center'
+                                            }}>
                                                 <div style={{
                                                     display: 'flex',
-                                                    flexDirection: 'column',
-                                                    alignItems: dir === 'rtl' ? 'flex-start' : 'flex-end',
-                                                    gap: '0.75rem',
-                                                    minWidth: 'fit-content'
+                                                    gap: '0.5rem',
+                                                    justifyContent: 'center',
+                                                    flexWrap: 'wrap'
                                                 }}>
-                                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getItemStatusColor(item.status)}`}>
-                                                        {getItemStatusText(item.status)}
-                                                    </span>
-                                                    
-                                                    <select
-                                                        value={item.status}
-                                                        onChange={(e) => updateItemStatus(subscription.id, item.id, e.target.value)}
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedSubscription(subscription);
+                                                            setShowDetailsModal(true);
+                                                        }}
                                                         style={{
-                                                            padding: '0.5rem',
-                                                            border: '1px solid rgb(209 213 219)',
+                                                            background: '#3b82f6',
+                                                            color: 'white',
+                                                            border: 'none',
                                                             borderRadius: '0.375rem',
-                                                            fontSize: '0.75rem',
-                                                            background: 'white',
-                                                            minWidth: '120px'
+                                                            padding: '0.5rem 0.75rem',
+                                                            fontSize: '0.8rem',
+                                                            cursor: 'pointer',
+                                                            transition: 'all 0.2s ease'
+                                                        }}
+                                                        onMouseOver={(e) => {
+                                                            e.target.style.backgroundColor = '#2563eb';
+                                                        }}
+                                                        onMouseOut={(e) => {
+                                                            e.target.style.backgroundColor = '#3b82f6';
                                                         }}
                                                     >
-                                                        <option value="pending">{language === 'ar' ? 'في الانتظار' : 'Pending'}</option>
-                                                        <option value="preparing">{language === 'ar' ? 'قيد التحضير' : 'Preparing'}</option>
-                                                        <option value="delivered">{language === 'ar' ? 'تم التوصيل' : 'Delivered'}</option>
-                                                        <option value="cancelled">{language === 'ar' ? 'ملغي' : 'Cancelled'}</option>
-                                                    </select>
+                                                        {language === 'ar' ? 'عرض' : 'View'}
+                                                    </button>
                                                 </div>
-                                            </div>
-                                        ))
-                                        ) : (
-                                            <div style={{
+                                            </td>
+                                        </tr>
+                                    )) : (
+                                        <tr>
+                                            <td colSpan="9" style={{
+                                                padding: '3rem',
                                                 textAlign: 'center',
-                                                padding: '2rem 1rem',
-                                                backgroundColor: 'rgba(249, 250, 251, 0.8)',
-                                                border: '1px solid rgba(209, 213, 219, 0.5)',
-                                                borderRadius: '0.75rem',
-                                                color: 'rgb(107 114 128)'
+                                                color: '#6b7280',
+                                                fontSize: '1.1rem'
                                             }}>
-                                                <div style={{
-                                                    fontSize: '1rem',
-                                                    marginBottom: '0.5rem'
-                                                }}>
-                                                    {language === 'ar' ? 'لا توجد وجبات مطابقة للفلتر' : 'No meals match the filter'}
-                                                </div>
-                                                <div style={{
-                                                    fontSize: '0.875rem',
-                                                    color: 'rgb(156 163 175)'
-                                                }}>
-                                                    {language === 'ar' ? 'جرب تغيير معايير الفلترة' : 'Try changing filter criteria'}
-                                                </div>
-                                            </div>
-                                        )}
+                                                {language === 'ar' ? 'لا توجد اشتراكات مطابقة للبحث' : 'No subscriptions found matching your search'}
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
                                     </div>
-                                </div>
-                            )}
+                    </>
+                )}
 
-                            {/* Special Instructions */}
-                            {subscription.special_instructions && (
-                                <div style={{
-                                    marginBottom: '1.5rem',
-                                    padding: '1rem',
-                                    backgroundColor: 'rgba(254, 243, 199, 0.8)',
-                                    borderRadius: '0.75rem',
-                                    border: '1px solid rgba(251, 191, 36, 0.3)'
-                                }}>
-                                    <div style={{
-                                        fontSize: '0.875rem',
-                                        fontWeight: '600',
-                                        color: 'rgb(146, 64, 14)',
-                                        marginBottom: '0.5rem',
-                                        textAlign: dir === 'rtl' ? 'right' : 'left',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '0.5rem'
-                                    }}>
-                                        <span style={{ fontSize: '1rem' }}>📝</span>
-                                        {language === 'ar' ? 'تعليمات خاصة' : 'Special Instructions'}
-                                    </div>
-                                    <div style={{
-                                        fontSize: '0.875rem',
-                                        color: 'rgb(146, 64, 14)',
-                                        textAlign: dir === 'rtl' ? 'right' : 'left',
-                                        lineHeight: '1.5'
-                                    }}>
-                                        {subscription.special_instructions}
-                                    </div>
-                                </div>
-                            )}
+                {/* Pagination */}
+                {totalPages > 1 && (
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        marginTop: '2rem',
+                        padding: '1.5rem',
+                        background: 'rgba(248, 250, 252, 0.8)',
+                        borderRadius: '0.75rem',
+                        border: '1px solid #e5e7eb'
+                    }}>
+                        <button
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            style={{
+                                padding: '0.75rem 1rem',
+                                border: '2px solid #e5e7eb',
+                                borderRadius: '0.5rem',
+                                backgroundColor: currentPage === 1 ? '#f9fafb' : 'white',
+                                color: currentPage === 1 ? '#9ca3af' : '#374151',
+                                cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                                transition: 'all 0.3s ease',
+                                fontWeight: '500',
+                                fontSize: '0.9rem'
+                            }}
+                            onMouseOver={(e) => {
+                                if (currentPage !== 1) {
+                                    e.target.style.borderColor = '#667eea';
+                                    e.target.style.backgroundColor = '#f8fafc';
+                                }
+                            }}
+                            onMouseOut={(e) => {
+                                if (currentPage !== 1) {
+                                    e.target.style.borderColor = '#e5e7eb';
+                                    e.target.style.backgroundColor = 'white';
+                                }
+                            }}
+                        >
+                            {language === 'ar' ? 'السابق' : 'Previous'}
+                        </button>
 
-                                                         
-                        </div>
-                    ))}
-                </div>
-            )}
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                            <button
+                                key={page}
+                                onClick={() => handlePageChange(page)}
+                                style={{
+                                    padding: '0.75rem 1rem',
+                                    border: '2px solid',
+                                    borderColor: page === currentPage ? '#667eea' : '#e5e7eb',
+                                    borderRadius: '0.5rem',
+                                    backgroundColor: page === currentPage ? '#667eea' : 'white',
+                                    color: page === currentPage ? 'white' : '#374151',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.3s ease',
+                                    fontWeight: '500',
+                                    fontSize: '0.9rem',
+                                    minWidth: '2.5rem'
+                                }}
+                                onMouseOver={(e) => {
+                                    if (page !== currentPage) {
+                                        e.target.style.borderColor = '#667eea';
+                                        e.target.style.backgroundColor = '#f8fafc';
+                                    }
+                                }}
+                                onMouseOut={(e) => {
+                                    if (page !== currentPage) {
+                                        e.target.style.borderColor = '#e5e7eb';
+                                        e.target.style.backgroundColor = 'white';
+                                    }
+                                }}
+                            >
+                                {page}
+                            </button>
+                        ))}
+
+                        <button
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            style={{
+                                padding: '0.75rem 1rem',
+                                border: '2px solid #e5e7eb',
+                                borderRadius: '0.5rem',
+                                backgroundColor: currentPage === totalPages ? '#f9fafb' : 'white',
+                                color: currentPage === totalPages ? '#9ca3af' : '#374151',
+                                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                                transition: 'all 0.3s ease',
+                                fontWeight: '500',
+                                fontSize: '0.9rem'
+                            }}
+                            onMouseOver={(e) => {
+                                if (currentPage !== totalPages) {
+                                    e.target.style.borderColor = '#667eea';
+                                    e.target.style.backgroundColor = '#f8fafc';
+                                }
+                            }}
+                            onMouseOut={(e) => {
+                                if (currentPage !== totalPages) {
+                                    e.target.style.borderColor = '#e5e7eb';
+                                    e.target.style.backgroundColor = 'white';
+                                }
+                            }}
+                        >
+                            {language === 'ar' ? 'التالي' : 'Next'}
+                        </button>
+                    </div>
+                )}
+            </div>
 
             {/* Subscription Details Modal */}
             {showDetailsModal && selectedSubscription && (
@@ -1238,63 +1493,66 @@ const SellerSubscriptions = () => {
                         maxWidth: '800px',
                         width: '100%',
                         maxHeight: '90vh',
-                        overflow: 'auto',
-                        position: 'relative'
+                        overflowY: 'auto',
+                        boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25)'
                     }}>
-                        {/* Close Button */}
-                        <button
-                            onClick={() => setShowDetailsModal(false)}
-                            style={{
-                                position: 'absolute',
-                                top: '1rem',
-                                right: dir === 'rtl' ? 'auto' : '1rem',
-                                left: dir === 'rtl' ? '1rem' : 'auto',
-                                background: 'none',
-                                border: 'none',
-                                fontSize: '1.5rem',
-                                cursor: 'pointer',
-                                color: 'rgb(107 114 128)'
-                            }}
-                        >
-                            ×
-                        </button>
-
-                        {/* Modal Header */}
                         <div style={{
-                            marginBottom: '2rem',
-                            paddingRight: dir === 'rtl' ? '2rem' : '0',
-                            paddingLeft: dir === 'rtl' ? '0' : '2rem'
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            marginBottom: '1.5rem'
                         }}>
                             <h2 style={{
                                 fontSize: '1.5rem',
-                                fontWeight: '700',
-                                marginBottom: '0.5rem',
-                                color: 'rgb(17 24 39)',
-                                textAlign: dir === 'rtl' ? 'right' : 'left'
+                                fontWeight: 'bold',
+                                color: '#1f2937',
+                                margin: 0
                             }}>
                                 {language === 'ar' ? `تفاصيل الطلب #${selectedSubscription.id}` : `Request Details #${selectedSubscription.id}`}
                             </h2>
+                            <button
+                                onClick={() => setShowDetailsModal(false)}
+                                style={{
+                                    background: '#ef4444',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '0.5rem',
+                                    padding: '0.5rem 1rem',
+                                    fontSize: '0.875rem',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.3s ease'
+                                }}
+                                onMouseOver={(e) => {
+                                    e.target.style.backgroundColor = '#dc2626';
+                                }}
+                                onMouseOut={(e) => {
+                                    e.target.style.backgroundColor = '#ef4444';
+                                }}
+                            >
+                                ✕ {language === 'ar' ? 'إغلاق' : 'Close'}
+                            </button>
                         </div>
 
                         {/* Customer Information */}
                         <div style={{
-                            marginBottom: '2rem',
-                            padding: '1.5rem',
-                            backgroundColor: 'rgb(249 250 251)',
-                            borderRadius: '0.75rem'
+                            background: 'rgba(16, 185, 129, 0.1)',
+                            borderRadius: '0.75rem',
+                            padding: '1rem',
+                            marginBottom: '1.5rem',
+                            border: '1px solid rgba(16, 185, 129, 0.2)'
                         }}>
                             <h3 style={{
-                                fontSize: '1.125rem',
+                                fontSize: '1.1rem',
                                 fontWeight: '600',
-                                marginBottom: '1rem',
-                                color: 'rgb(17 24 39)',
-                                textAlign: dir === 'rtl' ? 'right' : 'left'
+                                color: '#059669',
+                                margin: 0,
+                                marginBottom: '1rem'
                             }}>
                                 {language === 'ar' ? 'معلومات العميل' : 'Customer Information'}
                             </h3>
                                                          <div style={{
                                  display: 'grid',
-                                 gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : 'repeat(2, 1fr)',
+                                 gridTemplateColumns: windowWidth <= 768 ? '1fr' : 'repeat(2, 1fr)',
                                  gap: '1rem'
                              }}>
                                  <div>
@@ -1356,24 +1614,24 @@ const SellerSubscriptions = () => {
 
                         {/* Delivery Address */}
                         <div style={{
-                            marginBottom: '2rem',
-                            padding: '1.5rem',
-                            backgroundColor: 'rgb(249 250 251)',
-                            borderRadius: '0.75rem'
+                            background: 'rgba(59, 130, 246, 0.1)',
+                            borderRadius: '0.75rem',
+                            padding: '1rem',
+                            marginBottom: '1.5rem',
+                            border: '1px solid rgba(59, 130, 246, 0.2)'
                         }}>
                             <h3 style={{
-                                fontSize: '1.125rem',
+                                fontSize: '1.1rem',
                                 fontWeight: '600',
-                                marginBottom: '1rem',
-                                color: 'rgb(17 24 39)',
-                                textAlign: dir === 'rtl' ? 'right' : 'left'
+                                color: '#1e40af',
+                                margin: 0,
+                                marginBottom: '1rem'
                             }}>
                                 {language === 'ar' ? 'عنوان التوصيل' : 'Delivery Address'}
                             </h3>
                             <div style={{
-                                fontSize: '1rem',
-                                color: 'rgb(17 24 39)',
-                                textAlign: dir === 'rtl' ? 'right' : 'left'
+                                fontSize: '0.9rem',
+                                color: '#374151'
                             }}>
                                 {selectedSubscription.delivery_address?.address}
                             </div>
@@ -1404,7 +1662,7 @@ const SellerSubscriptions = () => {
                                         padding: '1rem',
                                         backgroundColor: 'rgb(249 250 251)',
                                         borderRadius: '0.75rem',
-                                        flexWrap: window.innerWidth <= 768 ? 'wrap' : 'nowrap',
+                                        flexWrap: windowWidth <= 768 ? 'wrap' : 'nowrap',
                                         gap: '1rem'
                                     }}>
                                         <div style={{
@@ -1468,28 +1726,29 @@ const SellerSubscriptions = () => {
                         {/* Special Instructions */}
                         {selectedSubscription.special_instructions && (
                             <div style={{
-                                marginBottom: '2rem',
-                                padding: '1.5rem',
-                                backgroundColor: 'rgb(254 243 199)',
+                                marginTop: '1.5rem',
+                                padding: '1rem',
+                                background: 'rgba(245, 158, 11, 0.1)',
                                 borderRadius: '0.75rem',
-                                border: '1px solid rgb(251 191 36)'
+                                border: '1px solid rgba(245, 158, 11, 0.2)'
                             }}>
-                                <h3 style={{
-                                    fontSize: '1.125rem',
+                                <h4 style={{
+                                    fontSize: '0.875rem',
                                     fontWeight: '600',
-                                    marginBottom: '1rem',
-                                    color: 'rgb(17 24 39)',
-                                    textAlign: dir === 'rtl' ? 'right' : 'left'
+                                    color: '#d97706',
+                                    margin: 0,
+                                    marginBottom: '0.5rem'
                                 }}>
-                                    {language === 'ar' ? 'تعليمات خاصة' : 'Special Instructions'}
-                                </h3>
-                                <div style={{
-                                    fontSize: '1rem',
-                                    color: 'rgb(17 24 39)',
-                                    textAlign: dir === 'rtl' ? 'right' : 'left'
+                                    {language === 'ar' ? 'ملاحظات:' : 'Notes:'}
+                                </h4>
+                                <p style={{
+                                    fontSize: '0.875rem',
+                                    color: '#d97706',
+                                    margin: 0,
+                                    lineHeight: '1.5'
                                 }}>
                                     {selectedSubscription.special_instructions}
-                                </div>
+                                </p>
                             </div>
                         )}
                     </div>
@@ -1497,6 +1756,20 @@ const SellerSubscriptions = () => {
             )}
         </div>
     );
+    } catch (error) {
+        console.error('Error in SellerSubscriptions component:', error);
+        return (
+            <div style={{
+                padding: '2rem',
+                textAlign: 'center',
+                color: 'red',
+                background: 'white'
+            }}>
+                <h1>خطأ في تحميل الصفحة</h1>
+                <p>Error: {error.message}</p>
+            </div>
+        );
+    }
 };
 
 export default SellerSubscriptions;
