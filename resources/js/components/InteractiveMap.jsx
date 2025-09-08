@@ -84,80 +84,97 @@ const InteractiveMap = ({
           const layerControl = L.control.layers(baseMaps).addTo(mapInstanceRef.current);
           
           // تحسين التحكم في الطبقات للهاتف
-          if (window.innerWidth <= 768) {
+          setTimeout(() => {
             const layerControlContainer = layerControl.getContainer();
             if (layerControlContainer) {
-              layerControlContainer.style.fontSize = '14px';
-              layerControlContainer.style.padding = '8px';
-              layerControlContainer.style.borderRadius = '8px';
-              layerControlContainer.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+              layerControlContainer.style.zIndex = '1000';
+              layerControlContainer.style.position = 'relative';
+              
+              if (window.innerWidth <= 768) {
+                layerControlContainer.style.fontSize = '14px';
+                layerControlContainer.style.padding = '8px';
+                layerControlContainer.style.borderRadius = '8px';
+                layerControlContainer.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                layerControlContainer.style.minWidth = '120px';
+              }
             }
-          }
+          }, 100);
 
-           // إضافة زر تحديد الموقع الحالي
-           const locationButton = L.control({ position: 'topright' });
-           locationButton.onAdd = function () {
-             const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-            div.innerHTML = `
-              <button 
-                title="تحديد موقعي الحالي"
-                style="
-                  width: 44px; 
-                  height: 44px; 
-                  background-color: white; 
-                  color: #374151; 
-                  font-weight: bold; 
-                  border: 2px solid #d1d5db; 
-                  border-radius: 8px; 
-                  box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
-                  display: flex; 
-                  align-items: center; 
-                  justify-content: center; 
-                  font-size: 18px; 
-                  cursor: pointer;
-                  transition: all 0.2s ease;
-                  z-index: 1000;
-                "
-                onmouseover="this.style.backgroundColor='#f3f4f6'; this.style.transform='scale(1.05)'"
-                onmouseout="this.style.backgroundColor='white'; this.style.transform='scale(1)'"
-              >
-                📍
-              </button>
-            `;
-            
-            div.onclick = (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              getCurrentLocation();
-            };
-            return div;
-          };
-          locationButton.addTo(mapInstanceRef.current);
+          // إضافة زر تحديد الموقع الحالي
+          const locationButton = L.control({ position: 'topright' });
+          locationButton.onAdd = function () {
+            const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+           div.innerHTML = `
+             <button 
+               title="تحديد موقعي الحالي"
+               style="
+                 width: 44px; 
+                 height: 44px; 
+                 background-color: white; 
+                 color: #374151; 
+                 font-weight: bold; 
+                 border: 2px solid #d1d5db; 
+                 border-radius: 8px; 
+                 box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+                 display: flex; 
+                 align-items: center; 
+                 justify-content: center; 
+                 font-size: 18px; 
+                 cursor: pointer;
+                 transition: all 0.2s ease;
+                 z-index: 1000;
+               "
+               onmouseover="this.style.backgroundColor='#f3f4f6'; this.style.transform='scale(1.05)'"
+               onmouseout="this.style.backgroundColor='white'; this.style.transform='scale(1)'"
+             >
+               📍
+             </button>
+           `;
+           
+           div.onclick = (e) => {
+             e.preventDefault();
+             e.stopPropagation();
+             getCurrentLocation();
+           };
+           return div;
+         };
+         locationButton.addTo(mapInstanceRef.current);
 
-          // تحسين الزر للهاتف
-          const buttonElement = div.querySelector('button');
-          if (buttonElement) {
-            // إضافة touch events للهاتف
-            buttonElement.addEventListener('touchstart', (e) => {
-              e.preventDefault();
-              buttonElement.style.backgroundColor = '#f3f4f6';
-              buttonElement.style.transform = 'scale(1.05)';
-            });
-            
-            buttonElement.addEventListener('touchend', (e) => {
-              e.preventDefault();
-              buttonElement.style.backgroundColor = 'white';
-              buttonElement.style.transform = 'scale(1)';
-            });
-            
-            // تحسين الحجم للهاتف
-            if (window.innerWidth <= 768) {
-              buttonElement.style.width = '48px';
-              buttonElement.style.height = '48px';
-              buttonElement.style.fontSize = '20px';
-              buttonElement.style.borderRadius = '10px';
-            }
-          }
+         // تحسين الزر للهاتف
+         setTimeout(() => {
+           const buttonElement = locationButton.getContainer()?.querySelector('button');
+           if (buttonElement) {
+             // إضافة touch events للهاتف
+             buttonElement.addEventListener('touchstart', (e) => {
+               e.preventDefault();
+               buttonElement.style.backgroundColor = '#f3f4f6';
+               buttonElement.style.transform = 'scale(1.05)';
+             });
+             
+             buttonElement.addEventListener('touchend', (e) => {
+               e.preventDefault();
+               buttonElement.style.backgroundColor = 'white';
+               buttonElement.style.transform = 'scale(1)';
+             });
+             
+             // تحسين الحجم والموضع للهاتف
+             if (window.innerWidth <= 768) {
+               buttonElement.style.width = '48px';
+               buttonElement.style.height = '48px';
+               buttonElement.style.fontSize = '20px';
+               buttonElement.style.borderRadius = '10px';
+               buttonElement.style.zIndex = '1000';
+               buttonElement.style.position = 'relative';
+             }
+             
+             // تحسين z-index للعنصر الأب
+             const container = locationButton.getContainer();
+             if (container) {
+               container.style.zIndex = '1000';
+               container.style.position = 'relative';
+             }
+           }
+         }, 100);
 
                      // إضافة مؤشر الموقع المحدد
            if (selectedLocation) {
@@ -474,11 +491,32 @@ const InteractiveMap = ({
 
   return (
     <div className="relative" style={{
-      '@media (max-width: 768px)': {
-        position: 'relative',
-        zIndex: 1
-      }
+      position: 'relative',
+      zIndex: 1
     }}>
+      <style jsx>{`
+        .leaflet-control-container {
+          z-index: 1000 !important;
+        }
+        .leaflet-control {
+          z-index: 1000 !important;
+        }
+        .leaflet-control-layers {
+          z-index: 1000 !important;
+        }
+        .leaflet-control-layers-toggle {
+          z-index: 1000 !important;
+        }
+        @media (max-width: 768px) {
+          .leaflet-control {
+            font-size: 14px !important;
+          }
+          .leaflet-control-layers {
+            font-size: 14px !important;
+            min-width: 120px !important;
+          }
+        }
+      `}</style>
       {isLoading && (
         <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10 rounded-lg">
           <div className="text-center">
@@ -496,12 +534,7 @@ const InteractiveMap = ({
         style={{ 
           minHeight: '320px',
           position: 'relative',
-          '@media (max-width: 768px)': {
-            height: '300px',
-            minHeight: '300px',
-            borderRadius: '1rem',
-            borderWidth: '1px'
-          }
+          zIndex: 1
         }}
       />
       

@@ -16,7 +16,15 @@ class PaymentController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = PaymentSession::with(['user']);
+            // Debug logging
+            \Log::info('Admin Payments API called', [
+                'request_params' => $request->all(),
+                'user_id' => auth()->id()
+            ]);
+
+            $query = PaymentSession::with([
+                'user:id,name,email'
+            ]);
 
             // Search functionality
             if ($request->has('search') && $request->search) {
@@ -46,6 +54,15 @@ class PaymentController extends Controller
                 $query->where('user_id', $request->user_id);
             }
 
+            // Filter by restaurant (simplified - will be handled in frontend for now)
+            // if ($request->has('restaurant_id') && $request->restaurant_id) {
+            //     $query->whereHas('model', function ($modelQuery) use ($request) {
+            //         if ($request->restaurant_id) {
+            //             $modelQuery->where('restaurant_id', $request->restaurant_id);
+            //         }
+            //     });
+            // }
+
             // Filter by amount range
             if ($request->has('amount_from') && $request->amount_from) {
                 $query->where('amount', '>=', $request->amount_from);
@@ -66,6 +83,16 @@ class PaymentController extends Controller
 
             $payments = $query->orderBy('created_at', 'desc')->paginate(20);
 
+            // Debug logging
+            \Log::info('Payments query results', [
+                'total_payments' => $payments->total(),
+                'current_page' => $payments->currentPage(),
+                'per_page' => $payments->perPage(),
+                'last_page' => $payments->lastPage(),
+                'items_count' => $payments->count()
+            ]);
+
+
             return response()->json([
                 'success' => true,
                 'data' => $payments->items(),
@@ -78,6 +105,12 @@ class PaymentController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            \Log::error('Error fetching payments', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'request_params' => $request->all()
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'حدث خطأ في جلب المدفوعات',
@@ -186,6 +219,8 @@ class PaymentController extends Controller
     public function getStatistics()
     {
         try {
+            \Log::info('Fetching payment statistics');
+
             $stats = [
                 'totalPayments' => PaymentSession::count(),
                 'completedPayments' => PaymentSession::where('status', 'paid')->count(),
@@ -204,12 +239,19 @@ class PaymentController extends Controller
                 'averagePayment' => PaymentSession::where('status', 'paid')->avg('amount'),
             ];
 
+            \Log::info('Payment statistics calculated', $stats);
+
             return response()->json([
                 'success' => true,
                 'data' => $stats
             ]);
 
         } catch (\Exception $e) {
+            \Log::error('Error fetching payment statistics', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'حدث خطأ في جلب إحصائيات المدفوعات',

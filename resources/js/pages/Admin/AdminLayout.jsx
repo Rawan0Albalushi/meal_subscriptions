@@ -11,9 +11,7 @@ import SubscriptionTypes from './SubscriptionTypes';
 import AdminMeals from './AdminMeals';
 import AdminSubscriptions from './AdminSubscriptions';
 import AdminPayments from './AdminPayments';
-import AdminAddresses from './AdminAddresses';
-import AdminSettings from './AdminSettings';
-import OrderManagement from './OrderManagement';
+import AdminTodayOrders from './AdminTodayOrders';
 
 const AdminLayout = () => {
     const { t, dir, language, toggleLanguage } = useLanguage();
@@ -76,22 +74,16 @@ const AdminLayout = () => {
             description: language === 'ar' ? 'إدارة جميع الاشتراكات' : 'Manage all subscriptions'
         },
         {
+            path: '/admin/today-orders',
+            icon: '📋',
+            label: language === 'ar' ? 'طلبات اليوم' : 'Today\'s Orders',
+            description: language === 'ar' ? 'عرض طلبات اليوم' : 'View today\'s orders'
+        },
+        {
             path: '/admin/payments',
             icon: '💳',
             label: language === 'ar' ? 'المدفوعات' : 'Payments',
             description: language === 'ar' ? 'إدارة جميع المدفوعات' : 'Manage all payments'
-        },
-        {
-            path: '/admin/addresses',
-            icon: '📍',
-            label: language === 'ar' ? 'العناوين' : 'Addresses',
-            description: language === 'ar' ? 'إدارة عناوين التوصيل' : 'Manage delivery addresses'
-        },
-        {
-            path: '/admin/orders',
-            icon: '📦',
-            label: language === 'ar' ? 'الطلبات' : 'Orders',
-            description: language === 'ar' ? 'إدارة جميع الطلبات' : 'Manage all orders'
         },
         {
             path: '/admin/reports',
@@ -105,12 +97,6 @@ const AdminLayout = () => {
             label: language === 'ar' ? 'معلومات التواصل' : 'Contact Information',
             description: language === 'ar' ? 'إدارة معلومات التواصل' : 'Manage contact information'
         },
-        {
-            path: '/admin/settings',
-            icon: '⚙️',
-            label: language === 'ar' ? 'إعدادات النظام' : 'System Settings',
-            description: language === 'ar' ? 'إدارة إعدادات النظام' : 'Manage system settings'
-        }
     ];
 
     return (
@@ -432,12 +418,10 @@ const AdminLayout = () => {
                         <Route path="/meals" element={<AdminMeals />} />
                         <Route path="/subscriptions" element={<AdminSubscriptions />} />
                         <Route path="/payments" element={<AdminPayments />} />
-                        <Route path="/addresses" element={<AdminAddresses />} />
-                        <Route path="/orders" element={<OrderManagement />} />
                         <Route path="/reports" element={<AdminReports />} />
                         <Route path="/subscription-types" element={<SubscriptionTypes />} />
                         <Route path="/contact-information" element={<ContactInformationManagement />} />
-                        <Route path="/settings" element={<AdminSettings />} />
+                        <Route path="/today-orders" element={<AdminTodayOrders />} />
                 </Routes>
                 </div>
             </div>

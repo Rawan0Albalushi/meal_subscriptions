@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { adminSubscriptionTypesAPI } from '../../services/api';
 
 const SubscriptionTypes = () => {
+  const { t, dir, language } = useLanguage();
   const [subscriptionTypes, setSubscriptionTypes] = useState([]);
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -115,7 +117,7 @@ const SubscriptionTypes = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('هل أنت متأكد من حذف نوع الاشتراك هذا؟')) {
+    if (!window.confirm(language === 'ar' ? 'هل أنت متأكد من حذف نوع الاشتراك هذا؟' : 'Are you sure you want to delete this subscription type?')) {
       return;
     }
     
@@ -230,13 +232,13 @@ const SubscriptionTypes = () => {
     return (
       <div style={{ padding: '2rem', textAlign: 'center' }}>
         <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⏳</div>
-        <p>جاري التحميل...</p>
+        <p>{language === 'ar' ? 'جاري التحميل...' : 'Loading...'}</p>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '2rem', direction: 'rtl' }}>
+    <div style={{ padding: '2rem', direction: dir }}>
       <div style={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
@@ -244,7 +246,7 @@ const SubscriptionTypes = () => {
         marginBottom: '2rem' 
       }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2f6e73' }}>
-          إدارة أنواع الاشتراك
+          {language === 'ar' ? 'إدارة أنواع الاشتراك' : 'Subscription Types Management'}
         </h1>
         <button
           onClick={() => {
@@ -264,7 +266,7 @@ const SubscriptionTypes = () => {
             transition: 'all 0.2s ease'
           }}
         >
-          ➕ إضافة نوع جديد
+          ➕ {language === 'ar' ? 'إضافة نوع جديد' : 'Add New Type'}
         </button>
       </div>
 
@@ -277,19 +279,19 @@ const SubscriptionTypes = () => {
         marginBottom: '2rem'
       }}>
         <h3 style={{ marginBottom: '1rem', color: '#2f6e73', fontWeight: '600' }}>
-          🔍 فلاتر البحث
+          🔍 {language === 'ar' ? 'فلاتر البحث' : 'Search Filters'}
         </h3>
         
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
           {/* Search */}
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151' }}>
-              البحث
+              {language === 'ar' ? 'البحث' : 'Search'}
             </label>
             <div style={{ position: 'relative' }}>
               <input
                 type="text"
-                placeholder="ابحث بالاسم أو المطعم أو السعر..."
+                placeholder={language === 'ar' ? 'ابحث بالاسم أو المطعم أو السعر...' : 'Search by name, restaurant, or price...'}
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 style={{
@@ -326,7 +328,7 @@ const SubscriptionTypes = () => {
           {/* Restaurant Filter */}
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151' }}>
-              المطعم
+              {language === 'ar' ? 'المطعم' : 'Restaurant'}
             </label>
             <select
               value={filters.restaurant_id}
@@ -340,10 +342,10 @@ const SubscriptionTypes = () => {
                 backgroundColor: 'white'
               }}
             >
-              <option value="">جميع المطاعم</option>
+              <option value="">{language === 'ar' ? 'جميع المطاعم' : 'All Restaurants'}</option>
               {restaurants.map(restaurant => (
                 <option key={restaurant.id} value={restaurant.id}>
-                  {restaurant.name_ar}
+                  {language === 'ar' ? restaurant.name_ar : restaurant.name_en}
                 </option>
               ))}
             </select>
@@ -352,7 +354,7 @@ const SubscriptionTypes = () => {
           {/* Type Filter */}
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151' }}>
-              نوع الاشتراك
+              {language === 'ar' ? 'نوع الاشتراك' : 'Subscription Type'}
             </label>
             <select
               value={filters.type}
@@ -366,9 +368,9 @@ const SubscriptionTypes = () => {
                 backgroundColor: 'white'
               }}
             >
-              <option value="all">جميع الأنواع</option>
-              <option value="weekly">أسبوعي</option>
-              <option value="monthly">شهري</option>
+              <option value="all">{language === 'ar' ? 'جميع الأنواع' : 'All Types'}</option>
+              <option value="weekly">{language === 'ar' ? 'أسبوعي' : 'Weekly'}</option>
+              <option value="monthly">{language === 'ar' ? 'شهري' : 'Monthly'}</option>
             </select>
           </div>
         </div>
@@ -386,7 +388,7 @@ const SubscriptionTypes = () => {
                 fontSize: '0.875rem',
                 fontWeight: '500'
               }}>
-                🔍 البحث: {filters.search}
+                🔍 {language === 'ar' ? 'البحث' : 'Search'}: {filters.search}
               </span>
             )}
             {filters.restaurant_id && (
@@ -398,7 +400,7 @@ const SubscriptionTypes = () => {
                 fontSize: '0.875rem',
                 fontWeight: '500'
               }}>
-                🏪 {restaurants.find(r => r.id == filters.restaurant_id)?.name_ar || 'مطعم'}
+                🏪 {restaurants.find(r => r.id == filters.restaurant_id) ? (language === 'ar' ? restaurants.find(r => r.id == filters.restaurant_id).name_ar : restaurants.find(r => r.id == filters.restaurant_id).name_en) : (language === 'ar' ? 'مطعم' : 'Restaurant')}
               </span>
             )}
             {filters.type !== 'all' && (
@@ -410,7 +412,7 @@ const SubscriptionTypes = () => {
                 fontSize: '0.875rem',
                 fontWeight: '500'
               }}>
-                📅 {filters.type === 'weekly' ? 'أسبوعي' : 'شهري'}
+                📅 {filters.type === 'weekly' ? (language === 'ar' ? 'أسبوعي' : 'Weekly') : (language === 'ar' ? 'شهري' : 'Monthly')}
               </span>
             )}
           </div>
@@ -434,7 +436,7 @@ const SubscriptionTypes = () => {
                 transition: 'all 0.2s ease'
               }}
             >
-              🗑️ مسح الفلاتر
+              🗑️ {language === 'ar' ? 'مسح الفلاتر' : 'Clear Filters'}
             </button>
           )}
         </div>
@@ -463,13 +465,13 @@ const SubscriptionTypes = () => {
           marginBottom: '2rem'
         }}>
           <h2 style={{ marginBottom: '1.5rem', color: '#2f6e73' }}>
-            {editingType ? 'تعديل نوع الاشتراك' : 'إضافة نوع اشتراك جديد'}
+            {editingType ? (language === 'ar' ? 'تعديل نوع الاشتراك' : 'Edit Subscription Type') : (language === 'ar' ? 'إضافة نوع اشتراك جديد' : 'Add New Subscription Type')}
           </h2>
           
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: '1rem' }}>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                المطعم *
+                {language === 'ar' ? 'المطعم' : 'Restaurant'} *
               </label>
               <select
                 value={formData.restaurant_id}
@@ -483,7 +485,7 @@ const SubscriptionTypes = () => {
                   fontSize: '1rem'
                 }}
               >
-                <option value="">اختر المطعم</option>
+                <option value="">{language === 'ar' ? 'اختر المطعم' : 'Select Restaurant'}</option>
                 {restaurants.map(restaurant => (
                   <option key={restaurant.id} value={restaurant.id}>
                     {restaurant.name_ar} - {restaurant.name_en}
@@ -495,7 +497,7 @@ const SubscriptionTypes = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                  الاسم بالعربية *
+                  {language === 'ar' ? 'الاسم بالعربية' : 'Name in Arabic'} *
                 </label>
                 <input
                   type="text"
@@ -514,7 +516,7 @@ const SubscriptionTypes = () => {
               
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                  الاسم بالإنجليزية *
+                  {language === 'ar' ? 'الاسم بالإنجليزية' : 'Name in English'} *
                 </label>
                 <input
                   type="text"
@@ -535,7 +537,7 @@ const SubscriptionTypes = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                  الوصف بالعربية
+                  {language === 'ar' ? 'الوصف بالعربية' : 'Description in Arabic'}
                 </label>
                 <textarea
                   value={formData.description_ar}
@@ -554,7 +556,7 @@ const SubscriptionTypes = () => {
               
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                  الوصف بالإنجليزية
+                  {language === 'ar' ? 'الوصف بالإنجليزية' : 'Description in English'}
                 </label>
                 <textarea
                   value={formData.description_en}
@@ -575,7 +577,7 @@ const SubscriptionTypes = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                  النوع *
+                  {language === 'ar' ? 'النوع' : 'Type'} *
                 </label>
                 <select
                   value={formData.type}
@@ -589,14 +591,14 @@ const SubscriptionTypes = () => {
                     fontSize: '1rem'
                   }}
                 >
-                  <option value="weekly">أسبوعي</option>
-                  <option value="monthly">شهري</option>
+                  <option value="weekly">{language === 'ar' ? 'أسبوعي' : 'Weekly'}</option>
+                  <option value="monthly">{language === 'ar' ? 'شهري' : 'Monthly'}</option>
                 </select>
               </div>
               
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                  السعر (ريال عماني) *
+                  {language === 'ar' ? 'السعر (ريال عماني)' : 'Price (OMR)'} *
                 </label>
                 <input
                   type="number"
@@ -616,7 +618,7 @@ const SubscriptionTypes = () => {
               
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                  سعر التوصيل (ريال عماني) *
+                  {language === 'ar' ? 'سعر التوصيل (ريال عماني)' : 'Delivery Price (OMR)'} *
                 </label>
                 <input
                   type="number"
@@ -636,7 +638,7 @@ const SubscriptionTypes = () => {
               
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                  عدد الوجبات *
+                  {language === 'ar' ? 'عدد الوجبات' : 'Number of Meals'} *
                 </label>
                 <input
                   type="number"
@@ -662,7 +664,7 @@ const SubscriptionTypes = () => {
                   onChange={(e) => handleInputChange('is_active', e.target.checked)}
                   style={{ width: '1rem', height: '1rem' }}
                 />
-                <span style={{ fontWeight: '600' }}>نشط</span>
+                <span style={{ fontWeight: '600' }}>{language === 'ar' ? 'نشط' : 'Active'}</span>
               </label>
             </div>
 
@@ -682,7 +684,7 @@ const SubscriptionTypes = () => {
                   opacity: loading ? 0.6 : 1
                 }}
               >
-                {loading ? 'جاري الحفظ...' : (editingType ? 'تحديث' : 'إضافة')}
+                {loading ? (language === 'ar' ? 'جاري الحفظ...' : 'Saving...') : (editingType ? (language === 'ar' ? 'تحديث' : 'Update') : (language === 'ar' ? 'إضافة' : 'Add'))}
               </button>
               
               <button
@@ -703,7 +705,7 @@ const SubscriptionTypes = () => {
                   cursor: 'pointer'
                 }}
               >
-                إلغاء
+                {language === 'ar' ? 'إلغاء' : 'Cancel'}
               </button>
             </div>
           </form>
@@ -736,7 +738,7 @@ const SubscriptionTypes = () => {
               fontWeight: '600',
               fontSize: '1.25rem'
             }}>
-            أنواع الاشتراك ({filteredSubscriptionTypes.length} من {subscriptionTypes.length})
+            {language === 'ar' ? 'أنواع الاشتراك' : 'Subscription Types'} ({filteredSubscriptionTypes.length} {language === 'ar' ? 'من' : 'of'} {subscriptionTypes.length})
           </h3>
             <div style={{
               display: 'flex',
@@ -745,7 +747,7 @@ const SubscriptionTypes = () => {
               fontSize: '0.875rem',
               color: '#64748b'
             }}>
-              <span>عرض:</span>
+              <span>{language === 'ar' ? 'عرض:' : 'Show:'}</span>
               <select
                 value={itemsPerPage}
                 onChange={(e) => {
@@ -786,7 +788,7 @@ const SubscriptionTypes = () => {
                   fontWeight: '600',
                   color: '#374151'
                 }}>
-                  المطعم
+                  {language === 'ar' ? 'المطعم' : 'Restaurant'}
                 </th>
                 <th style={{
                   padding: '1rem 0.75rem',
@@ -794,7 +796,7 @@ const SubscriptionTypes = () => {
                   fontWeight: '600',
                   color: '#374151'
                 }}>
-                  الاسم
+                  {language === 'ar' ? 'الاسم' : 'Name'}
                 </th>
                 <th style={{
                   padding: '1rem 0.75rem',
@@ -802,7 +804,7 @@ const SubscriptionTypes = () => {
                   fontWeight: '600',
                   color: '#374151'
                 }}>
-                  النوع
+                  {language === 'ar' ? 'النوع' : 'Type'}
                 </th>
                 <th style={{
                   padding: '1rem 0.75rem',
@@ -810,7 +812,7 @@ const SubscriptionTypes = () => {
                   fontWeight: '600',
                   color: '#374151'
                 }}>
-                  السعر
+                  {language === 'ar' ? 'السعر' : 'Price'}
                 </th>
                 <th style={{
                   padding: '1rem 0.75rem',
@@ -818,7 +820,7 @@ const SubscriptionTypes = () => {
                   fontWeight: '600',
                   color: '#374151'
                 }}>
-                  سعر التوصيل
+                  {language === 'ar' ? 'سعر التوصيل' : 'Delivery Price'}
                 </th>
                 <th style={{
                   padding: '1rem 0.75rem',
@@ -826,7 +828,7 @@ const SubscriptionTypes = () => {
                   fontWeight: '600',
                   color: '#374151'
                 }}>
-                  عدد الوجبات
+                  {language === 'ar' ? 'عدد الوجبات' : 'Meals Count'}
                 </th>
                 <th style={{
                   padding: '1rem 0.75rem',
@@ -834,7 +836,7 @@ const SubscriptionTypes = () => {
                   fontWeight: '600',
                   color: '#374151'
                 }}>
-                  الحالة
+                  {language === 'ar' ? 'الحالة' : 'Status'}
                 </th>
                 <th style={{
                   padding: '1rem 0.75rem',
@@ -842,7 +844,7 @@ const SubscriptionTypes = () => {
                   fontWeight: '600',
                   color: '#374151'
                 }}>
-                  الإجراءات
+                  {language === 'ar' ? 'الإجراءات' : 'Actions'}
                 </th>
               </tr>
             </thead>
@@ -851,9 +853,9 @@ const SubscriptionTypes = () => {
                 <tr>
                   <td colSpan="8" style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
                     <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🔍</div>
-                    <div>لا توجد نتائج مطابقة للفلاتر المحددة</div>
+                    <div>{language === 'ar' ? 'لا توجد نتائج مطابقة للفلاتر المحددة' : 'No results match the specified filters'}</div>
                     <div style={{ fontSize: '0.875rem', marginTop: '0.25rem' }}>
-                      جرب تغيير الفلاتر أو البحث عن شيء آخر
+                      {language === 'ar' ? 'جرب تغيير الفلاتر أو البحث عن شيء آخر' : 'Try changing the filters or searching for something else'}
                     </div>
                   </td>
                 </tr>
@@ -886,13 +888,13 @@ const SubscriptionTypes = () => {
                         marginBottom: '0.25rem',
                         fontSize: '0.875rem'
                       }}>
-                        {type.restaurant ? type.restaurant.name_ar : 'غير محدد'}
+                        {type.restaurant ? (language === 'ar' ? type.restaurant.name_ar : type.restaurant.name_en) : (language === 'ar' ? 'غير محدد' : 'Not specified')}
                       </div>
                       <div style={{
                         fontSize: '0.75rem',
                         color: '#6b7280'
                       }}>
-                        {type.restaurant ? type.restaurant.name_en : 'Not specified'}
+                        {type.restaurant ? (language === 'ar' ? type.restaurant.name_en : type.restaurant.name_ar) : (language === 'ar' ? 'غير محدد' : 'Not specified')}
                       </div>
                     </div>
                   </td>
@@ -906,13 +908,13 @@ const SubscriptionTypes = () => {
                         marginBottom: '0.25rem',
                         fontSize: '0.875rem'
                       }}>
-                        {type.name_ar}
+                        {language === 'ar' ? type.name_ar : type.name_en}
                       </div>
                       <div style={{
                         fontSize: '0.75rem',
                         color: '#6b7280'
                       }}>
-                        {type.name_en}
+                        {language === 'ar' ? type.name_en : type.name_ar}
                       </div>
                     </div>
                   </td>
@@ -939,7 +941,7 @@ const SubscriptionTypes = () => {
                         borderRadius: '50%',
                         background: type.type === 'weekly' ? '#22c55e' : '#3b82f6'
                       }}></span>
-                      {type.type === 'weekly' ? 'أسبوعي' : 'شهري'}
+                      {type.type === 'weekly' ? (language === 'ar' ? 'أسبوعي' : 'Weekly') : (language === 'ar' ? 'شهري' : 'Monthly')}
                     </span>
                   </td>
 
@@ -964,7 +966,7 @@ const SubscriptionTypes = () => {
                         color: '#6b7280',
                         fontSize: '0.75rem'
                       }}>
-                        ريال
+                        {language === 'ar' ? 'ريال' : 'OMR'}
                       </span>
                     </div>
                   </td>
@@ -990,7 +992,7 @@ const SubscriptionTypes = () => {
                         color: '#6b7280',
                         fontSize: '0.75rem'
                       }}>
-                        ريال
+                        {language === 'ar' ? 'ريال' : 'OMR'}
                       </span>
                     </div>
                   </td>
@@ -1016,7 +1018,7 @@ const SubscriptionTypes = () => {
                         color: '#6b7280',
                         fontSize: '0.75rem'
                       }}>
-                        وجبة
+                        {language === 'ar' ? 'وجبة' : 'meals'}
                       </span>
                     </div>
                   </td>
@@ -1043,7 +1045,7 @@ const SubscriptionTypes = () => {
                         borderRadius: '50%',
                         background: type.is_active ? '#22c55e' : '#ef4444'
                       }}></span>
-                      {type.is_active ? 'نشط' : 'غير نشط'}
+                      {type.is_active ? (language === 'ar' ? 'نشط' : 'Active') : (language === 'ar' ? 'غير نشط' : 'Inactive')}
                     </span>
                   </td>
 
@@ -1078,7 +1080,7 @@ const SubscriptionTypes = () => {
                           e.target.style.background = 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)';
                           e.target.style.transform = 'translateY(0)';
                         }}
-                        title="تعديل"
+                        title={language === 'ar' ? 'تعديل' : 'Edit'}
                       >
                         ✏️
                       </button>
@@ -1106,7 +1108,7 @@ const SubscriptionTypes = () => {
                           e.target.style.background = 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)';
                           e.target.style.transform = 'translateY(0)';
                         }}
-                        title="حذف"
+                        title={language === 'ar' ? 'حذف' : 'Delete'}
                       >
                         🗑️
                       </button>
@@ -1133,7 +1135,7 @@ const SubscriptionTypes = () => {
               color: '#6b7280',
               fontSize: '0.875rem'
             }}>
-              عرض {startIndex + 1} إلى {Math.min(startIndex + itemsPerPage, sortedSubscriptionTypes.length)} من {sortedSubscriptionTypes.length} نوع اشتراك
+              {language === 'ar' ? 'عرض' : 'Showing'} {startIndex + 1} {language === 'ar' ? 'إلى' : 'to'} {Math.min(startIndex + itemsPerPage, sortedSubscriptionTypes.length)} {language === 'ar' ? 'من' : 'of'} {sortedSubscriptionTypes.length} {language === 'ar' ? 'نوع اشتراك' : 'subscription types'}
             </div>
             <div style={{
               display: 'flex',
@@ -1154,7 +1156,7 @@ const SubscriptionTypes = () => {
                   transition: 'all 0.2s'
                 }}
               >
-                السابق
+                {language === 'ar' ? 'السابق' : 'Previous'}
               </button>
               
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -1194,7 +1196,7 @@ const SubscriptionTypes = () => {
                   transition: 'all 0.2s'
                 }}
               >
-                التالي
+                {language === 'ar' ? 'التالي' : 'Next'}
               </button>
             </div>
           </div>

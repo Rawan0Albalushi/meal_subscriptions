@@ -145,13 +145,13 @@ const AdminDashboard = () => {
             action: () => navigate('/admin/contact-information')
         },
         {
-            icon: '⚙️',
-            titleAr: 'إعدادات النظام',
-            titleEn: 'System Settings',
-            descriptionAr: 'إدارة إعدادات النظام العامة',
-            descriptionEn: 'Manage general system settings',
-            action: () => navigate('/admin/settings')
-        }
+            icon: '📋',
+            titleAr: 'طلبات اليوم',
+            titleEn: 'Today\'s Orders',
+            descriptionAr: 'عرض وإدارة طلبات اليوم',
+            descriptionEn: 'View and manage today\'s orders',
+            action: () => navigate('/admin/today-orders')
+        },
     ];
 
     if (loading) {

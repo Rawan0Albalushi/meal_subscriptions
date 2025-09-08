@@ -100,6 +100,40 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
     Route::apiResource('subscriptions', \App\Http\Controllers\Api\Admin\SubscriptionController::class);
     Route::put('subscriptions/{subscriptionId}/items/{itemId}/status', [\App\Http\Controllers\Api\Admin\SubscriptionController::class, 'updateItemStatus']);
     
+    // Today orders management
+    Route::get('today-orders', [\App\Http\Controllers\Api\Admin\TodayOrdersController::class, 'index']);
+    Route::put('orders/{id}/status', [\App\Http\Controllers\Api\Admin\TodayOrdersController::class, 'updateStatus']);
+    
+    // Debug route to check subscription items
+    Route::get('debug/subscription-items', function() {
+        $total = \App\Models\SubscriptionItem::count();
+        $today = \App\Models\SubscriptionItem::whereDate('delivery_date', \Carbon\Carbon::today())->count();
+        $recent = \App\Models\SubscriptionItem::whereDate('delivery_date', '>=', \Carbon\Carbon::today()->subDays(7))->count();
+        
+        return response()->json([
+            'total_subscription_items' => $total,
+            'today_items' => $today,
+            'recent_items_7_days' => $recent,
+            'today_date' => \Carbon\Carbon::today()->format('Y-m-d')
+        ]);
+    });
+    
+    // Debug route to check payment sessions
+    Route::get('debug/payment-sessions', function() {
+        $total = \App\Models\PaymentSession::count();
+        $today = \App\Models\PaymentSession::whereDate('created_at', \Carbon\Carbon::today())->count();
+        $recent = \App\Models\PaymentSession::whereDate('created_at', '>=', \Carbon\Carbon::today()->subDays(7))->count();
+        $byStatus = \App\Models\PaymentSession::selectRaw('status, count(*) as count')->groupBy('status')->get();
+        
+        return response()->json([
+            'total_payment_sessions' => $total,
+            'today_sessions' => $today,
+            'recent_sessions_7_days' => $recent,
+            'by_status' => $byStatus,
+            'today_date' => \Carbon\Carbon::today()->format('Y-m-d')
+        ]);
+    });
+    
     // Payment management
     Route::get('payments/statistics', [\App\Http\Controllers\Api\Admin\PaymentController::class, 'getStatistics']);
     Route::get('payments/restaurants/list', [\App\Http\Controllers\Api\Admin\PaymentController::class, 'getRestaurants']);

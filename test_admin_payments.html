@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Admin Payments API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .button.success {
+            background: #28a745;
+        }
+        .button.warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        .button.danger {
+            background: #dc3545;
+        }
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .filter-section {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .filter-section h4 {
+            margin-top: 0;
+            color: #495057;
+        }
+        .filter-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .filter-row label {
+            min-width: 120px;
+            font-weight: bold;
+        }
+        .filter-row input, .filter-row select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Admin Payments API</h1>
+    
+    <div class="container">
+        <h2>Authentication</h2>
+        <input type="text" id="token" placeholder="Enter auth token" style="width: 100%; padding: 8px; margin-bottom: 10px;">
+        <button class="button" onclick="setToken()">Set Token</button>
+    </div>
+
+    <div class="container">
+        <h2>Debug Payment Sessions</h2>
+        <button class="button warning" onclick="testDebugPaymentSessions()">Check Payment Sessions</button>
+        <div id="debugResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="container">
+        <h2>Payment Statistics</h2>
+        <button class="button success" onclick="testPaymentStatistics()">Get Statistics</button>
+        <div id="statisticsResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="container">
+        <h2>Payment Methods & Status Options</h2>
+        <div class="grid">
+            <div>
+                <button class="button" onclick="testPaymentMethods()">Get Payment Methods</button>
+                <div id="methodsResult" class="result" style="display: none;"></div>
+            </div>
+            <div>
+                <button class="button" onclick="testStatusOptions()">Get Status Options</button>
+                <div id="statusResult" class="result" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Restaurants & Users Lists</h2>
+        <div class="grid">
+            <div>
+                <button class="button" onclick="testRestaurantsList()">Get Restaurants</button>
+                <div id="restaurantsResult" class="result" style="display: none;"></div>
+            </div>
+            <div>
+                <button class="button" onclick="testUsersList()">Get Users</button>
+                <div id="usersResult" class="result" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Payments List with Filters</h2>
+        
+        <div class="filter-section">
+            <h4>Filters</h4>
+            <div class="filter-row">
+                <label>Search:</label>
+                <input type="text" id="searchFilter" placeholder="Search payments...">
+            </div>
+            <div class="filter-row">
+                <label>Status:</label>
+                <select id="statusFilter">
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="paid">Paid</option>
+                    <option value="failed">Failed</option>
+                    <option value="refunded">Refunded</option>
+                </select>
+            </div>
+            <div class="filter-row">
+                <label>Payment Method:</label>
+                <select id="methodFilter">
+                    <option value="all">All Methods</option>
+                    <option value="thawani">Thawani</option>
+                    <option value="bank_transfer">Bank Transfer</option>
+                    <option value="cash">Cash</option>
+                </select>
+            </div>
+            <div class="filter-row">
+                <label>Amount From:</label>
+                <input type="number" id="amountFromFilter" step="0.01" placeholder="0.00">
+            </div>
+            <div class="filter-row">
+                <label>Amount To:</label>
+                <input type="number" id="amountToFilter" step="0.01" placeholder="1000.00">
+            </div>
+            <div class="filter-row">
+                <label>Date From:</label>
+                <input type="date" id="dateFromFilter">
+            </div>
+            <div class="filter-row">
+                <label>Date To:</label>
+                <input type="date" id="dateToFilter">
+            </div>
+        </div>
+
+        <button class="button success" onclick="testPaymentsList()">Get Payments List</button>
+        <button class="button" onclick="testPaymentsListWithFilters()">Get Payments with Filters</button>
+        <div id="paymentsResult" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        let authToken = '';
+
+        function setToken() {
+            authToken = document.getElementById('token').value;
+            console.log('Token set:', authToken ? 'Yes' : 'No');
+        }
+
+        async function makeRequest(url, resultElementId) {
+            const resultDiv = document.getElementById(resultElementId);
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = JSON.stringify(data, null, 2);
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `Error ${response.status}: ${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Network Error: ${error.message}`;
+            }
+        }
+
+        function testDebugPaymentSessions() {
+            makeRequest('/api/admin/debug/payment-sessions', 'debugResult');
+        }
+
+        function testPaymentStatistics() {
+            makeRequest('/api/admin/payments/statistics', 'statisticsResult');
+        }
+
+        function testPaymentMethods() {
+            makeRequest('/api/admin/payments/methods/list', 'methodsResult');
+        }
+
+        function testStatusOptions() {
+            makeRequest('/api/admin/payments/status-options', 'statusResult');
+        }
+
+        function testRestaurantsList() {
+            makeRequest('/api/admin/payments/restaurants/list', 'restaurantsResult');
+        }
+
+        function testUsersList() {
+            makeRequest('/api/admin/payments/users/list', 'usersResult');
+        }
+
+        function testPaymentsList() {
+            makeRequest('/api/admin/payments', 'paymentsResult');
+        }
+
+        function testPaymentsListWithFilters() {
+            const params = new URLSearchParams();
+            
+            const search = document.getElementById('searchFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const method = document.getElementById('methodFilter').value;
+            const amountFrom = document.getElementById('amountFromFilter').value;
+            const amountTo = document.getElementById('amountToFilter').value;
+            const dateFrom = document.getElementById('dateFromFilter').value;
+            const dateTo = document.getElementById('dateToFilter').value;
+
+            if (search) params.append('search', search);
+            if (status !== 'all') params.append('status', status);
+            if (method !== 'all') params.append('payment_method', method);
+            if (amountFrom) params.append('amount_from', amountFrom);
+            if (amountTo) params.append('amount_to', amountTo);
+            if (dateFrom) params.append('date_from', dateFrom);
+            if (dateTo) params.append('date_to', dateTo);
+
+            const url = `/api/admin/payments?${params.toString()}`;
+            makeRequest(url, 'paymentsResult');
+        }
+
+        // Set default date filters
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const lastWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            
+            document.getElementById('dateToFilter').value = today;
+            document.getElementById('dateFromFilter').value = lastWeek;
+        });
+    </script>
+</body>
+</html>

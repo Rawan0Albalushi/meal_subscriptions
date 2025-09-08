@@ -57,6 +57,13 @@ const AdminPayments = () => {
                 ...filters
             });
 
+            // Remove empty values from params
+            for (let [key, value] of params.entries()) {
+                if (value === '' || value === 'all') {
+                    params.delete(key);
+                }
+            }
+
             const response = await fetch(`/api/admin/payments?${params}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
@@ -66,11 +73,19 @@ const AdminPayments = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                setPayments(data.data);
-                setPagination(data.pagination);
+                
+                if (data.success) {
+                    setPayments(data.data || []);
+                    setPagination(data.pagination || {});
+                } else {
+                    setPayments([]);
+                }
+            } else {
+                setPayments([]);
             }
         } catch (error) {
-            console.error('Error fetching payments:', error);
+            console.error('💥 Network Error fetching payments:', error);
+            setPayments([]);
         } finally {
             setLoading(false);
         }
@@ -87,7 +102,9 @@ const AdminPayments = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                setRestaurants(data.data);
+                if (data.success) {
+                    setRestaurants(data.data || []);
+                }
             }
         } catch (error) {
             console.error('Error fetching restaurants:', error);
@@ -105,7 +122,9 @@ const AdminPayments = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                setUsers(data.data);
+                if (data.success) {
+                    setUsers(data.data || []);
+                }
             }
         } catch (error) {
             console.error('Error fetching users:', error);
@@ -123,7 +142,9 @@ const AdminPayments = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                setPaymentMethods(data.data);
+                if (data.success) {
+                    setPaymentMethods(data.data || []);
+                }
             }
         } catch (error) {
             console.error('Error fetching payment methods:', error);
@@ -141,7 +162,9 @@ const AdminPayments = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                setStatusOptions(data.data);
+                if (data.success) {
+                    setStatusOptions(data.data || []);
+                }
             }
         } catch (error) {
             console.error('Error fetching status options:', error);
@@ -159,7 +182,10 @@ const AdminPayments = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                setStatistics(data.data);
+                
+                if (data.success) {
+                    setStatistics(data.data || {});
+                }
             }
         } catch (error) {
             console.error('Error fetching statistics:', error);
@@ -263,9 +289,10 @@ const AdminPayments = () => {
         return methodOption ? (language === 'ar' ? methodOption.label_ar : methodOption.label_en) : method;
     };
 
-    const getRestaurantName = (restaurantId) => {
-        const restaurant = restaurants.find(r => r.id === restaurantId);
-        return restaurant ? (language === 'ar' ? restaurant.name_ar : restaurant.name_en) : 'Unknown';
+    const getRestaurantName = (payment) => {
+        // For now, return N/A since we simplified the backend
+        // This can be enhanced later when we add proper restaurant relationships
+        return 'N/A';
     };
 
     const getUserName = (userId) => {
@@ -283,6 +310,7 @@ const AdminPayments = () => {
             currency: 'OMR'
         }).format(amount);
     };
+
 
     return (
         <div style={{ direction: dir }}>
@@ -707,8 +735,39 @@ const AdminPayments = () => {
                     }}>
                         {language === 'ar' ? 'جاري التحميل...' : 'Loading...'}
                     </div>
+                ) : payments.length === 0 ? (
+                    <div style={{
+                        textAlign: 'center',
+                        padding: '3rem',
+                        color: '#6b7280'
+                    }}>
+                        <div style={{
+                            fontSize: '3rem',
+                            marginBottom: '1rem'
+                        }}>
+                            💳
+                        </div>
+                        <h3 style={{
+                            fontSize: '1.5rem',
+                            fontWeight: 'bold',
+                            marginBottom: '0.5rem',
+                            color: '#374151'
+                        }}>
+                            {language === 'ar' ? 'لا توجد مدفوعات' : 'No Payments Found'}
+                        </h3>
+                        <p style={{
+                            fontSize: '1rem',
+                            margin: 0
+                        }}>
+                            {language === 'ar' 
+                                ? 'لم يتم العثور على أي مدفوعات تطابق المعايير المحددة' 
+                                : 'No payments found matching the specified criteria'
+                            }
+                        </p>
+                    </div>
                 ) : (
                     <>
+
                         <div style={{
                             display: 'grid',
                             gap: '1.5rem',
@@ -749,13 +808,13 @@ const AdminPayments = () => {
                                                 color: '#6b7280'
                                             }}>
                                                 <span>
-                                                    <strong>{language === 'ar' ? 'العميل:' : 'Customer:'}</strong> {getUserName(payment.subscription?.user_id)}
+                                                    <strong>{language === 'ar' ? 'العميل:' : 'Customer:'}</strong> {getUserName(payment.user_id)}
                                                 </span>
                                                 <span>
-                                                    <strong>{language === 'ar' ? 'المطعم:' : 'Restaurant:'}</strong> {getRestaurantName(payment.subscription?.restaurant_id)}
+                                                    <strong>{language === 'ar' ? 'المطعم:' : 'Restaurant:'}</strong> {getRestaurantName(payment)}
                                                 </span>
                                                 <span>
-                                                    <strong>{language === 'ar' ? 'طريقة الدفع:' : 'Payment Method:'}</strong> {getPaymentMethodLabel(payment.payment_method)}
+                                                    <strong>{language === 'ar' ? 'طريقة الدفع:' : 'Payment Method:'}</strong> {getPaymentMethodLabel(payment.gateway_name)}
                                                 </span>
                                                 <span>
                                                     <strong>{language === 'ar' ? 'المبلغ:' : 'Amount:'}</strong> {formatCurrency(payment.amount)}
@@ -763,9 +822,9 @@ const AdminPayments = () => {
                                                 <span>
                                                     <strong>{language === 'ar' ? 'التاريخ:' : 'Date:'}</strong> {formatDate(payment.created_at)}
                                                 </span>
-                                                {payment.transaction_id && (
+                                                {payment.id && (
                                                     <span>
-                                                        <strong>{language === 'ar' ? 'رقم المعاملة:' : 'Transaction ID:'}</strong> {payment.transaction_id}
+                                                        <strong>{language === 'ar' ? 'رقم المعاملة:' : 'Transaction ID:'}</strong> {payment.id}
                                                     </span>
                                                 )}
                                             </div>
