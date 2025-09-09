@@ -21,6 +21,7 @@ import SellerLayout from './pages/Seller/SellerLayout';
 
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import GlobalPopupProvider from './components/GlobalPopupProvider';
 
 function AppRoutes() {
     const { isAuthenticated, user } = useAuth();
@@ -152,9 +153,11 @@ function App() {
     return (
         <LanguageProvider>
             <AuthProvider>
-                <Router>
-                    <AppRoutes />
-                </Router>
+                <GlobalPopupProvider>
+                    <Router>
+                        <AppRoutes />
+                    </Router>
+                </GlobalPopupProvider>
             </AuthProvider>
         </LanguageProvider>
     );

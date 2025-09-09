@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { showAlert, showConfirm, showExportSuccess, showNotFound, showOperationFailed } from '../../utils/popupUtils';
 import { adminSubscriptionsAPI } from '../../services/api';
 
 const AdminTodayOrders = () => {
@@ -99,7 +100,7 @@ const AdminTodayOrders = () => {
         try {
             const order = orders.find(order => order.id === itemId);
             if (!order) {
-                alert(language === 'ar' ? 'لم يتم العثور على الطلب' : 'Order not found');
+                showNotFound('الطلب');
                 return;
             }
             
@@ -117,7 +118,68 @@ const AdminTodayOrders = () => {
             }
         } catch (error) {
             console.error('Error updating status:', error);
-            alert(language === 'ar' ? 'فشل في تحديث حالة الطلب' : 'Failed to update order status');
+            showOperationFailed('تحديث حالة الطلب');
+        }
+    };
+
+    const handleExportOrders = async () => {
+        try {
+            if (filteredOrders.length === 0) {
+                showAlert('لا توجد طلبات للتصدير', 'لا توجد بيانات');
+                return;
+            }
+
+            // Prepare export parameters
+            const params = new URLSearchParams({
+                restaurant_id: selectedRestaurant !== 'all' ? selectedRestaurant : '',
+                date: new Date().toISOString().split('T')[0],
+                status: filterStatus !== 'all' ? filterStatus : ''
+            });
+
+            console.log('🔄 Exporting orders with params:', params.toString());
+
+            const response = await fetch(`/api/admin/today-orders/export?${params}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                // Get the filename from the response headers
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let fileName = `today_orders_${new Date().toISOString().split('T')[0]}.csv`;
+                
+                if (contentDisposition) {
+                    const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+                    if (fileNameMatch) {
+                        fileName = fileNameMatch[1];
+                    }
+                }
+
+                // Create blob and download
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = fileName;
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+
+                // Show success message
+                showExportSuccess(filteredOrders.length, 'طلب');
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                console.error('❌ Export Error:', response.status, errorData);
+                showOperationFailed('تصدير الطلبات');
+            }
+
+        } catch (error) {
+            console.error('💥 Export Network Error:', error);
+            showOperationFailed('تصدير الطلبات');
         }
     };
 
@@ -287,28 +349,53 @@ const AdminTodayOrders = () => {
                         </select>
                     </div>
                     
-                    <button
-                        onClick={fetchTodayOrders}
-                        disabled={loading}
-                        style={{
-                            padding: '0.75rem 1.5rem',
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '0.5rem',
-                            fontSize: '0.875rem',
-                            fontWeight: '600',
-                            cursor: loading ? 'not-allowed' : 'pointer',
-                            opacity: loading ? 0.6 : 1,
-                            transition: 'all 0.2s',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.5rem'
-                        }}
-                    >
-                        <span>🔄</span>
-                        <span>{language === 'ar' ? 'تحديث' : 'Refresh'}</span>
-                    </button>
+                    <div style={{ display: 'flex', gap: '0.75rem' }}>
+                        <button
+                            onClick={fetchTodayOrders}
+                            disabled={loading}
+                            style={{
+                                padding: '0.75rem 1.5rem',
+                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '0.5rem',
+                                fontSize: '0.875rem',
+                                fontWeight: '600',
+                                cursor: loading ? 'not-allowed' : 'pointer',
+                                opacity: loading ? 0.6 : 1,
+                                transition: 'all 0.2s',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem'
+                            }}
+                        >
+                            <span>🔄</span>
+                            <span>{language === 'ar' ? 'تحديث' : 'Refresh'}</span>
+                        </button>
+                        
+                        <button
+                            onClick={handleExportOrders}
+                            disabled={loading || filteredOrders.length === 0}
+                            style={{
+                                padding: '0.75rem 1.5rem',
+                                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '0.5rem',
+                                fontSize: '0.875rem',
+                                fontWeight: '600',
+                                cursor: (loading || filteredOrders.length === 0) ? 'not-allowed' : 'pointer',
+                                opacity: (loading || filteredOrders.length === 0) ? 0.6 : 1,
+                                transition: 'all 0.2s',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem'
+                            }}
+                        >
+                            <span>📊</span>
+                            <span>{language === 'ar' ? 'تصدير' : 'Export'}</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -719,12 +806,13 @@ const AdminTodayOrders = () => {
                                                         const selectedAction = e.target.value;
                                                         if (selectedAction && selectedAction !== '') {
                                                             if (selectedAction === 'cancel') {
-                                                                if (window.confirm(language === 'ar' 
-                                                                    ? 'هل أنت متأكد من إلغاء هذا الطلب؟'
-                                                                    : 'Are you sure you want to cancel this order?'
-                                                                )) {
-                                                                    handleStatusUpdate(order.id, 'cancelled');
-                                                                }
+                                                                showConfirm(
+                                                                    'هل أنت متأكد من إلغاء هذا الطلب؟',
+                                                                    'تأكيد الإلغاء',
+                                                                    () => {
+                                                                        handleStatusUpdate(order.id, 'cancelled');
+                                                                    }
+                                                                );
                                                             } else {
                                                                 handleStatusUpdate(order.id, selectedAction);
                                                             }

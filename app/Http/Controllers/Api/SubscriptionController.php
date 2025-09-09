@@ -479,7 +479,9 @@ class SubscriptionController extends Controller
             
             Log::info('TodayOrders: التاريخ المستخدم', [
                 'today_date' => $today->format('Y-m-d'),
-                'today_timestamp' => $today->timestamp
+                'today_timestamp' => $today->timestamp,
+                'timezone' => config('app.timezone'),
+                'carbon_timezone' => $today->timezone->getName()
             ]);
             
             // Get all subscription items for today for this restaurant
@@ -487,6 +489,7 @@ class SubscriptionController extends Controller
                 $query->where('restaurant_id', $restaurantId);
             })
             ->whereDate('delivery_date', $today)
+            ->whereNotNull('delivery_date')
             ->with(['meal', 'subscription.user', 'subscription.deliveryAddress'])
             ->orderBy('delivery_date', 'asc')
             ->get();

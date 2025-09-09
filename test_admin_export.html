@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار وظيفة التصدير - طلبات اليوم للادمن</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .header h1 {
+            color: #2d3748;
+            margin: 0;
+            font-size: 2rem;
+        }
+        .header p {
+            color: #718096;
+            margin: 10px 0 0 0;
+        }
+        .feature-list {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .feature-list h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .feature-item .icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 15px;
+            font-size: 1.2rem;
+        }
+        .feature-item .text {
+            flex: 1;
+        }
+        .feature-item .text h3 {
+            margin: 0 0 5px 0;
+            color: #2d3748;
+            font-size: 1.1rem;
+        }
+        .feature-item .text p {
+            margin: 0;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        .test-section {
+            background: #edf2f7;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .test-section h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        .test-steps {
+            list-style: none;
+            padding: 0;
+        }
+        .test-steps li {
+            background: white;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 10px;
+            border-right: 4px solid #10b981;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .test-steps li strong {
+            color: #2d3748;
+        }
+        .export-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+        }
+        .export-info h2 {
+            margin: 0 0 15px 0;
+            font-size: 1.5rem;
+        }
+        .export-info p {
+            margin: 0;
+            opacity: 0.9;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .status-completed {
+            background: #10b981;
+            color: white;
+        }
+        .status-pending {
+            background: #f59e0b;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 اختبار وظيفة التصدير - طلبات اليوم للادمن</h1>
+            <p>تم إضافة زر التصدير بنجاح لصفحة طلبات اليوم في لوحة تحكم الإدارة</p>
+        </div>
+
+        <div class="feature-list">
+            <h2>✨ الميزات المضافة</h2>
+            
+            <div class="feature-item">
+                <div class="icon">📊</div>
+                <div class="text">
+                    <h3>زر التصدير</h3>
+                    <p>تم إضافة زر تصدير أخضر بجانب زر التحديث في صفحة طلبات اليوم</p>
+                </div>
+            </div>
+
+            <div class="feature-item">
+                <div class="icon">📁</div>
+                <div class="text">
+                    <h3>تصدير CSV</h3>
+                    <p>تصدير البيانات بصيغة CSV مع جميع تفاصيل الطلبات</p>
+                </div>
+            </div>
+
+            <div class="feature-item">
+                <div class="icon">🔍</div>
+                <div class="text">
+                    <h3>فلترة البيانات</h3>
+                    <p>تصدير البيانات المفلترة حسب المطعم والحالة المحددة</p>
+                </div>
+            </div>
+
+            <div class="feature-item">
+                <div class="icon">🌐</div>
+                <div class="text">
+                    <h3>دعم اللغتين</h3>
+                    <p>تصدير البيانات باللغة العربية والإنجليزية حسب إعدادات المستخدم</p>
+                </div>
+            </div>
+
+            <div class="feature-item">
+                <div class="icon">📱</div>
+                <div class="text">
+                    <h3>تصميم متجاوب</h3>
+                    <p>زر التصدير يعمل بشكل مثالي على جميع الأجهزة</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 خطوات الاختبار</h2>
+            <ol class="test-steps">
+                <li><strong>تسجيل الدخول:</strong> قم بتسجيل الدخول كإدمن في النظام</li>
+                <li><strong>الانتقال للصفحة:</strong> اذهب إلى صفحة "طلبات اليوم" في لوحة تحكم الإدارة</li>
+                <li><strong>العثور على الزر:</strong> ستجد زر "تصدير" أخضر بجانب زر "تحديث"</li>
+                <li><strong>اختبار الفلترة:</strong> جرب تغيير المطعم أو حالة الطلبات ثم اضغط تصدير</li>
+                <li><strong>تحميل الملف:</strong> يجب أن يبدأ تحميل ملف CSV تلقائياً</li>
+                <li><strong>فحص البيانات:</strong> افتح الملف وتأكد من صحة البيانات المصدرة</li>
+            </ol>
+        </div>
+
+        <div class="export-info">
+            <h2>📋 البيانات المصدرة</h2>
+            <p>يتضمن ملف CSV المصدر: معرف الطلب، اسم العميل، رقم الهاتف، البريد الإلكتروني، المطعم، الوجبة، نوع الوجبة، وقت التوصيل، الحالة، عنوان التوصيل، وتواريخ الإنشاء والتحديث</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <span class="status-badge status-completed">✅ تم إضافة زر التصدير</span>
+            <span class="status-badge status-completed">✅ تم إنشاء endpoint التصدير</span>
+            <span class="status-badge status-completed">✅ تم إضافة route التصدير</span>
+            <span class="status-badge status-pending">⏳ جاهز للاختبار</span>
+        </div>
+    </div>
+</body>
+</html>

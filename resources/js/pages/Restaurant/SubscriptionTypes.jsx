@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { subscriptionTypesAPI } from '../../services/api';
 import { useTranslation } from 'react-i18next';
+import { showAlert, showConfirm, showOperationFailed, showDeleteConfirm } from '../../utils/popupUtils';
 
 const RestaurantSubscriptionTypes = () => {
   const { t, i18n } = useTranslation();
@@ -101,9 +102,7 @@ const RestaurantSubscriptionTypes = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('هل أنت متأكد من حذف هذا النوع من الاشتراك؟')) {
-      return;
-    }
+    showDeleteConfirm('هذا النوع من الاشتراك', async () => {
 
     try {
       await subscriptionTypesAPI.delete(id);
@@ -112,6 +111,7 @@ const RestaurantSubscriptionTypes = () => {
       console.error('Error deleting subscription type:', error);
       setError('حدث خطأ أثناء حذف نوع الاشتراك');
     }
+    });
   };
 
   const resetForm = () => {

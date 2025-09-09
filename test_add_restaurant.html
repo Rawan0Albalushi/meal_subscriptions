@@ -239,7 +239,12 @@
             e.preventDefault();
             
             if (!token) {
-                alert('يرجى تسجيل الدخول أولاً');
+                // Use the new popup system instead of alert
+                if (window.showAlert) {
+                    window.showAlert('يرجى تسجيل الدخول أولاً', 'تحذير', 'warning');
+                } else {
+                    alert('يرجى تسجيل الدخول أولاً');
+                }
                 return;
             }
             

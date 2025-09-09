@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { showAlert, showConfirm, showSaveSuccess, showOperationFailed, showDeleteConfirm } from '../../utils/popupUtils';
 
 const AdminMeals = () => {
     const { t, dir, language } = useLanguage();
@@ -240,7 +241,7 @@ const AdminMeals = () => {
                 setShowModal(false);
                 setEditingMeal(null);
                 fetchMeals();
-                alert(language === 'ar' ? 'تم حفظ الوجبة بنجاح' : 'Meal saved successfully');
+                showSaveSuccess('الوجبة');
             } else {
                 console.error('Error response:', responseData);
                 // Show more detailed error message
@@ -249,7 +250,7 @@ const AdminMeals = () => {
                     const errorDetails = Object.values(responseData.errors).flat().join(', ');
                     errorMessage += `\nالتفاصيل: ${errorDetails}`;
                 }
-                alert(errorMessage);
+                showAlert(errorMessage, 'خطأ في الحفظ', 'error');
             }
         } catch (error) {
             console.error('Error saving meal:', error);
@@ -257,7 +258,7 @@ const AdminMeals = () => {
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذه الوجبة؟' : 'Are you sure you want to delete this meal?')) {
+        showDeleteConfirm('هذه الوجبة', async () => {
             try {
                 const response = await fetch(`/api/admin/meals/${id}`, {
                     method: 'DELETE',
@@ -273,7 +274,7 @@ const AdminMeals = () => {
             } catch (error) {
                 console.error('Error deleting meal:', error);
             }
-        }
+        });
     };
 
     const handleToggleAvailability = async (id) => {

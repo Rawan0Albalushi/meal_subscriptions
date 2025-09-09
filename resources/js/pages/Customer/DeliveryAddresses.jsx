@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { showAlert, showConfirm, showOperationFailed, showDeleteConfirm } from '../../utils/popupUtils';
 
 const DeliveryAddresses = () => {
     const { t, language } = useLanguage();
@@ -108,9 +109,7 @@ const DeliveryAddresses = () => {
     };
 
     const handleDelete = async (addressId) => {
-        if (!confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذا العنوان؟' : 'Are you sure you want to delete this address?')) {
-            return;
-        }
+        showDeleteConfirm('هذا العنوان', async () => {
 
         try {
             const response = await fetch(`/api/delivery-addresses/${addressId}`, {
@@ -134,6 +133,7 @@ const DeliveryAddresses = () => {
             console.error('Error deleting address:', error);
             console.log('Error deleting address');
         }
+        });
     };
 
     const resetForm = () => {

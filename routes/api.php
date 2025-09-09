@@ -102,6 +102,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
     
     // Today orders management
     Route::get('today-orders', [\App\Http\Controllers\Api\Admin\TodayOrdersController::class, 'index']);
+    Route::get('today-orders/export', [\App\Http\Controllers\Api\Admin\TodayOrdersController::class, 'export']);
     Route::put('orders/{id}/status', [\App\Http\Controllers\Api\Admin\TodayOrdersController::class, 'updateStatus']);
     
     // Debug route to check subscription items

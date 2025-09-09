@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { showAlert, showConfirm, showNotFound, showOperationFailed } from '../../utils/popupUtils';
 import { useAuth } from '../../contexts/AuthContext';
 import { sellerAPI } from '../../services/api';
 
@@ -110,7 +111,7 @@ const TodayOrders = () => {
         try {
             const order = orders.find(order => order.id === itemId);
             if (!order) {
-                alert('لم يتم العثور على الطلب');
+                showNotFound('الطلب');
                 return;
             }
             
@@ -132,7 +133,7 @@ const TodayOrders = () => {
             }
         } catch (error) {
             console.error('Error updating status:', error);
-            alert('فشل في تحديث حالة الطلب');
+            showOperationFailed('تحديث حالة الطلب');
         }
     };
 
@@ -553,15 +554,16 @@ const TodayOrders = () => {
                         }}>
                             <button
                                 onClick={() => {
-                                    if (window.confirm(language === 'ar' 
-                                        ? `هل تريد تغيير حالة ${selectedOrders.length} طلب إلى "قيد التحضير"؟`
-                                        : `Do you want to change the status of ${selectedOrders.length} orders to "Preparing"?`
-                                    )) {
-                                        selectedOrders.forEach(orderId => {
-                                            handleStatusUpdate(orderId, 'preparing');
-                                        });
-                                        setSelectedOrders([]);
-                                    }
+                                    showConfirm(
+                                        `هل تريد تغيير حالة ${selectedOrders.length} طلب إلى "قيد التحضير"؟`,
+                                        'تأكيد التحديث',
+                                        () => {
+                                            selectedOrders.forEach(orderId => {
+                                                handleStatusUpdate(orderId, 'preparing');
+                                            });
+                                            setSelectedOrders([]);
+                                        }
+                                    );
                                 }}
                                 style={{
                                     padding: '0.75rem 1rem',
@@ -588,15 +590,16 @@ const TodayOrders = () => {
                             </button>
                             <button
                                 onClick={() => {
-                                    if (window.confirm(language === 'ar' 
-                                        ? `هل تريد تغيير حالة ${selectedOrders.length} طلب إلى "تم التوصيل"؟`
-                                        : `Do you want to change the status of ${selectedOrders.length} orders to "Delivered"?`
-                                    )) {
-                                        selectedOrders.forEach(orderId => {
-                                            handleStatusUpdate(orderId, 'delivered');
-                                        });
-                                        setSelectedOrders([]);
-                                    }
+                                    showConfirm(
+                                        `هل تريد تغيير حالة ${selectedOrders.length} طلب إلى "تم التوصيل"؟`,
+                                        'تأكيد التحديث',
+                                        () => {
+                                            selectedOrders.forEach(orderId => {
+                                                handleStatusUpdate(orderId, 'delivered');
+                                            });
+                                            setSelectedOrders([]);
+                                        }
+                                    );
                                 }}
                                 style={{
                                     padding: '0.75rem 1rem',
@@ -1251,12 +1254,13 @@ const TodayOrders = () => {
                                                               const selectedAction = e.target.value;
                                                               if (selectedAction && selectedAction !== '') {
                                                                   if (selectedAction === 'cancel') {
-                                                                      if (window.confirm(language === 'ar' 
-                                                                          ? 'هل أنت متأكد من إلغاء هذا الطلب؟'
-                                                                          : 'Are you sure you want to cancel this order?'
-                                                                      )) {
-                                                                          handleStatusUpdate(order.id, 'cancelled');
-                                                                      }
+                                                                      showConfirm(
+                                                                          'هل أنت متأكد من إلغاء هذا الطلب؟',
+                                                                          'تأكيد الإلغاء',
+                                                                          () => {
+                                                                              handleStatusUpdate(order.id, 'cancelled');
+                                                                          }
+                                                                      );
                                                                   } else {
                                                                       handleStatusUpdate(order.id, selectedAction);
                                                                   }

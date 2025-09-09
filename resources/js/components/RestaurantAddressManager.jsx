@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { showAlert, showConfirm, showOperationFailed, showDeleteConfirm } from '../utils/popupUtils';
 
 const RestaurantAddressManager = ({ restaurantId, onAddressesChange }) => {
     const [addresses, setAddresses] = useState([]);
@@ -80,7 +81,7 @@ const RestaurantAddressManager = ({ restaurantId, onAddressesChange }) => {
             if (onAddressesChange) onAddressesChange();
         } catch (error) {
             console.error('Error saving address:', error);
-            alert('حدث خطأ أثناء حفظ العنوان');
+            showOperationFailed('حفظ العنوان');
         }
     };
 
@@ -100,7 +101,7 @@ const RestaurantAddressManager = ({ restaurantId, onAddressesChange }) => {
     };
 
     const handleDelete = async (addressId) => {
-        if (!confirm('هل أنت متأكد من حذف هذا العنوان؟')) return;
+        showDeleteConfirm('هذا العنوان', async () => {
         
         try {
             await axios.delete(`/api/seller/restaurants/${restaurantId}/addresses/${addressId}`);
@@ -108,8 +109,9 @@ const RestaurantAddressManager = ({ restaurantId, onAddressesChange }) => {
             if (onAddressesChange) onAddressesChange();
         } catch (error) {
             console.error('Error deleting address:', error);
-            alert('حدث خطأ أثناء حذف العنوان');
+            showOperationFailed('حذف العنوان');
         }
+        });
     };
 
     const handleSetPrimary = async (addressId) => {
@@ -119,7 +121,7 @@ const RestaurantAddressManager = ({ restaurantId, onAddressesChange }) => {
             if (onAddressesChange) onAddressesChange();
         } catch (error) {
             console.error('Error setting primary address:', error);
-            alert('حدث خطأ أثناء تعيين العنوان الرئيسي');
+            showOperationFailed('تعيين العنوان الرئيسي');
         }
     };
 

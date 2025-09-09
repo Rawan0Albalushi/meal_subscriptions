@@ -234,14 +234,31 @@
         function editMeal(mealId) {
             const meal = testMeals.find(m => m.id === mealId);
             console.log('🔍 تحميل بيانات الوجبة للتعديل:', meal);
-            alert(`تعديل الوجبة: ${meal.name_ar}\nوقت التوصيل: ${meal.delivery_time_formatted || 'غير محدد'}`);
+            // Use the new popup system instead of alert
+            if (window.showAlert) {
+                window.showAlert(`تعديل الوجبة: ${meal.name_ar}\nوقت التوصيل: ${meal.delivery_time_formatted || 'غير محدد'}`, 'معلومات الوجبة', 'info');
+            } else {
+                alert(`تعديل الوجبة: ${meal.name_ar}\nوقت التوصيل: ${meal.delivery_time_formatted || 'غير محدد'}`);
+            }
         }
 
         function deleteMeal(mealId) {
             const meal = testMeals.find(m => m.id === mealId);
-            if (confirm(`هل أنت متأكد من حذف الوجبة: ${meal.name_ar}؟`)) {
-                console.log('🗑️ حذف الوجبة:', meal);
-                alert('تم حذف الوجبة');
+            // Use the new popup system instead of confirm
+            if (window.showConfirm) {
+                window.showConfirm(`هل أنت متأكد من حذف الوجبة: ${meal.name_ar}؟`, 'تأكيد الحذف', () => {
+                    console.log('🗑️ حذف الوجبة:', meal);
+                    if (window.showAlert) {
+                        window.showAlert('تم حذف الوجبة', 'تم بنجاح', 'success');
+                    } else {
+                        alert('تم حذف الوجبة');
+                    }
+                });
+            } else {
+                if (confirm(`هل أنت متأكد من حذف الوجبة: ${meal.name_ar}؟`)) {
+                    console.log('🗑️ حذف الوجبة:', meal);
+                    alert('تم حذف الوجبة');
+                }
             }
         }
 

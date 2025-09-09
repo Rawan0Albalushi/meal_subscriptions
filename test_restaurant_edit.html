@@ -195,7 +195,12 @@
             document.getElementById('location_maabilah').checked = testRestaurantData.locations.includes('maabilah');
             
             console.log('✅ تم تحميل البيانات في النموذج');
-            alert('تم تحميل البيانات التجريبية بنجاح!');
+            // Use the new popup system instead of alert
+            if (window.showAlert) {
+                window.showAlert('تم تحميل البيانات التجريبية بنجاح!', 'تم بنجاح', 'success');
+            } else {
+                alert('تم تحميل البيانات التجريبية بنجاح!');
+            }
         }
 
         function clearForm() {
@@ -214,7 +219,12 @@
             document.getElementById('location_maabilah').checked = false;
             
             console.log('🗑️ تم مسح النموذج');
-            alert('تم مسح النموذج بنجاح!');
+            // Use the new popup system instead of alert
+            if (window.showAlert) {
+                window.showAlert('تم مسح النموذج بنجاح!', 'تم بنجاح', 'success');
+            } else {
+                alert('تم مسح النموذج بنجاح!');
+            }
         }
 
         function showFormData() {

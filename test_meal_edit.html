@@ -186,7 +186,12 @@
             };
             
             console.log('✅ تم تحميل البيانات في النموذج');
+            // Use the new popup system instead of alert
+            if (window.showAlert) {
+                window.showAlert('تم تحميل البيانات التجريبية بنجاح!', 'تم بنجاح', 'success');
+            } else {
             alert('تم تحميل البيانات التجريبية بنجاح!');
+            }
         }
 
         function clearForm() {
@@ -203,7 +208,12 @@
             document.getElementById('image_preview').style.display = 'none';
             
             console.log('🗑️ تم مسح النموذج');
-            alert('تم مسح النموذج بنجاح!');
+            // Use the new popup system instead of alert
+            if (window.showAlert) {
+                window.showAlert('تم مسح النموذج بنجاح!', 'تم بنجاح', 'success');
+            } else {
+                alert('تم مسح النموذج بنجاح!');
+            }
         }
 
         function showFormData() {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { showAlert, showOperationFailed } from '../utils/popupUtils';
 
 const AddressDropdown = ({ 
     restaurantId, 
@@ -83,7 +84,7 @@ const AddressDropdown = ({
             if (onAddressAdded) onAddressAdded();
         } catch (error) {
             console.error('Error adding address:', error);
-            alert('حدث خطأ أثناء إضافة العنوان');
+            showOperationFailed('إضافة العنوان');
         }
     };
 

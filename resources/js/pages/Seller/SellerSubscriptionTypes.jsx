@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { showAlert, showConfirm, showSaveSuccess, showOperationFailed, showDeleteConfirm } from '../../utils/popupUtils';
 
 const SellerSubscriptionTypes = () => {
     const { t, dir, language } = useLanguage();
@@ -105,11 +106,11 @@ const SellerSubscriptionTypes = () => {
                 fetchSubscriptionTypes(selectedRestaurant);
             } else {
                 const errorData = await response.json();
-                alert(errorData.message || 'حدث خطأ في حفظ نوع الاشتراك');
+                showAlert(errorData.message || 'حدث خطأ في حفظ نوع الاشتراك', 'خطأ في الحفظ', 'error');
             }
         } catch (error) {
             console.error('Error saving subscription type:', error);
-            alert('حدث خطأ في حفظ نوع الاشتراك');
+            showOperationFailed('حفظ نوع الاشتراك');
         }
     };
 
@@ -130,9 +131,7 @@ const SellerSubscriptionTypes = () => {
     };
 
     const handleDelete = async (id) => {
-        if (!confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذا النوع من الاشتراك؟' : 'Are you sure you want to delete this subscription type?')) {
-            return;
-        }
+        showDeleteConfirm('هذا النوع من الاشتراك', async () => {
 
         try {
             const response = await fetch(`/api/seller/subscription-types/${id}`, {
@@ -147,12 +146,13 @@ const SellerSubscriptionTypes = () => {
                 fetchSubscriptionTypes(selectedRestaurant);
             } else {
                 const errorData = await response.json();
-                alert(errorData.message || 'حدث خطأ في حذف نوع الاشتراك');
+                showAlert(errorData.message || 'حدث خطأ في حذف نوع الاشتراك', 'خطأ في الحذف', 'error');
             }
         } catch (error) {
             console.error('Error deleting subscription type:', error);
-            alert('حدث خطأ في حذف نوع الاشتراك');
+            showOperationFailed('حذف نوع الاشتراك');
         }
+        });
     };
 
     const resetForm = () => {

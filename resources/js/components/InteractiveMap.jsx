@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { showAlert } from '../utils/popupUtils';
 
 const InteractiveMap = ({ 
   onLocationSelect, 
@@ -410,7 +411,7 @@ const InteractiveMap = ({
         }
       );
     } else {
-      alert('متصفحك لا يدعم تحديد الموقع الجغرافي.');
+      showAlert('متصفحك لا يدعم تحديد الموقع الجغرافي.', 'خطأ في الموقع', 'error');
     }
   };
 

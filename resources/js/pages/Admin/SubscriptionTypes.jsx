@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { showAlert, showConfirm, showOperationFailed, showDeleteConfirm } from '../../utils/popupUtils';
 import { adminSubscriptionTypesAPI } from '../../services/api';
 
 const SubscriptionTypes = () => {
@@ -117,9 +118,7 @@ const SubscriptionTypes = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm(language === 'ar' ? 'هل أنت متأكد من حذف نوع الاشتراك هذا؟' : 'Are you sure you want to delete this subscription type?')) {
-      return;
-    }
+    showDeleteConfirm('نوع الاشتراك هذا', async () => {
     
     try {
       await adminSubscriptionTypesAPI.delete(id);
@@ -128,6 +127,7 @@ const SubscriptionTypes = () => {
       setError('فشل في حذف نوع الاشتراك');
       console.error('Error deleting subscription type:', error);
     }
+    });
   };
 
   const resetForm = () => {
