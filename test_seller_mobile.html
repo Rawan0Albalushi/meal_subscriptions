@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار صفحات البائع على الهاتف</title>
+    <style>
+        body {
+            font-family: 'Calibri', 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .test-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: rgb(55 65 81);
+            margin: 0 0 1rem 0;
+            text-align: center;
+        }
+        
+        .test-description {
+            color: rgb(107 114 128);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            line-height: 1.5;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .test-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        
+        .test-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .test-card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: rgb(55 65 81);
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .test-card-description {
+            font-size: 0.8rem;
+            color: rgb(107 114 128);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, #2f6e73 0%, #b65449 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+        }
+        
+        .status-completed {
+            background: #10b981;
+        }
+        
+        .status-pending {
+            background: #f59e0b;
+        }
+        
+        .mobile-preview {
+            background: #f3f4f6;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            border: 2px dashed #d1d5db;
+        }
+        
+        .mobile-preview-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .mobile-preview-content {
+            font-size: 0.75rem;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.75rem;
+            }
+            
+            .test-section {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .test-title {
+                font-size: 1.25rem;
+            }
+            
+            .test-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .test-card {
+                padding: 0.875rem;
+            }
+            
+            .test-button {
+                padding: 0.875rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .test-section {
+                padding: 0.875rem;
+            }
+            
+            .test-title {
+                font-size: 1.125rem;
+            }
+            
+            .test-card {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="test-section">
+            <h1 class="test-title">📱 اختبار صفحات البائع على الهاتف المحمول</h1>
+            <p class="test-description">
+                تم تحسين جميع صفحات البائع لتكون متجاوبة مع الهاتف المحمول. 
+                يمكنك اختبار كل صفحة على أحجام شاشات مختلفة.
+            </p>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="test-title">🎯 التحسينات المنجزة</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3 class="test-card-title">
+                        تخطيط البائع <span class="status-indicator status-completed"></span>
+                    </h3>
+                    <p class="test-card-description">
+                        تحسين الشريط الجانبي والقائمة للهاتف المحمول مع تخطيط عمودي مناسب
+                    </p>
+                    <div class="mobile-preview">
+                        <div class="mobile-preview-title">معاينة الهاتف:</div>
+                        <div class="mobile-preview-content">
+                            • قائمة تنقل عمودية<br>
+                            • أيقونات أكبر للمس<br>
+                            • نصوص أصغر مناسبة للهاتف<br>
+                            • تباعد محسن بين العناصر
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="test-card">
+                    <h3 class="test-card-title">
+                        لوحة التحكم <span class="status-indicator status-completed"></span>
+                    </h3>
+                    <p class="test-card-description">
+                        تحسين بطاقات الإحصائيات والإجراءات السريعة للهاتف
+                    </p>
+                    <div class="mobile-preview">
+                        <div class="mobile-preview-title">معاينة الهاتف:</div>
+                        <div class="mobile-preview-content">
+                            • بطاقات إحصائيات عمودية<br>
+                            • إجراءات سريعة عمودية<br>
+                            • أحجام خطوط محسنة<br>
+                            • تباعد مناسب للهاتف
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="test-card">
+                    <h3 class="test-card-title">
+                        صفحة المطاعم <span class="status-indicator status-completed"></span>
+                    </h3>
+                    <p class="test-card-description">
+                        تحسين عرض المطاعم والنماذج للهاتف المحمول
+                    </p>
+                    <div class="mobile-preview">
+                        <div class="mobile-preview-title">معاينة الهاتف:</div>
+                        <div class="mobile-preview-content">
+                            • شبكة عمودية للمطاعم<br>
+                            • نماذج عمودية<br>
+                            • أزرار أكبر للمس<br>
+                            • نوافذ منبثقة محسنة
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="test-card">
+                    <h3 class="test-card-title">
+                        صفحة الوجبات <span class="status-indicator status-completed"></span>
+                    </h3>
+                    <p class="test-card-description">
+                        تحسين عرض الوجبات والنماذج للهاتف المحمول
+                    </p>
+                    <div class="mobile-preview">
+                        <div class="mobile-preview-title">معاينة الهاتف:</div>
+                        <div class="mobile-preview-content">
+                            • عرض عمودي للوجبات<br>
+                            • صور محسنة للهاتف<br>
+                            • نماذج عمودية<br>
+                            • أزرار محسنة للمس
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="test-card">
+                    <h3 class="test-card-title">
+                        النماذج <span class="status-indicator status-completed"></span>
+                    </h3>
+                    <p class="test-card-description">
+                        تحسين حقول الإدخال والأزرار للهاتف المحمول
+                    </p>
+                    <div class="mobile-preview">
+                        <div class="mobile-preview-title">معاينة الهاتف:</div>
+                        <div class="mobile-preview-content">
+                            • حقول إدخال عمودية<br>
+                            • أحجام خطوط 16px لمنع التكبير<br>
+                            • أزرار أكبر للمس<br>
+                            • تباعد محسن
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="test-card">
+                    <h3 class="test-card-title">
+                        النوافذ المنبثقة <span class="status-indicator status-completed"></span>
+                    </h3>
+                    <p class="test-card-description">
+                        تحسين النوافذ المنبثقة للهاتف المحمول
+                    </p>
+                    <div class="mobile-preview">
+                        <div class="mobile-preview-title">معاينة الهاتف:</div>
+                        <div class="mobile-preview-content">
+                            • عرض 95% من عرض الشاشة<br>
+                            • تمرير محسن<br>
+                            • تباعد مناسب<br>
+                            • أزرار أكبر للمس
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="test-title">🔧 الميزات المضافة</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3 class="test-card-title">CSS محسن للهاتف</h3>
+                    <p class="test-card-description">
+                        ملف CSS مخصص لتحسينات الهاتف المحمول لصفحات البائع
+                    </p>
+                    <a href="#" class="test-button">عرض الملف</a>
+                </div>
+                
+                <div class="test-card">
+                    <h3 class="test-card-title">استجابة ديناميكية</h3>
+                    <p class="test-card-description">
+                        استخدام JavaScript للتحقق من حجم الشاشة وتطبيق الأنماط المناسبة
+                    </p>
+                    <a href="#" class="test-button">عرض الكود</a>
+                </div>
+                
+                <div class="test-card">
+                    <h3 class="test-card-title">تحسينات اللمس</h3>
+                    <p class="test-card-description">
+                        تحسينات خاصة للأجهزة التي تعمل باللمس
+                    </p>
+                    <a href="#" class="test-button">عرض التفاصيل</a>
+                </div>
+                
+                <div class="test-card">
+                    <h3 class="test-card-title">دعم الشاشات المختلفة</h3>
+                    <p class="test-card-description">
+                        دعم للشاشات الصغيرة والكبيرة والشاشات عالية الدقة
+                    </p>
+                    <a href="#" class="test-button">عرض الاختبارات</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="test-title">📊 إحصائيات التحسين</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3 class="test-card-title">6 صفحات محسنة</h3>
+                    <p class="test-card-description">
+                        تم تحسين جميع صفحات البائع للهاتف المحمول
+                    </p>
+                </div>
+                
+                <div class="test-card">
+                    <h3 class="test-card-title">4 أحجام شاشة</h3>
+                    <p class="test-card-description">
+                        دعم للهواتف والأجهزة اللوحية والشاشات الكبيرة
+                    </p>
+                </div>
+                
+                <div class="test-card">
+                    <h3 class="test-card-title">100% متجاوب</h3>
+                    <p class="test-card-description">
+                        جميع العناصر تتكيف مع حجم الشاشة
+                    </p>
+                </div>
+                
+                <div class="test-card">
+                    <h3 class="test-card-title">تحسينات اللمس</h3>
+                    <p class="test-card-description">
+                        أزرار وعناصر محسنة للتفاعل باللمس
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="test-title">🎯 تعليمات الاختبار</h2>
+            <div class="test-card">
+                <h3 class="test-card-title">كيفية اختبار التحسينات</h3>
+                <div class="mobile-preview">
+                    <div class="mobile-preview-title">خطوات الاختبار:</div>
+                    <div class="mobile-preview-content">
+                        1. افتح صفحات البائع في المتصفح<br>
+                        2. استخدم أدوات المطور لتغيير حجم الشاشة<br>
+                        3. اختبر على أحجام مختلفة: 320px, 375px, 414px, 768px<br>
+                        4. تأكد من أن جميع العناصر تظهر بشكل صحيح<br>
+                        5. اختبر التفاعل باللمس على الأجهزة الفعلية<br>
+                        6. تأكد من سهولة الاستخدام والقراءة
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // إضافة بعض التفاعل للصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.test-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-2px)';
+                    }, 150);
+                });
+            });
+            
+            // إضافة تأثير للعناصر عند التمرير
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+            
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>

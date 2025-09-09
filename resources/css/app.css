@@ -6,6 +6,7 @@
 @import "./mobile-optimizations.css";
 @import "./mobile-responsive.css";
 @import "./mobile-filter-fix.css";
+@import "./seller-mobile-optimizations.css";
 
 html { 
   /* scroll-behavior: smooth; */ /* Disabled to prevent auto-scroll */

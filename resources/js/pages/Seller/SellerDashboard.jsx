@@ -243,8 +243,8 @@ const SellerDashboard = () => {
             {/* Statistics Cards */}
             <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                gap: '1.5rem',
+                gridTemplateColumns: window.innerWidth <= 768 ? 'repeat(auto-fit, minmax(280px, 1fr))' : 'repeat(auto-fit, minmax(250px, 1fr))',
+                gap: window.innerWidth <= 768 ? '1rem' : '1.5rem',
                 marginBottom: '2rem'
             }}>
                 {statCards.map((card, index) => (
@@ -330,8 +330,8 @@ const SellerDashboard = () => {
                 
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                    gap: '1rem'
+                    gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : 'repeat(auto-fit, minmax(280px, 1fr))',
+                    gap: window.innerWidth <= 768 ? '0.75rem' : '1rem'
                 }}>
                     {quickActions.map((action, index) => (
                         <button
@@ -341,7 +341,7 @@ const SellerDashboard = () => {
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '1rem',
-                                padding: '1.5rem',
+                                padding: window.innerWidth <= 768 ? '1rem' : '1.5rem',
                                 background: 'rgba(79, 70, 229, 0.05)',
                                 border: '1px solid rgba(79, 70, 229, 0.1)',
                                 borderRadius: '0.75rem',

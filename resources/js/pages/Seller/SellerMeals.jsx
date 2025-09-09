@@ -485,8 +485,8 @@ const SellerMeals = () => {
             {selectedRestaurant && (
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
-                    gap: '1.5rem'
+                    gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : 'repeat(auto-fill, minmax(350px, 1fr))',
+                    gap: window.innerWidth <= 768 ? '1rem' : '1.5rem'
                 }}>
                     {meals.map((meal) => (
                         <div
@@ -495,7 +495,7 @@ const SellerMeals = () => {
                                 background: 'rgba(255, 255, 255, 0.9)',
                                 backdropFilter: 'blur(20px)',
                                 borderRadius: '1rem',
-                                padding: '1.5rem',
+                                padding: window.innerWidth <= 768 ? '1rem' : '1.5rem',
                                 boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
                                 border: '1px solid rgba(255, 255, 255, 0.2)',
                                 transition: 'transform 0.2s'
@@ -717,12 +717,13 @@ const SellerMeals = () => {
                             )}
                             <div style={{
                                 display: 'flex',
-                                gap: '0.5rem'
+                                gap: window.innerWidth <= 768 ? '0.75rem' : '0.5rem',
+                                justifyContent: window.innerWidth <= 768 ? 'center' : 'flex-start'
                             }}>
                                 <button
                                     onClick={() => handleEdit(meal)}
                                     style={{
-                                        padding: '0.5rem',
+                                        padding: window.innerWidth <= 768 ? '0.75rem' : '0.5rem',
                                         background: 'rgba(79, 70, 229, 0.1)',
                                         border: 'none',
                                         borderRadius: '0.5rem',
@@ -736,7 +737,7 @@ const SellerMeals = () => {
                                 <button
                                     onClick={() => handleDelete(meal.id)}
                                     style={{
-                                        padding: '0.5rem',
+                                        padding: window.innerWidth <= 768 ? '0.75rem' : '0.5rem',
                                         background: 'rgba(239, 68, 68, 0.1)',
                                         border: 'none',
                                         borderRadius: '0.5rem',
@@ -846,8 +847,8 @@ const SellerMeals = () => {
                     <div style={{
                         background: 'white',
                         borderRadius: '1rem',
-                        padding: '2rem',
-                        maxWidth: '600px',
+                        padding: window.innerWidth <= 768 ? '1.5rem' : '2rem',
+                        maxWidth: window.innerWidth <= 768 ? '95vw' : '600px',
                         width: '100%',
                         maxHeight: '90vh',
                         overflowY: 'auto'
@@ -890,7 +891,7 @@ const SellerMeals = () => {
                         <form onSubmit={handleSubmit}>
                             <div style={{
                                 display: 'grid',
-                                gridTemplateColumns: '1fr 1fr',
+                                gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : '1fr 1fr',
                                 gap: '1rem',
                                 marginBottom: '1rem'
                             }}>
@@ -948,7 +949,7 @@ const SellerMeals = () => {
 
                             <div style={{
                                 display: 'grid',
-                                gridTemplateColumns: '1fr 1fr',
+                                gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : '1fr 1fr',
                                 gap: '1rem',
                                 marginBottom: '1rem'
                             }}>
@@ -1127,7 +1128,7 @@ const SellerMeals = () => {
 
                             <div style={{
                                 display: 'grid',
-                                gridTemplateColumns: '1fr 1fr',
+                                gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : '1fr 1fr',
                                 gap: '1rem',
                                 marginBottom: '1rem'
                             }}>

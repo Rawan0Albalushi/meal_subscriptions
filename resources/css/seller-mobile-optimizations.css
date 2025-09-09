@@ -1,0 +1,458 @@
+/* تحسينات الهاتف المحمول لصفحات البائع */
+
+/* تحسينات عامة للهاتف */
+@media (max-width: 768px) {
+    /* تحسين التخطيط العام */
+    .seller-layout {
+        padding: 0.75rem !important;
+    }
+    
+    /* تحسين الشريط الجانبي */
+    .seller-sidebar {
+        width: 100% !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .seller-sidebar nav {
+        padding: 1rem !important;
+        border-radius: 0.75rem !important;
+    }
+    
+    /* تحسين قائمة التنقل */
+    .seller-nav-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem !important;
+    }
+    
+    .seller-nav-item {
+        padding: 0.875rem 0.5rem !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+    
+    .seller-nav-icon {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+        font-size: 1.125rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .seller-nav-text {
+        font-size: 0.8rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    .seller-nav-description {
+        font-size: 0.7rem !important;
+        margin-top: 0.25rem !important;
+    }
+    
+    /* تحسين لوحة التحكم */
+    .seller-dashboard {
+        padding-top: 1rem !important;
+    }
+    
+    .seller-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+        gap: 1rem !important;
+    }
+    
+    .seller-stats-card {
+        padding: 1.25rem !important;
+    }
+    
+    .seller-quick-actions {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+    
+    .seller-quick-action {
+        padding: 1rem !important;
+        flex-direction: row !important;
+        align-items: center !important;
+    }
+    
+    /* تحسين صفحة المطاعم */
+    .seller-restaurants-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    .seller-restaurant-card {
+        padding: 1rem !important;
+    }
+    
+    .seller-restaurant-actions {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+    
+    .seller-restaurant-action {
+        flex: none !important;
+        padding: 0.75rem 1rem !important;
+        width: 100% !important;
+    }
+    
+    /* تحسين صفحة الوجبات */
+    .seller-meals-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    .seller-meal-card {
+        padding: 1rem !important;
+    }
+    
+    .seller-meal-actions {
+        justify-content: center !important;
+        gap: 0.75rem !important;
+    }
+    
+    .seller-meal-action {
+        padding: 0.75rem !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+    }
+    
+    /* تحسين النماذج */
+    .seller-form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    .seller-form-field {
+        width: 100% !important;
+    }
+    
+    .seller-form-input,
+    .seller-form-textarea,
+    .seller-form-select {
+        padding: 0.875rem !important;
+        font-size: 16px !important; /* منع التكبير في iOS */
+        border-radius: 0.5rem !important;
+    }
+    
+    .seller-form-label {
+        font-size: 0.875rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* تحسين النوافذ المنبثقة */
+    .seller-modal {
+        padding: 1rem !important;
+    }
+    
+    .seller-modal-content {
+        max-width: 95vw !important;
+        padding: 1.5rem !important;
+        margin: 0.5rem !important;
+    }
+    
+    .seller-modal-header {
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .seller-modal-title {
+        font-size: 1.25rem !important;
+    }
+    
+    /* تحسين الأزرار */
+    .seller-button {
+        min-height: 44px !important;
+        min-width: 44px !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 0.875rem !important;
+        border-radius: 0.5rem !important;
+    }
+    
+    .seller-button-primary {
+        background: linear-gradient(135deg, #2f6e73 0%, #b65449 100%) !important;
+        color: white !important;
+        border: none !important;
+    }
+    
+    .seller-button-secondary {
+        background: rgba(107, 114, 128, 0.1) !important;
+        color: rgb(107 114 128) !important;
+        border: 1px solid rgba(107, 114, 128, 0.2) !important;
+    }
+    
+    /* تحسين العناوين */
+    .seller-page-title {
+        font-size: 1.25rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .seller-page-subtitle {
+        font-size: 0.8rem !important;
+    }
+    
+    /* تحسين البطاقات */
+    .seller-card {
+        padding: 1rem !important;
+        border-radius: 0.75rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .seller-card-header {
+        margin-bottom: 1rem !important;
+    }
+    
+    /* تحسين الصور */
+    .seller-image {
+        max-width: 100% !important;
+        height: auto !important;
+        border-radius: 0.5rem !important;
+    }
+    
+    .seller-image-upload {
+        padding: 1rem !important;
+        border-radius: 0.5rem !important;
+    }
+    
+    /* تحسين القوائم المنسدلة */
+    .seller-select {
+        width: 100% !important;
+        padding: 0.875rem !important;
+        font-size: 16px !important;
+        border-radius: 0.5rem !important;
+    }
+    
+    /* تحسين مربعات الاختيار */
+    .seller-checkbox {
+        width: 1.25rem !important;
+        height: 1.25rem !important;
+        margin-right: 0.5rem !important;
+    }
+    
+    .seller-checkbox-label {
+        font-size: 0.875rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    /* تحسين الرسائل المنبثقة */
+    .seller-popup {
+        max-width: 90vw !important;
+        margin: 1rem !important;
+        padding: 1.5rem !important;
+    }
+    
+    .seller-popup-title {
+        font-size: 1.125rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .seller-popup-message {
+        font-size: 0.875rem !important;
+        line-height: 1.5 !important;
+    }
+    
+    /* تحسين التبويبات */
+    .seller-tabs {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .seller-tab {
+        padding: 0.75rem 1rem !important;
+        text-align: center !important;
+        border-radius: 0.5rem !important;
+    }
+    
+    /* تحسين الجداول */
+    .seller-table {
+        width: 100% !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .seller-table th,
+    .seller-table td {
+        padding: 0.5rem !important;
+    }
+    
+    /* تحسين الحالات الفارغة */
+    .seller-empty-state {
+        padding: 2rem 1rem !important;
+        text-align: center !important;
+    }
+    
+    .seller-empty-icon {
+        font-size: 2.5rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .seller-empty-title {
+        font-size: 1.125rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .seller-empty-message {
+        font-size: 0.875rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+}
+
+/* تحسينات للشاشات الصغيرة جداً */
+@media (max-width: 480px) {
+    .seller-layout {
+        padding: 0.5rem !important;
+    }
+    
+    .seller-nav-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.5rem !important;
+    }
+    
+    .seller-nav-item {
+        padding: 0.75rem 0.5rem !important;
+    }
+    
+    .seller-stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+    
+    .seller-modal-content {
+        padding: 1rem !important;
+        margin: 0.25rem !important;
+    }
+    
+    .seller-form-input,
+    .seller-form-textarea,
+    .seller-form-select {
+        padding: 0.75rem !important;
+    }
+    
+    .seller-button {
+        padding: 0.75rem !important;
+        font-size: 0.8rem !important;
+    }
+}
+
+/* تحسينات للوضع الأفقي */
+@media (max-width: 768px) and (orientation: landscape) {
+    .seller-layout {
+        padding: 0.5rem !important;
+    }
+    
+    .seller-sidebar {
+        margin-bottom: 0.75rem !important;
+    }
+    
+    .seller-nav-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.5rem !important;
+    }
+    
+    .seller-nav-item {
+        padding: 0.5rem !important;
+    }
+    
+    .seller-nav-text {
+        font-size: 0.75rem !important;
+    }
+    
+    .seller-nav-description {
+        display: none !important;
+    }
+}
+
+/* تحسينات للشاشات عالية الدقة */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .seller-card {
+        border-width: 0.5px !important;
+    }
+    
+    .seller-button {
+        border-width: 0.5px !important;
+    }
+    
+    .seller-form-input,
+    .seller-form-textarea,
+    .seller-form-select {
+        border-width: 0.5px !important;
+    }
+}
+
+/* تحسينات للوضع المظلم */
+@media (prefers-color-scheme: dark) {
+    .seller-card {
+        background: rgba(31, 41, 55, 0.9) !important;
+        border-color: rgba(75, 85, 99, 0.3) !important;
+        color: white !important;
+    }
+    
+    .seller-form-input,
+    .seller-form-textarea,
+    .seller-form-select {
+        background: rgba(31, 41, 55, 0.8) !important;
+        border-color: rgba(75, 85, 99, 0.3) !important;
+        color: white !important;
+    }
+    
+    .seller-form-label {
+        color: rgba(209, 213, 219, 0.9) !important;
+    }
+}
+
+/* تحسينات للتفاعل باللمس */
+@media (hover: none) and (pointer: coarse) {
+    .seller-button:hover {
+        transform: none !important;
+    }
+    
+    .seller-card:hover {
+        transform: none !important;
+    }
+    
+    .seller-nav-item:hover {
+        transform: none !important;
+    }
+    
+    .seller-button:active {
+        transform: scale(0.95) !important;
+    }
+    
+    .seller-card:active {
+        transform: scale(0.98) !important;
+    }
+    
+    .seller-nav-item:active {
+        transform: scale(0.95) !important;
+    }
+}
+
+/* تحسينات للوصولية */
+@media (prefers-reduced-motion: reduce) {
+    .seller-button,
+    .seller-card,
+    .seller-nav-item {
+        transition: none !important;
+    }
+    
+    .seller-button:hover,
+    .seller-card:hover,
+    .seller-nav-item:hover {
+        transform: none !important;
+    }
+}
+
+/* تحسينات للخطوط */
+@media (max-width: 768px) {
+    .seller-text {
+        font-size: clamp(0.875rem, 3vw, 1rem) !important;
+        line-height: 1.5 !important;
+    }
+    
+    .seller-title {
+        font-size: clamp(1.25rem, 4vw, 1.5rem) !important;
+        line-height: 1.3 !important;
+    }
+    
+    .seller-subtitle {
+        font-size: clamp(1rem, 3vw, 1.25rem) !important;
+        line-height: 1.4 !important;
+    }
+}

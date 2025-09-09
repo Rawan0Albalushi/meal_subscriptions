@@ -543,8 +543,8 @@ const SellerRestaurants = () => {
             {/* Restaurants Grid */}
             <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
-                gap: '1.5rem'
+                gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : 'repeat(auto-fill, minmax(350px, 1fr))',
+                gap: window.innerWidth <= 768 ? '1rem' : '1.5rem'
             }}>
                 {restaurants.map((restaurant) => (
                     <div
@@ -553,7 +553,7 @@ const SellerRestaurants = () => {
                             background: 'rgba(255, 255, 255, 0.9)',
                             backdropFilter: 'blur(20px)',
                             borderRadius: '1rem',
-                            padding: '1.5rem',
+                            padding: window.innerWidth <= 768 ? '1rem' : '1.5rem',
                             boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
                             border: '1px solid rgba(255, 255, 255, 0.2)',
                             transition: 'transform 0.2s'
@@ -759,13 +759,14 @@ const SellerRestaurants = () => {
                         {/* Actions */}
                         <div style={{
                             display: 'flex',
-                            gap: '0.75rem'
+                            gap: window.innerWidth <= 768 ? '0.5rem' : '0.75rem',
+                            flexDirection: window.innerWidth <= 768 ? 'column' : 'row'
                         }}>
                             <button
                                 onClick={() => handleEdit(restaurant)}
                                 style={{
-                                    flex: 1,
-                                    padding: '0.5rem 1rem',
+                                    flex: window.innerWidth <= 768 ? 'none' : 1,
+                                    padding: window.innerWidth <= 768 ? '0.75rem 1rem' : '0.5rem 1rem',
                                     background: 'rgba(59, 130, 246, 0.1)',
                                     color: 'rgb(59 130 246)',
                                     border: '1px solid rgba(59, 130, 246, 0.2)',
@@ -788,8 +789,8 @@ const SellerRestaurants = () => {
                             <button
                                 onClick={() => handleToggleStatus(restaurant.id)}
                                 style={{
-                                    flex: 1,
-                                    padding: '0.5rem 1rem',
+                                    flex: window.innerWidth <= 768 ? 'none' : 1,
+                                    padding: window.innerWidth <= 768 ? '0.75rem 1rem' : '0.5rem 1rem',
                                     background: restaurant.is_active 
                                         ? 'rgba(239, 68, 68, 0.1)' 
                                         : 'rgba(34, 197, 94, 0.1)',
@@ -827,7 +828,7 @@ const SellerRestaurants = () => {
                             <button
                                 onClick={() => handleDelete(restaurant.id)}
                                 style={{
-                                    padding: '0.5rem 1rem',
+                                    padding: window.innerWidth <= 768 ? '0.75rem 1rem' : '0.5rem 1rem',
                                     background: 'rgba(239, 68, 68, 0.1)',
                                     color: 'rgb(239 68 68)',
                                     border: '1px solid rgba(239, 68, 68, 0.2)',
@@ -935,8 +936,8 @@ const SellerRestaurants = () => {
                         background: 'rgba(255, 255, 255, 0.95)',
                         backdropFilter: 'blur(20px)',
                         borderRadius: '1rem',
-                        padding: '2rem',
-                        maxWidth: '600px',
+                        padding: window.innerWidth <= 768 ? '1.5rem' : '2rem',
+                        maxWidth: window.innerWidth <= 768 ? '95vw' : '600px',
                         width: '100%',
                         maxHeight: '90vh',
                         overflow: 'auto',
@@ -981,7 +982,7 @@ const SellerRestaurants = () => {
                         <form onSubmit={handleSubmit}>
                             <div style={{
                                 display: 'grid',
-                                gridTemplateColumns: '1fr 1fr',
+                                gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : '1fr 1fr',
                                 gap: '1rem',
                                 marginBottom: '1rem'
                             }}>
@@ -1095,7 +1096,7 @@ const SellerRestaurants = () => {
 
                             <div style={{
                                 display: 'grid',
-                                gridTemplateColumns: '1fr 1fr',
+                                gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : '1fr 1fr',
                                 gap: '1rem',
                                 marginBottom: '1rem'
                             }}>
@@ -1151,7 +1152,7 @@ const SellerRestaurants = () => {
 
                             <div style={{
                                 display: 'grid',
-                                gridTemplateColumns: '1fr 1fr',
+                                gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : '1fr 1fr',
                                 gap: '1rem',
                                 marginBottom: '1rem'
                             }}>
@@ -1205,7 +1206,7 @@ const SellerRestaurants = () => {
 
                             <div style={{
                                 display: 'grid',
-                                gridTemplateColumns: '1fr 1fr',
+                                gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : '1fr 1fr',
                                 gap: '1rem',
                                 marginBottom: '1rem'
                             }}>

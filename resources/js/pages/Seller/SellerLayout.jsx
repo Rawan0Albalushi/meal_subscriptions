@@ -237,9 +237,9 @@ const SellerLayout = () => {
             <div style={{
                 maxWidth: '1400px',
                 margin: '0 auto',
-                padding: window.innerWidth <= 768 ? '0.5rem' : '1rem',
+                padding: window.innerWidth <= 768 ? '0.75rem' : '1rem',
                 display: 'flex',
-                gap: window.innerWidth <= 768 ? '1rem' : '2rem',
+                gap: window.innerWidth <= 768 ? '1.5rem' : '2rem',
                 minHeight: window.innerWidth <= 768 ? 'calc(100vh - 3.5rem)' : 'calc(100vh - 4rem)',
                 flexDirection: window.innerWidth <= 768 ? 'column' : 'row'
             }}>
@@ -265,7 +265,7 @@ const SellerLayout = () => {
                         <div style={{
                             display: 'grid',
                             gridTemplateColumns: window.innerWidth <= 768 ? 'repeat(2, 1fr)' : '1fr',
-                            gap: window.innerWidth <= 768 ? '1rem' : '0.75rem',
+                            gap: window.innerWidth <= 768 ? '0.75rem' : '0.75rem',
                             width: '100%',
                             paddingTop: '0.5rem'
                         }}>
@@ -279,7 +279,7 @@ const SellerLayout = () => {
                                         alignItems: 'center',
                                         justifyContent: window.innerWidth <= 768 ? 'center' : 'flex-start',
                                         gap: window.innerWidth <= 768 ? '0.5rem' : '0.75rem',
-                                        padding: window.innerWidth <= 768 ? '1rem 0.5rem' : '0.875rem 1rem',
+                                        padding: window.innerWidth <= 768 ? '0.875rem 0.5rem' : '0.875rem 1rem',
                                         borderRadius: window.innerWidth <= 768 ? '0.75rem' : '0.875rem',
                                         textDecoration: 'none',
                                         transition: 'all 0.2s ease',
@@ -354,7 +354,7 @@ const SellerLayout = () => {
                                         background: 'transparent'
                                     }}>
                                         <div style={{
-                                            fontSize: window.innerWidth <= 768 ? '0.875rem' : '0.875rem',
+                                            fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.875rem',
                                             fontWeight: isActive(item.path) ? '700' : '600',
                                             marginBottom: window.innerWidth <= 768 ? '0.25rem' : '0.25rem',
                                             lineHeight: 1.2,
@@ -369,7 +369,7 @@ const SellerLayout = () => {
                                             {item.label}
                                         </div>
                                         <div style={{
-                                            fontSize: window.innerWidth <= 768 ? '0.75rem' : '0.75rem',
+                                            fontSize: window.innerWidth <= 768 ? '0.7rem' : '0.75rem',
                                             opacity: isActive(item.path) ? 0.8 : 0.65,
                                             lineHeight: 1.3,
                                             whiteSpace: 'nowrap',
