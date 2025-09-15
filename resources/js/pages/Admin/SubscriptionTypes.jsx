@@ -22,7 +22,7 @@ const SubscriptionTypes = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [formData, setFormData] = useState({
-    restaurant_id: '',
+    restaurant_ids: [],
     name_ar: '',
     name_en: '',
     description_ar: '',
@@ -103,7 +103,7 @@ const SubscriptionTypes = () => {
   const handleEdit = (subscriptionType) => {
     setEditingType(subscriptionType);
     setFormData({
-      restaurant_id: subscriptionType.restaurant_id,
+      restaurant_ids: subscriptionType.restaurants ? subscriptionType.restaurants.map(r => r.id) : [],
       name_ar: subscriptionType.name_ar,
       name_en: subscriptionType.name_en,
       description_ar: subscriptionType.description_ar || '',
@@ -132,13 +132,14 @@ const SubscriptionTypes = () => {
 
   const resetForm = () => {
     setFormData({
-      restaurant_id: '',
+      restaurant_ids: [],
       name_ar: '',
       name_en: '',
       description_ar: '',
       description_en: '',
       type: 'weekly',
       price: '',
+      delivery_price: '',
       meals_count: '',
       is_active: true
     });
@@ -148,14 +149,23 @@ const SubscriptionTypes = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleRestaurantToggle = (restaurantId) => {
+    setFormData(prev => ({
+      ...prev,
+      restaurant_ids: prev.restaurant_ids.includes(restaurantId)
+        ? prev.restaurant_ids.filter(id => id !== restaurantId)
+        : [...prev.restaurant_ids, restaurantId]
+    }));
+  };
+
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 
   const filteredSubscriptionTypes = subscriptionTypes.filter(type => {
     // Filter by restaurant
-    if (filters.restaurant_id && type.restaurant_id != filters.restaurant_id) {
-      return false;
+    if (filters.restaurant_id) {
+      return type.restaurants && type.restaurants.some(restaurant => restaurant.id == filters.restaurant_id);
     }
     
     // Filter by type
@@ -171,8 +181,10 @@ const SubscriptionTypes = () => {
       return (
         type.name_ar.toLowerCase().includes(searchTerm) ||
         type.name_en.toLowerCase().includes(searchTerm) ||
-        (type.restaurant && type.restaurant.name_ar.toLowerCase().includes(searchTerm)) ||
-        (type.restaurant && type.restaurant.name_en.toLowerCase().includes(searchTerm)) ||
+        (type.restaurants && type.restaurants.some(restaurant => 
+          restaurant.name_ar.toLowerCase().includes(searchTerm) ||
+          restaurant.name_en.toLowerCase().includes(searchTerm)
+        )) ||
         type.price.toString().includes(searchTerm) ||
         type.meals_count.toString().includes(searchTerm) ||
         (type.type === 'weekly' && 'أسبوعي'.includes(searchTerm)) ||
@@ -195,8 +207,8 @@ const SubscriptionTypes = () => {
       aValue = parseInt(aValue);
       bValue = parseInt(bValue);
     } else if (sortField === 'restaurant') {
-      aValue = a.restaurant ? a.restaurant.name_ar : '';
-      bValue = b.restaurant ? b.restaurant.name_ar : '';
+      aValue = a.restaurants && a.restaurants.length > 0 ? a.restaurants[0].name_ar : '';
+      bValue = b.restaurants && b.restaurants.length > 0 ? b.restaurants[0].name_ar : '';
     } else if (typeof aValue === 'string') {
       aValue = aValue.toLowerCase();
       bValue = bValue.toLowerCase();
@@ -471,27 +483,52 @@ const SubscriptionTypes = () => {
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: '1rem' }}>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                {language === 'ar' ? 'المطعم' : 'Restaurant'} *
+                {language === 'ar' ? 'المطاعم' : 'Restaurants'} *
               </label>
-              <select
-                value={formData.restaurant_id}
-                onChange={(e) => handleInputChange('restaurant_id', e.target.value)}
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid rgb(229 231 235)',
-                  borderRadius: '0.5rem',
-                  fontSize: '1rem'
-                }}
-              >
-                <option value="">{language === 'ar' ? 'اختر المطعم' : 'Select Restaurant'}</option>
+              <div style={{
+                border: '1px solid rgb(229 231 235)',
+                borderRadius: '0.5rem',
+                padding: '0.75rem',
+                maxHeight: '200px',
+                overflowY: 'auto',
+                background: 'white'
+              }}>
                 {restaurants.map(restaurant => (
-                  <option key={restaurant.id} value={restaurant.id}>
-                    {restaurant.name_ar} - {restaurant.name_en}
-                  </option>
+                  <label
+                    key={restaurant.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      marginBottom: '0.5rem',
+                      cursor: 'pointer',
+                      padding: '0.25rem',
+                      borderRadius: '0.25rem',
+                      transition: 'background-color 0.2s'
+                    }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = 'rgb(249 250 251)'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={formData.restaurant_ids.includes(restaurant.id)}
+                      onChange={() => handleRestaurantToggle(restaurant.id)}
+                      style={{
+                        marginRight: '0.5rem',
+                        width: '1rem',
+                        height: '1rem'
+                      }}
+                    />
+                    <span style={{ fontSize: '1rem' }}>
+                      {restaurant.name_ar} - {restaurant.name_en}
+                    </span>
+                  </label>
                 ))}
-              </select>
+              </div>
+              {formData.restaurant_ids.length === 0 && (
+                <p style={{ color: 'rgb(239 68 68)', fontSize: '0.75rem', marginTop: '0.25rem' }}>
+                  {language === 'ar' ? 'يجب اختيار مطعم واحد على الأقل' : 'Please select at least one restaurant'}
+                </p>
+              )}
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
@@ -882,20 +919,29 @@ const SubscriptionTypes = () => {
                   {/* Restaurant */}
                   <td style={{ padding: '1rem 0.75rem' }}>
                     <div>
-                      <div style={{
-                        fontWeight: '600',
-                        color: '#1f2937',
-                        marginBottom: '0.25rem',
-                        fontSize: '0.875rem'
-                      }}>
-                        {type.restaurant ? (language === 'ar' ? type.restaurant.name_ar : type.restaurant.name_en) : (language === 'ar' ? 'غير محدد' : 'Not specified')}
-                      </div>
-                      <div style={{
-                        fontSize: '0.75rem',
-                        color: '#6b7280'
-                      }}>
-                        {type.restaurant ? (language === 'ar' ? type.restaurant.name_en : type.restaurant.name_ar) : (language === 'ar' ? 'غير محدد' : 'Not specified')}
-                      </div>
+                      {type.restaurants && type.restaurants.length > 0 ? (
+                        type.restaurants.map((restaurant, index) => (
+                          <div key={restaurant.id} style={{
+                            marginBottom: index < type.restaurants.length - 1 ? '0.25rem' : '0',
+                            padding: '0.25rem 0.5rem',
+                            background: 'rgba(59, 130, 246, 0.1)',
+                            borderRadius: '0.25rem',
+                            fontSize: '0.75rem',
+                            fontWeight: '500',
+                            color: 'rgb(59 130 246)'
+                          }}>
+                            {language === 'ar' ? restaurant.name_ar : restaurant.name_en}
+                          </div>
+                        ))
+                      ) : (
+                        <div style={{
+                          fontSize: '0.75rem',
+                          color: '#6b7280',
+                          fontStyle: 'italic'
+                        }}>
+                          {language === 'ar' ? 'غير محدد' : 'Not specified'}
+                        </div>
+                      )}
                     </div>
                   </td>
 

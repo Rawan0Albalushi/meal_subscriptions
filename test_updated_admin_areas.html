@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار التصميم المحدث لصفحة إدارة المناطق</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-select {
+            padding: 0.75rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            min-width: 150px;
+        }
+
+        /* Areas Grid */
+        .areas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .area-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .area-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .area-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .area-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: rgb(55 65 81);
+            margin: 0;
+            margin-bottom: 0.25rem;
+        }
+
+        .area-subtitle {
+            font-size: 0.875rem;
+            color: rgb(107 114 128);
+            margin: 0;
+        }
+
+        .status-badge {
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .status-inactive {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .area-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .detail-label {
+            font-size: 0.875rem;
+            color: rgb(107 114 128);
+        }
+
+        .detail-value {
+            background: rgba(107, 114, 128, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgb(55 65 81);
+        }
+
+        .sort-order {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: rgb(55 65 81);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            flex: 1;
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-edit {
+            background: rgba(59, 130, 246, 0.1);
+            color: rgb(59 130 246);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-edit:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: rgb(239 68 68);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: rgb(55 65 81);
+            margin: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-description {
+            color: rgb(107 114 128);
+            margin: 0;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: rgb(55 65 81);
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: rgb(107 114 128);
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: rgb(55 65 81);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-cancel {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: rgb(107 114 128);
+            background: rgba(107, 114, 128, 0.1);
+            border: 1px solid rgba(107, 114, 128, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(107, 114, 128, 0.2);
+        }
+
+        .btn-submit {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <div>
+                    <h1>🗺️ إدارة المناطق</h1>
+                </div>
+                <button class="add-btn" onclick="openModal()">
+                    إضافة منطقة جديدة
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    placeholder="البحث في المناطق..."
+                    oninput="filterAreas()"
+                >
+                <select class="filter-select" onchange="filterAreas()">
+                    <option value="all">جميع المناطق</option>
+                    <option value="active">النشطة فقط</option>
+                    <option value="inactive">غير النشطة</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Areas Grid -->
+        <div class="areas-grid" id="areasGrid">
+            <!-- Area Card 1 -->
+            <div class="area-card">
+                <div class="area-header">
+                    <div>
+                        <h3 class="area-title">بوشر</h3>
+                        <p class="area-subtitle">Bosher</p>
+                    </div>
+                    <div class="status-badge status-active">نشط</div>
+                </div>
+
+                <div class="area-details">
+                    <div class="detail-row">
+                        <span class="detail-label">الكود:</span>
+                        <span class="detail-value">bosher</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">ترتيب العرض:</span>
+                        <span class="sort-order">1</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-edit" onclick="editArea(1)">تعديل</button>
+                    <button class="btn btn-delete" onclick="deleteArea(1)">حذف</button>
+                </div>
+            </div>
+
+            <!-- Area Card 2 -->
+            <div class="area-card">
+                <div class="area-header">
+                    <div>
+                        <h3 class="area-title">الخوض</h3>
+                        <p class="area-subtitle">Al Khoudh</p>
+                    </div>
+                    <div class="status-badge status-active">نشط</div>
+                </div>
+
+                <div class="area-details">
+                    <div class="detail-row">
+                        <span class="detail-label">الكود:</span>
+                        <span class="detail-value">khoudh</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">ترتيب العرض:</span>
+                        <span class="sort-order">2</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-edit" onclick="editArea(2)">تعديل</button>
+                    <button class="btn btn-delete" onclick="deleteArea(2)">حذف</button>
+                </div>
+            </div>
+
+            <!-- Area Card 3 -->
+            <div class="area-card">
+                <div class="area-header">
+                    <div>
+                        <h3 class="area-title">المعبيلة</h3>
+                        <p class="area-subtitle">Al Mabaila</p>
+                    </div>
+                    <div class="status-badge status-inactive">غير نشط</div>
+                </div>
+
+                <div class="area-details">
+                    <div class="detail-row">
+                        <span class="detail-label">الكود:</span>
+                        <span class="detail-value">maabilah</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">ترتيب العرض:</span>
+                        <span class="sort-order">3</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-edit" onclick="editArea(3)">تعديل</button>
+                    <button class="btn btn-delete" onclick="deleteArea(3)">حذف</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (Hidden by default) -->
+        <div class="empty-state hidden" id="emptyState">
+            <div class="empty-icon">🗺️</div>
+            <h3 class="empty-title">لا توجد مناطق</h3>
+            <p class="empty-description">ابدأ بإضافة أول منطقة في النظام</p>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay hidden" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">إضافة منطقة جديدة</h3>
+                <button class="close-btn" onclick="closeModal()">✕</button>
+            </div>
+            
+            <form class="form-group" onsubmit="submitForm(event)">
+                <div class="form-field">
+                    <label class="form-label">الاسم العربي *</label>
+                    <input type="text" class="form-input" name="name_ar" required>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label">الاسم الإنجليزي *</label>
+                    <input type="text" class="form-input" name="name_en" required>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label">الكود *</label>
+                    <input type="text" class="form-input" name="code" required placeholder="مثل: bosher, khoudh, maabilah">
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label">ترتيب العرض</label>
+                    <input type="number" class="form-input" name="sort_order" min="0" value="0">
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" class="checkbox" name="is_active" checked>
+                    <label class="form-label">نشط</label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">إلغاء</button>
+                    <button type="submit" class="btn-submit">إضافة</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('modal').classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = 'إضافة منطقة جديدة';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        function editArea(id) {
+            document.getElementById('modal').classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = 'تعديل المنطقة';
+            // Here you would populate the form with existing data
+        }
+
+        function deleteArea(id) {
+            if (confirm('هل أنت متأكد من حذف هذه المنطقة؟')) {
+                // Here you would handle the delete operation
+                alert('تم حذف المنطقة بنجاح');
+            }
+        }
+
+        function submitForm(event) {
+            event.preventDefault();
+            // Here you would handle the form submission
+            alert('تم حفظ المنطقة بنجاح');
+            closeModal();
+        }
+
+        function filterAreas() {
+            // Here you would implement the filtering logic
+            console.log('Filtering areas...');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

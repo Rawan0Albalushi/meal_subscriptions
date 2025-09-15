@@ -76,13 +76,16 @@ const SellerMeals = () => {
                 const data = await response.json();
                 console.log('🍽️ البيانات المستلمة من الخادم:', data.data);
                 
-                // مراقبة وقت التوصيل لكل وجبة
+                // مراقبة وقت التوصيل وأنواع الاشتراك لكل وجبة
                 data.data.forEach((meal, index) => {
                     console.log(`🕐 وجبة ${index + 1} (${meal.name_ar}):`, {
                         delivery_time: meal.delivery_time,
                         delivery_time_formatted: meal.delivery_time_formatted,
                         type: typeof meal.delivery_time,
-                        formatted_type: typeof meal.delivery_time_formatted
+                        formatted_type: typeof meal.delivery_time_formatted,
+                        subscription_type_ids: meal.subscription_type_ids,
+                        linked_subscription_types: meal.linked_subscription_types,
+                        linked_subscription_types_count: meal.linked_subscription_types?.length || 0
                     });
                 });
                 
@@ -135,7 +138,14 @@ const SellerMeals = () => {
                 formData: formData,
                 hasImage: !!selectedImage,
                 imageName: selectedImage?.name,
-                imageSize: selectedImage?.size
+                imageSize: selectedImage?.size,
+                subscriptionTypeIds: formData.subscription_type_ids,
+                subscriptionTypeIdsType: typeof formData.subscription_type_ids,
+                isArray: Array.isArray(formData.subscription_type_ids),
+                deliveryTime: formData.delivery_time,
+                deliveryTimeType: typeof formData.delivery_time,
+                isAvailable: formData.is_available,
+                isAvailableType: typeof formData.is_available
             });
 
             const formDataToSend = new FormData();
@@ -148,13 +158,11 @@ const SellerMeals = () => {
             formDataToSend.append('price', '0.00');
             formDataToSend.append('meal_type', formData.meal_type);
             formDataToSend.append('delivery_time', formData.delivery_time);
-            formDataToSend.append('is_available', formData.is_available ? '1' : '0');
+            formDataToSend.append('is_available', formData.is_available ? 'true' : 'false');
             
             // إضافة أنواع الاشتراكات المختارة
             if (formData.subscription_type_ids && formData.subscription_type_ids.length > 0) {
-                formData.subscription_type_ids.forEach((id, index) => {
-                    formDataToSend.append(`subscription_type_ids[${index}]`, id);
-                });
+                formDataToSend.append('subscription_type_ids', JSON.stringify(formData.subscription_type_ids));
             }
             
             // إضافة الصورة إذا تم اختيارها
@@ -165,6 +173,12 @@ const SellerMeals = () => {
                     size: selectedImage.size,
                     type: selectedImage.type
                 });
+            }
+
+            // تسجيل جميع البيانات المرسلة
+            console.log('📋 [Frontend] جميع البيانات المرسلة في FormData:');
+            for (let [key, value] of formDataToSend.entries()) {
+                console.log(`  ${key}:`, value, `(type: ${typeof value})`);
             }
 
             const url = editingMeal 
@@ -191,25 +205,45 @@ const SellerMeals = () => {
             console.log('📡 [Frontend] استلام الرد:', {
                 status: response.status,
                 statusText: response.statusText,
-                ok: response.ok
+                ok: response.ok,
+                headers: Object.fromEntries(response.headers.entries())
             });
 
             if (response.ok) {
                 const result = await response.json();
                 console.log('✅ [Frontend] تم حفظ الوجبة بنجاح:', result);
+                console.log('🔍 [Frontend] Debug Info:', result.debug_info);
+                console.log('🔍 [Frontend] Subscription Type IDs:', result.data?.subscription_type_ids);
+                console.log('🔍 [Frontend] Linked Subscription Types:', result.data?.linked_subscription_types);
                 
                 setShowAddModal(false);
                 setEditingMeal(null);
                 resetForm();
-                fetchMeals(selectedRestaurant);
+                
+                // إعادة جلب البيانات للتأكد من الحصول على أحدث المعلومات
+                await fetchMeals(selectedRestaurant);
                 
                 const successMessage = editingMeal 
                     ? (language === 'ar' ? 'تم تحديث الوجبة بنجاح' : 'Meal updated successfully')
                     : (language === 'ar' ? 'تم إضافة الوجبة بنجاح' : 'Meal added successfully');
                 showMessage(successMessage, 'success');
             } else {
-                const errorData = await response.json();
-                console.error('❌ [Frontend] خطأ في حفظ الوجبة:', errorData);
+                console.log('❌ [Frontend] خطأ في الاستجابة:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: Object.fromEntries(response.headers.entries())
+                });
+                
+                let errorData;
+                try {
+                    errorData = await response.json();
+                    console.error('❌ [Frontend] بيانات الخطأ:', errorData);
+                    console.error('🔍 [Frontend] Debug Info:', errorData.debug_info);
+                } catch (jsonError) {
+                    console.error('❌ [Frontend] خطأ في قراءة بيانات الخطأ:', jsonError);
+                    errorData = { message: 'خطأ في قراءة الاستجابة' };
+                }
+                
                 showMessage(errorData.message || (language === 'ar' ? 'حدث خطأ في حفظ الوجبة' : 'Error saving meal'), 'error');
             }
         } catch (error) {
@@ -251,7 +285,10 @@ const SellerMeals = () => {
             delivery_time: meal.delivery_time,
             processed_delivery_time: meal.delivery_time_formatted || '',
             is_available: meal.is_available,
-            image: meal.image
+            image: meal.image,
+            subscription_type_ids: meal.subscription_type_ids,
+            linked_subscription_types: meal.linked_subscription_types,
+            linked_subscription_types_count: meal.linked_subscription_types?.length || 0
         });
         
         setShowAddModal(true);

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار إضافة أنواع الاشتراك - Debug</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: #f5f5f5;
+            direction: rtl;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-right: 0.5rem;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .debug {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>اختبار إضافة أنواع الاشتراك - Debug</h1>
+        
+        <!-- اختبار Authentication -->
+        <div class="section">
+            <h3>1. اختبار Authentication</h3>
+            <button onclick="testAuth()">اختبار Authentication</button>
+            <div id="authResult"></div>
+        </div>
+
+        <!-- اختبار جلب المطاعم -->
+        <div class="section">
+            <h3>2. اختبار جلب المطاعم</h3>
+            <button onclick="testGetRestaurants()">جلب المطاعم</button>
+            <div id="restaurantsResult"></div>
+        </div>
+
+        <!-- اختبار إضافة نوع الاشتراك -->
+        <div class="section">
+            <h3>3. اختبار إضافة نوع الاشتراك</h3>
+            <button onclick="testAddSubscriptionType()">إضافة نوع الاشتراك</button>
+            <div id="subscriptionResult"></div>
+        </div>
+
+        <!-- اختبار جلب أنواع الاشتراك -->
+        <div class="section">
+            <h3>4. اختبار جلب أنواع الاشتراك</h3>
+            <button onclick="testGetSubscriptionTypes()">جلب أنواع الاشتراك</button>
+            <div id="getSubscriptionResult"></div>
+        </div>
+    </div>
+
+    <script>
+        let restaurants = [];
+        let selectedRestaurant = null;
+
+        function showResult(elementId, message, type = 'info') {
+            const resultDiv = document.getElementById(elementId);
+            resultDiv.className = `result ${type}`;
+            resultDiv.textContent = message;
+        }
+
+        async function testAuth() {
+            const token = localStorage.getItem('auth_token');
+            showResult('authResult', `Token: ${token ? 'موجود' : 'غير موجود'}\nToken value: ${token}`, 'debug');
+        }
+
+        async function testGetRestaurants() {
+            try {
+                const response = await fetch('/api/seller/restaurants', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    restaurants = data.data || [];
+                    selectedRestaurant = restaurants.length > 0 ? restaurants[0].id : null;
+                    showResult('restaurantsResult', `نجح جلب المطاعم:\n${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResult('restaurantsResult', `فشل جلب المطاعم:\n${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResult('restaurantsResult', `خطأ في الطلب:\n${error.message}`, 'error');
+            }
+        }
+
+        async function testAddSubscriptionType() {
+            if (!selectedRestaurant) {
+                showResult('subscriptionResult', 'لا يوجد مطعم مختار', 'error');
+                return;
+            }
+
+            const subscriptionData = {
+                restaurant_id: selectedRestaurant,
+                name_ar: 'اشتراك أسبوعي تجريبي',
+                name_en: 'Test Weekly Subscription',
+                description_ar: 'وصف تجريبي للاشتراك الأسبوعي',
+                description_en: 'Test description for weekly subscription',
+                type: 'weekly',
+                price: 50.00,
+                delivery_price: 5.00,
+                meals_count: 7,
+                is_active: true
+            };
+
+            try {
+                console.log('Sending data:', subscriptionData);
+                
+                const response = await fetch('/api/seller/subscription-types', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+                    },
+                    body: JSON.stringify(subscriptionData)
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                if (response.ok) {
+                    showResult('subscriptionResult', `نجح إضافة نوع الاشتراك:\n${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResult('subscriptionResult', `فشل إضافة نوع الاشتراك:\nStatus: ${response.status}\n${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showResult('subscriptionResult', `خطأ في الطلب:\n${error.message}`, 'error');
+            }
+        }
+
+        async function testGetSubscriptionTypes() {
+            if (!selectedRestaurant) {
+                showResult('getSubscriptionResult', 'لا يوجد مطعم مختار', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/seller/restaurants/${selectedRestaurant}/subscription-types`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('getSubscriptionResult', `أنواع الاشتراك:\n${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResult('getSubscriptionResult', `فشل جلب أنواع الاشتراك:\n${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResult('getSubscriptionResult', `خطأ في الطلب:\n${error.message}`, 'error');
+            }
+        }
+
+        // تحميل البيانات عند تحميل الصفحة
+        window.onload = function() {
+            testAuth();
+            testGetRestaurants();
+        };
+    </script>
+</body>
+</html>

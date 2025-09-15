@@ -16,6 +16,7 @@ class RestaurantAddress extends Model
         'address_ar',
         'address_en',
         'area',
+        'area_code',
         'latitude',
         'longitude',
         'is_primary',
@@ -34,6 +35,11 @@ class RestaurantAddress extends Model
     public function restaurant()
     {
         return $this->belongsTo(Restaurant::class);
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class, 'area_code', 'code');
     }
 
     public function getNameAttribute()
@@ -69,6 +75,12 @@ class RestaurantAddress extends Model
 
     public static function getAvailableAreas()
     {
+        // استخدام البيانات من جدول المناطق إذا كانت متوفرة
+        if (class_exists('App\Models\Area')) {
+            return Area::getAreasForApi();
+        }
+        
+        // fallback للبيانات الثابتة
         return [
             'bosher' => [
                 'ar' => 'بوشر',

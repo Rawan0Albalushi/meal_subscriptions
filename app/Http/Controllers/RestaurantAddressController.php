@@ -53,12 +53,16 @@ class RestaurantAddressController extends Controller
     {
         $restaurant = Restaurant::findOrFail($restaurantId);
 
+        // الحصول على المناطق المتاحة من قاعدة البيانات
+        $availableAreas = \App\Models\Area::where('is_active', true)->pluck('code')->toArray();
+        
         $validator = Validator::make($request->all(), [
             'name_ar' => 'required|string|max:255',
             'name_en' => 'required|string|max:255',
             'address_ar' => 'required|string',
             'address_en' => 'required|string',
-            'area' => 'required|string|in:bosher,khoudh,maabilah',
+            'area' => 'required|string|in:' . implode(',', $availableAreas),
+            'area_code' => 'nullable|string|in:' . implode(',', $availableAreas),
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
             'is_primary' => 'boolean',
@@ -95,12 +99,16 @@ class RestaurantAddressController extends Controller
             ->where('id', $addressId)
             ->firstOrFail();
 
+        // الحصول على المناطق المتاحة من قاعدة البيانات
+        $availableAreas = \App\Models\Area::where('is_active', true)->pluck('code')->toArray();
+        
         $validator = Validator::make($request->all(), [
             'name_ar' => 'sometimes|required|string|max:255',
             'name_en' => 'sometimes|required|string|max:255',
             'address_ar' => 'sometimes|required|string',
             'address_en' => 'sometimes|required|string',
-            'area' => 'sometimes|required|string|in:bosher,khoudh,maabilah',
+            'area' => 'sometimes|required|string|in:' . implode(',', $availableAreas),
+            'area_code' => 'nullable|string|in:' . implode(',', $availableAreas),
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
             'is_primary' => 'boolean',

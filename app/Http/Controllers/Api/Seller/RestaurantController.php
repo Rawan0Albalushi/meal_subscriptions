@@ -120,6 +120,9 @@ class RestaurantController extends Controller
             // استبدال البيانات في الطلب
             $request->merge($requestData);
 
+            // الحصول على المناطق المتاحة من قاعدة البيانات
+            $availableAreas = \App\Models\Area::where('is_active', true)->pluck('code')->toArray();
+            
             $validated = $request->validate([
                 'name_ar' => 'required|string|max:255',
                 'name_en' => 'required|string|max:255',
@@ -130,7 +133,7 @@ class RestaurantController extends Controller
                 'address_ar' => 'nullable|string',
                 'address_en' => 'nullable|string',
                 'locations' => 'nullable|array',
-                'locations.*' => 'string|in:bosher,khoudh,maabilah',
+                'locations.*' => 'string|in:' . implode(',', $availableAreas),
                 'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
                 'is_active' => 'boolean'
             ]);
@@ -227,6 +230,9 @@ class RestaurantController extends Controller
         // استبدال البيانات في الطلب
         $request->merge($requestData);
 
+        // الحصول على المناطق المتاحة من قاعدة البيانات
+        $availableAreas = \App\Models\Area::where('is_active', true)->pluck('code')->toArray();
+        
         $validated = $request->validate([
             'name_ar' => 'sometimes|required|string|max:255',
             'name_en' => 'sometimes|required|string|max:255',
@@ -237,7 +243,7 @@ class RestaurantController extends Controller
             'address_ar' => 'nullable|string',
             'address_en' => 'nullable|string',
             'locations' => 'nullable|array',
-            'locations.*' => 'string|in:bosher,khoudh,maabilah',
+            'locations.*' => 'string|in:' . implode(',', $availableAreas),
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
             'is_active' => 'boolean'
         ]);

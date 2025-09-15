@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Models\Meal;
+use App\Models\Area;
 use Illuminate\Http\Request;
 
 class RestaurantController extends Controller
@@ -114,13 +115,9 @@ class RestaurantController extends Controller
         $language = request()->header('Accept-Language', 'ar');
         app()->setLocale($language);
 
-        // الحصول على العناوين المتاحة
-        $locations = Restaurant::where('is_active', true)
-            ->whereNotNull('locations')
-            ->pluck('locations')
-            ->flatten()
-            ->unique()
-            ->values();
+        // الحصول على العناوين المتاحة من جدول المناطق
+        $areas = Area::getActiveAreas();
+        $locations = $areas->pluck('code')->values();
 
         // الحصول على أنواع الوجبات المتاحة
         $mealTypes = Meal::where('is_available', true)
@@ -128,19 +125,7 @@ class RestaurantController extends Controller
             ->unique()
             ->values();
 
-        // ترجمة أسماء العناوين حسب اللغة
-        $locationNames = [
-            'ar' => [
-                'bosher' => 'بوشر',
-                'khoudh' => 'الخوض',
-                'maabilah' => 'المعبيلة'
-            ],
-            'en' => [
-                'bosher' => 'Bosher',
-                'khoudh' => 'Al Khoudh',
-                'maabilah' => 'Al Mabaila'
-            ]
-        ];
+        // ترجمة أسماء العناوين حسب اللغة من نموذج Area
 
         // ترجمة أسماء أنواع الوجبات حسب اللغة
         $mealTypeNames = [
@@ -157,12 +142,12 @@ class RestaurantController extends Controller
         ];
 
         // إضافة الترجمات للعناوين
-        $translatedLocations = $locations->map(function ($location) use ($locationNames, $language) {
+        $translatedLocations = $areas->map(function ($area) {
             return [
-                'key' => $location,
-                'name' => $locationNames[$language][$location] ?? $location
+                'key' => $area->code,
+                'name' => $area->name,
             ];
-        });
+        })->values();
 
         // إضافة الترجمات لأنواع الوجبات
         $translatedMealTypes = $mealTypes->map(function ($mealType) use ($mealTypeNames, $language) {

@@ -332,14 +332,16 @@ class MealController extends Controller
     public function getSubscriptionTypes(Request $request)
     {
         try {
-            $query = \App\Models\SubscriptionType::with('restaurant');
+            $query = \App\Models\SubscriptionType::with('restaurants');
             
             // Filter by restaurant if provided
             if ($request->has('restaurant_id') && $request->restaurant_id) {
-                $query->where('restaurant_id', $request->restaurant_id);
+                $query->whereHas('restaurants', function($q) use ($request) {
+                    $q->where('restaurants.id', $request->restaurant_id);
+                });
             }
             
-            $subscriptionTypes = $query->select('id', 'restaurant_id', 'name_ar', 'name_en', 'type', 'price')->get();
+            $subscriptionTypes = $query->select('id', 'name_ar', 'name_en', 'type', 'price')->get();
 
             return response()->json([
                 'success' => true,

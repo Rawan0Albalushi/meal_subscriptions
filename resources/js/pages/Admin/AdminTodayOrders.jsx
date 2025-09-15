@@ -673,7 +673,7 @@ const AdminTodayOrders = () => {
                                                     🍽️
                                                 </div>
                                                 <span style={{ color: 'rgb(55 65 81)' }}>
-                                                    {language === 'ar' ? order.restaurant?.name_ar : order.restaurant?.name_en}
+                                                    {language === 'ar' ? order.subscription?.restaurant?.name_ar : order.subscription?.restaurant?.name_en}
                                                 </span>
                                             </div>
                                         </td>

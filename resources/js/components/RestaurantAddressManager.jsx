@@ -14,6 +14,7 @@ const RestaurantAddressManager = ({ restaurantId, onAddressesChange }) => {
         address_ar: '',
         address_en: '',
         area: '',
+        area_code: '',
         latitude: '',
         longitude: '',
         is_primary: false
@@ -37,7 +38,7 @@ const RestaurantAddressManager = ({ restaurantId, onAddressesChange }) => {
 
     const fetchAreas = async () => {
         try {
-            const response = await axios.get('/api/restaurant-addresses/areas');
+            const response = await axios.get('/api/areas/api-format');
             setAreas(response.data.data);
         } catch (error) {
             console.error('Error fetching areas:', error);
@@ -48,7 +49,9 @@ const RestaurantAddressManager = ({ restaurantId, onAddressesChange }) => {
         const { name, value, type, checked } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value
+            [name]: type === 'checkbox' ? checked : value,
+            // عند اختيار منطقة، نسجل أيضاً area_code
+            ...(name === 'area' && { area_code: value })
         }));
     };
 
@@ -59,6 +62,7 @@ const RestaurantAddressManager = ({ restaurantId, onAddressesChange }) => {
             address_ar: '',
             address_en: '',
             area: '',
+            area_code: '',
             latitude: '',
             longitude: '',
             is_primary: false
@@ -93,6 +97,7 @@ const RestaurantAddressManager = ({ restaurantId, onAddressesChange }) => {
             address_ar: address.address_ar,
             address_en: address.address_en,
             area: address.area,
+            area_code: address.area_code || address.area,
             latitude: address.latitude || '',
             longitude: address.longitude || '',
             is_primary: address.is_primary

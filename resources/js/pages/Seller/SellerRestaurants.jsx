@@ -29,6 +29,7 @@ const SellerRestaurants = () => {
     const [showAddModal, setShowAddModal] = useState(false);
     const [editingRestaurant, setEditingRestaurant] = useState(null);
     const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+    const [locationOptions, setLocationOptions] = useState([]);
     const [activeTab, setActiveTab] = useState('list');
     
     // Popup states
@@ -56,6 +57,7 @@ const SellerRestaurants = () => {
 
     useEffect(() => {
         fetchRestaurants();
+        fetchLocationOptions();
     }, []);
 
     const fetchRestaurants = async () => {
@@ -89,6 +91,36 @@ const SellerRestaurants = () => {
             );
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchLocationOptions = async () => {
+        try {
+            const response = await fetch('/api/areas/api-format');
+            if (response.ok) {
+                const data = await response.json();
+                const options = Object.entries(data.data).map(([code, names]) => ({
+                    value: code,
+                    labelAr: names.ar,
+                    labelEn: names.en
+                }));
+                setLocationOptions(options);
+            } else {
+                // Fallback to hardcoded options if API fails
+                setLocationOptions([
+                    { value: 'bosher', labelAr: 'بوشر', labelEn: 'Bosher' },
+                    { value: 'khoudh', labelAr: 'الخوض', labelEn: 'Khoudh' },
+                    { value: 'maabilah', labelAr: 'معبيلة', labelEn: 'Maabilah' }
+                ]);
+            }
+        } catch (error) {
+            console.error('Error fetching location options:', error);
+            // Fallback to hardcoded options
+            setLocationOptions([
+                { value: 'bosher', labelAr: 'بوشر', labelEn: 'Bosher' },
+                { value: 'khoudh', labelAr: 'الخوض', labelEn: 'Khoudh' },
+                { value: 'maabilah', labelAr: 'معبيلة', labelEn: 'Maabilah' }
+            ]);
         }
     };
 
@@ -340,11 +372,6 @@ const SellerRestaurants = () => {
         });
     };
 
-    const locationOptions = [
-        { value: 'bosher', labelAr: 'بوشر', labelEn: 'Bosher' },
-        { value: 'khoudh', labelAr: 'الخوض', labelEn: 'Khoudh' },
-        { value: 'maabilah', labelAr: 'معبيلة', labelEn: 'Maabilah' }
-    ];
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];

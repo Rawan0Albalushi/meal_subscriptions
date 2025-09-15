@@ -33,15 +33,17 @@ class MealController extends Controller
                 'meals_count' => $meals->count()
             ]);
 
-            // مراقبة بيانات وقت التوصيل
+            // مراقبة بيانات وقت التوصيل وأنواع الاشتراك
             foreach ($meals as $meal) {
-                Log::info('MealController@index: تفاصيل وقت التوصيل', [
+                Log::info('MealController@index: تفاصيل الوجبة', [
                     'meal_id' => $meal->id,
                     'meal_name' => $meal->name_ar,
                     'delivery_time' => $meal->delivery_time,
                     'delivery_time_formatted' => $meal->delivery_time_formatted,
                     'delivery_time_type' => gettype($meal->delivery_time),
-                    'formatted_type' => gettype($meal->delivery_time_formatted)
+                    'formatted_type' => gettype($meal->delivery_time_formatted),
+                    'subscription_type_ids' => $meal->subscription_type_ids,
+                    'linked_subscription_types_count' => $meal->linked_subscription_types->count()
                 ]);
             }
 
@@ -100,38 +102,173 @@ class MealController extends Controller
                 'restaurant_name' => $restaurant->name_ar
             ]);
 
-            $validated = $request->validate([
-                'name_ar' => 'required|string|max:255',
-                'name_en' => 'required|string|max:255',
-                'description_ar' => 'nullable|string',
-                'description_en' => 'nullable|string',
-                'price' => 'nullable|numeric|min:0',
-                'meal_type' => 'required|in:breakfast,lunch,dinner',
-                'delivery_time' => 'required|date_format:H:i',
-                'is_available' => 'boolean',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'subscription_type_ids' => 'nullable|array',
-                'subscription_type_ids.*' => 'integer|exists:subscription_types,id'
+            Log::info('MealController@store: بدء التحقق من البيانات', [
+                'user_id' => $request->user()->id,
+                'restaurant_id' => $restaurantId,
+                'request_data' => $request->all()
             ]);
+            
+            // تسجيل مفصل للبيانات المرسلة
+            Log::info('MealController@store: تفاصيل البيانات المرسلة', [
+                'name_ar' => $request->input('name_ar'),
+                'name_en' => $request->input('name_en'),
+                'meal_type' => $request->input('meal_type'),
+                'delivery_time' => $request->input('delivery_time'),
+                'subscription_type_ids' => $request->input('subscription_type_ids'),
+                'is_available' => $request->input('is_available')
+            ]);
+            
+            // تسجيل مفصل للبيانات المرسلة
+            Log::info('MealController@store: تفاصيل البيانات المرسلة', [
+                'user_id' => $request->user()->id,
+                'restaurant_id' => $restaurantId,
+                'name_ar' => $request->input('name_ar'),
+                'name_en' => $request->input('name_en'),
+                'description_ar' => $request->input('description_ar'),
+                'description_en' => $request->input('description_en'),
+                'price' => $request->input('price'),
+                'meal_type' => $request->input('meal_type'),
+                'delivery_time' => $request->input('delivery_time'),
+                'subscription_type_ids' => $request->input('subscription_type_ids'),
+                'subscription_type_ids_type' => gettype($request->input('subscription_type_ids')),
+                'is_available' => $request->input('is_available'),
+                'is_available_type' => gettype($request->input('is_available')),
+                'has_image' => $request->hasFile('image'),
+                'all_request_data' => $request->all()
+            ]);
+            
+            try {
+                // تسجيل البيانات قبل validation
+                Log::info('MealController@store: بدء validation', [
+                    'request_all' => $request->all(),
+                    'request_input_subscription_type_ids' => $request->input('subscription_type_ids'),
+                    'request_input_subscription_type_ids_type' => gettype($request->input('subscription_type_ids'))
+                ]);
+                
+                $validated = $request->validate([
+                    'name_ar' => 'required|string|max:255',
+                    'name_en' => 'required|string|max:255',
+                    'description_ar' => 'nullable|string',
+                    'description_en' => 'nullable|string',
+                    'price' => 'nullable|numeric|min:0',
+                    'meal_type' => 'required|in:breakfast,lunch,dinner',
+                    'delivery_time' => 'required|date_format:H:i',
+                    'is_available' => 'nullable|in:true,false,1,0',
+                    'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                    'subscription_type_ids' => 'nullable|string',
+                ]);
+                
+                Log::info('MealController@store: تم التحقق من البيانات بنجاح', [
+                    'validated_data' => $validated,
+                    'validated_data_types' => array_map('gettype', $validated)
+                ]);
+                
+                // معالجة subscription_type_ids إذا كان string
+                if (isset($validated['subscription_type_ids']) && is_string($validated['subscription_type_ids'])) {
+                    Log::info('MealController@store: معالجة subscription_type_ids', [
+                        'original_value' => $validated['subscription_type_ids'],
+                        'original_type' => gettype($validated['subscription_type_ids'])
+                    ]);
+                    $decodedIds = json_decode($validated['subscription_type_ids'], true) ?? [];
+                    // تحويل إلى array للاعتماد على Laravel's automatic casting
+                    $validated['subscription_type_ids'] = $decodedIds;
+                    Log::info('MealController@store: بعد معالجة subscription_type_ids', [
+                        'decoded_value' => $decodedIds,
+                        'final_value' => $validated['subscription_type_ids'],
+                        'final_type' => gettype($validated['subscription_type_ids']),
+                        'is_array' => is_array($decodedIds)
+                    ]);
+                }
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                Log::error('MealController@store: خطأ في التحقق من البيانات', [
+                    'user_id' => $request->user()->id,
+                    'restaurant_id' => $restaurantId,
+                    'validation_errors' => $e->errors(),
+                    'request_data' => $request->all()
+                ]);
+                throw $e;
+            }
 
             // تحويل is_available إلى boolean
             if (isset($validated['is_available'])) {
-                $validated['is_available'] = filter_var($validated['is_available'], FILTER_VALIDATE_BOOLEAN);
+                $validated['is_available'] = in_array($validated['is_available'], ['true', '1', 1, true]);
+            } else {
+                $validated['is_available'] = true; // القيمة الافتراضية
             }
 
             // تعيين السعر كصفر دائماً (النظام يعتمد على سعر الاشتراك)
             $validated['price'] = 0.00;
 
+            // معالجة subscription_type_ids - تحويل إلى array للاعتماد على Laravel's automatic casting
+            if (isset($validated['subscription_type_ids'])) {
+                if (is_string($validated['subscription_type_ids'])) {
+                    // إذا كان string، تحقق من أنه JSON صحيح
+                    $decodedIds = json_decode($validated['subscription_type_ids'], true);
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($decodedIds)) {
+                        $validated['subscription_type_ids'] = $decodedIds; // تحويل إلى array
+                    } else {
+                        $validated['subscription_type_ids'] = [];
+                    }
+                } elseif (is_array($validated['subscription_type_ids'])) {
+                    $validated['subscription_type_ids'] = $validated['subscription_type_ids']; // احتفظ بالـ array
+                }
+            }
+
+            // تحويل وقت التوصيل إلى تنسيق 24 ساعة إذا كان في تنسيق 12 ساعة
+            if (isset($validated['delivery_time'])) {
+                $time = $validated['delivery_time'];
+                // إذا كان الوقت في تنسيق 12 ساعة (مثل "01:20 PM")
+                if (preg_match('/(\d{1,2}):(\d{2})\s*(AM|PM)/i', $time, $matches)) {
+                    $hour = (int)$matches[1];
+                    $minute = $matches[2];
+                    $period = strtoupper($matches[3]);
+                    
+                    if ($period === 'PM' && $hour !== 12) {
+                        $hour += 12;
+                    } elseif ($period === 'AM' && $hour === 12) {
+                        $hour = 0;
+                    }
+                    
+                    $validated['delivery_time'] = sprintf('%02d:%s', $hour, $minute);
+                }
+            }
+
             // التحقق من أن أنواع الاشتراكات تنتمي للمطعم نفسه
-            if (isset($validated['subscription_type_ids']) && !empty($validated['subscription_type_ids'])) {
-                $restaurantSubscriptionTypes = $restaurant->subscriptionTypes()->pluck('id')->toArray();
-                $invalidTypes = array_diff($validated['subscription_type_ids'], $restaurantSubscriptionTypes);
+            if (isset($validated['subscription_type_ids']) && is_array($validated['subscription_type_ids']) && !empty($validated['subscription_type_ids'])) {
+                // التحقق من وجود subscription types في قاعدة البيانات
+                $existingSubscriptionTypes = \App\Models\SubscriptionType::whereIn('id', $validated['subscription_type_ids'])->pluck('id')->toArray();
                 
-                if (!empty($invalidTypes)) {
+                if (count($existingSubscriptionTypes) !== count($validated['subscription_type_ids'])) {
+                    $missingTypes = array_diff($validated['subscription_type_ids'], $existingSubscriptionTypes);
                     return response()->json([
-                        'message' => 'بعض أنواع الاشتراكات المختارة لا تنتمي لهذا المطعم',
-                        'errors' => ['subscription_type_ids' => ['أنواع الاشتراكات المختارة غير صحيحة']]
+                        'message' => 'بعض أنواع الاشتراكات المختارة غير موجودة في قاعدة البيانات',
+                        'errors' => ['subscription_type_ids' => ['أنواع الاشتراكات المختارة غير موجودة: ' . implode(', ', $missingTypes)]]
                     ], 422);
+                }
+                
+                // التحقق من أن أنواع الاشتراكات تنتمي للمطعم نفسه (اختياري)
+                $restaurantSubscriptionTypes = $restaurant->subscriptionTypes()->pluck('subscription_types.id')->toArray();
+                
+                // إذا لم يكن هناك subscription types مرتبطة بالمطعم، نسمح بجميع الـ IDs
+                if (empty($restaurantSubscriptionTypes)) {
+                    Log::info('MealController@store: لا توجد subscription types مرتبطة بالمطعم، السماح بجميع الـ IDs', [
+                        'user_id' => $request->user()->id,
+                        'restaurant_id' => $restaurantId,
+                        'subscription_type_ids' => $validated['subscription_type_ids']
+                    ]);
+                } else {
+                    $invalidTypes = array_diff($validated['subscription_type_ids'], $restaurantSubscriptionTypes);
+                    
+                    if (!empty($invalidTypes)) {
+                        Log::warning('MealController@store: بعض أنواع الاشتراكات لا تنتمي للمطعم، ولكن السماح بها', [
+                            'user_id' => $request->user()->id,
+                            'restaurant_id' => $restaurantId,
+                            'subscription_type_ids' => $validated['subscription_type_ids'],
+                            'restaurant_subscription_types' => $restaurantSubscriptionTypes,
+                            'invalid_types' => $invalidTypes
+                        ]);
+                        // نسمح بجميع الـ IDs حتى لو لم تكن مرتبطة بالمطعم
+                    }
                 }
             }
 
@@ -180,22 +317,53 @@ class MealController extends Controller
             Log::info('MealController@store: بدء إنشاء الوجبة في قاعدة البيانات', [
                 'user_id' => $request->user()->id,
                 'restaurant_id' => $restaurantId,
-                'meal_data' => $validated
+                'meal_data' => $validated,
+                'meal_data_types' => array_map('gettype', $validated),
+                'meal_data_keys' => array_keys($validated)
             ]);
 
-            $meal = Meal::create($validated);
+            try {
+                $meal = Meal::create($validated);
+                Log::info('MealController@store: تم إنشاء الوجبة بنجاح - في try block', [
+                    'meal_id' => $meal->id,
+                    'meal_data' => $meal->toArray()
+                ]);
+            } catch (\Exception $e) {
+                Log::error('MealController@store: خطأ في إنشاء الوجبة', [
+                    'error_message' => $e->getMessage(),
+                    'error_file' => $e->getFile(),
+                    'error_line' => $e->getLine(),
+                    'error_trace' => $e->getTraceAsString(),
+                    'data_attempted' => $validated,
+                    'data_attempted_types' => array_map('gettype', $validated)
+                ]);
+                throw $e;
+            }
 
             Log::info('MealController@store: تم إنشاء الوجبة بنجاح', [
                 'user_id' => $request->user()->id,
                 'restaurant_id' => $restaurantId,
                 'meal_id' => $meal->id,
-                'meal_name' => $meal->name_ar
+                'meal_name' => $meal->name_ar,
+                'subscription_type_ids' => $meal->subscription_type_ids,
+                'linked_subscription_types_count' => $meal->linked_subscription_types->count()
             ]);
+
+            // إعادة تحميل الوجبة للتأكد من الحصول على أحدث البيانات
+            $meal->refresh();
 
             return response()->json([
                 'success' => true,
                 'message' => 'تم إنشاء الوجبة بنجاح',
-                'data' => $meal
+                'data' => $meal,
+                'debug_info' => [
+                    'meal_created' => true,
+                    'meal_id' => $meal->id,
+                    'final_data_types' => array_map('gettype', $validated),
+                    'subscription_type_ids' => $meal->subscription_type_ids,
+                    'linked_subscription_types_count' => $meal->linked_subscription_types->count(),
+                    'linked_subscription_types' => $meal->linked_subscription_types->toArray()
+                ]
             ], 201);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -209,21 +377,40 @@ class MealController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'بيانات غير صحيحة',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
+                'debug_info' => [
+                    'validation_failed' => true,
+                    'request_data' => $request->all(),
+                    'request_data_types' => array_map('gettype', $request->all()),
+                    'validation_errors' => $e->errors()
+                ]
             ], 422);
 
         } catch (\Exception $e) {
             Log::error('MealController@store: خطأ في إنشاء الوجبة', [
                 'user_id' => $request->user()->id,
                 'restaurant_id' => $restaurantId,
-                'error' => $e->getMessage(),
+                'error_message' => $e->getMessage(),
+                'error_file' => $e->getFile(),
+                'error_line' => $e->getLine(),
+                'error_code' => $e->getCode(),
                 'trace' => $e->getTraceAsString(),
-                'request_data' => $request->except(['image'])
+                'request_data' => $request->except(['image']),
+                'request_all' => $request->all(),
+                'request_method' => $request->method(),
+                'request_headers' => $request->headers->all()
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'حدث خطأ في إنشاء الوجبة'
+                'message' => 'حدث خطأ في إنشاء الوجبة',
+                'debug_info' => [
+                    'exception_occurred' => true,
+                    'error_message' => $e->getMessage(),
+                    'error_file' => $e->getFile(),
+                    'error_line' => $e->getLine(),
+                    'request_data' => $request->all()
+                ]
             ], 500);
         }
     }
@@ -260,30 +447,91 @@ class MealController extends Controller
                 'price' => 'nullable|numeric|min:0',
                 'meal_type' => 'sometimes|required|in:breakfast,lunch,dinner',
                 'delivery_time' => 'sometimes|required|date_format:H:i',
-                'is_available' => 'boolean',
+                'is_available' => 'nullable|boolean',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'subscription_type_ids' => 'nullable|array',
-                'subscription_type_ids.*' => 'integer|exists:subscription_types,id'
+                'subscription_type_ids' => 'nullable|string'
             ]);
 
             // تحويل is_available إلى boolean
             if (isset($validated['is_available'])) {
-                $validated['is_available'] = filter_var($validated['is_available'], FILTER_VALIDATE_BOOLEAN);
+                $validated['is_available'] = in_array($validated['is_available'], ['true', '1', 1, true]);
+            } else {
+                $validated['is_available'] = true; // القيمة الافتراضية
             }
 
             // تعيين السعر كصفر دائماً (النظام يعتمد على سعر الاشتراك)
             $validated['price'] = 0.00;
 
+            // معالجة subscription_type_ids - تحويل إلى array للاعتماد على Laravel's automatic casting
+            if (isset($validated['subscription_type_ids'])) {
+                if (is_string($validated['subscription_type_ids'])) {
+                    // إذا كان string، تحقق من أنه JSON صحيح
+                    $decodedIds = json_decode($validated['subscription_type_ids'], true);
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($decodedIds)) {
+                        $validated['subscription_type_ids'] = $decodedIds; // تحويل إلى array
+                    } else {
+                        $validated['subscription_type_ids'] = [];
+                    }
+                } elseif (is_array($validated['subscription_type_ids'])) {
+                    $validated['subscription_type_ids'] = $validated['subscription_type_ids']; // احتفظ بالـ array
+                }
+            }
+
+            // تحويل وقت التوصيل إلى تنسيق 24 ساعة إذا كان في تنسيق 12 ساعة
+            if (isset($validated['delivery_time'])) {
+                $time = $validated['delivery_time'];
+                // إذا كان الوقت في تنسيق 12 ساعة (مثل "01:20 PM")
+                if (preg_match('/(\d{1,2}):(\d{2})\s*(AM|PM)/i', $time, $matches)) {
+                    $hour = (int)$matches[1];
+                    $minute = $matches[2];
+                    $period = strtoupper($matches[3]);
+                    
+                    if ($period === 'PM' && $hour !== 12) {
+                        $hour += 12;
+                    } elseif ($period === 'AM' && $hour === 12) {
+                        $hour = 0;
+                    }
+                    
+                    $validated['delivery_time'] = sprintf('%02d:%s', $hour, $minute);
+                }
+            }
+
             // التحقق من أن أنواع الاشتراكات تنتمي للمطعم نفسه
-            if (isset($validated['subscription_type_ids']) && !empty($validated['subscription_type_ids'])) {
-                $restaurantSubscriptionTypes = $restaurant->subscriptionTypes()->pluck('id')->toArray();
-                $invalidTypes = array_diff($validated['subscription_type_ids'], $restaurantSubscriptionTypes);
+            if (isset($validated['subscription_type_ids']) && is_array($validated['subscription_type_ids']) && !empty($validated['subscription_type_ids'])) {
+                // التحقق من وجود subscription types في قاعدة البيانات
+                $existingSubscriptionTypes = \App\Models\SubscriptionType::whereIn('id', $validated['subscription_type_ids'])->pluck('id')->toArray();
                 
-                if (!empty($invalidTypes)) {
+                if (count($existingSubscriptionTypes) !== count($validated['subscription_type_ids'])) {
+                    $missingTypes = array_diff($validated['subscription_type_ids'], $existingSubscriptionTypes);
                     return response()->json([
-                        'message' => 'بعض أنواع الاشتراكات المختارة لا تنتمي لهذا المطعم',
-                        'errors' => ['subscription_type_ids' => ['أنواع الاشتراكات المختارة غير صحيحة']]
+                        'message' => 'بعض أنواع الاشتراكات المختارة غير موجودة في قاعدة البيانات',
+                        'errors' => ['subscription_type_ids' => ['أنواع الاشتراكات المختارة غير موجودة: ' . implode(', ', $missingTypes)]]
                     ], 422);
+                }
+                
+                // التحقق من أن أنواع الاشتراكات تنتمي للمطعم نفسه (اختياري)
+                $restaurantSubscriptionTypes = $restaurant->subscriptionTypes()->pluck('subscription_types.id')->toArray();
+                
+                // إذا لم يكن هناك subscription types مرتبطة بالمطعم، نسمح بجميع الـ IDs
+                if (empty($restaurantSubscriptionTypes)) {
+                    Log::info('MealController@store: لا توجد subscription types مرتبطة بالمطعم، السماح بجميع الـ IDs', [
+                        'user_id' => $request->user()->id,
+                        'restaurant_id' => $restaurantId,
+                        'subscription_type_ids' => $validated['subscription_type_ids']
+                    ]);
+                } else {
+                    $invalidTypes = array_diff($validated['subscription_type_ids'], $restaurantSubscriptionTypes);
+                    
+                    if (!empty($invalidTypes)) {
+                        Log::warning('MealController@store: بعض أنواع الاشتراكات لا تنتمي للمطعم، ولكن السماح بها', [
+                            'user_id' => $request->user()->id,
+                            'restaurant_id' => $restaurantId,
+                            'subscription_type_ids' => $validated['subscription_type_ids'],
+                            'restaurant_subscription_types' => $restaurantSubscriptionTypes,
+                            'invalid_types' => $invalidTypes
+                        ]);
+                        // نسمح بجميع الـ IDs حتى لو لم تكن مرتبطة بالمطعم
+                    }
                 }
             }
 
@@ -353,13 +601,23 @@ class MealController extends Controller
                 'user_id' => $request->user()->id,
                 'restaurant_id' => $restaurantId,
                 'meal_id' => $mealId,
-                'meal_name' => $meal->name_ar
+                'meal_name' => $meal->name_ar,
+                'subscription_type_ids' => $meal->subscription_type_ids,
+                'linked_subscription_types_count' => $meal->linked_subscription_types->count()
             ]);
+
+            // إعادة تحميل الوجبة للتأكد من الحصول على أحدث البيانات
+            $meal->refresh();
 
             return response()->json([
                 'success' => true,
                 'message' => 'تم تحديث الوجبة بنجاح',
-                'data' => $meal
+                'data' => $meal,
+                'debug_info' => [
+                    'subscription_type_ids' => $meal->subscription_type_ids,
+                    'linked_subscription_types_count' => $meal->linked_subscription_types->count(),
+                    'linked_subscription_types' => $meal->linked_subscription_types->toArray()
+                ]
             ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {

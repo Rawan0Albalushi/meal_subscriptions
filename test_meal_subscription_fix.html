@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار إصلاح أنواع الاشتراك في الوجبات</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>اختبار إصلاح أنواع الاشتراك في الوجبات</h1>
+        
+        <div class="test-section info">
+            <h3>📋 ملخص الإصلاحات المطبقة:</h3>
+            <ul>
+                <li>✅ إضافة logging مفصل في Backend لمراقبة حفظ أنواع الاشتراك</li>
+                <li>✅ إضافة debug_info في API response</li>
+                <li>✅ إضافة meal->refresh() للتأكد من أحدث البيانات</li>
+                <li>✅ تحسين logging في Frontend لمراقبة البيانات المرسلة والمستلمة</li>
+                <li>✅ إضافة await fetchMeals() بعد الحفظ للتأكد من تحديث البيانات</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 خطوات الاختبار:</h3>
+            <ol>
+                <li>افتح لوحة تحكم البائع</li>
+                <li>اذهب إلى صفحة الوجبات</li>
+                <li>اضغط على "تعديل" لأي وجبة</li>
+                <li>اختر أكثر من نوع اشتراك</li>
+                <li>اضغط "حفظ"</li>
+                <li>تحقق من أن أنواع الاشتراك تظهر في قائمة الوجبات</li>
+                <li>تحقق من console logs للتأكد من البيانات</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 ما يجب مراقبته:</h3>
+            <ul>
+                <li><strong>في Console (F12):</strong></li>
+                <li>- رسائل Frontend تبدأ بـ 🔍 و ✅</li>
+                <li>- subscription_type_ids في البيانات المرسلة</li>
+                <li>- linked_subscription_types في البيانات المستلمة</li>
+                <li><strong>في Network Tab:</strong></li>
+                <li>- PUT request للوجبة يحتوي على subscription_type_ids</li>
+                <li>- Response يحتوي على debug_info</li>
+                <li><strong>في الواجهة:</strong></li>
+                <li>- أنواع الاشتراك تظهر كـ badges تحت الوجبة</li>
+                <li>- عند فتح التعديل، أنواع الاشتراك مختارة</li>
+            </ul>
+        </div>
+
+        <div class="test-section success">
+            <h3>✅ النتيجة المتوقعة:</h3>
+            <p>بعد تطبيق هذه الإصلاحات، يجب أن تعمل أنواع الاشتراك المتعددة بشكل صحيح:</p>
+            <ul>
+                <li>يتم حفظ أنواع الاشتراك المختارة في قاعدة البيانات</li>
+                <li>تظهر أنواع الاشتراك في قائمة الوجبات</li>
+                <li>عند تعديل الوجبة، أنواع الاشتراك السابقة مختارة</li>
+                <li>يمكن إضافة أو إزالة أنواع اشتراك جديدة</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 ملاحظات إضافية:</h3>
+            <p>إذا استمرت المشكلة، تحقق من:</p>
+            <ul>
+                <li>أن المستخدم لديه صلاحيات على المطعم</li>
+                <li>أن أنواع الاشتراك موجودة في قاعدة البيانات</li>
+                <li>أن الوجبة تنتمي للمطعم الصحيح</li>
+                <li>أن البيانات تُرسل في الطلب (Network tab)</li>
+            </ul>
+        </div>
+
+        <div class="test-section info">
+            <h3>🔧 ملفات تم تعديلها:</h3>
+            <ul>
+                <li><code>app/Http/Controllers/Api/Seller/MealController.php</code> - إضافة logging و debug_info</li>
+                <li><code>resources/js/pages/Seller/SellerMeals.jsx</code> - تحسين logging و fetchMeals</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        console.log('🧪 صفحة اختبار إصلاح أنواع الاشتراك في الوجبات');
+        console.log('📋 تأكد من فتح Console (F12) لمراقبة الـ logs أثناء الاختبار');
+    </script>
+</body>
+</html>

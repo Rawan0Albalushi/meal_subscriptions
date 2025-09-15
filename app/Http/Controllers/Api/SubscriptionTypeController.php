@@ -12,7 +12,7 @@ class SubscriptionTypeController extends Controller
     public function index()
     {
         $subscriptionTypes = SubscriptionType::where('is_active', true)
-            ->with('restaurant')
+            ->with('restaurants')
             ->orderBy('price', 'asc')
             ->get();
 
@@ -25,7 +25,7 @@ class SubscriptionTypeController extends Controller
     public function show($id)
     {
         $subscriptionType = SubscriptionType::where('is_active', true)
-            ->with('restaurant')
+            ->with('restaurants')
             ->findOrFail($id);
 
         return response()->json([
@@ -38,7 +38,7 @@ class SubscriptionTypeController extends Controller
     {
         $subscriptionType = SubscriptionType::where('is_active', true)
             ->where('type', $type)
-            ->with('restaurant')
+            ->with('restaurants')
             ->first();
 
         if (!$subscriptionType) {
@@ -57,7 +57,9 @@ class SubscriptionTypeController extends Controller
     // Get subscription types for a specific restaurant
     public function getByRestaurant($restaurantId)
     {
-        $subscriptionTypes = SubscriptionType::where('restaurant_id', $restaurantId)
+        $subscriptionTypes = SubscriptionType::whereHas('restaurants', function($query) use ($restaurantId) {
+                $query->where('restaurant_id', $restaurantId);
+            })
             ->where('is_active', true)
             ->orderBy('price', 'asc')
             ->get();
@@ -79,6 +81,7 @@ class SubscriptionTypeController extends Controller
             'description_en' => 'nullable|string',
             'type' => 'required|in:weekly,monthly',
             'price' => 'required|numeric|min:0',
+            'delivery_price' => 'nullable|numeric|min:0',
             'meals_count' => 'required|integer|min:1',
             'is_active' => 'boolean',
         ]);
@@ -101,7 +104,12 @@ class SubscriptionTypeController extends Controller
             ], 403);
         }
 
-        $subscriptionType = SubscriptionType::create($request->all());
+        // إنشاء نوع الاشتراك بدون restaurant_id
+        $subscriptionTypeData = $request->except(['restaurant_id']);
+        $subscriptionType = SubscriptionType::create($subscriptionTypeData);
+        
+        // ربط نوع الاشتراك بالمطعم
+        $subscriptionType->restaurants()->attach($request->restaurant_id);
 
         return response()->json([
             'success' => true,
@@ -123,9 +131,11 @@ class SubscriptionTypeController extends Controller
             ], 403);
         }
         
-        // Check if the restaurant belongs to the seller
-        $restaurant = $user->restaurants()->find($subscriptionType->restaurant_id);
-        if (!$restaurant) {
+        // Check if the subscription type belongs to any of the seller's restaurants
+        $sellerRestaurantIds = $user->restaurants()->pluck('id')->toArray();
+        $subscriptionTypeRestaurantIds = $subscriptionType->restaurants()->pluck('restaurant_id')->toArray();
+        
+        if (empty(array_intersect($sellerRestaurantIds, $subscriptionTypeRestaurantIds))) {
             return response()->json([
                 'success' => false,
                 'message' => 'غير مصرح لك بتعديل هذا النوع من الاشتراك'
@@ -139,11 +149,19 @@ class SubscriptionTypeController extends Controller
             'description_en' => 'nullable|string',
             'type' => 'sometimes|required|in:weekly,monthly',
             'price' => 'sometimes|required|numeric|min:0',
+            'delivery_price' => 'nullable|numeric|min:0',
             'meals_count' => 'sometimes|required|integer|min:1',
             'is_active' => 'boolean',
         ]);
 
-        $subscriptionType->update($request->all());
+        // تحديث نوع الاشتراك بدون restaurant_id
+        $subscriptionTypeData = $request->except(['restaurant_id']);
+        $subscriptionType->update($subscriptionTypeData);
+        
+        // إذا تم تمرير restaurant_id، قم بتحديث الربط
+        if ($request->has('restaurant_id')) {
+            $subscriptionType->restaurants()->sync([$request->restaurant_id]);
+        }
 
         return response()->json([
             'success' => true,
@@ -165,9 +183,11 @@ class SubscriptionTypeController extends Controller
             ], 403);
         }
         
-        // Check if the restaurant belongs to the seller
-        $restaurant = $user->restaurants()->find($subscriptionType->restaurant_id);
-        if (!$restaurant) {
+        // Check if the subscription type belongs to any of the seller's restaurants
+        $sellerRestaurantIds = $user->restaurants()->pluck('id')->toArray();
+        $subscriptionTypeRestaurantIds = $subscriptionType->restaurants()->pluck('restaurant_id')->toArray();
+        
+        if (empty(array_intersect($sellerRestaurantIds, $subscriptionTypeRestaurantIds))) {
             return response()->json([
                 'success' => false,
                 'message' => 'غير مصرح لك بحذف هذا النوع من الاشتراك'

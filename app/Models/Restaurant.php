@@ -49,7 +49,7 @@ class Restaurant extends Model
 
     public function subscriptionTypes()
     {
-        return $this->hasMany(SubscriptionType::class);
+        return $this->belongsToMany(SubscriptionType::class, 'restaurant_subscription_type');
     }
 
     public function addresses()

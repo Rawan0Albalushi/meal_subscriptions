@@ -325,33 +325,46 @@ class PaymentController extends Controller
 
         $startDate = Carbon::parse($startDate);
         
+        // Build items then sort ascending by delivery_date to ensure deterministic order
+        $items = [];
         foreach ($deliveryDays as $index => $dayOfWeek) {
             $deliveryDate = $this->calculateDeliveryDate($startDate, $dayOfWeek);
             $mealId = $mealIds[$index] ?? null;
-            
-            Log::info('Creating subscription item', [
-                'index' => $index,
-                'day_of_week' => $dayOfWeek,
-                'meal_id' => $mealId,
-                'delivery_date' => $deliveryDate
-            ]);
-            
             if ($mealId) {
-                $item = SubscriptionItem::create([
-                    'subscription_id' => $subscription->id,
+                $items[] = [
                     'meal_id' => $mealId,
-                    'delivery_date' => $deliveryDate,
                     'day_of_week' => $dayOfWeek,
-                    'price' => 0, // Price is based on subscription type
-                    'status' => 'pending',
-                ]);
-                
-                Log::info('Subscription item created', [
-                    'item_id' => $item->id,
-                    'subscription_id' => $subscription->id,
-                    'meal_id' => $mealId
-                ]);
+                    'delivery_date' => $deliveryDate,
+                ];
             }
+        }
+
+        usort($items, function ($a, $b) {
+            return Carbon::parse($a['delivery_date'])->timestamp <=> Carbon::parse($b['delivery_date'])->timestamp;
+        });
+
+        foreach ($items as $idx => $item) {
+            Log::info('Creating subscription item', [
+                'index' => $idx,
+                'day_of_week' => $item['day_of_week'],
+                'meal_id' => $item['meal_id'],
+                'delivery_date' => $item['delivery_date']
+            ]);
+
+            $created = SubscriptionItem::create([
+                'subscription_id' => $subscription->id,
+                'meal_id' => $item['meal_id'],
+                'delivery_date' => $item['delivery_date'],
+                'day_of_week' => $item['day_of_week'],
+                'price' => 0,
+                'status' => 'pending',
+            ]);
+
+            Log::info('Subscription item created', [
+                'item_id' => $created->id,
+                'subscription_id' => $subscription->id,
+                'meal_id' => $item['meal_id']
+            ]);
         }
     }
 

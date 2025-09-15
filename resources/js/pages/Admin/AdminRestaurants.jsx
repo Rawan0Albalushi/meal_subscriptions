@@ -27,13 +27,44 @@ const AdminRestaurants = () => {
         address_en: '',
         seller_id: null,
         is_active: true,
-        logo: null
+        logo: null,
+        locations: []
     });
     const [sellers, setSellers] = useState([]);
+    const [locationOptions, setLocationOptions] = useState([]); // [{value, labelAr, labelEn}]
+
+    // جلب خيارات المناطق (معرّفة أعلى لتجنب ReferenceError)
+    const fetchLocationOptions = async () => {
+        try {
+            const response = await fetch('/api/areas/api-format');
+            if (response.ok) {
+                const data = await response.json();
+                const options = Object.entries(data.data).map(([code, names]) => ({
+                    value: code,
+                    labelAr: names.ar,
+                    labelEn: names.en
+                }));
+                setLocationOptions(options);
+            }
+        } catch (error) {
+            console.error('Error fetching location options:', error);
+        }
+    };
+
+    const toggleLocation = (code) => {
+        setFormData(prev => {
+            const exists = (prev.locations || []).includes(code);
+            const updated = exists
+                ? prev.locations.filter(c => c !== code)
+                : [ ...(prev.locations || []), code ];
+            return { ...prev, locations: updated };
+        });
+    };
 
     useEffect(() => {
         fetchRestaurants();
         fetchSellers();
+        fetchLocationOptions();
     }, []);
 
     const fetchRestaurants = async () => {
@@ -90,7 +121,8 @@ const AdminRestaurants = () => {
             address_en: restaurant.address_en || '',
             seller_id: restaurant.seller_id || null,
             is_active: restaurant.is_active,
-            logo: null
+            logo: null,
+            locations: restaurant.locations || []
         });
         setShowAddModal(true);
     };
@@ -108,6 +140,9 @@ const AdminRestaurants = () => {
                     } else if (key === 'seller_id' && (value === '' || value === null)) {
                         // Skip empty seller_id
                         return;
+                    } else if (key === 'locations' && Array.isArray(value)) {
+                        value.forEach(v => formDataToSend.append('locations[]', v));
+                        return;
                     }
                     formDataToSend.append(key, value);
                 }
@@ -117,8 +152,12 @@ const AdminRestaurants = () => {
             const url = editingRestaurant 
                 ? `/api/admin/restaurants/${editingRestaurant.id}`
                 : '/api/admin/restaurants';
-            
-            const method = editingRestaurant ? 'PUT' : 'POST';
+
+            // استخدام POST دائماً مع إضافة _method=PUT عند التعديل لضمان قراءة الحقول في Laravel مع multipart/form-data
+            const method = 'POST';
+            if (editingRestaurant) {
+                formDataToSend.append('_method', 'PUT');
+            }
 
             const response = await fetch(url, {
                 method,
@@ -1280,6 +1319,53 @@ const AdminRestaurants = () => {
                                         backgroundColor: 'white'
                                     }}
                                 />
+                            </div>
+
+                            {/* Locations (Areas) Selection */}
+                            <div style={{ marginBottom: '1rem' }}>
+                                <label style={{
+                                    display: 'block',
+                                    marginBottom: '0.5rem',
+                                    fontWeight: '600',
+                                    color: '#374151'
+                                }}>
+                                    {language === 'ar' ? 'المناطق المتاحة' : 'Available Areas'}
+                                </label>
+                                <div style={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    gap: '0.5rem',
+                                    border: '1px solid #e5e7eb',
+                                    borderRadius: '0.5rem',
+                                    padding: '0.75rem',
+                                    background: 'white'
+                                }}>
+                                    {locationOptions.map(opt => {
+                                        const checked = (formData.locations || []).includes(opt.value);
+                                        return (
+                                            <label key={opt.value} style={{
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: '0.35rem',
+                                                padding: '0.35rem 0.5rem',
+                                                border: '1px solid #d1d5db',
+                                                borderRadius: '0.375rem',
+                                                background: checked ? 'rgba(74,117,124,0.08)' : 'white',
+                                                cursor: 'pointer'
+                                            }}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={checked}
+                                                    onChange={() => toggleLocation(opt.value)}
+                                                />
+                                                <span>{language === 'ar' ? opt.labelAr : opt.labelEn}</span>
+                                            </label>
+                                        );
+                                    })}
+                                </div>
+                                <div style={{ marginTop: '0.5rem', color: '#6b7280', fontSize: '0.85rem' }}>
+                                    {language === 'ar' ? 'يمكن اختيار أكثر من منطقة.' : 'You can select multiple areas.'}
+                                </div>
                             </div>
 
 

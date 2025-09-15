@@ -18,7 +18,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware(['auth:sanctum', 'check.user.status'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
@@ -34,6 +34,10 @@ Route::get('/contact-information', [ContactInformationController::class, 'index'
 // Restaurant addresses routes (public)
 Route::get('/restaurant-addresses/areas', [RestaurantAddressController::class, 'getAvailableAreas']);
 
+// Areas routes (public)
+Route::get('/areas', [\App\Http\Controllers\Api\Admin\AreaController::class, 'getActiveAreas']);
+Route::get('/areas/api-format', [\App\Http\Controllers\Api\Admin\AreaController::class, 'getAreasForApi']);
+
 // Subscription type routes
 Route::get('/subscription-types', [SubscriptionTypeController::class, 'index']);
 Route::get('/subscription-types/{id}', [SubscriptionTypeController::class, 'show']);
@@ -41,7 +45,7 @@ Route::get('/subscription-types/type/{type}', [SubscriptionTypeController::class
 Route::get('/restaurants/{restaurantId}/subscription-types', [SubscriptionTypeController::class, 'getByRestaurant']);
 
 // Protected routes
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'check.user.status'])->group(function () {
     // Restaurant owner subscription type management
     Route::middleware('role:restaurant_owner')->group(function () {
         Route::post('/subscription-types', [SubscriptionTypeController::class, 'store']);
@@ -72,7 +76,7 @@ Route::get('/payments/cancel', [PaymentController::class, 'cancel'])->name('paym
 Route::get('/payments/status/{subscriptionId}', [PaymentController::class, 'checkStatus']);
 
 // Admin routes
-Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum', 'check.user.status', 'role:admin'])->prefix('admin')->group(function () {
     // Dashboard
     Route::get('/dashboard', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'index']);
     
@@ -91,6 +95,9 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
     Route::get('meals/restaurants/list', [\App\Http\Controllers\Api\Admin\MealController::class, 'getRestaurants']);
     Route::get('meals/types/list', [\App\Http\Controllers\Api\Admin\MealController::class, 'getMealTypes']);
     Route::get('meals/subscription-types/list', [\App\Http\Controllers\Api\Admin\MealController::class, 'getSubscriptionTypes']);
+    
+    // Areas management
+    Route::apiResource('areas', \App\Http\Controllers\Api\Admin\AreaController::class);
     
     // Subscription management
     Route::get('subscriptions/statistics', [\App\Http\Controllers\Api\Admin\SubscriptionController::class, 'getStatistics']);
@@ -173,7 +180,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
 });
 
 // Seller routes
-Route::middleware(['auth:sanctum', 'role:seller', 'log.auth'])->prefix('seller')->group(function () {
+Route::middleware(['auth:sanctum', 'check.user.status', 'role:seller', 'log.auth'])->prefix('seller')->group(function () {
     // Restaurant management
     Route::apiResource('restaurants', SellerRestaurantController::class);
     Route::put('restaurants/{id}/toggle-status', [SellerRestaurantController::class, 'toggleStatus']);

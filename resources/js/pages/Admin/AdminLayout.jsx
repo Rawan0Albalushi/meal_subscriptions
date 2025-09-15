@@ -10,8 +10,8 @@ import ContactInformationManagement from './ContactInformationManagement';
 import SubscriptionTypes from './SubscriptionTypes';
 import AdminMeals from './AdminMeals';
 import AdminSubscriptions from './AdminSubscriptions';
-import AdminPayments from './AdminPayments';
 import AdminTodayOrders from './AdminTodayOrders';
+import AdminAreas from './AdminAreas';
 
 const AdminLayout = () => {
     const { t, dir, language, toggleLanguage } = useLanguage();
@@ -68,6 +68,12 @@ const AdminLayout = () => {
             description: language === 'ar' ? 'إدارة جميع الوجبات' : 'Manage all meals'
         },
         {
+            path: '/admin/areas',
+            icon: '📍',
+            label: language === 'ar' ? 'المناطق' : 'Areas',
+            description: language === 'ar' ? 'إدارة المناطق المتاحة' : 'Manage available areas'
+        },
+        {
             path: '/admin/subscriptions',
             icon: '📋',
             label: language === 'ar' ? 'الاشتراكات' : 'Subscriptions',
@@ -78,12 +84,6 @@ const AdminLayout = () => {
             icon: '📋',
             label: language === 'ar' ? 'طلبات اليوم' : 'Today\'s Orders',
             description: language === 'ar' ? 'عرض طلبات اليوم' : 'View today\'s orders'
-        },
-        {
-            path: '/admin/payments',
-            icon: '💳',
-            label: language === 'ar' ? 'المدفوعات' : 'Payments',
-            description: language === 'ar' ? 'إدارة جميع المدفوعات' : 'Manage all payments'
         },
         {
             path: '/admin/reports',
@@ -416,8 +416,8 @@ const AdminLayout = () => {
                         <Route path="/users" element={<AdminUsers />} />
                         <Route path="/restaurants" element={<AdminRestaurants />} />
                         <Route path="/meals" element={<AdminMeals />} />
+                        <Route path="/areas" element={<AdminAreas />} />
                         <Route path="/subscriptions" element={<AdminSubscriptions />} />
-                        <Route path="/payments" element={<AdminPayments />} />
                         <Route path="/reports" element={<AdminReports />} />
                         <Route path="/subscription-types" element={<SubscriptionTypes />} />
                         <Route path="/contact-information" element={<ContactInformationManagement />} />

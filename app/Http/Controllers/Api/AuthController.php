@@ -42,6 +42,7 @@ class AuthController extends Controller
             'name' => $request->fullName,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'is_active' => true, // المستخدمون الجدد نشطون تلقائياً
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -92,6 +93,15 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
+        
+        // Check if user is active
+        if (!$user->is_active) {
+            Auth::logout();
+            return response()->json([
+                'success' => false,
+                'message' => 'حسابك غير مفعل. يرجى التواصل مع الإدارة.'
+            ], 403);
+        }
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([

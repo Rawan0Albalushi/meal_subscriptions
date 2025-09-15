@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار تكامل المناطق مع إضافة المطاعم</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: #f5f5f5;
+            direction: rtl;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-right: 0.5rem;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            white-space: pre-wrap;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .areas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .area-card {
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+        }
+        .area-card.selected {
+            border-color: #007bff;
+            background: #f8f9ff;
+        }
+        .area-card input[type="radio"] {
+            width: auto;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>اختبار تكامل المناطق مع إضافة المطاعم</h1>
+        
+        <!-- اختبار جلب المناطق -->
+        <div class="section">
+            <h3>1. اختبار جلب المناطق من قاعدة البيانات</h3>
+            <button onclick="testGetAreas()">جلب المناطق</button>
+            <div id="areasResult"></div>
+            <div id="areasGrid" class="areas-grid"></div>
+        </div>
+
+        <!-- اختبار إضافة عنوان مطعم -->
+        <div class="section">
+            <h3>2. اختبار إضافة عنوان مطعم</h3>
+            <div class="form-group">
+                <label>معرف المطعم:</label>
+                <input type="number" id="restaurantId" value="1" placeholder="أدخل معرف المطعم">
+            </div>
+            <div class="form-group">
+                <label>اسم العنوان (عربي):</label>
+                <input type="text" id="nameAr" value="الفرع الرئيسي" placeholder="اسم العنوان بالعربية">
+            </div>
+            <div class="form-group">
+                <label>اسم العنوان (إنجليزي):</label>
+                <input type="text" id="nameEn" value="Main Branch" placeholder="اسم العنوان بالإنجليزية">
+            </div>
+            <div class="form-group">
+                <label>العنوان التفصيلي (عربي):</label>
+                <textarea id="addressAr" rows="2" placeholder="العنوان التفصيلي بالعربية">شارع السلطان قابوس، بوشر</textarea>
+            </div>
+            <div class="form-group">
+                <label>العنوان التفصيلي (إنجليزي):</label>
+                <textarea id="addressEn" rows="2" placeholder="العنوان التفصيلي بالإنجليزية">Sultan Qaboos Street, Bosher</textarea>
+            </div>
+            <div class="form-group">
+                <label>المنطقة:</label>
+                <select id="areaSelect">
+                    <option value="">اختر المنطقة</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>خط العرض:</label>
+                <input type="number" id="latitude" step="any" placeholder="23.6138">
+            </div>
+            <div class="form-group">
+                <label>خط الطول:</label>
+                <input type="number" id="longitude" step="any" placeholder="58.5922">
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="isPrimary"> عنوان رئيسي
+                </label>
+            </div>
+            <button onclick="testAddAddress()">إضافة العنوان</button>
+            <div id="addressResult"></div>
+        </div>
+
+        <!-- اختبار جلب عناوين مطعم -->
+        <div class="section">
+            <h3>3. اختبار جلب عناوين مطعم</h3>
+            <div class="form-group">
+                <label>معرف المطعم:</label>
+                <input type="number" id="getAddressesRestaurantId" value="1" placeholder="أدخل معرف المطعم">
+            </div>
+            <button onclick="testGetAddresses()">جلب عناوين المطعم</button>
+            <div id="getAddressesResult"></div>
+        </div>
+    </div>
+
+    <script>
+        let areas = {};
+
+        function showResult(elementId, message, type = 'info') {
+            const resultDiv = document.getElementById(elementId);
+            resultDiv.className = `result ${type}`;
+            resultDiv.textContent = message;
+        }
+
+        async function testGetAreas() {
+            try {
+                const response = await fetch('/api/areas/api-format');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    areas = data.data;
+                    showResult('areasResult', `نجح جلب المناطق:\n${JSON.stringify(data, null, 2)}`, 'success');
+                    displayAreas();
+                    populateAreaSelect();
+                } else {
+                    showResult('areasResult', `فشل جلب المناطق:\n${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResult('areasResult', `خطأ في الطلب:\n${error.message}`, 'error');
+            }
+        }
+
+        function displayAreas() {
+            const grid = document.getElementById('areasGrid');
+            grid.innerHTML = '';
+            
+            Object.entries(areas).forEach(([code, names]) => {
+                const card = document.createElement('div');
+                card.className = 'area-card';
+                card.innerHTML = `
+                    <input type="radio" name="area" value="${code}" onchange="selectArea('${code}')">
+                    <div><strong>${names.ar}</strong></div>
+                    <div style="color: #666; font-size: 0.9em;">${names.en}</div>
+                    <div style="color: #999; font-size: 0.8em;">${code}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function populateAreaSelect() {
+            const select = document.getElementById('areaSelect');
+            select.innerHTML = '<option value="">اختر المنطقة</option>';
+            
+            Object.entries(areas).forEach(([code, names]) => {
+                const option = document.createElement('option');
+                option.value = code;
+                option.textContent = `${names.ar} (${names.en})`;
+                select.appendChild(option);
+            });
+        }
+
+        function selectArea(code) {
+            document.getElementById('areaSelect').value = code;
+        }
+
+        async function testAddAddress() {
+            const restaurantId = document.getElementById('restaurantId').value;
+            const areaCode = document.getElementById('areaSelect').value;
+            
+            if (!areaCode) {
+                showResult('addressResult', 'يرجى اختيار منطقة', 'error');
+                return;
+            }
+
+            const addressData = {
+                name_ar: document.getElementById('nameAr').value,
+                name_en: document.getElementById('nameEn').value,
+                address_ar: document.getElementById('addressAr').value,
+                address_en: document.getElementById('addressEn').value,
+                area: areaCode,
+                area_code: areaCode,
+                latitude: document.getElementById('latitude').value || null,
+                longitude: document.getElementById('longitude').value || null,
+                is_primary: document.getElementById('isPrimary').checked
+            };
+
+            try {
+                const response = await fetch(`/api/seller/restaurants/${restaurantId}/addresses`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(addressData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('addressResult', `نجح إضافة العنوان:\n${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResult('addressResult', `فشل إضافة العنوان:\n${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResult('addressResult', `خطأ في الطلب:\n${error.message}`, 'error');
+            }
+        }
+
+        async function testGetAddresses() {
+            const restaurantId = document.getElementById('getAddressesRestaurantId').value;
+            
+            try {
+                const response = await fetch(`/api/seller/restaurants/${restaurantId}/addresses`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('getAddressesResult', `عناوين المطعم:\n${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResult('getAddressesResult', `فشل جلب عناوين المطعم:\n${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResult('getAddressesResult', `خطأ في الطلب:\n${error.message}`, 'error');
+            }
+        }
+
+        // تحميل المناطق عند تحميل الصفحة
+        window.onload = function() {
+            testGetAreas();
+        };
+    </script>
+</body>
+</html>

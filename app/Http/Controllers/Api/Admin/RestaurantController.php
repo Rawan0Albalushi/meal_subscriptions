@@ -69,6 +69,9 @@ class RestaurantController extends Controller
     public function store(Request $request)
     {
         try {
+            // الحصول على المناطق المتاحة من قاعدة البيانات
+            $availableAreas = \App\Models\Area::where('is_active', true)->pluck('code')->toArray();
+
             $request->validate([
                 'name_ar' => 'required|string|max:255',
                 'name_en' => 'required|string|max:255',
@@ -78,12 +81,21 @@ class RestaurantController extends Controller
                 'email' => 'nullable|email',
                 'address_ar' => 'nullable|string',
                 'address_en' => 'nullable|string',
-                'seller_id' => 'nullable|exists:users,id',
+                'seller_id' => 'nullable|integer',
                 'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'is_active' => 'nullable|in:true,false,1,0'
+                'is_active' => 'nullable|in:true,false,1,0',
+                'locations' => 'nullable|array'
             ]);
 
             $data = $request->all();
+            // Sanitise locations to include only available area codes
+            if (isset($data['locations']) && is_array($data['locations'])) {
+                $data['locations'] = array_values(array_intersect($data['locations'], $availableAreas));
+            }
+            // Validate seller id presence manually; if not found, set null instead of failing
+            if (isset($data['seller_id']) && !\App\Models\User::where('id', $data['seller_id'])->exists()) {
+                $data['seller_id'] = null;
+            }
             
             // Convert is_active string to boolean
             if (isset($data['is_active'])) {
@@ -144,6 +156,9 @@ class RestaurantController extends Controller
         try {
             $restaurant = Restaurant::findOrFail($id);
 
+            // الحصول على المناطق المتاحة من قاعدة البيانات
+            $availableAreas = \App\Models\Area::where('is_active', true)->pluck('code')->toArray();
+
             $request->validate([
                 'name_ar' => 'required|string|max:255',
                 'name_en' => 'required|string|max:255',
@@ -153,12 +168,21 @@ class RestaurantController extends Controller
                 'email' => 'nullable|email',
                 'address_ar' => 'nullable|string',
                 'address_en' => 'nullable|string',
-                'seller_id' => 'nullable|exists:users,id',
+                'seller_id' => 'nullable|integer',
                 'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'is_active' => 'nullable|in:true,false,1,0'
+                'is_active' => 'nullable|in:true,false,1,0',
+                'locations' => 'nullable|array'
             ]);
 
             $data = $request->all();
+            // Sanitise locations to include only available area codes
+            if (isset($data['locations']) && is_array($data['locations'])) {
+                $data['locations'] = array_values(array_intersect($data['locations'], $availableAreas));
+            }
+            // Validate seller id presence manually; if not found, set null instead of failing
+            if (isset($data['seller_id']) && !\App\Models\User::where('id', $data['seller_id'])->exists()) {
+                $data['seller_id'] = null;
+            }
             
             // Convert is_active string to boolean
             if (isset($data['is_active'])) {

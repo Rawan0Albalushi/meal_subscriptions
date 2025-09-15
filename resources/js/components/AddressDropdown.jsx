@@ -21,6 +21,7 @@ const AddressDropdown = ({
         address_ar: '',
         address_en: '',
         area: '',
+        area_code: '',
         latitude: '',
         longitude: '',
         is_primary: false
@@ -50,7 +51,7 @@ const AddressDropdown = ({
 
     const fetchAreas = async () => {
         try {
-            const response = await axios.get('/api/restaurant-addresses/areas');
+            const response = await axios.get('/api/areas/api-format');
             setAreas(response.data.data);
         } catch (error) {
             console.error('Error fetching areas:', error);
@@ -61,7 +62,9 @@ const AddressDropdown = ({
         const { name, value, type, checked } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value
+            [name]: type === 'checkbox' ? checked : value,
+            // عند اختيار منطقة، نسجل أيضاً area_code
+            ...(name === 'area' && { area_code: value })
         }));
     };
 
@@ -77,6 +80,7 @@ const AddressDropdown = ({
                 address_ar: '',
                 address_en: '',
                 area: '',
+                area_code: '',
                 latitude: '',
                 longitude: '',
                 is_primary: false

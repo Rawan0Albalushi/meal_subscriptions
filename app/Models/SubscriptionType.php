@@ -11,7 +11,6 @@ class SubscriptionType extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'restaurant_id',
         'name_ar',
         'name_en',
         'description_ar',
@@ -30,9 +29,9 @@ class SubscriptionType extends Model
         'is_active' => 'boolean',
     ];
 
-    public function restaurant()
+    public function restaurants()
     {
-        return $this->belongsTo(Restaurant::class);
+        return $this->belongsToMany(Restaurant::class, 'restaurant_subscription_type');
     }
 
     public function subscriptions()

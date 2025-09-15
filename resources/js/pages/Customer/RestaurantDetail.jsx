@@ -728,11 +728,19 @@ const RestaurantDetail = () => {
     }
     
     // Navigate to subscription form with selected meals, days, and start date
+    // Build a map from dayKey to exact delivery date (YYYY-MM-DD) based on the start date
+    const dayKeyToDateMap = getWeekDaysFromStartDate().reduce((acc, d) => {
+      acc[d.key] = d.date;
+      return acc;
+    }, {});
+
     const selectedMealsWithDays = Object.entries(selectedMeals).map(([dayKey, meal]) => ({
       dayKey,
       mealId: meal.id,
       // Store the base day name for backend validation
-      baseDayKey: dayKey.split('_')[0]
+      baseDayKey: dayKey.split('_')[0],
+      // Persist the exact delivery date so the next page mirrors the same date
+      deliveryDate: dayKeyToDateMap[dayKey]
     }));
     const mealsData = JSON.stringify(selectedMealsWithDays);
     const subscriptionUrl = `/subscribe/${id}/${selectedSubscriptionType.type}/${startDate}/${encodeURIComponent(mealsData)}`;
@@ -832,7 +840,8 @@ const RestaurantDetail = () => {
             weekday: 'long', 
             year: 'numeric', 
             month: 'long', 
-            day: 'numeric' 
+            day: 'numeric',
+            calendar: 'gregory'
           }),
           weekNumber: Math.floor(mealIndex / 4) + 1,
           dayOfWeek: dayOfWeek
@@ -1317,17 +1326,17 @@ const RestaurantDetail = () => {
               
               return (
               <div 
-                key={subscription.type}
+                key={subscriptionType.id}
                 className="subscription-card"
                 onClick={() => handleSubscriptionTypeSelect(subscriptionType)}
                 style={{
                   background: 'transparent',
                   borderRadius: '1rem',
                   padding: '1.5rem',
-                  boxShadow: selectedSubscriptionType?.type === subscription.type 
+                  boxShadow: selectedSubscriptionType?.id === subscriptionType.id 
                     ? `0 8px 20px ${subscription.borderColor}20` 
                     : '0 2px 8px rgba(0, 0, 0, 0.06)',
-                  border: selectedSubscriptionType?.type === subscription.type 
+                  border: selectedSubscriptionType?.id === subscriptionType.id 
                     ? `2px solid ${subscription.borderColor}` 
                     : '1px solid rgba(0, 0, 0, 0.06)',
                   transition: 'all 0.3s ease',
@@ -1363,7 +1372,7 @@ const RestaurantDetail = () => {
                  )}
 
                 {/* Selection Indicator */}
-                {selectedSubscriptionType?.type === subscription.type && (
+                {selectedSubscriptionType?.id === subscriptionType.id && (
                   <div className="selection-indicator" style={{
                     position: 'absolute',
                     top: '0.75rem',
@@ -1385,7 +1394,7 @@ const RestaurantDetail = () => {
                 )}
 
                 {/* Click to Select Indicator */}
-                {selectedSubscriptionType?.type !== subscription.type && (
+                {selectedSubscriptionType?.id !== subscriptionType.id && (
                   <div className="selection-indicator" style={{
                     position: 'absolute',
                     top: '0.75rem',
@@ -1489,7 +1498,7 @@ const RestaurantDetail = () => {
                   marginTop: 'auto',
                   paddingTop: '0.5rem'
                 }}>
-                  {selectedSubscriptionType?.type === subscription.type ? (
+                  {selectedSubscriptionType?.id === subscriptionType.id ? (
                     <div className="selection-button" style={{
                       background: subscription.borderColor,
                       color: 'white',

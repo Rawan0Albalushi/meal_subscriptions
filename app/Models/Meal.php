@@ -26,7 +26,7 @@ class Meal extends Model
 
     protected $casts = [
         'price' => 'decimal:2',
-        'delivery_time' => 'datetime',
+        'delivery_time' => 'string',
         'is_available' => 'boolean',
         'subscription_type_ids' => 'array',
     ];
@@ -45,7 +45,11 @@ class Meal extends Model
 
     public function subscriptionTypes()
     {
-        return $this->belongsToMany(SubscriptionType::class, 'meal_subscription_type', 'meal_id', 'subscription_type_id');
+        if (!$this->subscription_type_ids || !is_array($this->subscription_type_ids)) {
+            return collect();
+        }
+        
+        return SubscriptionType::whereIn('id', $this->subscription_type_ids)->get();
     }
 
     public function getNameAttribute()
@@ -99,8 +103,8 @@ class Meal extends Model
             return collect();
         }
 
-        return SubscriptionType::whereIn('id', $this->subscription_type_ids)
-            ->where('restaurant_id', $this->restaurant_id)
-            ->get();
+        // إرجاع جميع أنواع الاشتراك المحددة في subscription_type_ids
+        // بدون التحقق من ارتباطها بالمطعم (لأن الوجبة قد تحتوي على أنواع اشتراك من مطاعم أخرى)
+        return SubscriptionType::whereIn('id', $this->subscription_type_ids)->get();
     }
 }

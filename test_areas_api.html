@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار API المناطق</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        .test-section h2 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            border-left-color: #48bb78;
+            background: #f0fff4;
+        }
+        .error {
+            border-left-color: #f56565;
+            background: #fff5f5;
+        }
+        .area-card {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 2px solid #e2e8f0;
+            min-width: 200px;
+        }
+        .area-card h3 {
+            margin: 0 0 10px 0;
+            color: #2d3748;
+        }
+        .area-code {
+            background: #edf2f7;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+            color: #4a5568;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.active {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        .status.inactive {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 اختبار API المناطق</h1>
+        
+        <div class="test-section">
+            <h2>1. جلب المناطق النشطة</h2>
+            <button onclick="testGetActiveAreas()">جلب المناطق النشطة</button>
+            <div id="activeAreasResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. جلب المناطق بصيغة API</h2>
+            <button onclick="testGetAreasForApi()">جلب المناطق بصيغة API</button>
+            <div id="apiFormatResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. جلب جميع المناطق (للمدير)</h2>
+            <button onclick="testGetAllAreas()">جلب جميع المناطق</button>
+            <div id="allAreasResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>4. إضافة منطقة جديدة (للمدير)</h2>
+            <button onclick="testAddArea()">إضافة منطقة جديدة</button>
+            <div id="addAreaResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>5. اختبار التوافق مع الكود القديم</h2>
+            <button onclick="testLegacyCompatibility()">اختبار التوافق</button>
+            <div id="legacyResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.json();
+                return { success: response.ok, data, status: response.status };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        function displayResult(elementId, result, isSuccess = true) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${isSuccess ? 'success' : 'error'}`;
+            element.textContent = JSON.stringify(result, null, 2);
+        }
+
+        async function testGetActiveAreas() {
+            const result = await makeRequest(`${API_BASE}/areas`);
+            displayResult('activeAreasResult', result, result.success);
+        }
+
+        async function testGetAreasForApi() {
+            const result = await makeRequest(`${API_BASE}/areas/api-format`);
+            displayResult('apiFormatResult', result, result.success);
+        }
+
+        async function testGetAllAreas() {
+            // هذا يتطلب token للمدير
+            const token = localStorage.getItem('token');
+            if (!token) {
+                displayResult('allAreasResult', { error: 'يجب تسجيل الدخول كمدير أولاً' }, false);
+                return;
+            }
+
+            const result = await makeRequest(`${API_BASE}/admin/areas`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            displayResult('allAreasResult', result, result.success);
+        }
+
+        async function testAddArea() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                displayResult('addAreaResult', { error: 'يجب تسجيل الدخول كمدير أولاً' }, false);
+                return;
+            }
+
+            const newArea = {
+                name_ar: 'منطقة تجريبية',
+                name_en: 'Test Area',
+                code: 'test_area_' + Date.now(),
+                is_active: true,
+                sort_order: 99
+            };
+
+            const result = await makeRequest(`${API_BASE}/admin/areas`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(newArea)
+            });
+            displayResult('addAreaResult', result, result.success);
+        }
+
+        async function testLegacyCompatibility() {
+            // اختبار API القديم
+            const legacyResult = await makeRequest(`${API_BASE}/restaurant-addresses/areas`);
+            
+            // اختبار API الجديد
+            const newResult = await makeRequest(`${API_BASE}/areas/api-format`);
+            
+            const comparison = {
+                legacy_api: legacyResult,
+                new_api: newResult,
+                compatible: legacyResult.success && newResult.success && 
+                           JSON.stringify(legacyResult.data?.data) === JSON.stringify(newResult.data?.data)
+            };
+            
+            displayResult('legacyResult', comparison, comparison.compatible);
+        }
+
+        // تحميل البيانات عند فتح الصفحة
+        window.onload = function() {
+            testGetActiveAreas();
+            testGetAreasForApi();
+        };
+    </script>
+</body>
+</html>

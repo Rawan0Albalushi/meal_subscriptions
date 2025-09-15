@@ -77,8 +77,10 @@ class SubscriptionController extends Controller
 
             // Get subscription type and calculate total amount
             $subscriptionType = SubscriptionType::where('type', $request->subscription_type)
-                ->where('restaurant_id', $request->restaurant_id)
                 ->where('is_active', true)
+                ->whereHas('restaurants', function($q) use ($request) {
+                    $q->where('restaurants.id', $request->restaurant_id);
+                })
                 ->first();
 
             if (!$subscriptionType) {
@@ -201,8 +203,10 @@ class SubscriptionController extends Controller
 
             // Get subscription type and calculate total amount
             $subscriptionType = SubscriptionType::where('type', $request->subscription_type)
-                ->where('restaurant_id', $request->restaurant_id)
                 ->where('is_active', true)
+                ->whereHas('restaurants', function($q) use ($request) {
+                    $q->where('restaurants.id', $request->restaurant_id);
+                })
                 ->first();
 
             if (!$subscriptionType) {
@@ -245,20 +249,31 @@ class SubscriptionController extends Controller
             // Create subscription items for each delivery day with selected meals
             $startDate = Carbon::parse($request->start_date);
             
-            // Create subscription items for each delivery day with its selected meal
+            // Build items with computed delivery dates, then sort ascending by date
+            $items = [];
             foreach ($request->delivery_days as $index => $dayOfWeek) {
-                // Calculate delivery date for this day
                 $deliveryDate = $this->calculateDeliveryDate($startDate, $dayOfWeek);
-                
-                // Get the meal ID for this specific day
-                $mealId = $request->meal_ids[$index];
-                
+                $mealId = $request->meal_ids[$index] ?? null;
+                if ($mealId) {
+                    $items[] = [
+                        'meal_id' => $mealId,
+                        'day_of_week' => $dayOfWeek,
+                        'delivery_date' => $deliveryDate,
+                    ];
+                }
+            }
+
+            usort($items, function ($a, $b) {
+                return Carbon::parse($a['delivery_date'])->timestamp <=> Carbon::parse($b['delivery_date'])->timestamp;
+            });
+
+            foreach ($items as $item) {
                 SubscriptionItem::create([
                     'subscription_id' => $subscription->id,
-                    'meal_id' => $mealId,
-                    'delivery_date' => $deliveryDate,
-                    'day_of_week' => $dayOfWeek,
-                    'price' => 0, // Price is now based on subscription type, not meal
+                    'meal_id' => $item['meal_id'],
+                    'delivery_date' => $item['delivery_date'],
+                    'day_of_week' => $item['day_of_week'],
+                    'price' => 0,
                     'status' => 'pending',
                 ]);
             }

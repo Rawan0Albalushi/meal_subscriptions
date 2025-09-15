@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار عرض أنواع الاشتراك المتعددة في الوجبات</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: #f5f5f5;
+            direction: rtl;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .meal-card {
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: #f9f9f9;
+        }
+        .subscription-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .subscription-type {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+        .button {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        .button:hover {
+            background: #1565c0;
+        }
+        .result {
+            background: #f0f0f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            white-space: pre-wrap;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍽️ اختبار عرض أنواع الاشتراك المتعددة في الوجبات</h1>
+        
+        <div class="section">
+            <h3>📋 معلومات الاختبار</h3>
+            <p>هذا الاختبار يتحقق من أن أنواع الاشتراك المتعددة تظهر بشكل صحيح في صفحة الوجبات بعد الحفظ.</p>
+        </div>
+
+        <div class="section">
+            <h3>🔧 الإصلاح المطبق</h3>
+            <p><strong>المشكلة:</strong> في الـ Model، كان الـ accessor `getLinkedSubscriptionTypesAttribute()` يتحقق من أن أنواع الاشتراك تنتمي للمطعم نفسه، مما يمنع عرض أنواع الاشتراك المتعددة.</p>
+            <p><strong>الحل:</strong> تم إزالة التحقق من `whereHas('restaurants')` وإرجاع جميع أنواع الاشتراك المحددة في `subscription_type_ids`.</p>
+        </div>
+
+        <div class="section">
+            <h3>🧪 اختبار جلب الوجبات</h3>
+            <button class="button" onclick="testFetchMeals()">جلب الوجبات</button>
+            <div id="mealsResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="section">
+            <h3>📊 النتائج المتوقعة</h3>
+            <ul>
+                <li>✅ يجب أن تظهر جميع أنواع الاشتراك المختارة للوجبة</li>
+                <li>✅ يجب أن تظهر أنواع الاشتراك حتى لو لم تكن مرتبطة بالمطعم في جدول `restaurant_subscription_type`</li>
+                <li>✅ يجب أن تظهر أنواع الاشتراك المتعددة بشكل صحيح في الواجهة الأمامية</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>🔍 تفاصيل الإصلاح</h3>
+            <p><strong>الملف:</strong> <code>app/Models/Meal.php</code></p>
+            <p><strong>الطريقة:</strong> <code>getLinkedSubscriptionTypesAttribute()</code></p>
+            <p><strong>التغيير:</strong></p>
+            <pre style="background: #f0f0f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto;">
+// قبل الإصلاح
+return SubscriptionType::whereIn('id', $this->subscription_type_ids)
+    ->whereHas('restaurants', function($query) {
+        $query->where('restaurant_id', $this->restaurant_id);
+    })
+    ->get();
+
+// بعد الإصلاح
+return SubscriptionType::whereIn('id', $this->subscription_type_ids)->get();
+            </pre>
+        </div>
+    </div>
+
+    <script>
+        async function testFetchMeals() {
+            const resultDiv = document.getElementById('mealsResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'جاري جلب الوجبات...';
+
+            try {
+                // جلب المطاعم أولاً
+                const restaurantsResponse = await fetch('/api/seller/restaurants', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!restaurantsResponse.ok) {
+                    throw new Error(`خطأ في جلب المطاعم: ${restaurantsResponse.status}`);
+                }
+
+                const restaurantsData = await restaurantsResponse.json();
+                console.log('🏪 المطاعم:', restaurantsData);
+
+                if (!restaurantsData.data || restaurantsData.data.length === 0) {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = '❌ لا توجد مطاعم متاحة';
+                    return;
+                }
+
+                const restaurantId = restaurantsData.data[0].id;
+                console.log('🏪 المطعم المختار:', restaurantId);
+
+                // جلب الوجبات
+                const mealsResponse = await fetch(`/api/seller/restaurants/${restaurantId}/meals`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!mealsResponse.ok) {
+                    throw new Error(`خطأ في جلب الوجبات: ${mealsResponse.status}`);
+                }
+
+                const mealsData = await mealsResponse.json();
+                console.log('🍽️ الوجبات:', mealsData);
+
+                if (!mealsData.data || mealsData.data.length === 0) {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = '❌ لا توجد وجبات متاحة';
+                    return;
+                }
+
+                // تحليل أنواع الاشتراك لكل وجبة
+                let result = '✅ تم جلب الوجبات بنجاح!\n\n';
+                
+                mealsData.data.forEach((meal, index) => {
+                    result += `🍽️ الوجبة ${index + 1}: ${meal.name_ar}\n`;
+                    result += `   📋 subscription_type_ids: ${JSON.stringify(meal.subscription_type_ids)}\n`;
+                    result += `   🔗 linked_subscription_types: ${meal.linked_subscription_types ? meal.linked_subscription_types.length : 0} نوع\n`;
+                    
+                    if (meal.linked_subscription_types && meal.linked_subscription_types.length > 0) {
+                        meal.linked_subscription_types.forEach((type, typeIndex) => {
+                            result += `      ${typeIndex + 1}. ${type.name_ar} (${type.price} ريال)\n`;
+                        });
+                    } else {
+                        result += `      ⚠️ لا توجد أنواع اشتراك مرتبطة\n`;
+                    }
+                    result += '\n';
+                });
+
+                resultDiv.className = 'result success';
+                resultDiv.textContent = result;
+
+            } catch (error) {
+                console.error('❌ خطأ في الاختبار:', error);
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ خطأ: ${error.message}`;
+            }
+        }
+
+        // اختبار تلقائي عند تحميل الصفحة
+        window.addEventListener('load', () => {
+            console.log('🚀 تم تحميل صفحة الاختبار');
+            console.log('🔑 Token موجود:', !!localStorage.getItem('auth_token'));
+        });
+    </script>
+</body>
+</html>

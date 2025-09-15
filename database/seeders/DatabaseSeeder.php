@@ -21,6 +21,9 @@ class DatabaseSeeder extends Seeder
         // Seed contact information
         $this->call(ContactInformationSeeder::class);
         
+        // Seed areas
+        $this->call(AreaSeeder::class);
+        
         // Create test users
         $users = [
             [

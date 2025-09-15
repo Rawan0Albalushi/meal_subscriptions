@@ -86,7 +86,8 @@ const SubscriptionForm = () => {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
+      calendar: 'gregory'
     });
   };
 
@@ -210,7 +211,7 @@ const SubscriptionForm = () => {
         if (mealsResponse.data.success) {
           try {
             const mealsData = JSON.parse(decodeURIComponent(mealIds || '[]'));
-            const selectedMealsData = mealsData.map(({ dayKey, mealId, baseDayKey }) => {
+            const selectedMealsData = mealsData.map(({ dayKey, mealId, baseDayKey, deliveryDate }) => {
               const meal = mealsResponse.data.data.find(m => m.id == mealId);
               if (meal) {
                 // Use baseDayKey if available (for monthly subscriptions), otherwise use dayKey
@@ -229,7 +230,8 @@ const SubscriptionForm = () => {
                   dayKey,
                   baseDayKey: effectiveDayKey,
                   dayLabel,
-                  dayIcon: dayInfo?.icon || '📅'
+                  dayIcon: dayInfo?.icon || '📅',
+                  deliveryDate
                 };
               }
               return null;
@@ -895,11 +897,10 @@ const SubscriptionForm = () => {
                 <div className="space-y-3">
                   {selectedMeals
                     .sort((a, b) => {
-                      // Get Date objects for comparison
-                      const dateObjA = getDateObjectForDayKey(a.dayKey);
-                      const dateObjB = getDateObjectForDayKey(b.dayKey);
-                      
-                      return dateObjA - dateObjB;
+                      // Prefer provided deliveryDate for stable ordering; fallback to computed
+                      const dateA = a.deliveryDate ? new Date(a.deliveryDate) : getDateObjectForDayKey(a.dayKey);
+                      const dateB = b.deliveryDate ? new Date(b.deliveryDate) : getDateObjectForDayKey(b.dayKey);
+                      return dateA - dateB;
                     })
                     .map((meal, index) => (
                     <div key={meal.mealId || meal.id} className="bg-gradient-to-r from-white to-gray-50 border border-gray-200 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-all duration-300">
@@ -910,7 +911,11 @@ const SubscriptionForm = () => {
                           {meal.dayLabel}
                         </div>
                         <div className="text-xs text-gray-500 mb-1">
-                          {getDateForDayKey(meal.dayKey)}
+                          {meal.deliveryDate 
+                            ? new Date(meal.deliveryDate).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', { 
+                                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', calendar: 'gregory' 
+                              }) 
+                            : getDateForDayKey(meal.dayKey)}
                         </div>
                         <div className="font-semibold text-gray-800">
                           {language === 'ar' ? meal.name_ar : meal.name_en}
@@ -1057,7 +1062,7 @@ const SubscriptionForm = () => {
       
       {/* Success Popup */}
       <PopupMessage
-        isVisible={showSuccessPopup}
+        show={showSuccessPopup}
         type="success"
         title={popupTitle}
         message={popupMessage}
@@ -1070,7 +1075,7 @@ const SubscriptionForm = () => {
       
       {/* Error Popup */}
       <PopupMessage
-        isVisible={showErrorPopup}
+        show={showErrorPopup}
         type="error"
         title={popupTitle}
         message={popupMessage}

@@ -13,26 +13,14 @@ const Restaurants = () => {
     meal_types: ''
   });
   const [availableFilters, setAvailableFilters] = useState({
-    locations: [],
+    locations: [], // [{ key, name }]
     meal_types: []
   });
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [showMealTypeDropdown, setShowMealTypeDropdown] = useState(false);
   const navigate = useNavigate();
 
-  // أسماء العناوين حسب اللغة
-  const locationNames = {
-    ar: {
-      'bosher': 'بوشر',
-      'khoudh': 'الخوض',
-      'maabilah': 'المعبيلة'
-    },
-    en: {
-      'bosher': 'Bosher',
-      'khoudh': 'Al Khoudh',
-      'maabilah': 'Al Mabaila'
-    }
-  };
+  // لم نعد نستخدم خريطة أسماء العناوين الثابتة؛ الأسماء تأتي مترجمة من الباكند
 
   // أسماء أنواع الوجبات حسب اللغة
   const mealTypeNames = {
@@ -48,9 +36,8 @@ const Restaurants = () => {
     }
   };
 
-  // Fallback filters في حالة عدم وجود بيانات
+  // Fallback لأنواع الوجبات فقط عند الحاجة
   const fallbackFilters = {
-    locations: ['bosher', 'khoudh', 'maabilah'],
     meal_types: ['breakfast', 'lunch', 'dinner']
   };
 
@@ -64,20 +51,24 @@ const Restaurants = () => {
       try {
         const response = await restaurantsAPI.getFilters();
         if (response.data.success) {
-          // استخدام البيانات المترجمة من الباكند
           const filtersData = response.data.data;
           setAvailableFilters({
-            locations: filtersData.raw_locations || fallbackFilters.locations,
+            // نستخدم العناصر المترجمة من الباكند [{key,name}]
+            locations: filtersData.locations || [],
             meal_types: filtersData.raw_meal_types || fallbackFilters.meal_types
           });
         } else {
-          // Fallback to default filters
-          setAvailableFilters(fallbackFilters);
+          setAvailableFilters({
+            locations: [],
+            meal_types: fallbackFilters.meal_types
+          });
         }
       } catch (error) {
         console.error('Error fetching filters:', error);
-        // Fallback to default filters
-        setAvailableFilters(fallbackFilters);
+        setAvailableFilters({
+          locations: [],
+          meal_types: fallbackFilters.meal_types
+        });
       }
     };
 
@@ -170,9 +161,15 @@ const Restaurants = () => {
 
   const hasActiveFilters = filters.locations || filters.meal_types;
 
+  const getLocationNameByCode = (code) => {
+    const item = availableFilters.locations.find(l => l.key === code);
+    return item ? item.name : code;
+  };
+
   const getSelectedLocationsText = () => {
     if (!filters.locations) return t('selectLocation');
-    return locationNames[language][filters.locations] || filters.locations;
+    const found = availableFilters.locations.find(item => item.key === filters.locations);
+    return found ? found.name : filters.locations;
   };
 
   const getSelectedMealTypesText = () => {
@@ -398,38 +395,38 @@ const Restaurants = () => {
                     >
                       {t('clearSelection')}
                     </div>
-                    {availableFilters.locations.map(location => (
+                    {availableFilters.locations.map(item => (
                       <div
-                        key={location}
-                        className={`dropdown-item ${filters.locations === location ? 'selected' : ''}`}
+                        key={item.key}
+                        className={`dropdown-item ${filters.locations === item.key ? 'selected' : ''}`}
                         style={{
                           padding: '0.75rem 1rem',
                           cursor: 'pointer',
                           transition: 'background-color 0.2s ease',
                           borderBottom: '1px solid rgb(243 244 246)',
                           fontSize: '0.875rem',
-                          color: filters.locations === location ? '#4a757c' : 'rgb(75 85 99)',
-                          fontWeight: filters.locations === location ? '600' : '500',
-                          backgroundColor: filters.locations === location ? 'rgb(238 242 255)' : 'transparent',
+                          color: filters.locations === item.key ? '#4a757c' : 'rgb(75 85 99)',
+                          fontWeight: filters.locations === item.key ? '600' : '500',
+                          backgroundColor: filters.locations === item.key ? 'rgb(238 242 255)' : 'transparent',
                           textAlign: dir === 'rtl' ? 'right' : 'left'
                         }}
                         onMouseEnter={(e) => {
-                          if (filters.locations !== location) {
+                          if (filters.locations !== item.key) {
                             e.target.style.backgroundColor = 'rgb(249 250 251)';
                           }
                         }}
                         onMouseLeave={(e) => {
-                          if (filters.locations !== location) {
+                          if (filters.locations !== item.key) {
                             e.target.style.backgroundColor = 'transparent';
                           }
                         }}
                         onClick={(e) => {
-                          console.log('Clicked on location item:', location);
+                          console.log('Clicked on location item:', item.key);
                           e.stopPropagation();
-                          handleLocationFilter(location);
+                          handleLocationFilter(item.key);
                         }}
                       >
-                        {locationNames[language][location] || location}
+                        {item.name}
                       </div>
                     ))}
                   </div>
@@ -847,7 +844,7 @@ const Restaurants = () => {
                       textAlign: 'center',
                       fontWeight: '600'
                     }}>
-                      📍 {restaurant.locations.map(loc => locationNames[language][loc] || loc).join('، ')}
+                      📍 {restaurant.locations.map(loc => getLocationNameByCode(loc)).join('، ')}
                     </div>
                   )}
                   <div style={{ 

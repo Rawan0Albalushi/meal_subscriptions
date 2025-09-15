@@ -1126,7 +1126,14 @@ const SubscriptionDetail = () => {
                                                         background: 'rgba(182, 84, 73, 0.1)',
                                                         borderRadius: '0.5rem'
                                                     }}>
-                                                        {item.day_of_week_text}
+                                                        {(() => {
+                                                            const date = item.delivery_date ? new Date(item.delivery_date) : null;
+                                                            if (!date || isNaN(date.getTime())) return item.day_of_week_text;
+                                                            return date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
+                                                                weekday: 'long',
+                                                                calendar: 'gregory'
+                                                            });
+                                                        })()}
                                                     </span>
                                                 </div>
                                             </div>

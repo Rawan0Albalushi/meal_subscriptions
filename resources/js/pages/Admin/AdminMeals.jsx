@@ -121,9 +121,14 @@ const AdminMeals = () => {
         }
     };
 
-    const fetchSubscriptionTypes = async () => {
+    const fetchSubscriptionTypes = async (restaurantId = null) => {
         try {
-            const response = await fetch('/api/admin/meals/subscription-types/list', {
+            let url = '/api/admin/meals/subscription-types/list';
+            if (restaurantId) {
+                url += `?restaurant_id=${restaurantId}`;
+            }
+            
+            const response = await fetch(url, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
                     'Content-Type': 'application/json',
@@ -1123,7 +1128,11 @@ const AdminMeals = () => {
                                 </label>
                                 <select
                                     value={formData.restaurant_id}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, restaurant_id: e.target.value }))}
+                                    onChange={(e) => {
+                                        const restaurantId = e.target.value;
+                                        setFormData(prev => ({ ...prev, restaurant_id: restaurantId, subscription_type_ids: [] }));
+                                        fetchSubscriptionTypes(restaurantId);
+                                    }}
                                     required
                                     style={{
                                         width: '100%',
@@ -1287,7 +1296,7 @@ const AdminMeals = () => {
                                     backgroundColor: 'white'
                                 }}>
                                     {subscriptionTypes.length > 0 ? subscriptionTypes
-                                        .filter(type => !formData.restaurant_id || type.restaurant_id == formData.restaurant_id)
+                                        .filter(type => !formData.restaurant_id || (type.restaurants && type.restaurants.some(r => r.id == formData.restaurant_id)))
                                         .map(type => (
                                             <label key={type.id} style={{
                                                 display: 'flex',
@@ -1309,7 +1318,6 @@ const AdminMeals = () => {
                                                 <span style={{ fontSize: '0.9rem' }}>
                                                     {language === 'ar' ? type.name_ar : type.name_en} 
                                                     ({type.type} - {type.price} OMR)
-                                                    {type.restaurant && ` - ${language === 'ar' ? type.restaurant.name_ar : type.restaurant.name_en}`}
                                                 </span>
                                             </label>
                                         )) : (
@@ -1317,7 +1325,7 @@ const AdminMeals = () => {
                                             {language === 'ar' ? 'جاري تحميل أنواع الاشتراكات...' : 'Loading subscription types...'}
                                         </p>
                                     )}
-                                    {subscriptionTypes.length > 0 && subscriptionTypes.filter(type => !formData.restaurant_id || type.restaurant_id == formData.restaurant_id).length === 0 && (
+                                    {subscriptionTypes.length > 0 && subscriptionTypes.filter(type => !formData.restaurant_id || (type.restaurants && type.restaurants.some(r => r.id == formData.restaurant_id))).length === 0 && (
                                         <p style={{ color: '#6b7280', fontSize: '0.9rem', margin: 0 }}>
                                             {language === 'ar' ? 'لا توجد أنواع اشتراكات متاحة للمطعم المختار' : 'No subscription types available for selected restaurant'}
                                         </p>

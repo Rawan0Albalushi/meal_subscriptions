@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار حفظ أنواع الاشتراك المتعددة في الوجبات</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: #f5f5f5;
+            direction: rtl;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-right: 0.5rem;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .debug {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            background: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .checkbox-item:hover {
+            background: #e9ecef;
+        }
+        .checkbox-item.checked {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>اختبار حفظ أنواع الاشتراك المتعددة في الوجبات</h1>
+        
+        <!-- اختبار جلب المطاعم -->
+        <div class="section">
+            <h3>1. اختبار جلب المطاعم</h3>
+            <button onclick="testGetRestaurants()">جلب المطاعم</button>
+            <div id="restaurantsResult"></div>
+        </div>
+
+        <!-- اختبار جلب أنواع الاشتراك -->
+        <div class="section">
+            <h3>2. اختبار جلب أنواع الاشتراك</h3>
+            <div class="form-group">
+                <label>المطعم:</label>
+                <select id="restaurantSelect">
+                    <option value="">اختر المطعم</option>
+                </select>
+            </div>
+            <button onclick="testGetSubscriptionTypes()">جلب أنواع الاشتراك</button>
+            <div id="subscriptionTypesResult"></div>
+        </div>
+
+        <!-- نموذج إضافة وجبة -->
+        <div class="section">
+            <h3>3. نموذج إضافة وجبة مع أنواع اشتراك متعددة</h3>
+            
+            <div class="form-group">
+                <label>اسم الوجبة (عربي):</label>
+                <input type="text" id="nameAr" value="وجبة تجريبية" placeholder="اسم الوجبة بالعربية">
+            </div>
+            
+            <div class="form-group">
+                <label>اسم الوجبة (إنجليزي):</label>
+                <input type="text" id="nameEn" value="Test Meal" placeholder="اسم الوجبة بالإنجليزية">
+            </div>
+            
+            <div class="form-group">
+                <label>الوصف (عربي):</label>
+                <textarea id="descriptionAr" rows="3" placeholder="وصف الوجبة بالعربية">وجبة تجريبية لاختبار أنواع الاشتراك المتعددة</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>نوع الوجبة:</label>
+                <select id="mealType">
+                    <option value="lunch">غداء</option>
+                    <option value="breakfast">فطور</option>
+                    <option value="dinner">عشاء</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>وقت التوصيل:</label>
+                <input type="time" id="deliveryTime" value="12:00">
+            </div>
+            
+            <div class="form-group">
+                <label>أنواع الاشتراكات المرتبطة:</label>
+                <div id="subscriptionTypesCheckboxes" class="checkbox-group">
+                    <div style="text-align: center; padding: 1rem; color: #6c757d;">
+                        اختر مطعم أولاً لرؤية أنواع الاشتراك
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="testAddMeal()">إضافة وجبة</button>
+            <div id="mealResult"></div>
+        </div>
+
+        <!-- اختبار جلب الوجبات -->
+        <div class="section">
+            <h3>4. اختبار جلب الوجبات</h3>
+            <button onclick="testGetMeals()">جلب الوجبات</button>
+            <div id="mealsResult"></div>
+        </div>
+    </div>
+
+    <script>
+        let restaurants = [];
+        let selectedRestaurant = null;
+        let subscriptionTypes = [];
+        let selectedSubscriptionTypes = [];
+
+        function showResult(elementId, message, type = 'info') {
+            const resultDiv = document.getElementById(elementId);
+            resultDiv.className = `result ${type}`;
+            resultDiv.textContent = message;
+        }
+
+        async function testGetRestaurants() {
+            try {
+                const response = await fetch('/api/seller/restaurants', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    restaurants = data.data || [];
+                    selectedRestaurant = restaurants.length > 0 ? restaurants[0].id : null;
+                    showResult('restaurantsResult', `نجح جلب المطاعم:\n${JSON.stringify(data, null, 2)}`, 'success');
+                    populateRestaurantSelect();
+                } else {
+                    showResult('restaurantsResult', `فشل جلب المطاعم:\n${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResult('restaurantsResult', `خطأ في الطلب:\n${error.message}`, 'error');
+            }
+        }
+
+        function populateRestaurantSelect() {
+            const select = document.getElementById('restaurantSelect');
+            select.innerHTML = '<option value="">اختر المطعم</option>';
+            
+            restaurants.forEach(restaurant => {
+                const option = document.createElement('option');
+                option.value = restaurant.id;
+                option.textContent = `${restaurant.name_ar} (${restaurant.name_en})`;
+                select.appendChild(option);
+            });
+            
+            if (selectedRestaurant) {
+                select.value = selectedRestaurant;
+            }
+        }
+
+        async function testGetSubscriptionTypes() {
+            const restaurantId = document.getElementById('restaurantSelect').value;
+            
+            if (!restaurantId) {
+                showResult('subscriptionTypesResult', 'يرجى اختيار مطعم', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/seller/restaurants/${restaurantId}/subscription-types`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    subscriptionTypes = data.data || [];
+                    showResult('subscriptionTypesResult', `أنواع الاشتراك:\n${JSON.stringify(data, null, 2)}`, 'success');
+                    populateSubscriptionTypesCheckboxes();
+                } else {
+                    showResult('subscriptionTypesResult', `فشل جلب أنواع الاشتراك:\n${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResult('subscriptionTypesResult', `خطأ في الطلب:\n${error.message}`, 'error');
+            }
+        }
+
+        function populateSubscriptionTypesCheckboxes() {
+            const container = document.getElementById('subscriptionTypesCheckboxes');
+            container.innerHTML = '';
+            
+            if (subscriptionTypes.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 1rem; color: #6c757d;">لا توجد أنواع اشتراك متاحة</div>';
+                return;
+            }
+            
+            subscriptionTypes.forEach(subscriptionType => {
+                const checkboxItem = document.createElement('div');
+                checkboxItem.className = 'checkbox-item';
+                checkboxItem.innerHTML = `
+                    <input type="checkbox" id="sub_${subscriptionType.id}" value="${subscriptionType.id}">
+                    <div>
+                        <div style="font-weight: 500;">${subscriptionType.name_ar}</div>
+                        <div style="font-size: 0.75rem; color: #6c757d;">${subscriptionType.type_text} - ${subscriptionType.price} ريال</div>
+                    </div>
+                `;
+                
+                checkboxItem.addEventListener('click', (e) => {
+                    if (e.target.type !== 'checkbox') {
+                        const checkbox = checkboxItem.querySelector('input[type="checkbox"]');
+                        checkbox.checked = !checkbox.checked;
+                        updateSelectedSubscriptionTypes();
+                    }
+                });
+                
+                const checkbox = checkboxItem.querySelector('input[type="checkbox"]');
+                checkbox.addEventListener('change', updateSelectedSubscriptionTypes);
+                
+                container.appendChild(checkboxItem);
+            });
+        }
+
+        function updateSelectedSubscriptionTypes() {
+            selectedSubscriptionTypes = [];
+            const checkboxes = document.querySelectorAll('#subscriptionTypesCheckboxes input[type="checkbox"]:checked');
+            checkboxes.forEach(checkbox => {
+                selectedSubscriptionTypes.push(parseInt(checkbox.value));
+            });
+            
+            // تحديث المظهر
+            document.querySelectorAll('#subscriptionTypesCheckboxes .checkbox-item').forEach(item => {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                if (checkbox.checked) {
+                    item.classList.add('checked');
+                } else {
+                    item.classList.remove('checked');
+                }
+            });
+            
+            console.log('Selected subscription types:', selectedSubscriptionTypes);
+        }
+
+        async function testAddMeal() {
+            const restaurantId = document.getElementById('restaurantSelect').value;
+            
+            if (!restaurantId) {
+                showResult('mealResult', 'يرجى اختيار مطعم', 'error');
+                return;
+            }
+
+            const mealData = {
+                name_ar: document.getElementById('nameAr').value,
+                name_en: document.getElementById('nameEn').value,
+                description_ar: document.getElementById('descriptionAr').value,
+                meal_type: document.getElementById('mealType').value,
+                delivery_time: document.getElementById('deliveryTime').value,
+                is_available: true,
+                subscription_type_ids: selectedSubscriptionTypes
+            };
+
+            console.log('Sending meal data:', mealData);
+
+            try {
+                const formData = new FormData();
+                formData.append('name_ar', mealData.name_ar);
+                formData.append('name_en', mealData.name_en);
+                formData.append('description_ar', mealData.description_ar);
+                formData.append('meal_type', mealData.meal_type);
+                formData.append('delivery_time', mealData.delivery_time);
+                formData.append('is_available', mealData.is_available);
+                
+                if (selectedSubscriptionTypes.length > 0) {
+                    formData.append('subscription_type_ids', JSON.stringify(selectedSubscriptionTypes));
+                }
+                
+                console.log('FormData contents:');
+                for (let [key, value] of formData.entries()) {
+                    console.log(`${key}:`, value);
+                }
+                
+                const response = await fetch(`/api/seller/restaurants/${restaurantId}/meals`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('mealResult', `نجح إضافة الوجبة:\n${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResult('mealResult', `فشل إضافة الوجبة:\nStatus: ${response.status}\n${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showResult('mealResult', `خطأ في الطلب:\n${error.message}`, 'error');
+            }
+        }
+
+        async function testGetMeals() {
+            const restaurantId = document.getElementById('restaurantSelect').value;
+            
+            if (!restaurantId) {
+                showResult('mealsResult', 'يرجى اختيار مطعم', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/seller/restaurants/${restaurantId}/meals`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('mealsResult', `الوجبات:\n${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResult('mealsResult', `فشل جلب الوجبات:\n${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResult('mealsResult', `خطأ في الطلب:\n${error.message}`, 'error');
+            }
+        }
+
+        // تحميل البيانات عند تحميل الصفحة
+        window.onload = function() {
+            testGetRestaurants();
+        };
+    </script>
+</body>
+</html>

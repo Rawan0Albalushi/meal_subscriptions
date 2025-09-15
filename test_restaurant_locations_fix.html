@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار إصلاح المناطق في نموذج إضافة المطعم</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: #f5f5f5;
+            direction: rtl;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-right: 0.5rem;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            white-space: pre-wrap;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .locations-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .location-option {
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .location-option:hover {
+            border-color: #007bff;
+            background: #f8f9ff;
+        }
+        .location-option input[type="checkbox"] {
+            width: auto;
+            margin-bottom: 0.5rem;
+        }
+        .location-option.selected {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>اختبار إصلاح المناطق في نموذج إضافة المطعم</h1>
+        
+        <!-- اختبار جلب المناطق -->
+        <div class="section">
+            <h3>1. اختبار جلب المناطق من قاعدة البيانات</h3>
+            <button onclick="testGetAreas()">جلب المناطق</button>
+            <div id="areasResult"></div>
+        </div>
+
+        <!-- محاكاة نموذج إضافة المطعم -->
+        <div class="section">
+            <h3>2. محاكاة نموذج إضافة المطعم</h3>
+            <p>هذا يوضح كيف ستظهر المناطق في نموذج إضافة المطعم:</p>
+            
+            <div class="form-group">
+                <label><strong>المناطق المتاحة:</strong></label>
+                <div class="locations-container" id="locationsContainer">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+            </div>
+            
+            <div id="selectedLocations"></div>
+        </div>
+
+        <!-- اختبار API -->
+        <div class="section">
+            <h3>3. اختبار API المناطق</h3>
+            <button onclick="testAreasAPI()">اختبار API</button>
+            <div id="apiResult"></div>
+        </div>
+    </div>
+
+    <script>
+        let areas = {};
+        let selectedLocations = [];
+
+        function showResult(elementId, message, type = 'info') {
+            const resultDiv = document.getElementById(elementId);
+            resultDiv.className = `result ${type}`;
+            resultDiv.textContent = message;
+        }
+
+        async function testGetAreas() {
+            try {
+                const response = await fetch('/api/areas/api-format');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    areas = data.data;
+                    showResult('areasResult', `نجح جلب المناطق:\n${JSON.stringify(data, null, 2)}`, 'success');
+                    displayLocationOptions();
+                } else {
+                    showResult('areasResult', `فشل جلب المناطق:\n${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResult('areasResult', `خطأ في الطلب:\n${error.message}`, 'error');
+            }
+        }
+
+        function displayLocationOptions() {
+            const container = document.getElementById('locationsContainer');
+            container.innerHTML = '';
+            
+            Object.entries(areas).forEach(([code, names]) => {
+                const option = document.createElement('div');
+                option.className = 'location-option';
+                option.innerHTML = `
+                    <input type="checkbox" value="${code}" onchange="toggleLocation('${code}')">
+                    <div><strong>${names.ar}</strong></div>
+                    <div style="color: #666; font-size: 0.9em;">${names.en}</div>
+                    <div style="color: #999; font-size: 0.8em;">${code}</div>
+                `;
+                container.appendChild(option);
+            });
+        }
+
+        function toggleLocation(code) {
+            const checkbox = event.target;
+            const option = checkbox.closest('.location-option');
+            
+            if (checkbox.checked) {
+                if (!selectedLocations.includes(code)) {
+                    selectedLocations.push(code);
+                }
+                option.classList.add('selected');
+            } else {
+                selectedLocations = selectedLocations.filter(loc => loc !== code);
+                option.classList.remove('selected');
+            }
+            
+            updateSelectedLocations();
+        }
+
+        function updateSelectedLocations() {
+            const resultDiv = document.getElementById('selectedLocations');
+            if (selectedLocations.length > 0) {
+                const selectedNames = selectedLocations.map(code => areas[code]?.ar || code);
+                resultDiv.innerHTML = `
+                    <div class="result success">
+                        <strong>المناطق المختارة:</strong><br>
+                        ${selectedNames.join(', ')}<br>
+                        <strong>الكود:</strong> ${selectedLocations.join(', ')}
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="result info">
+                        لم يتم اختيار أي منطقة
+                    </div>
+                `;
+            }
+        }
+
+        async function testAreasAPI() {
+            try {
+                // اختبار API العام
+                const publicResponse = await fetch('/api/areas/api-format');
+                const publicData = await publicResponse.json();
+                
+                let result = `=== اختبار API المناطق ===\n\n`;
+                
+                if (publicResponse.ok) {
+                    result += `✅ API العام (/api/areas/api-format):\n`;
+                    result += `عدد المناطق: ${Object.keys(publicData.data).length}\n`;
+                    result += `المناطق: ${Object.keys(publicData.data).join(', ')}\n\n`;
+                } else {
+                    result += `❌ فشل API العام\n\n`;
+                }
+                
+                // اختبار API الإدارة
+                const adminResponse = await fetch('/api/admin/areas');
+                if (adminResponse.ok) {
+                    const adminData = await adminResponse.json();
+                    result += `✅ API الإدارة (/api/admin/areas):\n`;
+                    result += `عدد المناطق: ${adminData.data.length}\n`;
+                    result += `المناطق: ${adminData.data.map(a => a.name_ar).join(', ')}\n\n`;
+                } else {
+                    result += `❌ فشل API الإدارة (قد يحتاج مصادقة)\n\n`;
+                }
+                
+                result += `=== النتيجة ===\n`;
+                result += `المناطق المتاحة: ${Object.keys(areas).length}\n`;
+                result += `يجب أن تظهر جميع المناطق في نموذج إضافة المطعم`;
+                
+                showResult('apiResult', result, 'success');
+                
+            } catch (error) {
+                showResult('apiResult', `خطأ في اختبار API:\n${error.message}`, 'error');
+            }
+        }
+
+        // تحميل المناطق عند تحميل الصفحة
+        window.onload = function() {
+            testGetAreas();
+        };
+    </script>
+</body>
+</html>

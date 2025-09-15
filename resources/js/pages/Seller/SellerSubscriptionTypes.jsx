@@ -75,6 +75,19 @@ const SellerSubscriptionTypes = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        // التحقق من وجود مطعم مختار
+        if (!selectedRestaurant) {
+            showAlert('يرجى اختيار مطعم أولاً', 'خطأ في البيانات', 'error');
+            return;
+        }
+        
+        console.log('Submitting subscription type:', {
+            formData,
+            selectedRestaurant,
+            editingType
+        });
+        
         try {
             const submitData = {
                 ...formData,
@@ -84,11 +97,15 @@ const SellerSubscriptionTypes = () => {
                 meals_count: parseInt(formData.meals_count),
             };
 
+            console.log('Submit data:', submitData);
+
             const url = editingType 
                 ? `/api/seller/subscription-types/${editingType.id}`
                 : '/api/seller/subscription-types';
             
             const method = editingType ? 'PUT' : 'POST';
+
+            console.log('API URL:', url, 'Method:', method);
 
             const response = await fetch(url, {
                 method,
@@ -99,13 +116,19 @@ const SellerSubscriptionTypes = () => {
                 body: JSON.stringify(submitData)
             });
 
+            console.log('Response status:', response.status);
+
             if (response.ok) {
+                const result = await response.json();
+                console.log('Success response:', result);
+                showAlert('تم حفظ نوع الاشتراك بنجاح', 'نجح الحفظ', 'success');
                 setShowAddModal(false);
                 setEditingType(null);
                 resetForm();
                 fetchSubscriptionTypes(selectedRestaurant);
             } else {
                 const errorData = await response.json();
+                console.error('Error response:', errorData);
                 showAlert(errorData.message || 'حدث خطأ في حفظ نوع الاشتراك', 'خطأ في الحفظ', 'error');
             }
         } catch (error) {
@@ -170,6 +193,14 @@ const SellerSubscriptionTypes = () => {
     };
 
     const openAddModal = () => {
+        console.log('Opening add modal, selectedRestaurant:', selectedRestaurant);
+        console.log('Available restaurants:', restaurants);
+        
+        if (!selectedRestaurant) {
+            showAlert('يرجى اختيار مطعم أولاً', 'خطأ في البيانات', 'error');
+            return;
+        }
+        
         setEditingType(null);
         resetForm();
         setShowAddModal(true);
@@ -229,7 +260,7 @@ const SellerSubscriptionTypes = () => {
                             margin: 0,
                             marginBottom: '0.5rem'
                         }}>
-                            {language === 'ar' ? 'إدارة أنواع الاشتراكات' : 'Subscription Types Management'}
+                            {language === 'ar' ? 'عرض أنواع الاشتراكات' : 'View Subscription Types'}
                         </h1>
                         <p style={{
                             color: 'rgb(107 114 128)',
@@ -237,12 +268,13 @@ const SellerSubscriptionTypes = () => {
                             fontSize: '0.875rem'
                         }}>
                             {language === 'ar' 
-                                ? 'إدارة أنواع الاشتراكات لمطاعمك وتحديد الأسعار'
-                                : 'Manage subscription types for your restaurants and set prices'
+                                ? 'عرض أنواع الاشتراكات المتاحة لمطاعمك'
+                                : 'View available subscription types for your restaurants'
                             }
                         </p>
                     </div>
-                    <button
+                    {/* تم إخفاء زر الإضافة مؤقتاً - view only */}
+                    {/* <button
                         onClick={openAddModal}
                         style={{
                             padding: '0.75rem 1.5rem',
@@ -263,7 +295,7 @@ const SellerSubscriptionTypes = () => {
                         }}
                     >
                         ➕ {language === 'ar' ? 'إضافة نوع اشتراك' : 'Add Subscription Type'}
-                    </button>
+                    </button> */}
                 </div>
 
                 {/* Restaurant Selector */}
@@ -402,7 +434,8 @@ const SellerSubscriptionTypes = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div style={{
+                                {/* تم إخفاء أزرار التعديل والحذف مؤقتاً - view only */}
+                                {/* <div style={{
                                     display: 'flex',
                                     gap: '0.5rem'
                                 }}>
@@ -434,7 +467,7 @@ const SellerSubscriptionTypes = () => {
                                     >
                                         🗑️
                                     </button>
-                                </div>
+                                </div> */}
                             </div>
 
                             <p style={{
@@ -558,8 +591,8 @@ const SellerSubscriptionTypes = () => {
                 </div>
             )}
 
-            {/* Add/Edit Modal */}
-            {showAddModal && (
+            {/* Add/Edit Modal - تم إخفاؤه مؤقتاً - view only */}
+            {false && showAddModal && (
                 <div style={{
                     position: 'fixed',
                     top: 0,
