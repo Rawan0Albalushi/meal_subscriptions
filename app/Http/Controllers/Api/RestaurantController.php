@@ -79,15 +79,21 @@ class RestaurantController extends Controller
         ]);
     }
 
-    public function meals($restaurantId)
+    public function meals(Request $request, $restaurantId)
     {
         // تحديد اللغة من header Accept-Language
         $language = request()->header('Accept-Language', 'ar');
         app()->setLocale($language);
 
-        $meals = Meal::where('restaurant_id', $restaurantId)
-            ->where('is_available', true)
-            ->get();
+        $query = Meal::where('restaurant_id', $restaurantId)
+            ->where('is_available', true);
+
+        // فلتر الوجبات حسب نوع الاشتراك إذا تم تمريره
+        if ($request->has('subscription_type_id') && $request->subscription_type_id) {
+            $query->whereJsonContains('subscription_type_ids', (int)$request->subscription_type_id);
+        }
+
+        $meals = $query->get();
 
         // إضافة الحقول المترجمة حسب اللغة
         $meals->each(function ($meal) use ($language) {

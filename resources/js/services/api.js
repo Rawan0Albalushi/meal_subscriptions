@@ -64,7 +64,14 @@ export const restaurantsAPI = {
     },
     getFilters: () => api.get('/restaurants/filters'),
     getById: (id) => api.get(`/restaurants/${id}`),
-    getMeals: (restaurantId) => api.get(`/restaurants/${restaurantId}/meals`),
+    getMeals: (restaurantId, params = {}) => {
+        const queryString = new URLSearchParams();
+        if (params.subscription_type_id) {
+            queryString.append('subscription_type_id', params.subscription_type_id);
+        }
+        const url = `/restaurants/${restaurantId}/meals${queryString.toString() ? `?${queryString.toString()}` : ''}`;
+        return api.get(url);
+    },
 };
 
 // Subscriptions API

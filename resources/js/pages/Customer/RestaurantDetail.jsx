@@ -456,7 +456,7 @@ const RestaurantDetail = () => {
           setError(t('restaurantLoadError'));
         }
 
-        // Fetch restaurant meals
+        // Fetch restaurant meals (initially without subscription type filter)
         console.log('🍽️ Fetching meals for restaurant ID:', id);
         const mealsResponse = await restaurantsAPI.getMeals(id);
         if (mealsResponse.data.success) {
@@ -516,7 +516,7 @@ const RestaurantDetail = () => {
   //   setSelectedMeals({});
   // }, [id]);
 
-  const handleSubscriptionTypeSelect = (subscriptionType) => {
+  const handleSubscriptionTypeSelect = async (subscriptionType) => {
     if (!isAuthenticated) {
       setShowLoginPopup(true);
       return;
@@ -530,6 +530,20 @@ const RestaurantDetail = () => {
     setSelectedMeals({}); // Reset selected meals when changing subscription type
     setStartDate(''); // Reset start date when changing subscription type
     setMealTypeFilter(''); // Reset meal type filter when changing subscription type
+    
+    // Fetch meals filtered by subscription type
+    try {
+      console.log('🍽️ Fetching meals filtered by subscription type:', subscriptionType.id);
+      const mealsResponse = await restaurantsAPI.getMeals(id, { subscription_type_id: subscriptionType.id });
+      if (mealsResponse.data.success) {
+        console.log('🍽️ Fetched filtered meals:', mealsResponse.data.data);
+        setMeals(mealsResponse.data.data);
+        console.log('✅ Successfully updated meals with subscription type filter');
+      }
+    } catch (error) {
+      console.error('❌ Error fetching filtered meals:', error);
+      // Keep existing meals if filtering fails
+    }
     
     // Note: Auto-scroll has been disabled to prevent automatic scrolling when selecting subscription type
   };
@@ -581,7 +595,7 @@ const RestaurantDetail = () => {
     return mealTypeNames[language][mealTypeFilter] || mealTypeFilter;
   };
 
-  // فلترة الوجبات حسب النوع المختار - لا تسمح بعرض جميع الوجبات
+  // فلترة الوجبات حسب النوع المختار ونوع الاشتراك - لا تسمح بعرض جميع الوجبات
   const filteredMeals = React.useMemo(() => {
     // Prevent auto-scroll by preventing default behavior
     event?.preventDefault();
@@ -589,9 +603,17 @@ const RestaurantDetail = () => {
     
     return meals.filter(meal => {
       if (!mealTypeFilter) return false; // لا تعرض أي وجبات إذا لم يتم اختيار نوع
-      return meal.meal_type === mealTypeFilter;
+      
+      // فلترة حسب نوع الوجبة
+      const matchesMealType = meal.meal_type === mealTypeFilter;
+      
+      // فلترة حسب نوع الاشتراك المختار
+      const matchesSubscriptionType = !selectedSubscriptionType || 
+        (meal.subscription_type_ids && meal.subscription_type_ids.includes(selectedSubscriptionType.id));
+      
+      return matchesMealType && matchesSubscriptionType;
     });
-  }, [meals, mealTypeFilter]);
+  }, [meals, mealTypeFilter, selectedSubscriptionType]);
 
   // الحصول على أنواع الوجبات المتاحة
   const availableMealTypes = React.useMemo(() => {

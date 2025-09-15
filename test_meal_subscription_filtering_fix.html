@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار إصلاح تصفية الوجبات حسب نوع الاشتراك</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+        .header h1 {
+            color: #2d3748;
+            margin: 0;
+            font-size: 2rem;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            background: #f8fafc;
+        }
+        .test-section h2 {
+            color: #4a5568;
+            margin-top: 0;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .api-test {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #667eea;
+        }
+        .api-test h3 {
+            color: #2d3748;
+            margin-top: 0;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .test-button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .result.success {
+            background: #f0fff4;
+            border: 2px solid #68d391;
+            color: #22543d;
+        }
+        .result.error {
+            background: #fff5f5;
+            border: 2px solid #fc8181;
+            color: #742a2a;
+        }
+        .result.info {
+            background: #ebf8ff;
+            border: 2px solid #63b3ed;
+            color: #2a4365;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .status.pending {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        .status.success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        .status.failed {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        .meal-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+        }
+        .meal-card h4 {
+            margin: 0 0 10px 0;
+            color: #2d3748;
+        }
+        .subscription-types {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .subscription-type {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+        .instructions {
+            background: #fef5e7;
+            border: 2px solid #f6ad55;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .instructions h3 {
+            color: #744210;
+            margin-top: 0;
+        }
+        .instructions ol {
+            color: #744210;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 اختبار إصلاح تصفية الوجبات حسب نوع الاشتراك</h1>
+            <p>هذا الاختبار يتحقق من أن الوجبات تظهر فقط مع أنواع الاشتراكات المختارة عند إنشائها</p>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 تعليمات الاختبار:</h3>
+            <ol>
+                <li><strong>اختبار API:</strong> تحقق من أن API جلب الوجبات يدعم تصفية الوجبات حسب نوع الاشتراك</li>
+                <li><strong>اختبار البيانات:</strong> تأكد من أن الوجبات تحتوي على subscription_type_ids الصحيحة</li>
+                <li><strong>اختبار التصفية:</strong> تحقق من أن التصفية تعمل بشكل صحيح في الواجهة الأمامية</li>
+                <li><strong>اختبار التكامل:</strong> تأكد من أن النظام يعمل بشكل متكامل من البداية للنهاية</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>🔌 اختبار API جلب الوجبات</h2>
+            
+            <div class="api-test">
+                <h3>1. اختبار جلب جميع الوجبات (بدون فلتر)</h3>
+                <button class="test-button" onclick="testGetAllMeals()">جلب جميع الوجبات</button>
+                <div id="all-meals-result" class="result info" style="display: none;"></div>
+            </div>
+
+            <div class="api-test">
+                <h3>2. اختبار جلب الوجبات مع فلتر نوع الاشتراك</h3>
+                <label>معرف نوع الاشتراك:</label>
+                <input type="number" id="subscription-type-id" placeholder="مثال: 1" style="margin: 0 10px; padding: 8px; border: 2px solid #e2e8f0; border-radius: 5px;">
+                <button class="test-button" onclick="testGetFilteredMeals()">جلب الوجبات المفلترة</button>
+                <div id="filtered-meals-result" class="result info" style="display: none;"></div>
+            </div>
+
+            <div class="api-test">
+                <h3>3. اختبار مقارنة النتائج</h3>
+                <button class="test-button" onclick="compareResults()">مقارنة النتائج</button>
+                <div id="comparison-result" class="result info" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 نتائج الاختبار</h2>
+            <div id="test-status">
+                <span class="status pending">⏳ في انتظار الاختبار</span>
+            </div>
+            
+            <div id="test-summary" style="margin-top: 20px;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📝 ملاحظات الاختبار</h2>
+            <div id="test-notes">
+                <p><strong>المشكلة الأصلية:</strong> عند إضافة وجبة جديدة واختيار نوع اشتراك واحد فقط، تظهر الوجبة مع جميع أنواع الاشتراكات بدلاً من النوع المختار فقط.</p>
+                
+                <p><strong>الحل المطبق:</strong></p>
+                <ul>
+                    <li>تحديث API جلب الوجبات لدعم تصفية حسب نوع الاشتراك</li>
+                    <li>تحديث الواجهة الأمامية لتمرير معرف نوع الاشتراك عند جلب الوجبات</li>
+                    <li>إضافة فلترة إضافية في الواجهة الأمامية للتأكد من صحة النتائج</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allMealsData = null;
+        let filteredMealsData = null;
+
+        async function testGetAllMeals() {
+            const resultDiv = document.getElementById('all-meals-result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.textContent = '🔄 جاري جلب جميع الوجبات...';
+
+            try {
+                const response = await fetch('/api/restaurants/1/meals');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allMealsData = data.data;
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ تم جلب ${data.data.length} وجبة بنجاح\n\n${JSON.stringify(data.data, null, 2)}`;
+                    updateTestStatus('success', 'تم جلب جميع الوجبات بنجاح');
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ فشل في جلب الوجبات: ${data.message || 'خطأ غير معروف'}`;
+                    updateTestStatus('failed', 'فشل في جلب جميع الوجبات');
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ خطأ في الاتصال: ${error.message}`;
+                updateTestStatus('failed', 'خطأ في الاتصال');
+            }
+        }
+
+        async function testGetFilteredMeals() {
+            const subscriptionTypeId = document.getElementById('subscription-type-id').value;
+            const resultDiv = document.getElementById('filtered-meals-result');
+            
+            if (!subscriptionTypeId) {
+                alert('يرجى إدخال معرف نوع الاشتراك');
+                return;
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.textContent = `🔄 جاري جلب الوجبات المفلترة لنوع الاشتراك ${subscriptionTypeId}...`;
+
+            try {
+                const response = await fetch(`/api/restaurants/1/meals?subscription_type_id=${subscriptionTypeId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    filteredMealsData = data.data;
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ تم جلب ${data.data.length} وجبة مفلترة بنجاح\n\n${JSON.stringify(data.data, null, 2)}`;
+                    updateTestStatus('success', `تم جلب الوجبات المفلترة لنوع الاشتراك ${subscriptionTypeId}`);
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ فشل في جلب الوجبات المفلترة: ${data.message || 'خطأ غير معروف'}`;
+                    updateTestStatus('failed', 'فشل في جلب الوجبات المفلترة');
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ خطأ في الاتصال: ${error.message}`;
+                updateTestStatus('failed', 'خطأ في الاتصال');
+            }
+        }
+
+        function compareResults() {
+            const resultDiv = document.getElementById('comparison-result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+
+            if (!allMealsData || !filteredMealsData) {
+                resultDiv.textContent = '❌ يرجى تشغيل الاختبارات السابقة أولاً';
+                return;
+            }
+
+            const subscriptionTypeId = parseInt(document.getElementById('subscription-type-id').value);
+            let comparison = `📊 مقارنة النتائج:\n\n`;
+            comparison += `إجمالي الوجبات (بدون فلتر): ${allMealsData.length}\n`;
+            comparison += `الوجبات المفلترة: ${filteredMealsData.length}\n\n`;
+
+            // التحقق من أن جميع الوجبات المفلترة تحتوي على نوع الاشتراك المحدد
+            let validFilteredMeals = 0;
+            let invalidFilteredMeals = 0;
+
+            filteredMealsData.forEach(meal => {
+                if (meal.subscription_type_ids && meal.subscription_type_ids.includes(subscriptionTypeId)) {
+                    validFilteredMeals++;
+                } else {
+                    invalidFilteredMeals++;
+                }
+            });
+
+            comparison += `✅ الوجبات الصحيحة في النتيجة المفلترة: ${validFilteredMeals}\n`;
+            comparison += `❌ الوجبات الخاطئة في النتيجة المفلترة: ${invalidFilteredMeals}\n\n`;
+
+            // التحقق من الوجبات المفقودة
+            const expectedFilteredMeals = allMealsData.filter(meal => 
+                meal.subscription_type_ids && meal.subscription_type_ids.includes(subscriptionTypeId)
+            );
+
+            comparison += `🔍 الوجبات المتوقعة في النتيجة المفلترة: ${expectedFilteredMeals.length}\n`;
+            comparison += `📈 نسبة الدقة: ${expectedFilteredMeals.length > 0 ? (validFilteredMeals / expectedFilteredMeals.length * 100).toFixed(2) : 0}%\n\n`;
+
+            if (invalidFilteredMeals === 0 && validFilteredMeals === expectedFilteredMeals.length) {
+                resultDiv.className = 'result success';
+                comparison += `🎉 الاختبار نجح! جميع الوجبات المفلترة صحيحة.\n`;
+                updateTestStatus('success', 'تم اختبار التصفية بنجاح - جميع النتائج صحيحة');
+            } else {
+                resultDiv.className = 'result error';
+                comparison += `⚠️ هناك مشاكل في التصفية:\n`;
+                if (invalidFilteredMeals > 0) {
+                    comparison += `- ${invalidFilteredMeals} وجبة لا تحتوي على نوع الاشتراك المحدد\n`;
+                }
+                if (validFilteredMeals !== expectedFilteredMeals.length) {
+                    comparison += `- عدد الوجبات المفلترة لا يتطابق مع المتوقع\n`;
+                }
+                updateTestStatus('failed', 'فشل اختبار التصفية - هناك مشاكل في النتائج');
+            }
+
+            resultDiv.textContent = comparison;
+        }
+
+        function updateTestStatus(status, message) {
+            const statusDiv = document.getElementById('test-status');
+            const summaryDiv = document.getElementById('test-summary');
+            
+            let statusHtml = '';
+            if (status === 'success') {
+                statusHtml = `<span class="status success">✅ ${message}</span>`;
+            } else if (status === 'failed') {
+                statusHtml = `<span class="status failed">❌ ${message}</span>`;
+            } else {
+                statusHtml = `<span class="status pending">⏳ ${message}</span>`;
+            }
+            
+            statusDiv.innerHTML = statusHtml;
+            
+            // إضافة ملخص للاختبار
+            const timestamp = new Date().toLocaleTimeString('ar-SA');
+            summaryDiv.innerHTML += `<div style="margin: 10px 0; padding: 10px; background: #f8fafc; border-radius: 5px; border-left: 4px solid ${status === 'success' ? '#68d391' : status === 'failed' ? '#fc8181' : '#f6ad55'};">
+                <strong>[${timestamp}]</strong> ${message}
+            </div>`;
+        }
+
+        // تشغيل الاختبار الأول تلقائياً عند تحميل الصفحة
+        window.onload = function() {
+            updateTestStatus('pending', 'جاهز للاختبار - اضغط على أزرار الاختبار لبدء الاختبار');
+        };
+    </script>
+</body>
+</html>
