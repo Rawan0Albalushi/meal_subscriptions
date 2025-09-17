@@ -15,6 +15,7 @@ import DeliveryAddresses from './pages/Customer/DeliveryAddresses';
 import ContactUs from './pages/Customer/ContactUs';
 import PaymentSuccess from './pages/Customer/PaymentSuccess';
 import PaymentCancel from './pages/Customer/PaymentCancel';
+import Cart from './pages/Customer/Cart';
 import ContactInformationManagement from './pages/Admin/ContactInformationManagement';
 import AdminLayout from './pages/Admin/AdminLayout';
 import SellerLayout from './pages/Seller/SellerLayout';
@@ -130,13 +131,21 @@ function AppRoutes() {
                             <Navigate to="/login" replace />
                         } 
                     />
-                    <Route 
-                        path="/delivery-addresses" 
+                    <Route
+                        path="/delivery-addresses"
                         element={
-                            isAuthenticated ? 
-                            <DeliveryAddresses /> : 
+                            isAuthenticated ?
+                            <DeliveryAddresses /> :
                             <Navigate to="/login" replace />
-                        } 
+                        }
+                    />
+                    <Route
+                        path="/cart"
+                        element={
+                            isAuthenticated ?
+                            <Cart /> :
+                            <Navigate to="/login" replace />
+                        }
                     />
                     <Route path="/contact-us" element={<ContactUs />} />
                     

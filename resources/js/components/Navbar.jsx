@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../hooks/useCart';
 
 const Navbar = () => {
     const { t, language, toggleLanguage } = useLanguage();
     const { logout, user, isAuthenticated } = useAuth();
+    const { getCartItemsCount } = useCart();
     const navigate = useNavigate();
     const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -162,6 +164,49 @@ const Navbar = () => {
                             >
                                 {language === 'ar' ? 'تواصل معنا' : 'Contact Us'}
                             </Link>
+
+                            {isAuthenticated && (
+                                <Link to="/cart" style={{
+                                    padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
+                                    borderRadius: '0.5rem',
+                                    color: '#4a757c',
+                                    textDecoration: 'none',
+                                    fontSize: 'clamp(0.875rem, 3vw, 1.125rem)',
+                                    fontWeight: '500',
+                                    transition: 'all 0.2s',
+                                    whiteSpace: 'nowrap',
+                                    position: 'relative',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.25rem'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.background = 'rgba(74, 117, 124, 0.1)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.background = 'transparent';
+                                }}
+                                >
+                                    🛒 {language === 'ar' ? 'السلة' : 'Cart'}
+                                    {getCartItemsCount() > 0 && (
+                                        <span style={{
+                                            background: '#ef4444',
+                                            color: 'white',
+                                            fontSize: '0.75rem',
+                                            fontWeight: 'bold',
+                                            borderRadius: '50%',
+                                            width: '1.25rem',
+                                            height: '1.25rem',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginLeft: '0.25rem'
+                                        }}>
+                                            {getCartItemsCount()}
+                                        </span>
+                                    )}
+                                </Link>
+                            )}
 
                         </div>
 

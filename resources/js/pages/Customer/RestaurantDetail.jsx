@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { restaurantsAPI, subscriptionTypesAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useCart } from '../../hooks/useCart';
 
 // Simple CSS styles
 const styles = `
@@ -394,6 +395,7 @@ const RestaurantDetail = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { t, language, dir } = useLanguage();
+  const { createOrUpdateCart, addItem } = useCart();
   
   const [restaurant, setRestaurant] = useState(null);
   const [meals, setMeals] = useState([]);
@@ -721,20 +723,20 @@ const RestaurantDetail = () => {
     // Note: Auto-scroll has been disabled to prevent automatic scrolling when selecting meals
   };
 
-  const handleContinueToSubscription = () => {
+  const handleContinueToSubscription = async () => {
     // Prevent auto-scroll by preventing default behavior
     event?.preventDefault();
     event?.stopPropagation();
-    
+
     const newErrors = {};
-    
+
     if (!startDate) {
       newErrors.startDate = t('selectStartDate');
     }
-    
+
     const selectedDays = Object.keys(selectedMeals);
     const requiredMealsCount = selectedSubscriptionType?.meals_count || 0;
-    
+
     if (selectedDays.length === 0) {
       newErrors.meals = t('selectAtLeastOneMeal');
     } else if (selectedDays.length < requiredMealsCount) {
@@ -742,32 +744,59 @@ const RestaurantDetail = () => {
     } else if (selectedDays.length > requiredMealsCount) {
       newErrors.meals = t('selectRequiredMealsCount', { count: requiredMealsCount });
     }
-    
+
     setErrors(newErrors);
-    
+
     if (Object.keys(newErrors).length > 0) {
       return;
     }
-    
-    // Navigate to subscription form with selected meals, days, and start date
-    // Build a map from dayKey to exact delivery date (YYYY-MM-DD) based on the start date
-    const dayKeyToDateMap = getWeekDaysFromStartDate().reduce((acc, d) => {
-      acc[d.key] = d.date;
-      return acc;
-    }, {});
 
-    const selectedMealsWithDays = Object.entries(selectedMeals).map(([dayKey, meal]) => ({
-      dayKey,
-      mealId: meal.id,
-      // Store the base day name for backend validation
-      baseDayKey: dayKey.split('_')[0],
-      // Persist the exact delivery date so the next page mirrors the same date
-      deliveryDate: dayKeyToDateMap[dayKey]
-    }));
-    const mealsData = JSON.stringify(selectedMealsWithDays);
-    const subscriptionUrl = `/subscribe/${id}/${selectedSubscriptionType.type}/${startDate}/${encodeURIComponent(mealsData)}`;
-    
-    navigate(subscriptionUrl);
+    try {
+      setLoading(true);
+
+      // Create or update cart with restaurant and subscription type info
+      const cartData = {
+        restaurant_id: parseInt(id),
+        subscription_type_id: selectedSubscriptionType.id,
+        start_date: startDate
+      };
+
+      const cart = await createOrUpdateCart(cartData);
+
+      // Build a map from dayKey to exact delivery date (YYYY-MM-DD) based on the start date
+      const dayKeyToDateMap = getWeekDaysFromStartDate().reduce((acc, d) => {
+        acc[d.key] = d.date;
+        return acc;
+      }, {});
+
+      // Add each selected meal to the cart
+      const addPromises = Object.entries(selectedMeals).map(async ([dayKey, meal]) => {
+        const deliveryDate = dayKeyToDateMap[dayKey];
+        const mealType = meal.meal_type || 'lunch'; // Default to lunch if not specified
+
+        const itemData = {
+          cart_id: cart.id,
+          meal_id: meal.id,
+          delivery_date: deliveryDate,
+          meal_type: mealType
+        };
+
+        return await addItem(itemData);
+      });
+
+      await Promise.all(addPromises);
+
+      // Navigate to cart page
+      navigate('/cart');
+
+    } catch (error) {
+      console.error('Error adding items to cart:', error);
+      setErrors({
+        general: error.message || t('failedToAddToCart')
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getSelectedMealForDay = (dayKey) => {

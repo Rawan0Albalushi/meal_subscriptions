@@ -9,6 +9,8 @@ use App\Models\SubscriptionType;
 use App\Models\Meal;
 use App\Models\Restaurant;
 use App\Models\DeliveryAddress;
+use App\Models\Cart;
+use App\Models\CartItem;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -169,6 +171,144 @@ class SubscriptionController extends Controller
                 'message' => 'فشل في إنشاء رابط الدفع: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function checkoutFromCart(Request $request)
+    {
+        $request->validate([
+            'delivery_address_id' => 'nullable|exists:delivery_addresses,id',
+            'special_instructions' => 'nullable|string|max:1000',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            // Get user's cart
+            $cart = Cart::where('user_id', auth()->id())
+                ->with([
+                    'restaurant',
+                    'subscriptionType',
+                    'cartItems.meal',
+                    'deliveryAddress'
+                ])
+                ->first();
+
+            if (!$cart) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cart is empty'
+                ], 400);
+            }
+
+            if ($cart->cartItems->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cart has no items'
+                ], 400);
+            }
+
+            // Update cart with any provided data
+            if ($request->has('delivery_address_id')) {
+                $cart->delivery_address_id = $request->delivery_address_id;
+            }
+            if ($request->has('special_instructions')) {
+                $cart->special_instructions = $request->special_instructions;
+            }
+
+            // Validate delivery address
+            if (!$cart->delivery_address_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Delivery address is required'
+                ], 400);
+            }
+
+            // Calculate subscription dates based on subscription type
+            $subscriptionType = $cart->subscriptionType;
+            $startDate = $cart->start_date ?: Carbon::tomorrow();
+            $endDate = $this->calculateEndDate($startDate, $subscriptionType->type);
+
+            // Calculate delivery price (you can implement your own logic here)
+            $deliveryPrice = $this->calculateDeliveryPrice($cart);
+            $cart->delivery_price = $deliveryPrice;
+            $cart->save();
+
+            // Create subscription
+            $subscription = Subscription::create([
+                'user_id' => auth()->id(),
+                'restaurant_id' => $cart->restaurant_id,
+                'delivery_address_id' => $cart->delivery_address_id,
+                'subscription_type_id' => $cart->subscription_type_id,
+                'subscription_type' => $subscriptionType->type,
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'total_amount' => $cart->total_amount,
+                'delivery_price' => $cart->delivery_price,
+                'status' => 'pending',
+                'payment_status' => 'pending',
+                'special_instructions' => $cart->special_instructions,
+            ]);
+
+            // Create subscription items from cart items
+            foreach ($cart->cartItems as $cartItem) {
+                SubscriptionItem::create([
+                    'subscription_id' => $subscription->id,
+                    'meal_id' => $cartItem->meal_id,
+                    'delivery_date' => $cartItem->delivery_date,
+                    'meal_type' => $cartItem->meal_type,
+                    'price' => $cartItem->price,
+                    'status' => 'pending'
+                ]);
+            }
+
+            // Create payment link
+            $paymentResponse = $this->paymentService->createPaymentLink([
+                'user_id' => auth()->id(),
+                'model_type' => Subscription::class,
+                'model_id' => $subscription->id,
+                'amount' => $subscription->total_amount + $subscription->delivery_price,
+                'currency' => 'OMR',
+                'description' => "اشتراك {$subscriptionType->name_ar} - {$cart->restaurant->name_ar}",
+                'subscription_data' => []
+            ]);
+
+            // Clear the cart after successful checkout initiation
+            $cart->cartItems()->delete();
+            $cart->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'payment_link' => $paymentResponse->paymentLink,
+                'session_id' => $paymentResponse->sessionId,
+                'subscription_id' => $subscription->id,
+                'amount' => $subscription->total_amount + $subscription->delivery_price,
+                'currency' => 'OMR',
+                'gateway' => $this->paymentService->getActiveGateway()
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            Log::error('Cart checkout failed: ' . $e->getMessage(), [
+                'user_id' => auth()->id(),
+                'request_data' => $request->all(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'فشل في إنشاء رابط الدفع: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    private function calculateDeliveryPrice(Cart $cart)
+    {
+        // Implement your delivery price calculation logic here
+        // This is a simple example - you can make it more sophisticated
+        return $cart->subscriptionType->delivery_price ?? 2.00;
     }
 
     public function store(Request $request)

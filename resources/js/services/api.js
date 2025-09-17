@@ -80,9 +80,21 @@ export const subscriptionsAPI = {
     getById: (id) => api.get(`/subscriptions/${id}`),
     create: (subscriptionData) => api.post('/subscriptions', subscriptionData),
     initiatePayment: (subscriptionData) => api.post('/subscriptions/initiate-payment', subscriptionData),
+    checkoutFromCart: (checkoutData) => api.post('/subscriptions/checkout-from-cart', checkoutData),
     update: (id, subscriptionData) => api.put(`/subscriptions/${id}`, subscriptionData),
     updateItemStatus: (subscriptionId, itemId, status) => api.put(`/subscriptions/${subscriptionId}/items/${itemId}/status`, { status }),
     delete: (id) => api.delete(`/subscriptions/${id}`),
+};
+
+// Cart API
+export const cartAPI = {
+    get: () => api.get('/cart'),
+    create: (cartData) => api.post('/cart', cartData),
+    addItem: (itemData) => api.post('/cart/items', itemData),
+    removeItem: (itemId) => api.delete(`/cart/items/${itemId}`),
+    clear: () => api.delete('/cart/clear'),
+    updateDeliveryAddress: (addressData) => api.put('/cart/delivery-address', addressData),
+    updateSpecialInstructions: (instructionsData) => api.put('/cart/special-instructions', instructionsData),
 };
 
 // Seller APIs

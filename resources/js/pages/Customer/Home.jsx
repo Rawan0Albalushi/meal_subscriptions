@@ -707,7 +707,7 @@ const Home = () => {
                     e.target.style.transform = 'scale(1) rotate(0deg)';
                     e.target.style.filter = 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1))';
                   }}>
-                    {restaurant.image}
+                    {restaurant.logo}
                   </div>
                   
                   {/* Restaurant Name */}

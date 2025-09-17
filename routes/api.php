@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\SubscriptionTypeController;
 use App\Http\Controllers\Api\DeliveryAddressController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\Seller\RestaurantController as SellerRestaurantController;
 use App\Http\Controllers\Api\Seller\MealController as SellerMealController;
 use App\Http\Controllers\Api\ContactInformationController;
@@ -57,6 +58,7 @@ Route::middleware(['auth:sanctum', 'check.user.status'])->group(function () {
     Route::get('/subscriptions', [SubscriptionController::class, 'index']);
     Route::post('/subscriptions', [SubscriptionController::class, 'store']);
     Route::post('/subscriptions/initiate-payment', [SubscriptionController::class, 'initiatePayment']);
+    Route::post('/subscriptions/checkout-from-cart', [SubscriptionController::class, 'checkoutFromCart']);
     Route::get('/subscriptions/{id}', [SubscriptionController::class, 'show']);
     Route::put('/subscriptions/{id}', [SubscriptionController::class, 'update']);
     Route::put('/subscriptions/{subscriptionId}/items/{itemId}/status', [SubscriptionController::class, 'updateItemStatus']);
@@ -67,6 +69,15 @@ Route::middleware(['auth:sanctum', 'check.user.status'])->group(function () {
     Route::get('/delivery-addresses/{id}', [DeliveryAddressController::class, 'show']);
     Route::put('/delivery-addresses/{id}', [DeliveryAddressController::class, 'update']);
     Route::delete('/delivery-addresses/{id}', [DeliveryAddressController::class, 'destroy']);
+
+    // Cart routes
+    Route::get('/cart', [CartController::class, 'index']);
+    Route::post('/cart', [CartController::class, 'store']);
+    Route::post('/cart/items', [CartController::class, 'addItem']);
+    Route::delete('/cart/items/{itemId}', [CartController::class, 'removeItem']);
+    Route::delete('/cart/clear', [CartController::class, 'clear']);
+    Route::put('/cart/delivery-address', [CartController::class, 'updateDeliveryAddress']);
+    Route::put('/cart/special-instructions', [CartController::class, 'updateSpecialInstructions']);
 });
 
 // Public payment routes (no authentication required for callbacks)
