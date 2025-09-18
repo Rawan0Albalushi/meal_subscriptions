@@ -1704,12 +1704,15 @@ const SellerSubscriptions = () => {
                                             <select
                                                 value={item.status}
                                                 onChange={(e) => updateItemStatus(selectedSubscription.id, item.id, e.target.value)}
+                                                disabled={selectedSubscription.status === 'cancelled'}
                                                 style={{
                                                     padding: '0.5rem',
                                                     border: '1px solid rgb(209 213 219)',
                                                     borderRadius: '0.375rem',
                                                     fontSize: '0.875rem',
-                                                    background: 'white'
+                                                    background: selectedSubscription.status === 'cancelled' ? '#f3f4f6' : 'white',
+                                                    cursor: selectedSubscription.status === 'cancelled' ? 'not-allowed' : 'pointer',
+                                                    opacity: selectedSubscription.status === 'cancelled' ? 0.7 : 1
                                                 }}
                                             >
                                                 <option value="pending">{language === 'ar' ? 'في الانتظار' : 'Pending'}</option>

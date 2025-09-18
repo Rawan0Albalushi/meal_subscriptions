@@ -1890,19 +1890,19 @@ const AdminSubscriptions = () => {
                                             <select
                                                 value={item.status}
                                                 onChange={(e) => handleUpdateItemStatus(subscription.id, item.id, e.target.value)}
-                                                disabled={updatingStatus[`${subscription.id}-${item.id}`]}
+                                                disabled={updatingStatus[`${subscription.id}-${item.id}`] || subscription.status === 'cancelled'}
                                                 style={{
                                                     padding: '0.5rem 0.75rem',
                                                     border: '2px solid #e5e7eb',
                                                     borderRadius: '0.5rem',
                                                     fontSize: '0.875rem',
-                                                    backgroundColor: updatingStatus[`${subscription.id}-${item.id}`] ? '#f3f4f6' : 'white',
-                                                    cursor: updatingStatus[`${subscription.id}-${item.id}`] ? 'not-allowed' : 'pointer',
+                                                    backgroundColor: (updatingStatus[`${subscription.id}-${item.id}`] || subscription.status === 'cancelled') ? '#f3f4f6' : 'white',
+                                                    cursor: (updatingStatus[`${subscription.id}-${item.id}`] || subscription.status === 'cancelled') ? 'not-allowed' : 'pointer',
                                                     minWidth: '120px',
-                                                    opacity: updatingStatus[`${subscription.id}-${item.id}`] ? 0.7 : 1,
+                                                    opacity: (updatingStatus[`${subscription.id}-${item.id}`] || subscription.status === 'cancelled') ? 0.7 : 1,
                                                     transition: 'all 0.2s ease'
                                                 }}
-                                                onFocus={(e) => !updatingStatus[`${subscription.id}-${item.id}`] && (e.target.style.borderColor = '#3b82f6')}
+                                                onFocus={(e) => !(updatingStatus[`${subscription.id}-${item.id}`] || subscription.status === 'cancelled') && (e.target.style.borderColor = '#3b82f6')}
                                                 onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
                                             >
                                                 <option value="pending">{language === 'ar' ? 'في الانتظار' : 'Pending'}</option>

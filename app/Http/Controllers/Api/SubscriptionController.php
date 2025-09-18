@@ -552,7 +552,15 @@ class SubscriptionController extends Controller
 
         $subscriptionItem = SubscriptionItem::whereHas('subscription', function($query) use ($subscriptionId) {
             $query->where('id', $subscriptionId);
-        })->findOrFail($itemId);
+        })->with('subscription')->findOrFail($itemId);
+
+        // Disallow item updates if parent subscription is cancelled
+        if ($subscriptionItem->subscription && $subscriptionItem->subscription->status === 'cancelled') {
+            return response()->json([
+                'success' => false,
+                'message' => 'لا يمكن تعديل حالة الوجبات لاشتراك ملغي'
+            ], 400);
+        }
 
         $subscriptionItem->update([
             'status' => $request->status
@@ -640,6 +648,11 @@ class SubscriptionController extends Controller
             'status' => $request->status
         ]);
 
+        // If subscription is cancelled, cancel all its items as well
+        if ($subscription->status === 'cancelled') {
+            $subscription->subscriptionItems()->update(['status' => 'cancelled']);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'تم تحديث حالة الاشتراك بنجاح',
@@ -660,6 +673,14 @@ class SubscriptionController extends Controller
             $query->where('restaurant_id', $restaurantId)
                   ->where('id', $subscriptionId);
         })->findOrFail($itemId);
+
+        // Disallow item updates if parent subscription is cancelled
+        if ($subscriptionItem->subscription && $subscriptionItem->subscription->status === 'cancelled') {
+            return response()->json([
+                'success' => false,
+                'message' => 'لا يمكن تعديل حالة الوجبات لاشتراك ملغي'
+            ], 400);
+        }
 
         $subscriptionItem->update([
             'status' => $request->status

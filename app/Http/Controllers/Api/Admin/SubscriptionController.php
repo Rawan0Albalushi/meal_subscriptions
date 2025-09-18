@@ -64,6 +64,13 @@ class SubscriptionController extends Controller
 
             $subscriptions = $query->orderBy('created_at', 'desc')->paginate(20);
 
+            // Ensure data consistency: if subscription is cancelled, all items must be cancelled
+            foreach ($subscriptions->items() as $sub) {
+                if ($sub->status === 'cancelled') {
+                    $sub->subscriptionItems()->where('status', '!=', 'cancelled')->update(['status' => 'cancelled']);
+                }
+            }
+
             return response()->json([
                 'success' => true,
                 'data' => $subscriptions->items(),
@@ -95,6 +102,12 @@ class SubscriptionController extends Controller
                 'deliveryAddress'
             ])->findOrFail($id);
 
+            // Ensure data consistency for cancelled subscriptions
+            if ($subscription->status === 'cancelled') {
+                $subscription->subscriptionItems()->where('status', '!=', 'cancelled')->update(['status' => 'cancelled']);
+                $subscription->load(['items.meal']);
+            }
+
             return response()->json([
                 'success' => true,
                 'data' => $subscription
@@ -123,6 +136,11 @@ class SubscriptionController extends Controller
                 'status' => $request->status,
                 'notes' => $request->notes
             ]);
+
+            // If subscription is cancelled, cancel all its items as well
+            if ($subscription->status === 'cancelled') {
+                $subscription->subscriptionItems()->update(['status' => 'cancelled']);
+            }
 
             return response()->json([
                 'success' => true,
@@ -186,6 +204,14 @@ class SubscriptionController extends Controller
 
             $subscription = Subscription::findOrFail($subscriptionId);
             \Log::info('Subscription found', ['subscription' => $subscription->toArray()]);
+
+            // Disallow item updates if subscription is cancelled
+            if ($subscription->status === 'cancelled') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'لا يمكن تعديل حالة الوجبات لاشتراك ملغي'
+                ], 400);
+            }
             
             $item = $subscription->subscriptionItems()->findOrFail($itemId);
             \Log::info('Subscription item found', ['item' => $item->toArray()]);

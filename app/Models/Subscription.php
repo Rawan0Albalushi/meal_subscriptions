@@ -35,6 +35,15 @@ class Subscription extends Model
 
     protected $appends = ['subscription_type_text', 'status_text', 'total_with_delivery', 'items'];
 
+    protected static function booted()
+    {
+        static::updated(function (Subscription $subscription) {
+            if ($subscription->isDirty('status') && $subscription->status === 'cancelled') {
+                $subscription->subscriptionItems()->where('status', '!=', 'cancelled')->update(['status' => 'cancelled']);
+            }
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
