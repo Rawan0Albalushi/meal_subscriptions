@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار إصلاح مشكلة السلة</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #faeeee 0%, #eefafa 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .header h1 {
+            color: #2f6e73;
+            margin: 0;
+            font-size: 2rem;
+        }
+        .test-section {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid #e2e8f0;
+        }
+        .test-section h2 {
+            color: #1e293b;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        .test-item {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .test-item h3 {
+            color: #2f6e73;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .success {
+            background: #dcfce7;
+            border: 1px solid #16a34a;
+            color: #166534;
+        }
+        .info {
+            background: #dbeafe;
+            border: 1px solid #2563eb;
+            color: #1e40af;
+        }
+        .warning {
+            background: #fef3c7;
+            border: 1px solid #d97706;
+            color: #92400e;
+        }
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .steps {
+            counter-reset: step-counter;
+        }
+        .step {
+            counter-increment: step-counter;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            position: relative;
+        }
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #2f6e73;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .step h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛒 اختبار إصلاح مشكلة السلة</h1>
+            <p>حل مشكلة "Table 'meal_subscriptions.carts' doesn't exist"</p>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 المشكلة التي تم حلها</h2>
+            <div class="test-item warning">
+                <h3>الخطأ الأصلي:</h3>
+                <div class="code-block">
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'meal_subscriptions.carts' doesn't exist
+                </div>
+                <p>كان هذا الخطأ يحدث عند محاولة استخدام وظائف السلة لأن جدول <code>carts</code> لم يكن موجوداً في قاعدة البيانات.</p>
+            </div>
+            <div class="test-item success">
+                <h3>الحل المطبق:</h3>
+                <ul>
+                    <li>تم تشغيل migration لإنشاء جدول <code>carts</code></li>
+                    <li>تم تشغيل migration لإنشاء جدول <code>cart_items</code></li>
+                    <li>تم التحقق من وجود الجداول في قاعدة البيانات</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 الجداول التي تم إنشاؤها</h2>
+            <div class="test-item info">
+                <h3>جدول carts:</h3>
+                <ul>
+                    <li><strong>id</strong> - المعرف الفريد</li>
+                    <li><strong>user_id</strong> - معرف المستخدم</li>
+                    <li><strong>restaurant_id</strong> - معرف المطعم</li>
+                    <li><strong>subscription_type_id</strong> - معرف نوع الاشتراك</li>
+                    <li><strong>delivery_address_id</strong> - عنوان التسليم</li>
+                    <li><strong>start_date</strong> - تاريخ البداية</li>
+                    <li><strong>special_instructions</strong> - تعليمات خاصة</li>
+                    <li><strong>total_amount</strong> - المبلغ الإجمالي</li>
+                    <li><strong>delivery_price</strong> - سعر التوصيل</li>
+                    <li><strong>timestamps</strong> - تواريخ الإنشاء والتحديث</li>
+                </ul>
+            </div>
+            <div class="test-item info">
+                <h3>جدول cart_items:</h3>
+                <ul>
+                    <li><strong>id</strong> - المعرف الفريد</li>
+                    <li><strong>cart_id</strong> - معرف السلة</li>
+                    <li><strong>meal_id</strong> - معرف الوجبة</li>
+                    <li><strong>delivery_date</strong> - تاريخ التسليم</li>
+                    <li><strong>meal_type</strong> - نوع الوجبة (فطور/غداء/عشاء)</li>
+                    <li><strong>price</strong> - السعر</li>
+                    <li><strong>meal_data</strong> - بيانات الوجبة (JSON)</li>
+                    <li><strong>timestamps</strong> - تواريخ الإنشاء والتحديث</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 خطوات الاختبار</h2>
+            <div class="steps">
+                <div class="step">
+                    <h4>1. تسجيل الدخول</h4>
+                    <p>تأكد من تسجيل الدخول إلى النظام</p>
+                </div>
+                <div class="step">
+                    <h4>2. اختيار مطعم</h4>
+                    <p>انتقل إلى أي مطعم من صفحة المطاعم</p>
+                </div>
+                <div class="step">
+                    <h4>3. اختيار نوع الاشتراك</h4>
+                    <p>اختر نوع الاشتراك المطلوب</p>
+                </div>
+                <div class="step">
+                    <h4>4. اختيار تاريخ البداية</h4>
+                    <p>اختر تاريخ بداية الاشتراك</p>
+                </div>
+                <div class="step">
+                    <h4>5. اختيار الوجبات</h4>
+                    <p>اختر الوجبات المطلوبة حسب عدد الوجبات المحدد</p>
+                </div>
+                <div class="step">
+                    <h4>6. الضغط على زر المتابعة</h4>
+                    <p>اضغط على زر "🚀 المتابعة إلى الاشتراك"</p>
+                </div>
+                <div class="step">
+                    <h4>7. التحقق من الانتقال</h4>
+                    <p>يجب أن يتم الانتقال إلى صفحة السلة بنجاح دون أي أخطاء</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>✅ النتائج المتوقعة</h2>
+            <div class="test-item success">
+                <h3>النتيجة الصحيحة:</h3>
+                <ul>
+                    <li>يتم إنشاء سلة جديدة في قاعدة البيانات</li>
+                    <li>يتم إضافة الوجبات المختارة إلى السلة</li>
+                    <li>يتم الانتقال إلى صفحة السلة بنجاح</li>
+                    <li>يتم عرض تفاصيل السلة (المطعم، نوع الاشتراك، الوجبات)</li>
+                    <li>يمكن للمستخدم إكمال عملية الشراء</li>
+                </ul>
+            </div>
+            <div class="test-item warning">
+                <h3>في حالة وجود مشاكل:</h3>
+                <ul>
+                    <li>تحقق من أن المستخدم مسجل دخول</li>
+                    <li>تحقق من أن جميع البيانات المطلوبة تم اختيارها</li>
+                    <li>تحقق من أن الخادم يعمل على المنفذ 8000</li>
+                    <li>تحقق من وحدة التحكم في المتصفح للأخطاء</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔧 معلومات تقنية</h2>
+            <div class="test-item info">
+                <h3>الـ API Endpoints المتاحة:</h3>
+                <ul>
+                    <li><code>GET /api/cart</code> - جلب السلة</li>
+                    <li><code>POST /api/cart</code> - إنشاء/تحديث السلة</li>
+                    <li><code>POST /api/cart/items</code> - إضافة عنصر للسلة</li>
+                    <li><code>DELETE /api/cart/items/{id}</code> - حذف عنصر من السلة</li>
+                    <li><code>DELETE /api/cart/clear</code> - مسح السلة</li>
+                    <li><code>PUT /api/cart/delivery-address</code> - تحديث عنوان التسليم</li>
+                    <li><code>PUT /api/cart/special-instructions</code> - تحديث التعليمات الخاصة</li>
+                </ul>
+            </div>
+            <div class="test-item info">
+                <h3>الـ Models المستخدمة:</h3>
+                <ul>
+                    <li><code>Cart</code> - نموذج السلة</li>
+                    <li><code>CartItem</code> - نموذج عناصر السلة</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

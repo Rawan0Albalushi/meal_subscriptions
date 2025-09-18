@@ -43,6 +43,11 @@ return [
             'secret_key' => env('THAWANI_SECRET_KEY', 'test_secret_key_here'),
             'mode' => env('THAWANI_MODE', 'test'), // 'test' or 'live'
         ],
+        
+        'mock' => [
+            'enabled' => env('MOCK_PAYMENT_ENABLED', true),
+            'mode' => 'development',
+        ],
     ],
 
     /*

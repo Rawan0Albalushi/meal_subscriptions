@@ -155,7 +155,7 @@ const SubscriptionForm = () => {
   const isWeekday = (dateString) => {
     const date = new Date(dateString);
     const dayOfWeek = date.getDay();
-    return dayOfWeek >= 0 && dayOfWeek <= 4; // Sunday = 0, Thursday = 4
+    return dayOfWeek >= 0 && dayOfWeek <= 3; // Sunday = 0, Wednesday = 3
   };
 
   // Helper function to format numbers with 2 decimal places
@@ -312,9 +312,9 @@ const SubscriptionForm = () => {
       return;
     }
 
-    // Validate that the date is a weekday (Sunday to Thursday)
+    // Validate that the date is a weekday (Sunday to Wednesday)
     const dayOfWeek = selectedDate.getDay();
-    if (dayOfWeek === 5 || dayOfWeek === 6) { // Friday = 5, Saturday = 6
+    if (dayOfWeek === 4 || dayOfWeek === 5 || dayOfWeek === 6) { // Thursday = 4, Friday = 5, Saturday = 6
       setPopupTitle(t('dateError'));
       setPopupMessage(t('startDateMustBeWeekday'));
       setShowErrorPopup(true);

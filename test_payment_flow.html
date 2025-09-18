@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار تدفق الدفع</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #faeeee 0%, #eefafa 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 15px;
+        }
+        .test-section h3 {
+            color: #4a757c;
+            margin-bottom: 15px;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 117, 124, 0.3);
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+        }
+        .success { background: #d1fae5; border-color: #10b981; }
+        .error { background: #fee2e2; border-color: #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; color: #4a757c; margin-bottom: 30px;">اختبار تدفق الدفع</h1>
+        
+        <div class="test-section">
+            <h3>1. اختبار مسارات الدفع</h3>
+            <button class="test-button" onclick="testPaymentRoutes()">اختبار المسارات</button>
+            <div id="routes-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. اختبار Mock Payment</h3>
+            <button class="test-button" onclick="testMockPayment()">اختبار Mock Payment</button>
+            <div id="mock-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. اختبار إنشاء الاشتراك</h3>
+            <button class="test-button" onclick="testSubscriptionCreation()">اختبار إنشاء الاشتراك</button>
+            <div id="subscription-result" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testPaymentRoutes() {
+            const resultDiv = document.getElementById('routes-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'جاري الاختبار...';
+            
+            try {
+                // Test payment success route
+                const successResponse = await fetch('/payment/success?subscription_id=test123&success=1');
+                const successStatus = successResponse.status;
+                
+                // Test payment cancel route
+                const cancelResponse = await fetch('/payment/cancel?subscription_id=test123&info=Test');
+                const cancelStatus = cancelResponse.status;
+                
+                if (successStatus === 200 && cancelStatus === 200) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = '✅ جميع مسارات الدفع تعمل بشكل صحيح!';
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ مشكلة في المسارات: Success=${successStatus}, Cancel=${cancelStatus}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ خطأ في الاختبار: ${error.message}`;
+            }
+        }
+
+        async function testMockPayment() {
+            const resultDiv = document.getElementById('mock-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'جاري اختبار Mock Payment...';
+            
+            try {
+                const response = await fetch('/payment/mock/test123');
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ Mock Payment يعمل بشكل صحيح!<br>Session ID: ${data.session_id}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = '❌ Mock Payment لا يعمل';
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ خطأ في Mock Payment: ${error.message}`;
+            }
+        }
+
+        async function testSubscriptionCreation() {
+            const resultDiv = document.getElementById('subscription-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'جاري اختبار إنشاء الاشتراك...';
+            
+            try {
+                // This would require authentication, so we'll just test the endpoint exists
+                const response = await fetch('/api/subscriptions/initiate-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: 1,
+                        meal_ids: [1, 2],
+                        delivery_address_id: 1,
+                        subscription_type: 'weekly',
+                        delivery_days: ['monday', 'wednesday'],
+                        start_date: '2024-01-01',
+                        special_instructions: 'Test subscription',
+                        total_amount: 10.0
+                    })
+                });
+                
+                if (response.status === 401) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = '✅ نقطة إنشاء الاشتراك موجودة (تحتاج مصادقة)';
+                } else if (response.status === 422) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = '✅ نقطة إنشاء الاشتراك موجودة (تحتاج بيانات صحيحة)';
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ مشكلة في نقطة إنشاء الاشتراك: ${response.status}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ خطأ في اختبار إنشاء الاشتراك: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

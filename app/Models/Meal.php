@@ -31,7 +31,7 @@ class Meal extends Model
         'subscription_type_ids' => 'array',
     ];
 
-    protected $appends = ['name', 'description', 'meal_type_text', 'delivery_time_formatted', 'linked_subscription_types'];
+    protected $appends = ['name', 'description', 'meal_type_text', 'delivery_time_formatted', 'linked_subscription_types', 'image_url'];
 
     public function restaurant()
     {
@@ -106,5 +106,35 @@ class Meal extends Model
         // إرجاع جميع أنواع الاشتراك المحددة في subscription_type_ids
         // بدون التحقق من ارتباطها بالمطعم (لأن الوجبة قد تحتوي على أنواع اشتراك من مطاعم أخرى)
         return SubscriptionType::whereIn('id', $this->subscription_type_ids)->get();
+    }
+
+    public function getImageUrlAttribute()
+    {
+        if (!$this->image) {
+            return null;
+        }
+
+        // إذا كان المسار يحتوي على http أو https، أرجعه كما هو
+        if (str_starts_with($this->image, 'http')) {
+            return $this->image;
+        }
+
+        // إذا كان المسار يبدأ بـ storage/، أضف URL التطبيق
+        if (str_starts_with($this->image, 'storage/')) {
+            return asset($this->image);
+        }
+
+        // إذا كان المسار يبدأ بـ meals/، أضف storage/ في البداية
+        if (str_starts_with($this->image, 'meals/')) {
+            return asset('storage/' . $this->image);
+        }
+
+        // إذا كان المسار يبدأ بـ public/، أزيل public/ وأضف URL التطبيق
+        if (str_starts_with($this->image, 'public/')) {
+            return asset(str_replace('public/', 'storage/', $this->image));
+        }
+
+        // في الحالات الأخرى، أضف storage/ في البداية
+        return asset('storage/' . $this->image);
     }
 }

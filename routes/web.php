@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+// Note: success/cancel payment callbacks are defined in API routes (routes/api.php)
 
 // Mock payment route for development
 Route::get('/payment/mock/{session_id}', function ($sessionId) {

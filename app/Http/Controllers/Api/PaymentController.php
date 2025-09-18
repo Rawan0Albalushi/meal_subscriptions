@@ -63,8 +63,7 @@ class PaymentController extends Controller
         try {
             $this->processSuccessfulPayment($paymentSession, $validationResponse);
             
-            return redirect('/payment/success?subscription_id=' . $subscriptionId)
-                ->with('success', 'Payment completed successfully');
+            return redirect('/payment/success?subscription_id=' . $subscriptionId . '&success=1');
             
         } catch (\Exception $e) {
             Log::error('Payment processing failed', [
@@ -74,8 +73,7 @@ class PaymentController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
             
-            return redirect('/payment/cancel?subscription_id=' . $subscriptionId)
-                ->with('error', 'Payment processing failed. Please contact support.');
+            return redirect('/payment/cancel?subscription_id=' . $subscriptionId . '&error=Payment processing failed. Please contact support.');
         }
     }
 
@@ -126,8 +124,7 @@ class PaymentController extends Controller
             }
         }
 
-        return redirect('/payment/cancel?subscription_id=' . $subscriptionId)
-            ->with('info', 'Payment was cancelled');
+        return redirect('/payment/cancel?subscription_id=' . $subscriptionId . '&info=Payment was cancelled');
     }
 
     public function webhook(Request $request)

@@ -46,11 +46,11 @@ if (selectedDate < tomorrow) {
 
 #### التحقق من أيام العمل:
 ```javascript
-// Validate that the date is a weekday (Sunday to Thursday)
+// Validate that the date is a weekday (Sunday to Wednesday)
 const dayOfWeek = selectedDate.getDay();
 if (dayOfWeek === 5 || dayOfWeek === 6) { // Friday = 5, Saturday = 6
   setPopupTitle('خطأ في التاريخ');
-  setPopupMessage('تاريخ البداية يجب أن يكون يوم عمل (الأحد إلى الخميس)');
+  setPopupMessage('تاريخ البداية يجب أن يكون يوم عمل (الأحد إلى الأربعاء)');
   setShowErrorPopup(true);
   return;
 }

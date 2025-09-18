@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار معلومات الدفع في صفحة تفاصيل الاشتراك</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #2f6e73, #1f5a5f);
+            color: white;
+            border-radius: 15px;
+        }
+        
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .test-title {
+            color: #2f6e73;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .payment-info {
+            background: linear-gradient(135deg, rgba(47, 110, 115, 0.1) 0%, rgba(182, 84, 73, 0.1) 100%);
+            border-radius: 1rem;
+            padding: 1rem;
+            border: 1px solid rgba(47, 110, 115, 0.2);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .payment-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(135deg, #2f6e73 0%, #b65449 100%);
+        }
+        
+        .payment-item {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(47, 110, 115, 0.1);
+            margin-bottom: 0.5rem;
+        }
+        
+        .payment-item.total {
+            background: linear-gradient(135deg, #2f6e73 0%, #b65449 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(47, 110, 115, 0.3);
+        }
+        
+        .payment-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-weight: 600;
+        }
+        
+        .payment-item.total .payment-label {
+            color: white;
+            font-size: 0.875rem;
+        }
+        
+        .payment-value {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        
+        .payment-item.total .payment-value {
+            color: white;
+            font-size: 1rem;
+            font-weight: 800;
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #2f6e73, #1f5a5f);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(47, 110, 115, 0.3);
+        }
+        
+        .debug-info {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        
+        .error-message {
+            background: #fee;
+            color: #c53030;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #feb2b2;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .success-message {
+            background: #f0fff4;
+            color: #2f7d32;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #9ae6b4;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 اختبار معلومات الدفع في صفحة تفاصيل الاشتراك</h1>
+            <p>فحص صحة عرض معلومات الدفع والتحقق من الحسابات</p>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">
+                <span>🧪</span>
+                <span>اختبارات مختلفة</span>
+            </div>
+            
+            <button class="test-button" onclick="testWeeklySubscription()">اختبار اشتراك أسبوعي</button>
+            <button class="test-button" onclick="testMonthlySubscription()">اختبار اشتراك شهري</button>
+            <button class="test-button" onclick="testWithDeliveryFee()">اختبار مع رسوم توصيل</button>
+            <button class="test-button" onclick="testFreeDelivery()">اختبار توصيل مجاني</button>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">
+                <span>💰</span>
+                <span>معلومات الدفع</span>
+            </div>
+            
+            <div class="payment-info">
+                <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; color: #2f6e73; display: flex; align-items: center; gap: 0.5rem;">
+                    💰 معلومات الدفع
+                </h3>
+                
+                <div id="paymentDetails">
+                    <div class="payment-item">
+                        <span class="payment-label">سعر الاشتراك</span>
+                        <span class="payment-value" id="subscriptionPrice">0.00 ريال</span>
+                    </div>
+                    <div class="payment-item">
+                        <span class="payment-label">سعر التوصيل</span>
+                        <span class="payment-value" id="deliveryPrice">0.00 ريال</span>
+                    </div>
+                    <div class="payment-item total">
+                        <span class="payment-label">المجموع</span>
+                        <span class="payment-value" id="totalAmount">0.00 ريال</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+            <div id="successMessage" class="success-message" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">
+                <span>🔍</span>
+                <span>معلومات التصحيح</span>
+            </div>
+            
+            <div class="debug-info" id="debugInfo">انقر على أحد الأزرار لبدء الاختبار...</div>
+        </div>
+    </div>
+
+    <script>
+        // محاكاة بيانات الاشتراك
+        const mockSubscriptions = {
+            weekly: {
+                total_amount: 130.00,
+                delivery_price: 10.00,
+                subscription_type: 'weekly',
+                subscription_price: 120.00 // total_amount - delivery_price
+            },
+            monthly: {
+                total_amount: 400.00,
+                delivery_price: 0.00,
+                subscription_type: 'monthly',
+                subscription_price: 400.00
+            },
+            weeklyWithDelivery: {
+                total_amount: 135.00,
+                delivery_price: 15.00,
+                subscription_type: 'weekly',
+                subscription_price: 120.00
+            },
+            monthlyFreeDelivery: {
+                total_amount: 400.00,
+                delivery_price: 0.00,
+                subscription_type: 'monthly',
+                subscription_price: 400.00
+            }
+        };
+        
+        function updatePaymentDisplay(subscription) {
+            const subscriptionPrice = (subscription.total_amount - subscription.delivery_price).toFixed(2);
+            const deliveryPrice = subscription.delivery_price > 0 ? `${subscription.delivery_price.toFixed(2)} ريال` : 'مجاني';
+            const totalAmount = subscription.total_amount.toFixed(2);
+            
+            document.getElementById('subscriptionPrice').textContent = `${subscriptionPrice} ريال`;
+            document.getElementById('deliveryPrice').textContent = deliveryPrice;
+            document.getElementById('totalAmount').textContent = `${totalAmount} ريال`;
+            
+            // التحقق من صحة الحسابات
+            const calculatedTotal = parseFloat(subscriptionPrice) + (subscription.delivery_price > 0 ? subscription.delivery_price : 0);
+            const isCorrect = Math.abs(calculatedTotal - subscription.total_amount) < 0.01;
+            
+            if (isCorrect) {
+                showSuccess('✅ الحسابات صحيحة!');
+            } else {
+                showError(`❌ خطأ في الحسابات! المجموع المحسوب: ${calculatedTotal.toFixed(2)}، المجموع الفعلي: ${totalAmount}`);
+            }
+            
+            updateDebugInfo(subscription, subscriptionPrice, deliveryPrice, totalAmount, isCorrect);
+        }
+        
+        function updateDebugInfo(subscription, subscriptionPrice, deliveryPrice, totalAmount, isCorrect) {
+            const debugInfo = document.getElementById('debugInfo');
+            debugInfo.textContent = 
+                `بيانات الاشتراك:\n` +
+                `- نوع الاشتراك: ${subscription.subscription_type}\n` +
+                `- المجموع الكلي: ${subscription.total_amount}\n` +
+                `- سعر التوصيل: ${subscription.delivery_price}\n` +
+                `- سعر الاشتراك المحسوب: ${subscriptionPrice}\n` +
+                `- سعر التوصيل المعروض: ${deliveryPrice}\n` +
+                `- المجموع المعروض: ${totalAmount}\n` +
+                `- الحسابات صحيحة: ${isCorrect ? 'نعم' : 'لا'}\n\n` +
+                `كود الحساب:\n` +
+                `subscriptionPrice = total_amount - delivery_price\n` +
+                `subscriptionPrice = ${subscription.total_amount} - ${subscription.delivery_price} = ${subscriptionPrice}\n` +
+                `totalAmount = ${subscription.total_amount}`;
+        }
+        
+        function testWeeklySubscription() {
+            updatePaymentDisplay(mockSubscriptions.weekly);
+        }
+        
+        function testMonthlySubscription() {
+            updatePaymentDisplay(mockSubscriptions.monthly);
+        }
+        
+        function testWithDeliveryFee() {
+            updatePaymentDisplay(mockSubscriptions.weeklyWithDelivery);
+        }
+        
+        function testFreeDelivery() {
+            updatePaymentDisplay(mockSubscriptions.monthlyFreeDelivery);
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 3000);
+        }
+        
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            testWeeklySubscription();
+        });
+    </script>
+</body>
+</html>

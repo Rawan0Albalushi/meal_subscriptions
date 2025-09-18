@@ -21,9 +21,9 @@ class CartController extends Controller
         $cart = Cart::where('user_id', auth()->id())
             ->with([
                 'restaurant:id,name_ar,name_en,logo',
-                'subscriptionType:id,name_ar,name_en,type',
+                'subscriptionType:id,name_ar,name_en,type,price,delivery_price',
                 'deliveryAddress:id,name,phone,address,city',
-                'cartItems.meal:id,name_ar,name_en,description_ar,description_en,image,meal_type'
+                'cartItems.meal:id,name_ar,name_en,description_ar,description_en,image,meal_type,delivery_time'
             ])
             ->first();
 
@@ -70,13 +70,18 @@ class CartController extends Controller
             'subscription_type_id' => $subscriptionTypeId
         ])->first();
 
+        // Get subscription type to get pricing
+        $subscriptionType = SubscriptionType::findOrFail($subscriptionTypeId);
+
         if ($cart) {
             // Update existing cart
-            $cart->update($request->only([
-                'delivery_address_id',
-                'start_date',
-                'special_instructions'
-            ]));
+            $cart->update([
+                'delivery_address_id' => $request->delivery_address_id,
+                'start_date' => $request->start_date,
+                'special_instructions' => $request->special_instructions,
+                'subscription_price' => $subscriptionType->price,
+                'delivery_price' => $subscriptionType->delivery_price,
+            ]);
         } else {
             // Create new cart
             $cart = Cart::create([
@@ -86,14 +91,15 @@ class CartController extends Controller
                 'delivery_address_id' => $request->delivery_address_id,
                 'start_date' => $request->start_date,
                 'special_instructions' => $request->special_instructions,
-                'total_amount' => 0,
-                'delivery_price' => 0,
+                'subscription_price' => $subscriptionType->price,
+                'delivery_price' => $subscriptionType->delivery_price,
+                'total_amount' => $subscriptionType->price + $subscriptionType->delivery_price,
             ]);
         }
 
         $cart->load([
             'restaurant:id,name_ar,name_en,logo',
-            'subscriptionType:id,name_ar,name_en,type',
+            'subscriptionType:id,name_ar,name_en,type,price,delivery_price',
             'deliveryAddress:id,name,phone,address,city',
         ]);
 
@@ -149,19 +155,19 @@ class CartController extends Controller
             ], 400);
         }
 
-        // Create cart item
+        // Create cart item (for tracking selected meals, not pricing)
         $cartItem = CartItem::create([
             'cart_id' => $cart->id,
             'meal_id' => $meal->id,
             'delivery_date' => $request->delivery_date,
             'meal_type' => $request->meal_type,
-            'price' => $meal->price,
+            'price' => 0, // Price is now based on subscription, not individual meals
         ]);
 
         // Store meal data snapshot
         $cartItem->storeMealData();
 
-        // Update cart total
+        // Update cart total (based on subscription pricing)
         $cart->calculateTotal();
 
         $cartItem->load('meal:id,name_ar,name_en,description_ar,description_en,image,meal_type');
@@ -182,7 +188,7 @@ class CartController extends Controller
         $cart = $cartItem->cart;
         $cartItem->delete();
 
-        // Update cart total
+        // Update cart total (based on subscription pricing, not individual meal prices)
         $cart->calculateTotal();
 
         return response()->json([
@@ -232,8 +238,12 @@ class CartController extends Controller
             'delivery_address_id' => $deliveryAddress->id
         ]);
 
+        // Recalculate total to ensure consistency
+        $cart->calculateTotal();
+
         $cart->load([
             'deliveryAddress:id,name,phone,address,city',
+            'subscriptionType:id,name_ar,name_en,type,price,delivery_price',
         ]);
 
         return response()->json([
@@ -262,6 +272,9 @@ class CartController extends Controller
         $cart->update([
             'special_instructions' => $request->special_instructions
         ]);
+
+        // Recalculate total to ensure consistency
+        $cart->calculateTotal();
 
         return response()->json([
             'success' => true,

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار شامل لمشكلة السلة</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #faeeee 0%, #eefafa 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .step {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 15px;
+            background: #f8fafc;
+        }
+        .step h3 {
+            color: #4a757c;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .step-number {
+            background: linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 117, 124, 0.3);
+        }
+        .test-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success { background: #d1fae5; border-color: #10b981; }
+        .error { background: #fee2e2; border-color: #ef4444; }
+        .info { background: #dbeafe; border-color: #3b82f6; }
+        .warning { background: #fef3c7; border-color: #f59e0b; }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-success { background: #10b981; }
+        .status-error { background: #ef4444; }
+        .status-warning { background: #f59e0b; }
+        .status-info { background: #3b82f6; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; color: #4a757c; margin-bottom: 30px;">🔍 اختبار شامل لمشكلة السلة</h1>
+        
+        <div class="step">
+            <h3>
+                <span class="step-number">1</span>
+                فحص المصادقة
+            </h3>
+            <button class="test-button" onclick="checkAuth()">فحص حالة تسجيل الدخول</button>
+            <div id="auth-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="step">
+            <h3>
+                <span class="step-number">2</span>
+                إنشاء عنوان توصيل
+            </h3>
+            <button class="test-button" onclick="createAddress()">إنشاء عنوان توصيل</button>
+            <div id="address-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="step">
+            <h3>
+                <span class="step-number">3</span>
+                إنشاء السلة
+            </h3>
+            <button class="test-button" onclick="createCart()">إنشاء السلة</button>
+            <div id="cart-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="step">
+            <h3>
+                <span class="step-number">4</span>
+                إضافة وجبة إلى السلة
+            </h3>
+            <button class="test-button" onclick="addMeal()">إضافة وجبة</button>
+            <div id="meal-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="step">
+            <h3>
+                <span class="step-number">5</span>
+                اختبار الدفع
+            </h3>
+            <button class="test-button" onclick="testCheckout()">اختبار الدفع</button>
+            <div id="checkout-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="step">
+            <h3>
+                <span class="step-number">6</span>
+                اختبار التدفق الكامل
+            </h3>
+            <button class="test-button" onclick="testFullFlow()">اختبار التدفق الكامل</button>
+            <div id="full-flow-result" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        let deliveryAddressId = null;
+        let cartId = null;
+        let authStatus = false;
+
+        async function checkAuth() {
+            const resultDiv = document.getElementById('auth-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'جاري فحص المصادقة...\n';
+            
+            try {
+                const response = await fetch('/api/user', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const user = await response.json();
+                    authStatus = true;
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML += `✅ المستخدم مسجل دخول!\n\nالمستخدم: ${user.name || user.email || 'غير معروف'}\nمعرف المستخدم: ${user.id}\nالدور: ${user.role || 'غير محدد'}`;
+                } else if (response.status === 401) {
+                    authStatus = false;
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML += '❌ المستخدم غير مسجل دخول. يرجى تسجيل الدخول أولاً.';
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML += `❌ خطأ في المصادقة: ${response.status}`;
+                }
+            } catch (error) {
+                authStatus = false;
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML += `❌ خطأ في الاتصال: ${error.message}`;
+            }
+        }
+
+        async function createAddress() {
+            const resultDiv = document.getElementById('address-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'جاري إنشاء عنوان التوصيل...\n';
+            
+            try {
+                const addressData = {
+                    name: 'المنزل',
+                    phone: '+96812345678',
+                    address: 'شارع السلطان قابوس، مسقط',
+                    city: 'مسقط',
+                    is_default: true
+                };
+
+                const response = await fetch('/api/delivery-addresses', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(addressData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    deliveryAddressId = result.data.id;
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML += `✅ تم إنشاء عنوان التوصيل بنجاح!\nمعرف العنوان: ${deliveryAddressId}\n\nالبيانات:\n${JSON.stringify(result, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML += `❌ فشل في إنشاء عنوان التوصيل!\n\nالحالة: ${response.status}\nالبيانات:\n${JSON.stringify(result, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML += `❌ خطأ في الاتصال: ${error.message}`;
+            }
+        }
+
+        async function createCart() {
+            const resultDiv = document.getElementById('cart-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'جاري إنشاء السلة...\n';
+            
+            try {
+                const cartData = {
+                    restaurant_id: 1,
+                    subscription_type_id: 1,
+                    start_date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+                    delivery_address_id: deliveryAddressId
+                };
+
+                const response = await fetch('/api/cart', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(cartData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    cartId = result.data.id;
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML += `✅ تم إنشاء السلة بنجاح!\nمعرف السلة: ${cartId}\n\nالبيانات:\n${JSON.stringify(result, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML += `❌ فشل في إنشاء السلة!\n\nالحالة: ${response.status}\nالبيانات:\n${JSON.stringify(result, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML += `❌ خطأ في الاتصال: ${error.message}`;
+            }
+        }
+
+        async function addMeal() {
+            const resultDiv = document.getElementById('meal-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'جاري إضافة الوجبة...\n';
+            
+            try {
+                const itemData = {
+                    meal_id: 1,
+                    delivery_date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+                    meal_type: 'breakfast',
+                    price: 5.0
+                };
+
+                const response = await fetch('/api/cart/items', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(itemData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML += `✅ تم إضافة الوجبة بنجاح!\n\nالبيانات:\n${JSON.stringify(result, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML += `❌ فشل في إضافة الوجبة!\n\nالحالة: ${response.status}\nالبيانات:\n${JSON.stringify(result, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML += `❌ خطأ في الاتصال: ${error.message}`;
+            }
+        }
+
+        async function testCheckout() {
+            const resultDiv = document.getElementById('checkout-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'جاري اختبار الدفع...\n';
+            
+            try {
+                const checkoutData = {
+                    delivery_address_id: deliveryAddressId,
+                    special_instructions: 'اختبار من السلة'
+                };
+
+                const response = await fetch('/api/subscriptions/checkout-from-cart', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(checkoutData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML += `✅ تم إنشاء الاشتراك بنجاح!\n\nالبيانات:\n${JSON.stringify(result, null, 2)}`;
+                    
+                    if (result.payment_link) {
+                        resultDiv.innerHTML += `\n\n🔗 رابط الدفع: ${result.payment_link}`;
+                        
+                        // Test the payment link
+                        setTimeout(() => {
+                            resultDiv.innerHTML += `\n\n🧪 فتح رابط الدفع...`;
+                            window.open(result.payment_link, '_blank');
+                        }, 1000);
+                    }
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML += `❌ فشل في إنشاء الاشتراك!\n\nالحالة: ${response.status}\nالبيانات:\n${JSON.stringify(result, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML += `❌ خطأ في الاتصال: ${error.message}`;
+            }
+        }
+
+        async function testFullFlow() {
+            const resultDiv = document.getElementById('full-flow-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'جاري اختبار التدفق الكامل...\n';
+            
+            try {
+                // Step 1: Check auth
+                resultDiv.innerHTML += '1. فحص المصادقة...\n';
+                if (!authStatus) {
+                    throw new Error('المستخدم غير مسجل دخول');
+                }
+                resultDiv.innerHTML += '✅ المستخدم مسجل دخول\n';
+
+                // Step 2: Create address if not exists
+                if (!deliveryAddressId) {
+                    resultDiv.innerHTML += '2. إنشاء عنوان التوصيل...\n';
+                    await createAddress();
+                    if (!deliveryAddressId) {
+                        throw new Error('فشل في إنشاء عنوان التوصيل');
+                    }
+                }
+                resultDiv.innerHTML += '✅ عنوان التوصيل جاهز\n';
+
+                // Step 3: Create cart if not exists
+                if (!cartId) {
+                    resultDiv.innerHTML += '3. إنشاء السلة...\n';
+                    await createCart();
+                    if (!cartId) {
+                        throw new Error('فشل في إنشاء السلة');
+                    }
+                }
+                resultDiv.innerHTML += '✅ السلة جاهزة\n';
+
+                // Step 4: Add meal
+                resultDiv.innerHTML += '4. إضافة وجبة...\n';
+                await addMeal();
+                resultDiv.innerHTML += '✅ تم إضافة الوجبة\n';
+
+                // Step 5: Test checkout
+                resultDiv.innerHTML += '5. اختبار الدفع...\n';
+                await testCheckout();
+                resultDiv.innerHTML += '✅ تم اختبار الدفع\n';
+
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML += '\n🎉 تم اختبار التدفق الكامل بنجاح!';
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML += `❌ خطأ في التدفق الكامل: ${error.message}`;
+            }
+        }
+
+        // Auto-run first check
+        window.onload = function() {
+            checkAuth();
+        };
+    </script>
+</body>
+</html>

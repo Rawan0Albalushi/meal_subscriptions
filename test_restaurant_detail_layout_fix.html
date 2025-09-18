@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار إصلاح تخطيط صفحة تفاصيل المطعم</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .test-title {
+            text-align: center;
+            color: #2f6e73;
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #2f6e73;
+        }
+        .problem-section {
+            border-left-color: #ef4444;
+            background: #fef2f2;
+        }
+        .solution-section {
+            border-left-color: #10b981;
+            background: #f0fdf4;
+        }
+        .layout-example {
+            display: flex;
+            gap: 20px;
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .before-layout, .after-layout {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .before-layout {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+        }
+        .after-layout {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+        .phone-display {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            border: 1px solid rgba(229, 231, 235, 0.5);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            margin: 10px 0;
+        }
+        .phone-small {
+            font-size: 0.75rem;
+        }
+        .phone-large {
+            font-size: 1rem;
+        }
+        .address-section {
+            background: #f3f4f6;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin: 5px 0;
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+        .success {
+            color: #10b981;
+            font-weight: bold;
+        }
+        .removed {
+            color: #ef4444;
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h2 class="test-title">🔧 اختبار إصلاح تخطيط صفحة تفاصيل المطعم</h2>
+        
+        <div class="test-section problem-section">
+            <h3>🐛 المشكلة السابقة</h3>
+            <p><strong>المشكلة:</strong> صفحة تفاصيل المطعم تحتوي على مساحة للعنوان وخط صغير لرقم الهاتف</p>
+            <div class="layout-example">
+                <div class="before-layout">
+                    <h4>قبل الإصلاح</h4>
+                    <div class="address-section">📍 العنوان: شارع الملك فهد، الرياض</div>
+                    <div class="phone-display phone-small">📞 96333887</div>
+                    <p style="font-size: 0.8em; color: #6b7280;">خط صغير + مساحة للعنوان</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section solution-section">
+            <h3>✅ الحل المطبق</h3>
+            <p><strong>الحل:</strong> إزالة مساحة العنوان وتكبير خط رقم الهاتف</p>
+            <div class="layout-example">
+                <div class="after-layout">
+                    <h4>بعد الإصلاح</h4>
+                    <div class="phone-display phone-large">📞 96333887</div>
+                    <p style="font-size: 0.8em; color: #10b981;">خط أكبر + بدون عنوان</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 التغييرات المطبقة</h3>
+            <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                <h4>1. إزالة قسم العنوان:</h4>
+                <ul>
+                    <li class="removed">حذف div الخاص بالعنوان</li>
+                    <li class="removed">إزالة عرض restaurant.address</li>
+                    <li class="removed">حذف grid layout للعنوان والهاتف</li>
+                </ul>
+            </div>
+            <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                <h4>2. تحسين عرض رقم الهاتف:</h4>
+                <ul>
+                    <li class="success">تكبير الخط من 0.625rem إلى 1rem</li>
+                    <li class="success">تحسين التصميم والمساحات</li>
+                    <li class="success">إضافة تأثيرات hover محسنة</li>
+                    <li class="success">تحسين الاستجابة للأجهزة المختلفة</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎯 النتيجة المتوقعة</h3>
+            <div class="success">✓ لا توجد مساحة للعنوان</div>
+            <div class="success">✓ رقم الهاتف بخط أكبر وأوضح</div>
+            <div class="success">✓ تصميم أنظف وأكثر تركيزاً</div>
+            <div class="success">✓ استجابة أفضل للأجهزة المحمولة</div>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 تعليمات الاختبار</h3>
+            <p>1. افتح أي مطعم من صفحة المطاعم</p>
+            <p>2. تأكد من عدم وجود مساحة للعنوان</p>
+            <p>3. تحقق من أن رقم الهاتف بخط أكبر</p>
+            <p>4. تأكد من أن التصميم يبدو أنظف</p>
+            <p>5. اختبر على الهاتف للتأكد من الاستجابة</p>
+        </div>
+    </div>
+</body>
+</html>

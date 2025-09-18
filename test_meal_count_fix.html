@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار إصلاح عد الوجبات</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #2f6e73, #1f5a5f);
+            color: white;
+            border-radius: 15px;
+        }
+        
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .test-title {
+            color: #2f6e73;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .meal-counter {
+            background: linear-gradient(135deg, #2f6e73, #1f5a5f);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        
+        .meal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .meal-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .meal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #2f6e73;
+        }
+        
+        .meal-card.selected {
+            background: linear-gradient(135deg, #2f6e73, #1f5a5f);
+            color: white;
+            border-color: #2f6e73;
+        }
+        
+        .meal-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .meal-icon {
+            font-size: 1.5rem;
+        }
+        
+        .meal-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .meal-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .meal-card.selected .meal-description {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .meal-price {
+            font-weight: bold;
+            color: #2f6e73;
+            font-size: 1.1rem;
+        }
+        
+        .meal-card.selected .meal-price {
+            color: white;
+        }
+        
+        .continue-button {
+            background: linear-gradient(135deg, #2f6e73, #1f5a5f);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .continue-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(47, 110, 115, 0.3);
+        }
+        
+        .continue-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .error-message {
+            background: #fee;
+            color: #c53030;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #feb2b2;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .success-message {
+            background: #f0fff4;
+            color: #2f7d32;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #9ae6b4;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .test-info {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #90caf9;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ اختبار إصلاح عد الوجبات</h1>
+            <p>اختبار نظام اختيار الوجبات مع 5 وجبات أو أكثر</p>
+        </div>
+        
+        <div class="test-info">
+            <strong>📋 معلومات الاختبار:</strong><br>
+            • هذا الاختبار يتحقق من إصلاح مشكلة عد الوجبات<br>
+            • جرب اختيار 5 وجبات أو أكثر للتأكد من عمل النظام بشكل صحيح<br>
+            • يجب أن يظهر العداد الصحيح للوجبات المختارة
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">
+                <span>📊</span>
+                <span>عداد الوجبات</span>
+            </div>
+            
+            <div class="meal-counter" id="mealCounter">
+                0 / 5 وجبة مختارة
+            </div>
+            
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+            <div id="successMessage" class="success-message" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">
+                <span>🍽️</span>
+                <span>اختيار الوجبات</span>
+            </div>
+            
+            <div class="meal-grid" id="mealGrid">
+                <!-- الوجبات ستُضاف هنا بواسطة JavaScript -->
+            </div>
+            
+            <button class="continue-button" id="continueButton" disabled>
+                متابعة إلى الاشتراك
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // محاكاة بيانات الوجبات
+        const meals = [
+            { id: 1, name: 'وجبة الدجاج المشوي', description: 'دجاج مشوي مع الأرز والخضار', price: '5.500', icon: '🍗' },
+            { id: 2, name: 'وجبة السمك المقلي', description: 'سمك مقلي مع السلطة والبطاطس', price: '6.000', icon: '🐟' },
+            { id: 3, name: 'وجبة اللحم المشوي', description: 'لحم مشوي مع الأرز والسلطة', price: '7.000', icon: '🥩' },
+            { id: 4, name: 'وجبة الخضار المشكلة', description: 'خضار مشكلة مع الأرز البني', price: '4.500', icon: '🥗' },
+            { id: 5, name: 'وجبة المعكرونة', description: 'معكرونة بالصلصة البيضاء', price: '5.000', icon: '🍝' },
+            { id: 6, name: 'وجبة البيتزا', description: 'بيتزا بالجبن والخضار', price: '6.500', icon: '🍕' },
+            { id: 7, name: 'وجبة البرجر', description: 'برجر باللحم والخضار', price: '5.500', icon: '🍔' },
+            { id: 8, name: 'وجبة الشاورما', description: 'شاورما دجاج مع الخبز', price: '4.000', icon: '🌯' }
+        ];
+        
+        // إعدادات الاشتراك
+        const subscriptionSettings = {
+            meals_count: 5, // اختبار مع 5 وجبات
+            type: 'weekly'
+        };
+        
+        // محاكاة dayKeys الجديدة
+        const mockDayKeys = [
+            'meal_1_sunday',
+            'meal_2_monday', 
+            'meal_3_tuesday',
+            'meal_4_wednesday',
+            'meal_5_sunday' // الوجبة الخامسة
+        ];
+        
+        let selectedMeals = {};
+        let currentSelectedCount = 0;
+        const maxAllowed = subscriptionSettings.meals_count;
+        
+        // إنشاء واجهة الوجبات
+        function createMealGrid() {
+            const mealGrid = document.getElementById('mealGrid');
+            mealGrid.innerHTML = '';
+            
+            meals.forEach(meal => {
+                const mealCard = document.createElement('div');
+                mealCard.className = 'meal-card';
+                mealCard.dataset.mealId = meal.id;
+                
+                mealCard.innerHTML = `
+                    <div class="meal-header">
+                        <span class="meal-icon">${meal.icon}</span>
+                        <span class="meal-title">${meal.name}</span>
+                    </div>
+                    <div class="meal-description">${meal.description}</div>
+                    <div class="meal-price">${meal.price} ر.ع</div>
+                `;
+                
+                mealCard.addEventListener('click', () => handleMealSelection(meal.id, meal));
+                mealGrid.appendChild(mealCard);
+            });
+        }
+        
+        // معالجة اختيار الوجبة
+        function handleMealSelection(mealId, meal) {
+            const mealCard = document.querySelector(`[data-meal-id="${mealId}"]`);
+            
+            // استخدام dayKey فريد لكل وجبة
+            const dayKey = mockDayKeys[currentSelectedCount] || `meal_${currentSelectedCount + 1}_custom`;
+            
+            // إذا كانت الوجبة مختارة بالفعل، قم بإلغاء اختيارها
+            if (selectedMeals[dayKey]) {
+                delete selectedMeals[dayKey];
+                mealCard.classList.remove('selected');
+                currentSelectedCount--;
+            } else {
+                // تحقق من إمكانية إضافة وجبات أكثر
+                if (currentSelectedCount >= maxAllowed) {
+                    showError(`تم الوصول للحد الأقصى من الوجبات (${maxAllowed} وجبة)`);
+                    return;
+                }
+                
+                selectedMeals[dayKey] = meal;
+                mealCard.classList.add('selected');
+                currentSelectedCount++;
+            }
+            
+            updateMealCounter();
+            updateContinueButton();
+            clearMessages();
+            
+            // عرض معلومات التصحيح
+            console.log('Selected meals:', selectedMeals);
+            console.log('Current count:', currentSelectedCount);
+            console.log('DayKeys used:', Object.keys(selectedMeals));
+        }
+        
+        // تحديث عداد الوجبات
+        function updateMealCounter() {
+            const counter = document.getElementById('mealCounter');
+            counter.textContent = `${currentSelectedCount} / ${maxAllowed} وجبة مختارة`;
+            
+            // تغيير لون العداد حسب الحالة
+            if (currentSelectedCount === maxAllowed) {
+                counter.style.background = 'linear-gradient(135deg, #2f7d32, #1b5e20)';
+                showSuccess(`تم اختيار العدد المطلوب من الوجبات (${maxAllowed} وجبة)`);
+            } else if (currentSelectedCount > 0) {
+                counter.style.background = 'linear-gradient(135deg, #f57c00, #e65100)';
+            } else {
+                counter.style.background = 'linear-gradient(135deg, #2f6e73, #1f5a5f)';
+            }
+        }
+        
+        // تحديث زر المتابعة
+        function updateContinueButton() {
+            const button = document.getElementById('continueButton');
+            
+            if (currentSelectedCount === maxAllowed) {
+                button.disabled = false;
+                button.textContent = `✓ متابعة إلى الاشتراك (${currentSelectedCount} وجبة)`;
+            } else if (currentSelectedCount > 0) {
+                button.disabled = true;
+                button.textContent = `يرجى اختيار ${maxAllowed} وجبة (${currentSelectedCount}/${maxAllowed})`;
+            } else {
+                button.disabled = true;
+                button.textContent = 'يرجى اختيار الوجبات';
+            }
+        }
+        
+        // عرض رسالة خطأ
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 3000);
+        }
+        
+        // عرض رسالة نجاح
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 3000);
+        }
+        
+        // مسح الرسائل
+        function clearMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+        
+        // معالجة النقر على زر المتابعة
+        document.getElementById('continueButton').addEventListener('click', () => {
+            if (currentSelectedCount === maxAllowed) {
+                showSuccess(`تم اختيار ${currentSelectedCount} وجبة بنجاح! النظام يعمل بشكل صحيح.`);
+            }
+        });
+        
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            createMealGrid();
+            updateMealCounter();
+            updateContinueButton();
+        });
+    </script>
+</body>
+</html>

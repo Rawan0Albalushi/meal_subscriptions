@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء سلة كاملة</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #faeeee 0%, #eefafa 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .step {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 15px;
+            background: #f8fafc;
+        }
+        .step h3 {
+            color: #4a757c;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #4a757c;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4a757c;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 117, 124, 0.3);
+        }
+        .test-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success { background: #d1fae5; border-color: #10b981; }
+        .error { background: #fee2e2; border-color: #ef4444; }
+        .info { background: #dbeafe; border-color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; color: #4a757c; margin-bottom: 30px;">🛒 إنشاء سلة كاملة</h1>
+        
+        <div class="step">
+            <h3>الخطوة 1: إنشاء عنوان توصيل</h3>
+            <div class="form-group">
+                <label>الاسم:</label>
+                <input type="text" id="addressName" value="المنزل" />
+            </div>
+            <div class="form-group">
+                <label>رقم الهاتف:</label>
+                <input type="text" id="addressPhone" value="+96812345678" />
+            </div>
+            <div class="form-group">
+                <label>العنوان:</label>
+                <input type="text" id="addressAddress" value="شارع السلطان قابوس، مسقط" />
+            </div>
+            <div class="form-group">
+                <label>المدينة:</label>
+                <input type="text" id="addressCity" value="مسقط" />
+            </div>
+            <button class="test-button" onclick="createAddress()">إنشاء عنوان التوصيل</button>
+            <div id="address-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="step">
+            <h3>الخطوة 2: إنشاء السلة</h3>
+            <div class="form-group">
+                <label>معرف المطعم:</label>
+                <input type="number" id="restaurantId" value="1" />
+            </div>
+            <div class="form-group">
+                <label>معرف نوع الاشتراك:</label>
+                <input type="number" id="subscriptionTypeId" value="1" />
+            </div>
+            <div class="form-group">
+                <label>تاريخ البداية:</label>
+                <input type="date" id="startDate" />
+            </div>
+            <button class="test-button" onclick="createCart()">إنشاء السلة</button>
+            <div id="cart-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="step">
+            <h3>الخطوة 3: إضافة وجبات إلى السلة</h3>
+            <div class="form-group">
+                <label>معرف الوجبة 1:</label>
+                <input type="number" id="mealId1" value="1" />
+            </div>
+            <div class="form-group">
+                <label>تاريخ التوصيل 1:</label>
+                <input type="date" id="deliveryDate1" />
+            </div>
+            <div class="form-group">
+                <label>نوع الوجبة 1:</label>
+                <select id="mealType1">
+                    <option value="breakfast">فطور</option>
+                    <option value="lunch">غداء</option>
+                    <option value="dinner">عشاء</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>السعر 1:</label>
+                <input type="number" id="price1" value="5.0" step="0.01" />
+            </div>
+            <button class="test-button" onclick="addMeal1()">إضافة الوجبة الأولى</button>
+            <div id="meal1-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="step">
+            <h3>الخطوة 4: اختبار الدفع</h3>
+            <button class="test-button" onclick="testCheckout()">اختبار الدفع</button>
+            <div id="checkout-result" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        let deliveryAddressId = null;
+        let cartId = null;
+
+        // Set default dates
+        document.getElementById('startDate').value = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+        document.getElementById('deliveryDate1').value = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
+        async function createAddress() {
+            const resultDiv = document.getElementById('address-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'جاري إنشاء عنوان التوصيل...\n';
+            
+            try {
+                const addressData = {
+                    name: document.getElementById('addressName').value,
+                    phone: document.getElementById('addressPhone').value,
+                    address: document.getElementById('addressAddress').value,
+                    city: document.getElementById('addressCity').value,
+                    is_default: true
+                };
+
+                const response = await fetch('/api/delivery-addresses', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(addressData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    deliveryAddressId = result.data.id;
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML += `✅ تم إنشاء عنوان التوصيل بنجاح!\nمعرف العنوان: ${deliveryAddressId}\n\nالبيانات:\n${JSON.stringify(result, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML += `❌ فشل في إنشاء عنوان التوصيل!\n\nالحالة: ${response.status}\nالبيانات:\n${JSON.stringify(result, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML += `❌ خطأ في الاتصال: ${error.message}`;
+            }
+        }
+
+        async function createCart() {
+            const resultDiv = document.getElementById('cart-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'جاري إنشاء السلة...\n';
+            
+            try {
+                const cartData = {
+                    restaurant_id: parseInt(document.getElementById('restaurantId').value),
+                    subscription_type_id: parseInt(document.getElementById('subscriptionTypeId').value),
+                    start_date: document.getElementById('startDate').value,
+                    delivery_address_id: deliveryAddressId
+                };
+
+                const response = await fetch('/api/cart', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(cartData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    cartId = result.data.id;
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML += `✅ تم إنشاء السلة بنجاح!\nمعرف السلة: ${cartId}\n\nالبيانات:\n${JSON.stringify(result, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML += `❌ فشل في إنشاء السلة!\n\nالحالة: ${response.status}\nالبيانات:\n${JSON.stringify(result, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML += `❌ خطأ في الاتصال: ${error.message}`;
+            }
+        }
+
+        async function addMeal1() {
+            const resultDiv = document.getElementById('meal1-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'جاري إضافة الوجبة الأولى...\n';
+            
+            try {
+                const itemData = {
+                    meal_id: parseInt(document.getElementById('mealId1').value),
+                    delivery_date: document.getElementById('deliveryDate1').value,
+                    meal_type: document.getElementById('mealType1').value,
+                    price: parseFloat(document.getElementById('price1').value)
+                };
+
+                const response = await fetch('/api/cart/items', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(itemData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML += `✅ تم إضافة الوجبة بنجاح!\n\nالبيانات:\n${JSON.stringify(result, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML += `❌ فشل في إضافة الوجبة!\n\nالحالة: ${response.status}\nالبيانات:\n${JSON.stringify(result, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML += `❌ خطأ في الاتصال: ${error.message}`;
+            }
+        }
+
+        async function testCheckout() {
+            const resultDiv = document.getElementById('checkout-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'جاري اختبار الدفع...\n';
+            
+            try {
+                const checkoutData = {
+                    delivery_address_id: deliveryAddressId,
+                    special_instructions: 'اختبار من السلة الكاملة'
+                };
+
+                const response = await fetch('/api/subscriptions/checkout-from-cart', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(checkoutData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML += `✅ تم إنشاء الاشتراك بنجاح!\n\nالبيانات:\n${JSON.stringify(result, null, 2)}`;
+                    
+                    if (result.payment_link) {
+                        resultDiv.innerHTML += `\n\n🔗 رابط الدفع: ${result.payment_link}`;
+                        
+                        // Test the payment link
+                        setTimeout(() => {
+                            resultDiv.innerHTML += `\n\n🧪 فتح رابط الدفع...`;
+                            window.open(result.payment_link, '_blank');
+                        }, 1000);
+                    }
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML += `❌ فشل في إنشاء الاشتراك!\n\nالحالة: ${response.status}\nالبيانات:\n${JSON.stringify(result, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML += `❌ خطأ في الاتصال: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -57,7 +57,7 @@ export const LanguageProvider = ({ children }) => {
             discountBadge: 'إشترك وخلي الباقي علينا',
             heroTitle: 'اشترك من مطاعمك المفضلة',
             heroSubtitle: 'وتوصلك وجبتك لين عندك',
-            heroDescription: 'اختر مطعمًا واحدًا، خطّة أسبوعية أو شهرية، وحدّد وجبة كل يوم (الأحد–الأربعاء) مع عنوان توصيل واحد.',
+            heroDescription: 'اختر مطعمك المفضّل، اشترك أسبوعيًا أو شهريًا، وحدِّد وجبتك لكل يوم (الأحد–الأربعاء) مع عنوان توصيل ثابت',
             designPreview: 'معاينة التصميم',
             designDescription: 'تصميم حديث وجذاب',
             
@@ -109,10 +109,11 @@ export const LanguageProvider = ({ children }) => {
             deliveryPrice: 'سعر التوصيل',
             free: 'مجاني',
             priceBreakdown: 'تفاصيل السعر',
-            basePrice: 'السعر الأساسي',
+            basePrice: '',
             freeDelivery: 'توصيل مجاني',
-            paidDelivery: 'توصيل مدفوع',
-            finalPrice: 'السعر النهائي',
+            paidDelivery: '',
+            finalPrice: '',
+            reviewAndCompleteOrder: 'راجع وأكمل طلبك',
             confirmSubscription: 'تأكيد الاشتراك',
             subscriptionDetails: 'تفاصيل الاشتراك',
             status: 'الحالة',
@@ -233,10 +234,10 @@ export const LanguageProvider = ({ children }) => {
             selectMealForEachDayMonthly: 'اختر وجبة مختلفة لكل يوم من أيام العمل لمدة 4 أسابيع',
             startSubscriptionDate: 'تاريخ بدء الاشتراك',
             selectStartDateMessage: 'اختر تاريخ البدء من أيام العمل',
-            selectWeekdayOnly: 'يرجى اختيار يوم من أيام العمل فقط (الأحد إلى الخميس)',
+            selectWeekdayOnly: 'يرجى اختيار يوم من أيام العمل فقط (الأحد إلى الأربعاء)',
             selectFirstAvailableDay: 'اختر أول يوم متاح',
             dateSelected: 'تم اختيار التاريخ',
-            selectWeekdayOnlyMessage: 'يمكن اختيار أيام العمل فقط (الأحد إلى الخميس)',
+            selectWeekdayOnlyMessage: 'يمكن اختيار أيام العمل فقط (الأحد إلى الأربعاء)',
             noMealsAvailable: 'لا توجد وجبات متاحة حالياً',
             pleaseTryAgainLater: 'يرجى المحاولة مرة أخرى لاحقاً أو التواصل مع المطعم',
             reload: 'إعادة تحميل',
@@ -288,7 +289,7 @@ export const LanguageProvider = ({ children }) => {
             // Error Messages
             dateError: 'خطأ في التاريخ',
             startDateMustBeTomorrow: 'تاريخ البداية يجب أن يكون غداً أو بعده. لا يمكن إنشاء اشتراك ليوم اليوم.',
-            startDateMustBeWeekday: 'تاريخ البداية يجب أن يكون يوم عمل (الأحد إلى الخميس)',
+            startDateMustBeWeekday: 'تاريخ البداية يجب أن يكون يوم عمل (الأحد إلى الأربعاء)',
             addressError: 'خطأ في العنوان',
             selectDeliveryAddressOrAddNew: 'يرجى اختيار عنوان التوصيل أو إضافة عنوان جديد',
             enterCompleteAddressData: 'يرجى إدخال بيانات العنوان كاملة',
@@ -417,7 +418,7 @@ export const LanguageProvider = ({ children }) => {
             discountBadge: 'Subscribe and leave the rest to us',
             heroTitle: 'Subscribe from your favorite restaurants',
             heroSubtitle: 'And get your meal delivered right to you',
-            heroDescription: 'Choose one restaurant, a weekly or monthly plan, and select a meal every day (Sunday-Wednesday) with one delivery address.',
+            heroDescription: 'Choose your favorite restaurant, subscribe weekly or monthly, and set your meal for each day (Sunday–Wednesday) with a fixed delivery address',
             designPreview: 'Design Preview',
             designDescription: 'Modern and attractive design',
             
@@ -473,6 +474,7 @@ export const LanguageProvider = ({ children }) => {
             freeDelivery: 'Free Delivery',
             paidDelivery: 'Paid Delivery',
             finalPrice: 'Final Price',
+            reviewAndCompleteOrder: 'Review and complete your order',
             confirmSubscription: 'Confirm Subscription',
             subscriptionDetails: 'Subscription Details',
             status: 'Status',
@@ -593,10 +595,10 @@ export const LanguageProvider = ({ children }) => {
             selectMealForEachDayMonthly: 'Choose a different meal for each working day for 4 weeks',
             startSubscriptionDate: 'Subscription start date',
             selectStartDateMessage: 'Choose the start date from working days',
-            selectWeekdayOnly: 'Please select a working day only (Sunday to Thursday)',
+            selectWeekdayOnly: 'Please select a working day only (Sunday to Wednesday)',
             selectFirstAvailableDay: 'Select first available day',
             dateSelected: 'Date selected',
-            selectWeekdayOnlyMessage: 'Only working days can be selected (Sunday to Thursday)',
+            selectWeekdayOnlyMessage: 'Only working days can be selected (Sunday to Wednesday)',
             noMealsAvailable: 'No meals available at the moment',
             pleaseTryAgainLater: 'Please try again later or contact the restaurant',
             reload: 'Reload',
@@ -648,7 +650,7 @@ export const LanguageProvider = ({ children }) => {
             // Error Messages
             dateError: 'Date Error',
             startDateMustBeTomorrow: 'Start date must be tomorrow or later. Cannot create subscription for today.',
-            startDateMustBeWeekday: 'Start date must be a working day (Sunday to Thursday)',
+            startDateMustBeWeekday: 'Start date must be a working day (Sunday to Wednesday)',
             addressError: 'Address Error',
             selectDeliveryAddressOrAddNew: 'Please select a delivery address or add a new one',
             enterCompleteAddressData: 'Please enter complete address data',
@@ -738,7 +740,8 @@ export const LanguageProvider = ({ children }) => {
     };
 
     const t = (key, params = {}) => {
-        let text = translations[language][key] || key;
+        const dictionary = translations[language];
+        let text = Object.prototype.hasOwnProperty.call(dictionary, key) ? dictionary[key] : key;
         
         // Replace parameters in the text
         Object.keys(params).forEach(param => {

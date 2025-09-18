@@ -97,6 +97,35 @@ const SubscriptionDetail = () => {
         return mealTypeNames[language][mealTypeFilter] || mealTypeFilter;
     };
 
+    // دالة للتحقق من صحة معلومات الدفع
+    const validatePaymentInfo = (subscription) => {
+        if (!subscription) return false;
+        
+        const totalAmount = parseFloat(subscription.total_amount || 0);
+        const deliveryPrice = parseFloat(subscription.delivery_price || 0);
+        const subscriptionPrice = totalAmount - deliveryPrice;
+        
+        // التحقق من أن الأرقام صحيحة
+        if (isNaN(totalAmount) || isNaN(deliveryPrice) || isNaN(subscriptionPrice)) {
+            console.error('Invalid payment data:', { totalAmount, deliveryPrice, subscriptionPrice });
+            return false;
+        }
+        
+        // التحقق من أن سعر الاشتراك موجب
+        if (subscriptionPrice < 0) {
+            console.error('Subscription price cannot be negative:', subscriptionPrice);
+            return false;
+        }
+        
+        // التحقق من أن سعر التوصيل غير سالب
+        if (deliveryPrice < 0) {
+            console.error('Delivery price cannot be negative:', deliveryPrice);
+            return false;
+        }
+        
+        return true;
+    };
+
     // فلترة الوجبات حسب النوع المختار
     const filteredMeals = subscription?.subscription_items?.filter(item => {
         if (!mealTypeFilter) return true;
@@ -536,6 +565,7 @@ const SubscriptionDetail = () => {
                         </div>
 
                         {/* Payment Information Section */}
+                        {validatePaymentInfo(subscription) && (
                         <div style={{
                             background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.1) 0%, rgba(182, 84, 73, 0.1) 100%)',
                             borderRadius: '1rem',
@@ -586,7 +616,7 @@ const SubscriptionDetail = () => {
                                         {language === 'ar' ? 'سعر الاشتراك' : 'Subscription Price'}
                                     </span>
                                     <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#1f2937' }}>
-                                        {(parseFloat(subscription.total_amount) - parseFloat(subscription.delivery_price)).toFixed(2)} {language === 'ar' ? 'ريال' : 'OMR'}
+                                        {(parseFloat(subscription.total_amount || 0) - parseFloat(subscription.delivery_price || 0)).toFixed(2)} {language === 'ar' ? 'ريال' : 'OMR'}
                                     </span>
                                 </div>
                                 <div style={{
@@ -602,8 +632,8 @@ const SubscriptionDetail = () => {
                                         {language === 'ar' ? 'سعر التوصيل' : 'Delivery Price'}
                                     </span>
                                     <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#1f2937' }}>
-                                        {subscription.delivery_price > 0 
-                                            ? `${subscription.delivery_price} ${language === 'ar' ? 'ريال' : 'OMR'}`
+                                        {parseFloat(subscription.delivery_price || 0) > 0 
+                                            ? `${parseFloat(subscription.delivery_price || 0).toFixed(2)} ${language === 'ar' ? 'ريال' : 'OMR'}`
                                             : language === 'ar' ? 'مجاني' : 'Free'
                                         }
                                     </span>
@@ -625,11 +655,46 @@ const SubscriptionDetail = () => {
                                         fontWeight: '800', 
                                         color: 'white'
                                     }}>
-                                        {parseFloat(subscription.total_amount).toFixed(2)} {language === 'ar' ? 'ريال' : 'OMR'}
+                                        {parseFloat(subscription.total_amount || 0).toFixed(2)} {language === 'ar' ? 'ريال' : 'OMR'}
                                     </span>
                                 </div>
                             </div>
                         </div>
+                        )}
+
+                        {/* Payment Error Message */}
+                        {subscription && !validatePaymentInfo(subscription) && (
+                            <div style={{
+                                background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%)',
+                                borderRadius: '1rem',
+                                padding: '1rem',
+                                border: '1px solid rgba(220, 38, 38, 0.2)',
+                                marginBottom: '1rem'
+                            }}>
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    color: '#dc2626',
+                                    fontSize: '0.875rem',
+                                    fontWeight: '600'
+                                }}>
+                                    <span>⚠️</span>
+                                    <span>{language === 'ar' ? 'خطأ في بيانات الدفع' : 'Payment Data Error'}</span>
+                                </div>
+                                <p style={{
+                                    fontSize: '0.75rem',
+                                    color: '#dc2626',
+                                    marginTop: '0.25rem',
+                                    marginBottom: 0
+                                }}>
+                                    {language === 'ar' 
+                                        ? 'يرجى التواصل مع الدعم الفني لحل هذه المشكلة'
+                                        : 'Please contact technical support to resolve this issue'
+                                    }
+                                </p>
+                            </div>
+                        )}
 
                         {/* Delivery Address Section */}
                         <div style={{
@@ -1081,21 +1146,6 @@ const SubscriptionDetail = () => {
                                                     {language === 'ar' ? item.meal?.name_ar : item.meal?.name_en}
                                                 </h4>
                                                 
-                                                {/* Meal Date Display */}
-                                                <div style={{
-                                                    fontSize: 'clamp(0.625rem, 2vw, 0.75rem)',
-                                                    color: '#4f46e5',
-                                                    fontWeight: '600',
-                                                    textAlign: 'center',
-                                                    marginBottom: 'clamp(0.25rem, 1vw, 0.375rem)',
-                                                    background: 'rgba(79, 70, 229, 0.1)',
-                                                    padding: '0.25rem 0.5rem',
-                                                    borderRadius: '0.5rem',
-                                                    border: '1px solid rgba(79, 70, 229, 0.2)'
-                                                }}>
-                                                    📅 {formatDate(item.delivery_date) || (language === 'ar' ? 'غير محدد' : 'Not set')}
-                                                </div>
-                                                
                                                 {/* Compact Info Row */}
                                                 <div style={{
                                                     display: 'flex',
@@ -1108,6 +1158,17 @@ const SubscriptionDetail = () => {
                                                     flexWrap: 'wrap'
                                                 }}>
                                                     <span style={{ 
+                                                        fontSize: 'clamp(0.625rem, 2vw, 0.75rem)', 
+                                                        opacity: '0.8',
+                                                        fontWeight: '500',
+                                                        padding: '0.25rem 0.5rem',
+                                                        background: 'rgba(79, 70, 229, 0.1)',
+                                                        borderRadius: '0.5rem',
+                                                        color: '#4f46e5'
+                                                    }}>
+                                                        📅 {formatDate(item.delivery_date) || (language === 'ar' ? 'غير محدد' : 'Not set')}
+                                                    </span>
+                                                    <span style={{ 
                                                         display: 'flex', 
                                                         alignItems: 'center', 
                                                         gap: '0.25rem',
@@ -1118,86 +1179,17 @@ const SubscriptionDetail = () => {
                                                     }}>
                                                         🕐 {formatTime(item.meal?.delivery_time)}
                                                     </span>
-                                                    <span style={{ 
-                                                        fontSize: 'clamp(0.625rem, 2vw, 0.75rem)', 
-                                                        opacity: '0.8',
-                                                        fontWeight: '500',
-                                                        padding: '0.25rem 0.5rem',
-                                                        background: 'rgba(182, 84, 73, 0.1)',
-                                                        borderRadius: '0.5rem'
-                                                    }}>
-                                                        {(() => {
-                                                            const date = item.delivery_date ? new Date(item.delivery_date) : null;
-                                                            if (!date || isNaN(date.getTime())) return item.day_of_week_text;
-                                                            return date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
-                                                                weekday: 'long',
-                                                                calendar: 'gregory'
-                                                            });
-                                                        })()}
-                                                    </span>
                                                 </div>
                                             </div>
                                             
-                                            {/* Compact Status and Date Row */}
+                                            {/* Status Only */}
                                             <div style={{
                                                 display: 'flex',
-                                                justifyContent: 'space-between',
+                                                justifyContent: 'center',
                                                 alignItems: 'center',
-                                                gap: '0.75rem'
+                                                padding: '0.5rem 0'
                                             }}>
-                                                {/* Delivery Date */}
-                                                <div style={{
-                                                    flex: 1,
-                                                    background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.12) 100%)',
-                                                    borderRadius: '0.75rem',
-                                                    padding: '0.75rem',
-                                                    border: '2px solid rgba(102, 126, 234, 0.2)',
-                                                    textAlign: 'center',
-                                                    minHeight: '70px',
-                                                    display: 'flex',
-                                                    flexDirection: 'column',
-                                                    justifyContent: 'center',
-                                                    boxShadow: '0 2px 8px rgba(102, 126, 234, 0.1)'
-                                                }}>
-                                                    <div style={{ 
-                                                        fontSize: 'clamp(0.625rem, 2vw, 0.75rem)', 
-                                                        color: '#4f46e5', 
-                                                        marginBottom: '0.375rem',
-                                                        fontWeight: '700',
-                                                        textTransform: 'uppercase',
-                                                        letterSpacing: '0.5px',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
-                                                        gap: '0.25rem'
-                                                    }}>
-                                                        📅 {language === 'ar' ? 'تاريخ التوصيل' : 'Delivery Date'}
-                                                    </div>
-                                                    <div style={{ 
-                                                        fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)', 
-                                                        fontWeight: '700', 
-                                                        color: '#1f2937',
-                                                        lineHeight: '1.3',
-                                                        wordBreak: 'break-word',
-                                                        background: 'rgba(255, 255, 255, 0.7)',
-                                                        padding: '0.25rem 0.5rem',
-                                                        borderRadius: '0.5rem',
-                                                        border: '1px solid rgba(102, 126, 234, 0.1)'
-                                                    }}>
-                                                        {formatDate(item.delivery_date) || (language === 'ar' ? 'غير محدد' : 'Not set')}
-                                                    </div>
-                                                </div>
-                                                
-                                                {/* Status */}
-                                                <div style={{
-                                                    flex: 1,
-                                                    display: 'flex',
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                    minHeight: '60px'
-                                                }}>
-                                                    <OrderStatusBadge status={item.status} language={language} />
-                                                </div>
+                                                <OrderStatusBadge status={item.status} language={language} />
                                             </div>
                                         </div>
                                     </div>

@@ -803,14 +803,14 @@ const RestaurantDetail = () => {
     return selectedMeals[dayKey] || null;
   };
 
-  // Get next valid weekday (Sunday to Thursday) - starting from tomorrow
+  // Get next valid weekday (Sunday to Wednesday) - starting from tomorrow
   const getNextValidDate = () => {
     const today = new Date();
     let nextDate = new Date(today);
     nextDate.setDate(today.getDate() + 1); // Start from tomorrow
     
-    // Find the next valid weekday (Sunday to Thursday)
-    // Friday = 5, Saturday = 6
+    // Find the next valid weekday (Sunday to Wednesday)
+    // Thursday = 4, Friday = 5, Saturday = 6
     while (nextDate.getDay() === 5 || nextDate.getDay() === 6) {
       nextDate.setDate(nextDate.getDate() + 1);
     }
@@ -847,7 +847,8 @@ const RestaurantDetail = () => {
       ? ['الوجبة الأولى', 'الوجبة الثانية', 'الوجبة الثالثة', 'الوجبة الرابعة', 'الوجبة الخامسة', 'الوجبة السادسة', 'الوجبة السابعة', 'الوجبة الثامنة', 'الوجبة التاسعة', 'الوجبة العاشرة', 'الوجبة الحادية عشر', 'الوجبة الثانية عشر', 'الوجبة الثالثة عشر', 'الوجبة الرابعة عشر', 'الوجبة الخامسة عشر', 'الوجبة السادسة عشر']
       : ['Meal 1', 'Meal 2', 'Meal 3', 'Meal 4', 'Meal 5', 'Meal 6', 'Meal 7', 'Meal 8', 'Meal 9', 'Meal 10', 'Meal 11', 'Meal 12', 'Meal 13', 'Meal 14', 'Meal 15', 'Meal 16'];
     
-    const dayIcons = [];
+    // Define meal icons for each meal
+    const mealIconsArray = ['🍽️', '🥘', '🍲', '🍛', '🍜', '🍝', '🍱', '🥗', '🍳', '🥙', '🌮', '🌯', '🍕', '🍔', '🌭', '🥪'];
     
     const mealLabels = [];
     const mealIcons = [];
@@ -858,7 +859,7 @@ const RestaurantDetail = () => {
       const dayIndex = i % 4; // 0-3 for each week
       
       mealLabels.push(mealLabelsArray[i]);
-      mealIcons.push(dayIcons[i]);
+      mealIcons.push(mealIconsArray[i] || '🍽️'); // Use default icon if array is too short
       
       // For monthly subscriptions, we need to repeat the same days
       // So we'll use the same day key but with a unique identifier
@@ -869,9 +870,13 @@ const RestaurantDetail = () => {
       // Always use English day names for backend compatibility
       const englishDayLabels = ['sunday', 'monday', 'tuesday', 'wednesday'];
       const baseDayKey = englishDayLabels[dayIndex];
+      
+      // Create unique day key for each meal to avoid conflicts
+      // For weekly subscriptions, use meal index to ensure uniqueness
+      // For monthly subscriptions, use week and day combination
       const uniqueDayKey = selectedSubscriptionType.type === 'monthly' 
         ? `${baseDayKey}_week${weekIndex + 1}` 
-        : baseDayKey;
+        : `meal_${i + 1}_${baseDayKey}`;
       dayKeys.push(uniqueDayKey);
     }
     
@@ -907,7 +912,7 @@ const RestaurantDetail = () => {
     return days;
   };
 
-  // Check if a date is a valid weekday (Sunday to Thursday) and not today
+  // Check if a date is a valid weekday (Sunday to Wednesday) and not today
   const isValidWeekday = (dateString) => {
     if (!dateString) return false;
     const date = new Date(dateString);
@@ -921,9 +926,9 @@ const RestaurantDetail = () => {
     
     console.log('Checking date:', dateString, 'Today:', todayString, 'Day of week:', dayOfWeek, 'Is today:', isToday);
     
-    // Sunday = 0, Monday = 1, Tuesday = 2, Wednesday = 3, Thursday = 4
-    // Friday = 5, Saturday = 6
-    const isValidDay = dayOfWeek >= 0 && dayOfWeek <= 4;
+    // Sunday = 0, Monday = 1, Tuesday = 2, Wednesday = 3
+    // Thursday = 4, Friday = 5, Saturday = 6
+    const isValidDay = dayOfWeek >= 0 && dayOfWeek <= 3;
     
     return isValidDay && !isToday;
   };
@@ -1235,66 +1240,39 @@ const RestaurantDetail = () => {
                 {restaurant.description || (language === 'ar' ? restaurant.description_ar : restaurant.description_en)}
               </p>
               
-              {/* Enhanced Contact Info Grid */}
+              {/* Enhanced Contact Info - Phone Only */}
               <div style={{ 
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
-                gap: 'clamp(0.375rem, 1vw, 0.5rem)',
+                display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                marginTop: 'clamp(0.5rem, 1.5vw, 0.75rem)'
               }}>
                 <div style={{ 
                   display: 'flex', 
                   alignItems: 'center', 
                   justifyContent: 'center',
-                  gap: '0.25rem', 
-                  fontSize: 'clamp(0.5rem, 1.5vw, 0.625rem)', 
+                  gap: '0.5rem', 
+                  fontSize: 'clamp(0.75rem, 2.5vw, 1rem)', 
                   color: 'rgb(75 85 99)',
-                  padding: 'clamp(0.25rem, 1vw, 0.375rem)',
-                  background: 'rgba(255, 255, 255, 0.5)',
-                  borderRadius: 'clamp(0.25rem, 1vw, 0.375rem)',
-                  border: '1px solid rgba(229, 231, 235, 0.3)',
-                  textAlign: 'center',
-                  wordBreak: 'break-word',
-                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'translateY(-1px)';
-                  e.target.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.1)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.05)';
-                }}>
-                  {restaurant.address || (language === 'ar' ? restaurant.address_ar : restaurant.address_en)}
-                </div>
-                
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  gap: '0.25rem', 
-                  fontSize: 'clamp(0.5rem, 1.5vw, 0.625rem)', 
-                  color: 'rgb(75 85 99)',
-                  padding: 'clamp(0.25rem, 1vw, 0.375rem)',
-                  background: 'rgba(255, 255, 255, 0.5)',
-                  borderRadius: 'clamp(0.25rem, 1vw, 0.375rem)',
-                  border: '1px solid rgba(229, 231, 235, 0.3)',
+                  padding: 'clamp(0.5rem, 1.5vw, 0.75rem)',
+                  background: 'rgba(255, 255, 255, 0.7)',
+                  borderRadius: 'clamp(0.5rem, 1.5vw, 0.75rem)',
+                  border: '1px solid rgba(229, 231, 235, 0.5)',
                   textAlign: 'center',
                   direction: 'ltr',
-                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-                  transition: 'all 0.3s ease'
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                  transition: 'all 0.3s ease',
+                  fontWeight: '600'
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.transform = 'translateY(-1px)';
-                  e.target.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.1)';
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.05)';
+                  e.target.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
                 }}>
-                  {restaurant.phone}
+                  📞 {restaurant.phone}
                 </div>
               </div>
             </div>
@@ -1854,8 +1832,8 @@ const RestaurantDetail = () => {
                       marginBottom: 0
                     }}>
                       {language === 'ar' 
-                        ? 'يرجى اختيار يوم من الأحد إلى الخميس فقط'
-                        : 'Please select a day from Sunday to Thursday only'
+                        ? 'يرجى اختيار يوم من الأحد إلى الأربعاء فقط'
+                        : 'Please select a day from Sunday to Wednesday only'
                       }
                     </p>
                   </div>
@@ -1876,8 +1854,8 @@ const RestaurantDetail = () => {
                     margin: 0
                   }}>
                     ⚠️ {language === 'ar' 
-                      ? 'يمكنك اختيار أيام العمل فقط (الأحد - الخميس)'
-                      : 'You can only select working days (Sunday - Thursday)'
+                      ? 'يمكنك اختيار أيام العمل فقط (الأحد - الأربعاء)'
+                      : 'You can only select working days (Sunday - Wednesday)'
                     }
                   </p>
                 </div>

@@ -9,10 +9,14 @@ const PaymentCancel = () => {
   const [loading, setLoading] = useState(false);
 
   const subscriptionId = searchParams.get('subscription_id');
+  const error = searchParams.get('error');
+  const info = searchParams.get('info');
 
   useEffect(() => {
     console.log('PaymentCancel: subscriptionId =', subscriptionId);
-  }, [subscriptionId]);
+    console.log('PaymentCancel: error =', error);
+    console.log('PaymentCancel: info =', info);
+  }, [subscriptionId, error, info]);
 
   const handleRetry = () => {
     if (subscriptionId) {
@@ -38,10 +42,10 @@ const PaymentCancel = () => {
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text'
         }}>
-          {t('paymentCancelled')}
+          {error ? t('paymentFailed') : t('paymentCancelled')}
         </h1>
         <p className={`text-gray-600 text-lg mb-8 leading-relaxed ${dir === 'rtl' ? 'font-arabic' : 'font-latin'}`}>
-          {t('paymentCancelledMessage')}
+          {error || info || t('paymentCancelledMessage')}
         </p>
         
         <div className="space-y-4">

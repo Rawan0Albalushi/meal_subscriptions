@@ -12,13 +12,21 @@ const PaymentSuccess = () => {
   const [paymentData, setPaymentData] = useState(null);
 
   const subscriptionId = searchParams.get('subscription_id');
+  const success = searchParams.get('success');
 
   useEffect(() => {
     console.log('PaymentSuccess: subscriptionId =', subscriptionId);
+    console.log('PaymentSuccess: success =', success);
     
     if (!subscriptionId) {
       console.log('PaymentSuccess: No subscription ID found');
       setError(t('subscriptionIdMissing'));
+      setLoading(false);
+      return;
+    }
+
+    // If success parameter is present, show success immediately
+    if (success) {
       setLoading(false);
       return;
     }

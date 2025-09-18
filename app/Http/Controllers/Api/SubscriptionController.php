@@ -175,6 +175,11 @@ class SubscriptionController extends Controller
 
     public function checkoutFromCart(Request $request)
     {
+        Log::info('Checkout from cart started', [
+            'user_id' => auth()->id(),
+            'request_data' => $request->all()
+        ]);
+
         $request->validate([
             'delivery_address_id' => 'nullable|exists:delivery_addresses,id',
             'special_instructions' => 'nullable|string|max:1000',
@@ -193,7 +198,15 @@ class SubscriptionController extends Controller
                 ])
                 ->first();
 
+            Log::info('Cart found', [
+                'cart_id' => $cart?->id,
+                'cart_items_count' => $cart?->cartItems?->count() ?? 0,
+                'restaurant_id' => $cart?->restaurant_id,
+                'subscription_type_id' => $cart?->subscription_type_id
+            ]);
+
             if (!$cart) {
+                Log::warning('Cart not found for user', ['user_id' => auth()->id()]);
                 return response()->json([
                     'success' => false,
                     'message' => 'Cart is empty'
@@ -201,6 +214,10 @@ class SubscriptionController extends Controller
             }
 
             if ($cart->cartItems->isEmpty()) {
+                Log::warning('Cart has no items', [
+                    'cart_id' => $cart->id,
+                    'user_id' => auth()->id()
+                ]);
                 return response()->json([
                     'success' => false,
                     'message' => 'Cart has no items'
@@ -217,9 +234,30 @@ class SubscriptionController extends Controller
 
             // Validate delivery address
             if (!$cart->delivery_address_id) {
+                Log::warning('No delivery address set for cart', [
+                    'cart_id' => $cart->id,
+                    'user_id' => auth()->id()
+                ]);
                 return response()->json([
                     'success' => false,
                     'message' => 'Delivery address is required'
+                ], 400);
+            }
+
+            // Verify delivery address exists and belongs to user
+            $deliveryAddress = DeliveryAddress::where([
+                'id' => $cart->delivery_address_id,
+                'user_id' => auth()->id()
+            ])->first();
+
+            if (!$deliveryAddress) {
+                Log::warning('Delivery address not found or does not belong to user', [
+                    'delivery_address_id' => $cart->delivery_address_id,
+                    'user_id' => auth()->id()
+                ]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Delivery address not found or invalid'
                 ], 400);
             }
 
@@ -242,7 +280,7 @@ class SubscriptionController extends Controller
                 'subscription_type' => $subscriptionType->type,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
-                'total_amount' => $cart->total_amount,
+                'total_amount' => $cart->subscription_price + $cart->delivery_price,
                 'delivery_price' => $cart->delivery_price,
                 'status' => 'pending',
                 'payment_status' => 'pending',
@@ -261,15 +299,36 @@ class SubscriptionController extends Controller
                 ]);
             }
 
+            // Force using Thawani gateway for checkout
+            try {
+                $this->paymentService->switchGateway('thawani');
+            } catch (\Exception $e) {
+                Log::warning('Failed to switch payment gateway to thawani, will use default', [
+                    'error' => $e->getMessage()
+                ]);
+            }
+
             // Create payment link
+            Log::info('Creating payment link for subscription', [
+                'subscription_id' => $subscription->id,
+                'amount' => $subscription->total_amount,
+                'restaurant_name' => $cart->restaurant->name_ar
+            ]);
+
             $paymentResponse = $this->paymentService->createPaymentLink([
                 'user_id' => auth()->id(),
                 'model_type' => Subscription::class,
                 'model_id' => $subscription->id,
-                'amount' => $subscription->total_amount + $subscription->delivery_price,
+                'amount' => $subscription->total_amount,
                 'currency' => 'OMR',
                 'description' => "اشتراك {$subscriptionType->name_ar} - {$cart->restaurant->name_ar}",
                 'subscription_data' => []
+            ]);
+
+            Log::info('Payment link created successfully', [
+                'payment_link' => $paymentResponse->paymentLink,
+                'session_id' => $paymentResponse->sessionId,
+                'gateway' => $this->paymentService->getActiveGateway()
             ]);
 
             // Clear the cart after successful checkout initiation
@@ -283,7 +342,7 @@ class SubscriptionController extends Controller
                 'payment_link' => $paymentResponse->paymentLink,
                 'session_id' => $paymentResponse->sessionId,
                 'subscription_id' => $subscription->id,
-                'amount' => $subscription->total_amount + $subscription->delivery_price,
+                'amount' => $subscription->total_amount,
                 'currency' => 'OMR',
                 'gateway' => $this->paymentService->getActiveGateway()
             ]);

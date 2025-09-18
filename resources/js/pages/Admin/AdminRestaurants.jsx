@@ -22,9 +22,6 @@ const AdminRestaurants = () => {
         description_ar: '',
         description_en: '',
         phone: '',
-        email: '',
-        address_ar: '',
-        address_en: '',
         seller_id: null,
         is_active: true,
         logo: null,
@@ -116,9 +113,6 @@ const AdminRestaurants = () => {
             description_ar: restaurant.description_ar || '',
             description_en: restaurant.description_en || '',
             phone: restaurant.phone || '',
-            email: restaurant.email || '',
-            address_ar: restaurant.address_ar || '',
-            address_en: restaurant.address_en || '',
             seller_id: restaurant.seller_id || null,
             is_active: restaurant.is_active,
             logo: null,
@@ -178,9 +172,6 @@ const AdminRestaurants = () => {
                     description_ar: '',
                     description_en: '',
                     phone: '',
-                    email: '',
-                    address_ar: '',
-            address_en: '',
             seller_id: null,
             is_active: true,
                     logo: null
@@ -592,25 +583,6 @@ const AdminRestaurants = () => {
                                     cursor: 'pointer',
                                     userSelect: 'none'
                                 }}
-                                onClick={() => handleSort('email')}
-                                >
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                                        {language === 'ar' ? 'البريد الإلكتروني' : 'Email'}
-                                        {sortField === 'email' && (
-                                            <span style={{ fontSize: '0.75rem' }}>
-                                                {sortDirection === 'asc' ? '↑' : '↓'}
-                                            </span>
-                                        )}
-                                    </div>
-                                </th>
-                                <th style={{
-                                    padding: '1rem 0.75rem',
-                                    textAlign: 'left',
-                                    fontWeight: '600',
-                                    color: '#374151',
-                                    cursor: 'pointer',
-                                    userSelect: 'none'
-                                }}
                                 onClick={() => handleSort('meals_count')}
                                 >
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
@@ -697,7 +669,7 @@ const AdminRestaurants = () => {
                                             height: '50px',
                                             borderRadius: '0.5rem',
                             background: restaurant.logo 
-                                ? `url(${restaurant.logo})` 
+                                ? `url(/storage/${restaurant.logo})` 
                                 : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
@@ -752,19 +724,6 @@ const AdminRestaurants = () => {
                             </div>
                                     </td>
 
-                                    {/* Email */}
-                                    <td style={{ padding: '1rem 0.75rem' }}>
-                        <div style={{
-                                            color: '#374151',
-                                            fontSize: '0.875rem'
-                                        }}>
-                                            {restaurant.email || (
-                                                <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>
-                                                    {language === 'ar' ? 'غير محدد' : 'Not specified'}
-                                </span>
-                                            )}
-                            </div>
-                                    </td>
 
                                     {/* Meals Count */}
                                     <td style={{ padding: '1rem 0.75rem' }}>
@@ -1103,9 +1062,6 @@ const AdminRestaurants = () => {
                                         description_ar: '',
                                         description_en: '',
                                         phone: '',
-                                        email: '',
-                                        address_ar: '',
-            address_en: '',
             seller_id: null,
             is_active: true,
                                         logo: null
@@ -1249,77 +1205,8 @@ const AdminRestaurants = () => {
                                 />
                             </div>
 
-                            <div style={{ marginBottom: '1rem' }}>
-                                <label style={{
-                                    display: 'block',
-                                    marginBottom: '0.5rem',
-                                    fontWeight: '600',
-                                    color: '#374151'
-                                }}>
-                                    {language === 'ar' ? 'البريد الإلكتروني' : 'Email'}
-                                </label>
-                                <input
-                                    type="email"
-                                    value={formData.email}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                                    style={{
-                                        width: '100%',
-                                        padding: '0.75rem',
-                                        border: '2px solid #e5e7eb',
-                                        borderRadius: '0.5rem',
-                                        fontSize: '1rem',
-                                        backgroundColor: 'white'
-                                    }}
-                                />
-                            </div>
 
-                            <div style={{ marginBottom: '1rem' }}>
-                                <label style={{
-                                    display: 'block',
-                                    marginBottom: '0.5rem',
-                                    fontWeight: '600',
-                                    color: '#374151'
-                                }}>
-                                    {language === 'ar' ? 'العنوان (عربي)' : 'Address (Arabic)'}
-                                </label>
-                                <input
-                                    type="text"
-                                    value={formData.address_ar}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, address_ar: e.target.value }))}
-                                    style={{
-                                        width: '100%',
-                                        padding: '0.75rem',
-                                        border: '2px solid #e5e7eb',
-                                        borderRadius: '0.5rem',
-                                        fontSize: '1rem',
-                                        backgroundColor: 'white'
-                                    }}
-                                />
-                            </div>
 
-                            <div style={{ marginBottom: '1rem' }}>
-                                <label style={{
-                                    display: 'block',
-                                    marginBottom: '0.5rem',
-                                    fontWeight: '600',
-                                    color: '#374151'
-                                }}>
-                                    {language === 'ar' ? 'العنوان (إنجليزي)' : 'Address (English)'}
-                                </label>
-                                <input
-                                    type="text"
-                                    value={formData.address_en}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, address_en: e.target.value }))}
-                                    style={{
-                                        width: '100%',
-                                        padding: '0.75rem',
-                                        border: '2px solid #e5e7eb',
-                                        borderRadius: '0.5rem',
-                                        fontSize: '1rem',
-                                        backgroundColor: 'white'
-                                    }}
-                                />
-                            </div>
 
                             {/* Locations (Areas) Selection */}
                             <div style={{ marginBottom: '1rem' }}>
@@ -1494,9 +1381,6 @@ const AdminRestaurants = () => {
                                             description_ar: '',
                                             description_en: '',
                                             phone: '',
-                                            email: '',
-                                            address_ar: '',
-            address_en: '',
             seller_id: null,
             is_active: true,
                                             logo: null

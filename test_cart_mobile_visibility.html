@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Cart Mobile Visibility</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .test-title {
+            text-align: center;
+            color: #2f6e73;
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #2f6e73;
+        }
+        .test-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 5px;
+        }
+        .icon {
+            font-size: 1.2em;
+        }
+        .cart-badge {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .mobile-test {
+            border: 2px solid #2f6e73;
+            background: linear-gradient(135deg, #2f6e73, #4a8a8f);
+            color: white;
+        }
+        .success {
+            color: #10b981;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h2 class="test-title">🧪 اختبار ظهور السلة في الهاتف</h2>
+        
+        <div class="test-section">
+            <h3>📱 اختبار القائمة المحمولة</h3>
+            <div class="test-item">
+                <span class="icon">🍽️</span>
+                <span>المطاعم</span>
+            </div>
+            <div class="test-item">
+                <span class="icon">📋</span>
+                <span>اشتراكاتي</span>
+            </div>
+            <div class="test-item mobile-test">
+                <span class="icon">🛒</span>
+                <span>السلة</span>
+                <span class="cart-badge">3</span>
+            </div>
+            <div class="test-item">
+                <span class="icon">📞</span>
+                <span>تواصل معنا</span>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>✅ التحقق من التغييرات</h3>
+            <div class="test-item">
+                <span class="success">✓</span>
+                <span>السلة تظهر قبل "تواصل معنا"</span>
+            </div>
+            <div class="test-item">
+                <span class="success">✓</span>
+                <span>السلة مرئية في القائمة المحمولة</span>
+            </div>
+            <div class="test-item">
+                <span class="success">✓</span>
+                <span>عداد العناصر يظهر مع السلة</span>
+            </div>
+            <div class="test-item">
+                <span class="success">✓</span>
+                <span>التصميم متجاوب مع الهاتف</span>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 تعليمات الاختبار</h3>
+            <p>1. افتح الموقع على الهاتف</p>
+            <p>2. اضغط على زر القائمة (☰)</p>
+            <p>3. تأكد من ظهور السلة قبل "تواصل معنا"</p>
+            <p>4. تأكد من ظهور عداد العناصر إذا كان هناك عناصر في السلة</p>
+        </div>
+    </div>
+</body>
+</html>

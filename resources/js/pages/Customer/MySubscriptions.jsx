@@ -410,14 +410,14 @@ const MySubscriptions = () => {
                                                 color: 'rgb(107 114 128)', 
                                                 marginBottom: '0.5rem' 
                                             }}>
-                                                {t('totalAmount')}
+                                                {language === 'ar' ? 'المبلغ الإجمالي' : 'Total Amount'}
                                             </div>
                                             <div style={{ 
                                                 fontSize: 'clamp(0.875rem, 3vw, 1rem)', 
                                                 fontWeight: '600', 
                                                 color: '#4a757c' 
                                             }}>
-                                                {subscription.total_amount} {language === 'ar' ? 'ريال' : 'OMR'}
+                                                {parseFloat(subscription.total_amount || 0).toFixed(2)} {language === 'ar' ? 'ريال' : 'OMR'}
                                             </div>
                                         </div>
                                     </div>

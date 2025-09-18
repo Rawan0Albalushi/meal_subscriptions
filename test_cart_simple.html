@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار بسيط للسلة</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #faeeee 0%, #eefafa 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            margin: 10px 0;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 117, 124, 0.3);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success { background: #d1fae5; border-color: #10b981; }
+        .error { background: #fee2e2; border-color: #ef4444; }
+        .info { background: #dbeafe; border-color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; color: #4a757c; margin-bottom: 30px;">🧪 اختبار بسيط للسلة</h1>
+        
+        <button class="test-button" onclick="testCartSimple()">اختبار بسيط للسلة</button>
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function testCartSimple() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'جاري الاختبار البسيط للسلة...\n';
+            
+            try {
+                // Step 1: Check authentication
+                resultDiv.innerHTML += '1. فحص المصادقة...\n';
+                const authResponse = await fetch('/api/user');
+                if (!authResponse.ok) {
+                    throw new Error('المستخدم غير مسجل دخول. يرجى تسجيل الدخول أولاً.');
+                }
+                const user = await authResponse.json();
+                resultDiv.innerHTML += `✅ المستخدم مسجل دخول: ${user.name || user.email}\n`;
+
+                // Step 2: Check delivery addresses
+                resultDiv.innerHTML += '2. فحص عناوين التوصيل...\n';
+                const addressesResponse = await fetch('/api/delivery-addresses');
+                if (!addressesResponse.ok) {
+                    throw new Error('فشل في جلب عناوين التوصيل');
+                }
+                const addressesData = await addressesResponse.json();
+                const addresses = addressesData.data || [];
+                if (addresses.length === 0) {
+                    throw new Error('لا توجد عناوين توصيل. يرجى إضافة عنوان توصيل أولاً.');
+                }
+                resultDiv.innerHTML += `✅ تم العثور على ${addresses.length} عنوان توصيل\n`;
+
+                // Step 3: Check cart
+                resultDiv.innerHTML += '3. فحص السلة...\n';
+                const cartResponse = await fetch('/api/cart');
+                if (!cartResponse.ok) {
+                    throw new Error('فشل في جلب السلة');
+                }
+                const cartData = await cartResponse.json();
+                const cart = cartData.data;
+                if (!cart) {
+                    throw new Error('السلة فارغة. يرجى إضافة عناصر إلى السلة أولاً.');
+                }
+                resultDiv.innerHTML += `✅ السلة موجودة مع ${cart.cart_items?.length || 0} عنصر\n`;
+
+                // Step 4: Test checkout
+                resultDiv.innerHTML += '4. اختبار الدفع...\n';
+                const checkoutData = {
+                    delivery_address_id: addresses[0].id,
+                    special_instructions: 'اختبار من السلة'
+                };
+                
+                const checkoutResponse = await fetch('/api/subscriptions/checkout-from-cart', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(checkoutData)
+                });
+
+                const checkoutResult = await checkoutResponse.json();
+                
+                if (checkoutResponse.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML += `✅ تم إنشاء الاشتراك بنجاح!\n\nالبيانات:\n${JSON.stringify(checkoutResult, null, 2)}`;
+                    
+                    if (checkoutResult.payment_link) {
+                        resultDiv.innerHTML += `\n\n🔗 رابط الدفع: ${checkoutResult.payment_link}`;
+                        
+                        // Test the payment link
+                        setTimeout(() => {
+                            resultDiv.innerHTML += `\n\n🧪 فتح رابط الدفع...`;
+                            window.open(checkoutResult.payment_link, '_blank');
+                        }, 1000);
+                    }
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML += `❌ فشل في إنشاء الاشتراك!\n\nالحالة: ${checkoutResponse.status}\nالبيانات:\n${JSON.stringify(checkoutResult, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML += `❌ خطأ: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

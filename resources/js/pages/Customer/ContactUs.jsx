@@ -10,6 +10,7 @@ const ContactUs = () => {
     });
     const [loading, setLoading] = useState(true);
     const [copyStatus, setCopyStatus] = useState({ phone: false, email: false });
+    const [toastMessage, setToastMessage] = useState('');
 
     // Scroll to top when component mounts
     useEffect(() => {
@@ -38,7 +39,11 @@ const ContactUs = () => {
     const copyToClipboard = (text, type) => {
         navigator.clipboard.writeText(text).then(() => {
             setCopyStatus(prev => ({ ...prev, [type]: true }));
-            setTimeout(() => setCopyStatus(prev => ({ ...prev, [type]: false })), 2000);
+            setToastMessage(language === 'ar' ? 'تم النسخ!' : 'Copied!');
+            setTimeout(() => {
+                setCopyStatus(prev => ({ ...prev, [type]: false }));
+                setToastMessage('');
+            }, 2000);
         }).catch(err => {
             console.error('Failed to copy text: ', err);
         });
@@ -63,7 +68,7 @@ const ContactUs = () => {
         );
     }
 
-    return (
+    return (<>
         <div style={{
             minHeight: '100vh',
             padding: 'clamp(1rem, 4vw, 2rem)',
@@ -125,16 +130,8 @@ const ContactUs = () => {
                             position: 'relative'
                         }}
                         onClick={() => copyToClipboard(contactInfo.phone, 'phone')}
-                        onMouseEnter={(e) => {
-                            e.target.style.transform = 'translateY(-5px)';
-                            e.target.style.boxShadow = '0 15px 30px rgba(47, 110, 115, 0.15)';
-                            e.target.style.background = 'rgba(47, 110, 115, 0.08)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.target.style.transform = 'translateY(0)';
-                            e.target.style.boxShadow = 'none';
-                            e.target.style.background = 'rgba(47, 110, 115, 0.05)';
-                        }}
+                        role="button"
+                        aria-label={language === 'ar' ? 'نسخ رقم الهاتف' : 'Copy phone number'}
                         >
                             <div style={{
                                 width: '3.5rem',
@@ -190,22 +187,7 @@ const ContactUs = () => {
                                     {copyStatus.phone ? '✓' : '📋'}
                                 </span>
                             </div>
-                            {copyStatus.phone && (
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '-2.5rem',
-                                    right: '0',
-                                    background: '#4CAF50',
-                                    color: 'white',
-                                    padding: '0.5rem 1rem',
-                                    borderRadius: '0.5rem',
-                                    fontSize: '0.875rem',
-                                    fontWeight: '500',
-                                    whiteSpace: 'nowrap'
-                                }}>
-                                    {language === 'ar' ? 'تم النسخ!' : 'Copied!'}
-                                </div>
-                            )}
+                            {/* Inline badge removed on mobile in favor of toast */}
                         </div>
 
                         {/* Email */}
@@ -222,16 +204,8 @@ const ContactUs = () => {
                             position: 'relative'
                         }}
                         onClick={() => copyToClipboard(contactInfo.email, 'email')}
-                        onMouseEnter={(e) => {
-                            e.target.style.transform = 'translateY(-5px)';
-                            e.target.style.boxShadow = '0 15px 30px rgba(79, 70, 229, 0.15)';
-                            e.target.style.background = 'rgba(79, 70, 229, 0.08)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.target.style.transform = 'translateY(0)';
-                            e.target.style.boxShadow = 'none';
-                            e.target.style.background = 'rgba(47, 110, 115, 0.05)';
-                        }}
+                        role="button"
+                        aria-label={language === 'ar' ? 'نسخ البريد الإلكتروني' : 'Copy email address'}
                         >
                             <div style={{
                                 width: '3.5rem',
@@ -288,54 +262,31 @@ const ContactUs = () => {
                                     {copyStatus.email ? '✓' : '📋'}
                                 </span>
                             </div>
-                            {copyStatus.email && (
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '-2.5rem',
-                                    right: '0',
-                                    background: '#10b981',
-                                    color: 'white',
-                                    padding: '0.5rem 1rem',
-                                    borderRadius: '0.5rem',
-                                    fontSize: '0.875rem',
-                                    fontWeight: '500',
-                                    whiteSpace: 'nowrap'
-                                }}>
-                                    {language === 'ar' ? 'تم النسخ!' : 'Copied!'}
-                                </div>
-                            )}
+                            {/* Inline badge removed on mobile in favor of toast */}
                         </div>
                     </div>
 
-                    {/* Additional Info */}
-                    <div style={{
-                        marginTop: '3rem',
-                        padding: '2rem',
-                        background: 'rgba(47, 110, 115, 0.03)',
-                        borderRadius: '1rem',
-                        border: '1px solid rgba(47, 110, 115, 0.1)',
-                        textAlign: 'center'
-                    }}>
-                        <h3 style={{
-                            fontSize: '1.25rem',
-                            fontWeight: '600',
-                            color: '#2f6e73',
-                            marginBottom: '1rem'
-                        }}>
-                            {t('additionalInformation')}
-                        </h3>
-                        <p style={{
-                            color: '#64748b',
-                            fontSize: '1rem',
-                            lineHeight: '1.6'
-                        }}>
-                            {t('contactUsDescription')}
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>
-    );
+        {toastMessage && (
+            <div style={{
+                position: 'fixed',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                bottom: 'max(16px, env(safe-area-inset-bottom))',
+                background: '#111827',
+                color: 'white',
+                padding: '0.75rem 1rem',
+                borderRadius: '9999px',
+                fontSize: '0.95rem',
+                zIndex: 1000,
+                boxShadow: '0 10px 20px rgba(0,0,0,0.15)'
+            }}>
+                {toastMessage}
+            </div>
+        )}
+    </>);
 };
 
 export default ContactUs;

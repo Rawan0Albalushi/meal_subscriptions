@@ -46,9 +46,6 @@ const SellerRestaurants = () => {
         description_ar: '',
         description_en: '',
         phone: '',
-        email: '',
-        address_ar: '',
-        address_en: '',
         locations: [],
         logo: null,
         existingLogo: null,
@@ -135,9 +132,6 @@ const SellerRestaurants = () => {
                 description_ar: formData.description_ar,
                 description_en: formData.description_en,
                 phone: formData.phone,
-                email: formData.email,
-                address_ar: formData.address_ar,
-                address_en: formData.address_en,
                 locations: formData.locations,
                 is_active: Boolean(formData.is_active) // تأكد من أن القيمة boolean
             };
@@ -253,9 +247,6 @@ const SellerRestaurants = () => {
             description_ar: restaurant.description_ar || '',
             description_en: restaurant.description_en || '',
             phone: restaurant.phone || '',
-            email: restaurant.email || '',
-            address_ar: restaurant.address_ar || '',
-            address_en: restaurant.address_en || '',
             locations: restaurant.locations || [],
             logo: null, // سيتم الاحتفاظ بالشعار الموجود في الخادم
             existingLogo: restaurant.logo, // إضافة الشعار الموجود
@@ -265,7 +256,6 @@ const SellerRestaurants = () => {
             name_ar: restaurant.name_ar,
             name_en: restaurant.name_en,
             phone: restaurant.phone,
-            email: restaurant.email,
             locations: restaurant.locations,
             is_active: restaurant.is_active,
             existingLogo: restaurant.logo
@@ -362,9 +352,6 @@ const SellerRestaurants = () => {
             description_ar: '',
             description_en: '',
             phone: '',
-            email: '',
-            address_ar: '',
-            address_en: '',
             locations: [],
             logo: null,
             existingLogo: null,
@@ -721,20 +708,6 @@ const SellerRestaurants = () => {
                                         marginTop: '0.25rem'
                                     }}>
                                         {restaurant.phone || (language === 'ar' ? 'غير محدد' : 'Not specified')}
-                                    </div>
-                                </div>
-                                <div>
-                                    <span style={{
-                                        color: 'rgb(107 114 128)',
-                                        fontWeight: '500'
-                                    }}>
-                                        📧 {language === 'ar' ? 'البريد الإلكتروني' : 'Email'}:
-                                    </span>
-                                    <div style={{
-                                        color: 'rgb(55 65 81)',
-                                        marginTop: '0.25rem'
-                                    }}>
-                                        {restaurant.email || (language === 'ar' ? 'غير محدد' : 'Not specified')}
                                     </div>
                                 </div>
                                 <div>
@@ -1151,30 +1124,6 @@ const SellerRestaurants = () => {
                                         }}
                                     />
                                 </div>
-                                <div>
-                                    <label style={{
-                                        display: 'block',
-                                        marginBottom: '0.5rem',
-                                        fontSize: '0.875rem',
-                                        fontWeight: '500',
-                                        color: 'rgb(55 65 81)'
-                                    }}>
-                                        📧 {language === 'ar' ? 'البريد الإلكتروني' : 'Email'}
-                                    </label>
-                                    <input
-                                        type="email"
-                                        value={formData.email}
-                                        onChange={(e) => setFormData({...formData, email: e.target.value})}
-                                        placeholder={language === 'ar' ? 'أدخل البريد الإلكتروني' : 'Enter email address'}
-                                        style={{
-                                            width: '100%',
-                                            padding: '0.75rem',
-                                            border: '1px solid rgba(0, 0, 0, 0.1)',
-                                            borderRadius: '0.5rem',
-                                            fontSize: '0.875rem'
-                                        }}
-                                    />
-                                </div>
                             </div>
 
                             <div style={{
@@ -1183,52 +1132,6 @@ const SellerRestaurants = () => {
                                 gap: '1rem',
                                 marginBottom: '1rem'
                             }}>
-                                <div>
-                                    <label style={{
-                                        display: 'block',
-                                        marginBottom: '0.5rem',
-                                        fontSize: '0.875rem',
-                                        fontWeight: '500',
-                                        color: 'rgb(55 65 81)'
-                                    }}>
-                                        📍 {language === 'ar' ? 'العنوان (عربي)' : 'Address (Arabic)'}
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={formData.address_ar}
-                                        onChange={(e) => setFormData({...formData, address_ar: e.target.value})}
-                                        style={{
-                                            width: '100%',
-                                            padding: '0.75rem',
-                                            border: '1px solid rgba(0, 0, 0, 0.1)',
-                                            borderRadius: '0.5rem',
-                                            fontSize: '0.875rem'
-                                        }}
-                                    />
-                                </div>
-                                <div>
-                                    <label style={{
-                                        display: 'block',
-                                        marginBottom: '0.5rem',
-                                        fontSize: '0.875rem',
-                                        fontWeight: '500',
-                                        color: 'rgb(55 65 81)'
-                                    }}>
-                                        📍 {language === 'ar' ? 'العنوان (إنجليزي)' : 'Address (English)'}
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={formData.address_en}
-                                        onChange={(e) => setFormData({...formData, address_en: e.target.value})}
-                                        style={{
-                                            width: '100%',
-                                            padding: '0.75rem',
-                                            border: '1px solid rgba(0, 0, 0, 0.1)',
-                                            borderRadius: '0.5rem',
-                                            fontSize: '0.875rem'
-                                        }}
-                                    />
-                                </div>
                             </div>
 
                             <div style={{

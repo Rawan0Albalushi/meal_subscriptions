@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار حساب المبالغ في الاشتراكات</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #2f6e73, #1f5a5f);
+            color: white;
+            border-radius: 15px;
+        }
+        
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .test-title {
+            color: #2f6e73;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .subscription-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subscription-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .subscription-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2f6e73;
+        }
+        
+        .subscription-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .amounts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .amount-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .amount-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .amount-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #2f6e73;
+        }
+        
+        .amount-total {
+            background: linear-gradient(135deg, #2f6e73, #1f5a5f);
+            color: white;
+        }
+        
+        .amount-total .amount-value {
+            color: white;
+            font-size: 1.3rem;
+        }
+        
+        .calculation-section {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        
+        .calculation-title {
+            font-weight: bold;
+            color: #1565c0;
+            margin-bottom: 10px;
+        }
+        
+        .calculation-step {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            color: #1976d2;
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #2f6e73, #1f5a5f);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(47, 110, 115, 0.3);
+        }
+        
+        .error-message {
+            background: #fee;
+            color: #c53030;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #feb2b2;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .success-message {
+            background: #f0fff4;
+            color: #2f7d32;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #9ae6b4;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 اختبار حساب المبالغ في الاشتراكات</h1>
+            <p>فحص صحة حساب المبالغ في صفحة اشتراكاتي وصفحة تفاصيل الاشتراك</p>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">
+                <span>🧪</span>
+                <span>اختبارات مختلفة</span>
+            </div>
+            
+            <button class="test-button" onclick="testWeeklyWithDelivery()">اشتراك أسبوعي مع توصيل</button>
+            <button class="test-button" onclick="testMonthlyFreeDelivery()">اشتراك شهري توصيل مجاني</button>
+            <button class="test-button" onclick="testWeeklyFreeDelivery()">اشتراك أسبوعي توصيل مجاني</button>
+            <button class="test-button" onclick="testMonthlyWithDelivery()">اشتراك شهري مع توصيل</button>
+        </div>
+        
+        <div id="subscriptionsContainer"></div>
+        
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+        <div id="successMessage" class="success-message" style="display: none;"></div>
+    </div>
+
+    <script>
+        // محاكاة بيانات الاشتراكات
+        const mockSubscriptions = {
+            weeklyWithDelivery: {
+                id: 1,
+                restaurant_name: 'مطعم الأصالة',
+                subscription_type: 'weekly',
+                status: 'active',
+                total_amount: 130.00, // 120 + 10
+                delivery_price: 10.00,
+                subscription_price: 120.00, // total_amount - delivery_price
+                meals_count: 4
+            },
+            monthlyFreeDelivery: {
+                id: 2,
+                restaurant_name: 'مطعم الشرق',
+                subscription_type: 'monthly',
+                status: 'active',
+                total_amount: 400.00, // 400 + 0
+                delivery_price: 0.00,
+                subscription_price: 400.00, // total_amount - delivery_price
+                meals_count: 16
+            },
+            weeklyFreeDelivery: {
+                id: 3,
+                restaurant_name: 'مطعم الغداء',
+                subscription_type: 'weekly',
+                status: 'pending',
+                total_amount: 120.00, // 120 + 0
+                delivery_price: 0.00,
+                subscription_price: 120.00, // total_amount - delivery_price
+                meals_count: 4
+            },
+            monthlyWithDelivery: {
+                id: 4,
+                restaurant_name: 'مطعم العائلة',
+                subscription_type: 'monthly',
+                status: 'active',
+                total_amount: 450.00, // 400 + 50
+                delivery_price: 50.00,
+                subscription_price: 400.00, // total_amount - delivery_price
+                meals_count: 16
+            }
+        };
+        
+        function createSubscriptionCard(subscription) {
+            const calculatedSubscriptionPrice = subscription.total_amount - subscription.delivery_price;
+            const isCalculationCorrect = Math.abs(calculatedSubscriptionPrice - subscription.subscription_price) < 0.01;
+            
+            return `
+                <div class="subscription-card">
+                    <div class="subscription-header">
+                        <div class="subscription-title">${subscription.restaurant_name}</div>
+                        <div class="subscription-status status-${subscription.status}">
+                            ${subscription.status === 'active' ? 'نشط' : 'في الانتظار'}
+                        </div>
+                    </div>
+                    
+                    <div class="amounts-section">
+                        <div class="amount-item">
+                            <div class="amount-label">المبلغ الإجمالي (total_amount)</div>
+                            <div class="amount-value">${subscription.total_amount.toFixed(2)} ريال</div>
+                        </div>
+                        
+                        <div class="amount-item">
+                            <div class="amount-label">سعر التوصيل (delivery_price)</div>
+                            <div class="amount-value">${subscription.delivery_price > 0 ? subscription.delivery_price.toFixed(2) + ' ريال' : 'مجاني'}</div>
+                        </div>
+                        
+                        <div class="amount-item">
+                            <div class="amount-label">سعر الاشتراك المحسوب</div>
+                            <div class="amount-value">${calculatedSubscriptionPrice.toFixed(2)} ريال</div>
+                        </div>
+                        
+                        <div class="amount-item amount-total">
+                            <div class="amount-label">المجموع النهائي</div>
+                            <div class="amount-value">${subscription.total_amount.toFixed(2)} ريال</div>
+                        </div>
+                    </div>
+                    
+                    <div class="calculation-section">
+                        <div class="calculation-title">كيفية الحساب:</div>
+                        <div class="calculation-step">1. المبلغ الإجمالي = ${subscription.total_amount.toFixed(2)} ريال</div>
+                        <div class="calculation-step">2. سعر التوصيل = ${subscription.delivery_price.toFixed(2)} ريال</div>
+                        <div class="calculation-step">3. سعر الاشتراك = ${subscription.total_amount.toFixed(2)} - ${subscription.delivery_price.toFixed(2)} = ${calculatedSubscriptionPrice.toFixed(2)} ريال</div>
+                        <div class="calculation-step">4. الحساب صحيح: ${isCalculationCorrect ? '✅ نعم' : '❌ لا'}</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function displaySubscriptions(subscriptions) {
+            const container = document.getElementById('subscriptionsContainer');
+            container.innerHTML = '';
+            
+            subscriptions.forEach(subscription => {
+                container.innerHTML += createSubscriptionCard(subscription);
+            });
+            
+            // التحقق من صحة جميع الحسابات
+            const allCorrect = subscriptions.every(sub => {
+                const calculated = sub.total_amount - sub.delivery_price;
+                return Math.abs(calculated - sub.subscription_price) < 0.01;
+            });
+            
+            if (allCorrect) {
+                showSuccess('✅ جميع الحسابات صحيحة!');
+            } else {
+                showError('❌ هناك خطأ في بعض الحسابات!');
+            }
+        }
+        
+        function testWeeklyWithDelivery() {
+            displaySubscriptions([mockSubscriptions.weeklyWithDelivery]);
+        }
+        
+        function testMonthlyFreeDelivery() {
+            displaySubscriptions([mockSubscriptions.monthlyFreeDelivery]);
+        }
+        
+        function testWeeklyFreeDelivery() {
+            displaySubscriptions([mockSubscriptions.weeklyFreeDelivery]);
+        }
+        
+        function testMonthlyWithDelivery() {
+            displaySubscriptions([mockSubscriptions.monthlyWithDelivery]);
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 3000);
+        }
+        
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            testWeeklyWithDelivery();
+        });
+    </script>
+</body>
+</html>

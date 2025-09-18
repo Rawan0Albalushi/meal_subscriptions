@@ -50,6 +50,11 @@ class PaymentService
                     // Continue loading other gateways
                 }
             }
+            // If no gateways were loaded from DB, fallback to config
+            if (empty($this->gateways)) {
+                Log::info('No active gateways found in DB, falling back to config');
+                $this->loadGatewaysFromConfig();
+            }
         } catch (Exception $e) {
             Log::warning("Failed to load gateways from database, using config fallback", [
                 'error' => $e->getMessage()
@@ -132,11 +137,14 @@ class PaymentService
         }
         
         // If default gateway is not available, use the first available gateway
-        $this->activeGateway = array_key_first($this->gateways);
-        
-        if (!$this->activeGateway || !isset($this->gateways[$this->activeGateway])) {
-            throw new Exception('No active payment gateway configured');
+        if (!empty($this->gateways)) {
+            $first = array_key_first($this->gateways);
+            if ($first !== null && isset($this->gateways[$first])) {
+                $this->activeGateway = $first;
+                return;
+            }
         }
+        throw new Exception('No active payment gateway configured');
     }
 
     public function createPaymentLink(array $data): PaymentLinkResponse
@@ -147,9 +155,10 @@ class PaymentService
         $gateway = $this->gateways[$this->activeGateway];
         
         // Prepare common data
+        // Thawani requires ABSOLUTE URLs; generate absolute routes
         $paymentData = array_merge($data, [
-            'success_url' => route('payment.success', ['subscription_id' => $data['model_id']]),
-            'cancel_url' => route('payment.cancel', ['subscription_id' => $data['model_id']])
+            'success_url' => route('payment.success', ['subscription_id' => $data['model_id']], true),
+            'cancel_url' => route('payment.cancel', ['subscription_id' => $data['model_id']], true)
         ]);
 
         $response = $gateway->createPaymentLink($paymentData);
@@ -256,6 +265,7 @@ class PaymentService
 
     public function switchGateway(string $gatewayName): void
     {
+        $this->loadGateways();
         if (!isset($this->gateways[$gatewayName])) {
             throw new Exception("Gateway {$gatewayName} is not available");
         }

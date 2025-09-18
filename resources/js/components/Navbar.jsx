@@ -145,26 +145,6 @@ const Navbar = () => {
                                         {t('mySubscriptions')}
                                     </Link>
 
-                            <Link to="/contact-us" style={{
-                                padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
-                                borderRadius: '0.5rem',
-                                color: '#4a757c',
-                                textDecoration: 'none',
-                                fontSize: 'clamp(0.875rem, 3vw, 1.125rem)',
-                                fontWeight: '500',
-                                transition: 'all 0.2s',
-                                whiteSpace: 'nowrap'
-                            }}
-                            onMouseEnter={(e) => {
-                                e.target.style.background = 'rgba(74, 117, 124, 0.1)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.background = 'transparent';
-                            }}
-                            >
-                                {language === 'ar' ? 'تواصل معنا' : 'Contact Us'}
-                            </Link>
-
                             {isAuthenticated && (
                                 <Link to="/cart" style={{
                                     padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
@@ -191,22 +171,35 @@ const Navbar = () => {
                                     {getCartItemsCount() > 0 && (
                                         <span style={{
                                             background: '#ef4444',
-                                            color: 'white',
-                                            fontSize: '0.75rem',
-                                            fontWeight: 'bold',
                                             borderRadius: '50%',
-                                            width: '1.25rem',
-                                            height: '1.25rem',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            marginLeft: '0.25rem'
-                                        }}>
-                                            {getCartItemsCount()}
-                                        </span>
+                                            width: '0.5rem',
+                                            height: '0.5rem',
+                                            display: 'inline-block',
+                                            marginLeft: '0.375rem'
+                                        }}></span>
                                     )}
                                 </Link>
                             )}
+
+                            <Link to="/contact-us" style={{
+                                padding: 'clamp(0.375rem, 2vw, 0.5rem) clamp(0.75rem, 3vw, 1rem)',
+                                borderRadius: '0.5rem',
+                                color: '#4a757c',
+                                textDecoration: 'none',
+                                fontSize: 'clamp(0.875rem, 3vw, 1.125rem)',
+                                fontWeight: '500',
+                                transition: 'all 0.2s',
+                                whiteSpace: 'nowrap'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.target.style.background = 'rgba(74, 117, 124, 0.1)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.background = 'transparent';
+                            }}
+                            >
+                                {language === 'ar' ? 'تواصل معنا' : 'Contact Us'}
+                            </Link>
 
                         </div>
 
@@ -447,6 +440,49 @@ const Navbar = () => {
                                 >
                                     📋 {t('mySubscriptions')}
                                     </Link>
+
+                                {isAuthenticated && (
+                                    <Link to="/cart" 
+                                        style={{
+                                            padding: 'clamp(0.75rem, 3vw, 1rem)',
+                                            borderRadius: '0.75rem',
+                                            color: '#2f6e73',
+                                            textDecoration: 'none',
+                                            fontSize: 'clamp(1.125rem, 3.5vw, 1.375rem)',
+                                            fontWeight: '600',
+                                            background: 'rgba(47, 110, 115, 0.05)',
+                                            border: '1px solid rgba(47, 110, 115, 0.1)',
+                                            transition: 'all 0.2s ease',
+                                            textAlign: 'center',
+                                            position: 'relative',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            gap: '0.5rem'
+                                        }}
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.background = 'rgba(47, 110, 115, 0.1)';
+                                            e.target.style.transform = 'translateX(-5px)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.background = 'rgba(47, 110, 115, 0.05)';
+                                            e.target.style.transform = 'translateX(0)';
+                                        }}
+                                    >
+                                        🛒 {language === 'ar' ? 'السلة' : 'Cart'}
+                                        {getCartItemsCount() > 0 && (
+                                            <span style={{
+                                                background: '#ef4444',
+                                                borderRadius: '50%',
+                                                width: '0.5rem',
+                                                height: '0.5rem',
+                                                display: 'inline-block',
+                                                marginInlineStart: '0.375rem'
+                                            }}></span>
+                                        )}
+                                    </Link>
+                                )}
 
                                 <Link to="/contact-us" 
                                     style={{

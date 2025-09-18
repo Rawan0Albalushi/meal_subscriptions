@@ -16,14 +16,16 @@ class Cart extends Model
         'delivery_address_id',
         'start_date',
         'special_instructions',
-        'total_amount',
+        'subscription_price',
         'delivery_price',
+        'total_amount',
     ];
 
     protected $casts = [
         'start_date' => 'date',
-        'total_amount' => 'decimal:2',
+        'subscription_price' => 'decimal:2',
         'delivery_price' => 'decimal:2',
+        'total_amount' => 'decimal:2',
     ];
 
     protected $appends = ['total_with_delivery', 'items_count'];
@@ -55,7 +57,7 @@ class Cart extends Model
 
     public function getTotalWithDeliveryAttribute()
     {
-        return $this->total_amount + $this->delivery_price;
+        return $this->subscription_price + $this->delivery_price;
     }
 
     public function getItemsCountAttribute()
@@ -65,7 +67,8 @@ class Cart extends Model
 
     public function calculateTotal()
     {
-        $this->total_amount = $this->cartItems()->sum('price');
+        // Calculate total based on subscription price instead of individual meal prices
+        $this->total_amount = $this->subscription_price + $this->delivery_price;
         $this->save();
         return $this->total_amount;
     }
