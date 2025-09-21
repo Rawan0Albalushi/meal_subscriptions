@@ -61,8 +61,6 @@ const Home = () => {
           height: auto !important;
           object-fit: contain !important;
           border-radius: 0.75rem 0.75rem 0 0 !important;
-          background-color: rgba(255, 255, 255, 0.1) !important;
-          padding: 10px !important;
         }
       }
       @media (max-width: 480px) {
@@ -111,8 +109,228 @@ const Home = () => {
           height: auto !important;
           object-fit: contain !important;
           border-radius: 0.75rem 0.75rem 0 0 !important;
-          background-color: rgba(255, 255, 255, 0.1) !important;
-          padding: 10px !important;
+        }
+      }
+      
+      /* Mobile responsive layout improvements */
+      @media (max-width: 768px) {
+        .restaurants-grid {
+          grid-template-columns: 1fr !important;
+          gap: 1.5rem !important;
+          padding: 0 1rem !important;
+        }
+        
+        .section-enhanced {
+          padding: 2rem 0 !important;
+        }
+        
+        .section-header-mobile {
+          margin-bottom: 2rem !important;
+          padding: 0 0.5rem !important;
+        }
+        
+        .section-title-mobile {
+          font-size: 2rem !important;
+          margin-bottom: 0.75rem !important;
+        }
+        
+        .section-description-mobile {
+          font-size: 1rem !important;
+          line-height: 1.5 !important;
+        }
+        
+        .restaurant-card-mobile {
+          height: 380px !important;
+          margin: 0 !important;
+          border-radius: 1rem !important;
+          display: flex !important;
+          flex-direction: column !important;
+        }
+        
+        .restaurant-image-mobile {
+          height: 160px !important;
+          flex-shrink: 0 !important;
+        }
+        
+        .restaurant-content-mobile {
+          padding: 1rem !important;
+          flex: 1 !important;
+          display: flex !important;
+          flex-direction: column !important;
+          justify-content: space-between !important;
+          min-height: 220px !important;
+        }
+        
+        .restaurant-title-mobile {
+          font-size: 1.2rem !important;
+          margin-bottom: 0.75rem !important;
+          height: 2.5rem !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+        
+        .restaurant-description-mobile {
+          font-size: 0.85rem !important;
+          padding: 0.75rem !important;
+          height: 3.5rem !important;
+          margin-bottom: 0.75rem !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+        
+        .restaurant-button-mobile {
+          padding: 0.875rem !important;
+          font-size: 0.95rem !important;
+          height: 3rem !important;
+          flex-shrink: 0 !important;
+        }
+        
+        .view-all-button-mobile {
+          margin-top: 1.5rem !important;
+          padding: 0 0.5rem !important;
+        }
+        
+        .view-all-link-mobile {
+          font-size: 1rem !important;
+          padding: 1rem 2rem !important;
+          border-radius: 0.75rem !important;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .restaurants-grid {
+          grid-template-columns: 1fr !important;
+          gap: 1rem !important;
+          padding: 0 0.75rem !important;
+        }
+        
+        .section-enhanced {
+          padding: 1.5rem 0 !important;
+        }
+        
+        .section-header-mobile {
+          margin-bottom: 1.5rem !important;
+          padding: 0 0.25rem !important;
+        }
+        
+        .section-title-mobile {
+          font-size: 1.75rem !important;
+          margin-bottom: 0.5rem !important;
+        }
+        
+        .section-description-mobile {
+          font-size: 0.9rem !important;
+          line-height: 1.4 !important;
+        }
+        
+        .restaurant-card-mobile {
+          height: 350px !important;
+          margin: 0 !important;
+          border-radius: 0.875rem !important;
+          display: flex !important;
+          flex-direction: column !important;
+        }
+        
+        .restaurant-image-mobile {
+          height: 140px !important;
+          flex-shrink: 0 !important;
+        }
+        
+        .restaurant-content-mobile {
+          padding: 0.75rem !important;
+          flex: 1 !important;
+          display: flex !important;
+          flex-direction: column !important;
+          justify-content: space-between !important;
+          min-height: 210px !important;
+        }
+        
+        .restaurant-title-mobile {
+          font-size: 1.1rem !important;
+          margin-bottom: 0.5rem !important;
+          height: 2rem !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+        
+        .restaurant-description-mobile {
+          font-size: 0.8rem !important;
+          padding: 0.5rem !important;
+          height: 3rem !important;
+          margin-bottom: 0.5rem !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+        
+        .restaurant-button-mobile {
+          padding: 0.75rem !important;
+          font-size: 0.9rem !important;
+          height: 2.75rem !important;
+          flex-shrink: 0 !important;
+        }
+        
+        .view-all-button-mobile {
+          margin-top: 1rem !important;
+          padding: 0 0.25rem !important;
+        }
+        
+        .view-all-link-mobile {
+          font-size: 0.9rem !important;
+          padding: 0.875rem 1.5rem !important;
+          border-radius: 0.625rem !important;
+        }
+      }
+      
+      /* Desktop styles */
+      @media (min-width: 769px) {
+        .restaurant-card-mobile {
+          height: 420px !important;
+          display: flex !important;
+          flex-direction: column !important;
+        }
+        
+        .restaurant-image-mobile {
+          height: 200px !important;
+          flex-shrink: 0 !important;
+        }
+        
+        .restaurant-content-mobile {
+          padding: 1.5rem !important;
+          flex: 1 !important;
+          display: flex !important;
+          flex-direction: column !important;
+          justify-content: space-between !important;
+          min-height: 220px !important;
+        }
+        
+        .restaurant-title-mobile {
+          font-size: 1.5rem !important;
+          margin-bottom: 0.75rem !important;
+          height: 2.5rem !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+        
+        .restaurant-description-mobile {
+          font-size: 0.9rem !important;
+          padding: 0.75rem !important;
+          height: 3.5rem !important;
+          margin-bottom: 0.75rem !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+        
+        .restaurant-button-mobile {
+          padding: 1.25rem !important;
+          font-size: 1.1rem !important;
+          height: 4rem !important;
+          flex-shrink: 0 !important;
         }
       }
     `;
@@ -140,12 +358,41 @@ const Home = () => {
   }, [isAuthenticated, user, navigate]);
   const [featuredRestaurants, setFeaturedRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [availableFilters, setAvailableFilters] = useState({
+    locations: []
+  });
+
+  // Function to get location name by code
+  const getLocationNameByCode = (code) => {
+    const item = availableFilters.locations.find(l => l.key === code);
+    return item ? item.name : code;
+  };
 
   // Fetch featured restaurants from backend
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
         setLoading(true);
+        
+        // Fetch locations for location names
+        try {
+          const locationsResponse = await fetch('/api/v1/areas');
+          if (locationsResponse.ok) {
+            const locationsData = await locationsResponse.json();
+            if (locationsData.success) {
+              setAvailableFilters(prev => ({
+                ...prev,
+                locations: locationsData.data.map(area => ({
+                  key: area.code,
+                  name: language === 'ar' ? area.name_ar : area.name_en
+                }))
+              }));
+            }
+          }
+        } catch (error) {
+          console.log('Could not fetch locations, using fallback');
+        }
+        
         const response = await restaurantsAPI.getAll();
         if (response.data.success) {
           // Filter restaurants that have logos and take first 3
@@ -153,10 +400,17 @@ const Home = () => {
           const featuredRestaurants = restaurantsWithLogos.slice(0, 3).map(restaurant => ({
             id: restaurant.id,
             name: restaurant.name,
+            name_ar: restaurant.name_ar,
+            name_en: restaurant.name_en,
+            description: restaurant.description,
+            description_ar: restaurant.description_ar,
+            description_en: restaurant.description_en,
+            logo: restaurant.logo,
+            locations: restaurant.locations,
+            phone: restaurant.phone,
             rating: (4.5 + Math.random() * 0.5).toFixed(1), // Random rating between 4.5-5.0, fixed to 1 decimal
             deliveryTime: language === 'ar' ? "30-45 دقيقة" : "30-45 min",
-            image: `/storage/${restaurant.logo}`,
-            description: restaurant.description
+            image: `/storage/${restaurant.logo}`
           }));
           
           // If we don't have enough restaurants with logos, fill with restaurants without logos
@@ -167,10 +421,17 @@ const Home = () => {
               .map(restaurant => ({
                 id: restaurant.id,
                 name: restaurant.name,
+                name_ar: restaurant.name_ar,
+                name_en: restaurant.name_en,
+                description: restaurant.description,
+                description_ar: restaurant.description_ar,
+                description_en: restaurant.description_en,
+                logo: restaurant.logo,
+                locations: restaurant.locations,
+                phone: restaurant.phone,
                 rating: (4.5 + Math.random() * 0.5).toFixed(1),
                 deliveryTime: language === 'ar' ? "30-45 دقيقة" : "30-45 min",
-                image: "🍽️",
-                description: restaurant.description
+                image: "🍽️"
               }));
             featuredRestaurants.push(...remainingRestaurants);
           }
@@ -743,9 +1004,13 @@ const Home = () => {
             padding: '0 0.5rem'
           }
         }}>
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 className="gradient-text neon-text" style={{ 
-              fontSize: 'clamp(2rem, 4vw, 2.5rem)', 
+          <div className="section-header-mobile" style={{ 
+            textAlign: 'center', 
+            marginBottom: '3rem',
+            padding: '0 1rem'
+          }}>
+            <h2 className="gradient-text neon-text section-title-mobile" style={{ 
+              fontSize: 'clamp(1.75rem, 5vw, 2.5rem)', 
               fontWeight: 'bold', 
               marginBottom: '1rem',
               textAlign: 'center',
@@ -754,32 +1019,55 @@ const Home = () => {
             }}>
               {t('featuredRestaurants')}
             </h2>
-            <p style={{ fontSize: '1.125rem', color: 'rgb(75 85 99)', maxWidth: '600px', margin: '0 auto' }}>
+            <p className="section-description-mobile" style={{ 
+              fontSize: 'clamp(0.95rem, 3vw, 1.125rem)', 
+              color: 'rgb(75 85 99)', 
+              maxWidth: '600px', 
+              margin: '0 auto',
+              lineHeight: '1.6'
+            }}>
               {t('restaurantsDescription')}
             </p>
                                     </div>
                                     
            <div className="restaurants-grid" style={{ 
              display: 'grid', 
-             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-             gap: '2rem',
-             marginBottom: '3rem',
+             gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
+             gap: '1.5rem',
+             padding: '0 0.5rem',
+             position: 'relative',
+             zIndex: 1,
              maxWidth: '1200px',
              margin: '0 auto 3rem auto',
-             width: '100%'
+             width: '100%',
+             '@media (max-width: 768px)': {
+               gridTemplateColumns: '1fr',
+               gap: '1rem',
+               padding: '0',
+               marginTop: '1rem'
+             }
            }}>
             {loading ? (
               // Loading skeleton
               Array.from({ length: 3 }).map((_, index) => (
                 <div key={index} className="loading-state-enhanced" style={{
-                  padding: '2rem',
-                  height: '400px',
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  backdropFilter: 'blur(20px)',
+                  borderRadius: '1rem',
+                  padding: '1.5rem',
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+                  height: '420px',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',
                   alignItems: 'center',
                   position: 'relative',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  '@media (max-width: 768px)': {
+                    padding: '1rem',
+                    height: 'auto',
+                    minHeight: '380px'
+                  }
                 }}>
                   {/* Animated loading icon */}
                   <div style={{ 
@@ -792,7 +1080,7 @@ const Home = () => {
                   
                   {/* Loading text */}
                   <div style={{ 
-                    color: 'rgb(79 70 229)', 
+                    color: '#4a757c', 
                     fontSize: '1.1rem',
                     fontWeight: '600',
                     marginBottom: '0.5rem'
@@ -811,30 +1099,22 @@ const Home = () => {
                 </div>
               ))
             ) : (
-               featuredRestaurants.map((restaurant) => (
-               <div key={restaurant.id} className="restaurant-card-enhanced" style={{
-                 padding: '0',
+               featuredRestaurants.slice(0, 3).map((restaurant) => (
+               <div key={restaurant.id} style={{
+                 background: 'rgba(255, 255, 255, 0.95)',
+                 backdropFilter: 'blur(20px)',
+                 borderRadius: '1rem',
+                 padding: '1.5rem',
+                 boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+                 transition: 'transform 0.2s, box-shadow 0.2s',
                  cursor: 'pointer',
-                 position: 'relative',
-                 overflow: 'hidden',
                  display: 'flex',
                  flexDirection: 'column',
-                 height: '420px', // Increased height for better image display
-                 borderRadius: '1rem',
-                 boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
-                 transition: 'all 0.3s ease',
-                 background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%)',
-                 backdropFilter: 'blur(10px)',
-                 border: '1px solid rgba(255, 255, 255, 0.2)',
-                 // Mobile responsive styles
+                 height: '420px',
                  '@media (max-width: 768px)': {
-                   height: '380px',
-                   margin: '0 0.5rem',
-                   borderRadius: '0.75rem'
-                 },
-                 '@media (max-width: 480px)': {
-                   height: '360px',
-                   margin: '0 0.25rem'
+                   padding: '1rem',
+                   height: 'auto',
+                   minHeight: '380px'
                  }
                }}
                onClick={() => navigate(`/restaurants/${restaurant.id}`)}
@@ -844,223 +1124,230 @@ const Home = () => {
                }}
                onMouseLeave={(e) => {
                  e.currentTarget.style.transform = 'translateY(0)';
-                 e.currentTarget.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.1)';
+                 e.currentTarget.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.1)';
                }}
                >
-                 {/* Restaurant Image Section - Much larger and more prominent */}
-                 <div className="restaurant-image-section" style={{
-                   position: 'relative',
-                   height: '200px', // Much larger image area
-                   overflow: 'visible',
-                   background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
+                 {/* Icon Section - Fixed Height */}
+                 <div style={{ 
+                   textAlign: 'center', 
+                   marginBottom: '1rem',
+                   height: '180px',
                    display: 'flex',
                    alignItems: 'center',
-                   justifyContent: 'center',
-                   // Mobile responsive image height
-                   '@media (max-width: 768px)': {
-                     height: '180px'
-                   },
-                   '@media (max-width: 480px)': {
-                     height: '160px'
-                   }
+                   justifyContent: 'center'
                  }}>
-                   {restaurant.image && restaurant.image.startsWith('/storage/') ? (
-                     <img
-                       src={restaurant.image}
-                       alt={restaurant.name}
-                       style={{
-                         maxWidth: '100%',
-                         maxHeight: '100%',
-                         width: 'auto',
-                         height: 'auto',
-                         objectFit: 'contain',
-                         transition: 'transform 0.3s ease',
-                         borderRadius: '0.75rem 0.75rem 0 0',
-                         backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                         padding: '10px'
-                       }}
-                       onMouseEnter={(e) => {
-                         e.target.style.transform = 'scale(1.05)';
-                       }}
-                       onMouseLeave={(e) => {
-                         e.target.style.transform = 'scale(1)';
-                       }}
-                       onLoad={(e) => {
-                         e.target.style.display = 'block';
-                         e.target.nextSibling.style.display = 'none';
-                       }}
-                       onError={(e) => {
-                         e.target.style.display = 'none';
-                         e.target.nextSibling.style.display = 'flex';
-                       }}
-                     />
-                   ) : null}
-                   <div style={{
-                     position: 'absolute',
-                     top: 0,
-                     left: 0,
-                     right: 0,
-                     bottom: 0,
-                     display: restaurant.image && restaurant.image.startsWith('/storage/') ? 'none' : 'flex',
-                     alignItems: 'center',
-                     justifyContent: 'center',
-                     fontSize: '7rem',
-                     color: 'white',
-                     background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)'
-                   }}>
-                     {restaurant.image || '🍽️'}
-                   </div>
-
-                   {/* Overlay gradient for better text readability */}
-                   <div style={{
-                     position: 'absolute',
-                     bottom: 0,
-                     left: 0,
-                     right: 0,
-                     height: '60px',
-                     background: 'linear-gradient(transparent, rgba(0, 0, 0, 0.7))'
-                   }}></div>
-                 </div>
-
-                 {/* Content Section */}
-                 <div style={{
-                   padding: '1.5rem',
-                   flex: 1,
-                   display: 'flex',
-                   flexDirection: 'column',
-                   justifyContent: 'space-between'
-                 }}>
-                   {/* Restaurant Name */}
-                   <div style={{ textAlign: 'center', marginBottom: '0.25rem' }}>
-                     <h3 className="gradient-text restaurant-title" style={{
-                       fontSize: '1.5rem',
-                       fontWeight: '700',
-                       marginBottom: '0.1rem',
-                       lineHeight: '1.3',
-                       textAlign: 'center',
-                       background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
-                       WebkitBackgroundClip: 'text',
-                       WebkitTextFillColor: 'transparent',
-                       backgroundClip: 'text',
-                       textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                       // Mobile responsive text
-                       '@media (max-width: 768px)': {
-                         fontSize: '1.25rem'
-                       },
-                       '@media (max-width: 480px)': {
-                         fontSize: '1.125rem'
-                       }
-                     }}>
-                       {restaurant.name}
-                     </h3>
-
-                   </div>
-
-                   {/* Content Section - Description */}
-                   <div style={{
-                     flex: '1 1 auto',
-                     display: 'flex',
-                     flexDirection: 'column',
-                     justifyContent: 'center',
-                     marginBottom: '0.25rem'
-                   }}>
-                     {/* Restaurant Description */}
-                     <p className="restaurant-description" style={{
-                       fontSize: '0.9rem',
-                       color: 'rgb(75 85 99)',
-                       lineHeight: '1.6',
-                       marginBottom: '0',
-                       textAlign: 'center',
-                       minHeight: '2.8em',
-                       maxHeight: '2.8em',
+                   {restaurant.logo ? (
+                     <div style={{
+                       width: '200px',
+                       height: '160px',
+                       borderRadius: '16px',
                        overflow: 'hidden',
+                       boxShadow: '0 8px 25px rgba(47, 110, 115, 0.2)',
+                       border: '2px solid rgba(47, 110, 115, 0.1)',
+                       transition: 'all 0.3s ease',
+                       position: 'relative'
+                     }}
+                     onMouseEnter={(e) => {
+                       e.target.style.transform = 'scale(1.05)';
+                       e.target.style.boxShadow = '0 12px 35px rgba(47, 110, 115, 0.3)';
+                     }}
+                     onMouseLeave={(e) => {
+                       e.target.style.transform = 'scale(1)';
+                       e.target.style.boxShadow = '0 8px 25px rgba(47, 110, 115, 0.2)';
+                     }}>
+                       <img 
+                         src={`/storage/${restaurant.logo}`}
+                         alt={language === 'ar' ? restaurant.name_ar : restaurant.name_en}
+                         style={{
+                           width: '100%',
+                           height: '100%',
+                           objectFit: 'contain',
+                           transition: 'transform 0.3s ease',
+                           backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                         }}
+                         onLoad={(e) => {
+                           e.target.style.transform = 'scale(1)';
+                         }}
+                         onError={(e) => {
+                           e.target.style.display = 'none';
+                           e.target.nextSibling.style.display = 'flex';
+                         }}
+                       />
+                       <div style={{
+                         position: 'absolute',
+                         top: 0,
+                         left: 0,
+                         right: 0,
+                         bottom: 0,
+                         background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
+                         display: 'none',
+                         alignItems: 'center',
+                         justifyContent: 'center',
+                         fontSize: '3rem',
+                         color: 'white'
+                       }}>
+                         🍽️
+                       </div>
+                     </div>
+                   ) : (
+                     <div style={{
+                       width: '200px',
+                       height: '160px',
+                       background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
+                       borderRadius: '16px',
                        display: 'flex',
                        alignItems: 'center',
                        justifyContent: 'center',
-                       background: 'rgba(255, 255, 255, 0.1)',
-                       padding: '0.5rem',
-                       borderRadius: '0.5rem',
-                       backdropFilter: 'blur(5px)',
-                       border: '1px solid rgba(255, 255, 255, 0.2)',
-                       transition: 'all 0.3s ease',
-                       // Mobile responsive text
-                       '@media (max-width: 768px)': {
-                         fontSize: '0.85rem',
-                         padding: '0.25rem'
-                       },
-                       '@media (max-width: 480px)': {
-                         fontSize: '0.8rem',
-                         minHeight: '2.4em',
-                         maxHeight: '2.4em'
-                       }
+                       fontSize: '3rem',
+                       color: 'white',
+                       boxShadow: '0 8px 25px rgba(47, 110, 115, 0.2)',
+                       border: '2px solid rgba(47, 110, 115, 0.1)',
+                       transition: 'all 0.3s ease'
                      }}
                      onMouseEnter={(e) => {
-                       e.target.style.background = 'rgba(79, 70, 229, 0.1)';
-                       e.target.style.borderColor = 'rgba(79, 70, 229, 0.3)';
-                       e.target.style.transform = 'scale(1.02)';
+                       e.target.style.transform = 'scale(1.05)';
+                       e.target.style.boxShadow = '0 12px 35px rgba(47, 110, 115, 0.3)';
                      }}
                      onMouseLeave={(e) => {
-                       e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-                       e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
                        e.target.style.transform = 'scale(1)';
+                       e.target.style.boxShadow = '0 8px 25px rgba(47, 110, 115, 0.2)';
                      }}>
-                       {restaurant.description}
-                     </p>
-                   </div>
+                       🍽️
+                     </div>
+                   )}
+                 </div>
 
-                   {/* Footer Section - Subscribe Button */}
-                   <div style={{
-                     flex: '0 0 auto',
-                     display: 'flex',
-                     flexDirection: 'column'
+                 {/* Title Section - Fixed Height */}
+                 <div style={{ 
+                   textAlign: 'center', 
+                   marginBottom: '1rem',
+                   height: '60px',
+                   display: 'flex',
+                   flexDirection: 'column',
+                   justifyContent: 'center'
+                 }}>
+                   <h3 style={{ 
+                     fontSize: '1.25rem', 
+                     fontWeight: 'bold', 
+                     color: '#4a757c', 
+                     margin: 0,
+                     lineHeight: '1.3'
                    }}>
-                     {/* Subscribe Button */}
-                     <button
-                       className="liquid-button restaurant-button"
-                       onClick={(e) => {
-                         e.stopPropagation();
-                         navigate(`/restaurants/${restaurant.id}`);
-                       }}
-                       style={{
-                         width: '100%',
-                         padding: '1.25rem',
-                         borderRadius: '0.75rem',
-                         color: 'white',
-                         border: 'none',
-                         fontSize: '1.1rem',
-                         fontWeight: '600',
-                         cursor: 'pointer',
-                         position: 'relative',
-                         overflow: 'hidden',
-                         minHeight: '4rem',
-                         background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
-                         boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
-                         transition: 'all 0.3s ease',
-                         lineHeight: '1.2',
-                         display: 'flex',
-                         alignItems: 'center',
-                         justifyContent: 'center'
-                       }}
-                       onMouseEnter={(e) => {
-                         e.target.style.transform = 'translateY(-2px)';
-                         e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.6)';
-                       }}
-                       onMouseLeave={(e) => {
-                         e.target.style.transform = 'translateY(0)';
-                         e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)';
-                       }}
-                     >
-                       {t('subscribe')}
-                     </button>
+                     {language === 'ar' ? restaurant.name_ar : restaurant.name_en}
+                   </h3>
+                 </div>
+
+                 {/* Description Section - Fixed Height */}
+                 <div style={{ 
+                   textAlign: 'center', 
+                   marginBottom: '1rem',
+                   height: '60px',
+                   display: 'flex',
+                   alignItems: 'center',
+                   justifyContent: 'center'
+                 }}>
+                   <p style={{ 
+                     fontSize: '0.875rem', 
+                     color: 'rgb(107 114 128)',
+                     lineHeight: '1.4',
+                     margin: 0,
+                     display: '-webkit-box',
+                     WebkitLineClamp: 2,
+                     WebkitBoxOrient: 'vertical',
+                     overflow: 'hidden',
+                     textOverflow: 'ellipsis'
+                   }}>
+                     {language === 'ar' ? restaurant.description_ar : restaurant.description_en}
+                   </p>
+                 </div>
+                 
+                 {/* Info Section - Fixed Height with consistent spacing */}
+                 <div style={{ 
+                   display: 'flex', 
+                   flexDirection: 'column',
+                   gap: '0.5rem',
+                   marginBottom: '1rem',
+                   height: '80px',
+                   justifyContent: 'center',
+                   alignItems: 'center'
+                 }}>
+                   {/* Location - Always show with fallback */}
+                   <div style={{ 
+                     fontSize: '0.875rem', 
+                     color: '#4a757c',
+                     textAlign: 'center',
+                     fontWeight: '600',
+                     minHeight: '1.25rem',
+                     display: 'flex',
+                     alignItems: 'center',
+                     justifyContent: 'center'
+                   }}>
+                     {restaurant.locations && restaurant.locations.length > 0 ? (
+                       <>📍 {restaurant.locations.map(loc => getLocationNameByCode(loc)).join('، ')}</>
+                     ) : (
+                       <span style={{ opacity: 0.5 }}>📍 {language === 'ar' ? 'الموقع غير محدد' : 'Location not specified'}</span>
+                     )}
+                   </div>
+                   
+                   {/* Phone - Always show with fallback */}
+                   <div style={{ 
+                     fontSize: '0.875rem', 
+                     color: 'rgb(75 85 99)',
+                     textAlign: 'center',
+                     direction: 'ltr',
+                     minHeight: '1.25rem',
+                     display: 'flex',
+                     alignItems: 'center',
+                     justifyContent: 'center'
+                   }}>
+                     {restaurant.phone ? (
+                       <>📞 {restaurant.phone}</>
+                     ) : (
+                       <span style={{ opacity: 0.5 }}>📞 {language === 'ar' ? 'رقم الهاتف غير متوفر' : 'Phone not available'}</span>
+                     )}
                    </div>
                  </div>
+                 
+                 {/* Action Button */}
+                 <div style={{ 
+                   textAlign: 'center',
+                   marginTop: 'auto'
+                 }}>
+                   <button style={{
+                     background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
+                     color: 'white',
+                     border: 'none',
+                     borderRadius: '0.5rem',
+                     padding: '0.75rem 1.5rem',
+                     fontSize: '0.875rem',
+                     fontWeight: '600',
+                     cursor: 'pointer',
+                     transition: 'all 0.3s ease',
+                     boxShadow: '0 4px 15px rgba(74, 117, 124, 0.3)',
+                     width: '100%'
+                   }}
+                   onMouseEnter={(e) => {
+                     e.target.style.transform = 'translateY(-2px)';
+                     e.target.style.boxShadow = '0 6px 20px rgba(74, 117, 124, 0.4)';
+                   }}
+                   onMouseLeave={(e) => {
+                     e.target.style.transform = 'translateY(0)';
+                     e.target.style.boxShadow = '0 4px 15px rgba(74, 117, 124, 0.3)';
+                   }}>
+                     {language === 'ar' ? 'عرض المطعم' : 'View Restaurant'}
+                   </button>
+                 </div>
                </div>
-                            ))
-            )}
-                        </div>
+             ))
+           )}
+         </div>
 
-          <div style={{ textAlign: 'center' }}>
-            <a href="/restaurants" className="feature-btn feature-btn-primary liquid-button">
+          <div className="view-all-button-mobile" style={{ 
+            textAlign: 'center',
+            marginTop: '2rem',
+            padding: '0 1rem'
+          }}>
+            <a href="/restaurants" className="feature-btn feature-btn-primary liquid-button view-all-link-mobile">
               🍕 {t('viewAllRestaurants')}
             </a>
                     </div>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار تصميم المطاعم المميزة - الصفحة الرئيسية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            font-weight: bold;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #4a757c, #ba6c5d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(79, 70, 229, 0.5);
+        }
+        
+        .section-description {
+            font-size: clamp(0.95rem, 3vw, 1.125rem);
+            color: rgb(75 85 99);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .restaurants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 0 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .restaurants-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 0;
+                margin-top: 1rem;
+            }
+        }
+        
+        .restaurant-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 420px;
+        }
+        
+        @media (max-width: 768px) {
+            .restaurant-card {
+                padding: 1rem;
+                height: auto;
+                min-height: 380px;
+            }
+        }
+        
+        .restaurant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .icon-section {
+            text-align: center;
+            margin-bottom: 1rem;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .restaurant-logo {
+            width: 200px;
+            height: 160px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(47, 110, 115, 0.2);
+            border: 2px solid rgba(47, 110, 115, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .restaurant-logo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(47, 110, 115, 0.3);
+        }
+        
+        .restaurant-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo-fallback {
+            width: 200px;
+            height: 160px;
+            background: linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            box-shadow: 0 8px 25px rgba(47, 110, 115, 0.2);
+            border: 2px solid rgba(47, 110, 115, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .logo-fallback:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(47, 110, 115, 0.3);
+        }
+        
+        .title-section {
+            text-align: center;
+            margin-bottom: 1rem;
+            height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .restaurant-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #4a757c;
+            margin: 0;
+            line-height: 1.3;
+        }
+        
+        .description-section {
+            text-align: center;
+            margin-bottom: 1rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .restaurant-description {
+            font-size: 0.875rem;
+            color: rgb(107 114 128);
+            line-height: 1.4;
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            height: 80px;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .location-info {
+            font-size: 0.875rem;
+            color: #4a757c;
+            text-align: center;
+            font-weight: 600;
+            min-height: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .phone-info {
+            font-size: 0.875rem;
+            color: rgb(75 85 99);
+            text-align: center;
+            direction: ltr;
+            min-height: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .action-button {
+            text-align: center;
+            margin-top: auto;
+        }
+        
+        .btn-view {
+            background: linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 117, 124, 0.3);
+            width: 100%;
+        }
+        
+        .btn-view:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 117, 124, 0.4);
+        }
+        
+        .view-all-section {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 0 1rem;
+        }
+        
+        .btn-view-all {
+            background: linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 117, 124, 0.3);
+        }
+        
+        .btn-view-all:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 117, 124, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">المطاعم المميزة</h2>
+            <p class="section-description">اكتشف أفضل المطاعم المتاحة في منطقتك</p>
+        </div>
+        
+        <div class="restaurants-grid">
+            <!-- مطعم 1 -->
+            <div class="restaurant-card">
+                <div class="icon-section">
+                    <div class="restaurant-logo">
+                        <img src="https://via.placeholder.com/200x160/4a757c/ffffff?text=مطعم+1" alt="مطعم الشرق">
+                    </div>
+                </div>
+                
+                <div class="title-section">
+                    <h3 class="restaurant-title">مطعم الشرق</h3>
+                </div>
+                
+                <div class="description-section">
+                    <p class="restaurant-description">مطعم متخصص في الأطباق الشرقية الأصيلة مع أجود المكونات</p>
+                </div>
+                
+                <div class="info-section">
+                    <div class="location-info">📍 مسقط، نزوى</div>
+                    <div class="phone-info">📞 +968 1234 5678</div>
+                </div>
+                
+                <div class="action-button">
+                    <button class="btn-view">عرض المطعم</button>
+                </div>
+            </div>
+            
+            <!-- مطعم 2 -->
+            <div class="restaurant-card">
+                <div class="icon-section">
+                    <div class="logo-fallback">
+                        🍽️
+                    </div>
+                </div>
+                
+                <div class="title-section">
+                    <h3 class="restaurant-title">مطعم البحر</h3>
+                </div>
+                
+                <div class="description-section">
+                    <p class="restaurant-description">أفضل المأكولات البحرية الطازجة من البحر العماني</p>
+                </div>
+                
+                <div class="info-section">
+                    <div class="location-info">📍 صلالة، صور</div>
+                    <div class="phone-info">📞 +968 2345 6789</div>
+                </div>
+                
+                <div class="action-button">
+                    <button class="btn-view">عرض المطعم</button>
+                </div>
+            </div>
+            
+            <!-- مطعم 3 -->
+            <div class="restaurant-card">
+                <div class="icon-section">
+                    <div class="logo-fallback">
+                        🍽️
+                    </div>
+                </div>
+                
+                <div class="title-section">
+                    <h3 class="restaurant-title">مطعم الجبل</h3>
+                </div>
+                
+                <div class="description-section">
+                    <p class="restaurant-description">تجربة فريدة مع الأطباق الجبلية التقليدية</p>
+                </div>
+                
+                <div class="info-section">
+                    <div class="location-info">📍 نزوى، بهلاء</div>
+                    <div class="phone-info">📞 +968 3456 7890</div>
+                </div>
+                
+                <div class="action-button">
+                    <button class="btn-view">عرض المطعم</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="view-all-section">
+            <button class="btn-view-all">عرض جميع المطاعم</button>
+        </div>
+    </div>
+</body>
+</html>

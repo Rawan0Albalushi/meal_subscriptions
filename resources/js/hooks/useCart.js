@@ -47,6 +47,14 @@ export const useCart = () => {
             }
         } catch (err) {
             console.error('Error creating/updating cart:', err);
+            
+            // Handle specific error for existing cart
+            if (err.response?.data?.error_code === 'CART_ALREADY_EXISTS') {
+                const errorMessage = err.response.data.message || 'لا يمكن إضافة أكثر من اشتراك واحد في السلة';
+                setError(errorMessage);
+                throw new Error(errorMessage);
+            }
+            
             setError(err.response?.data?.message || 'Failed to create/update cart');
             throw err;
         } finally {

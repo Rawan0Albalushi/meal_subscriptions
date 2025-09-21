@@ -125,13 +125,16 @@ const PaymentSuccess = () => {
         
         {/* Success Header */}
         <div className="text-center mb-6 sm:mb-8">
-          <div className="bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl border border-white/20">
+          <div className="bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl border border-white/20 min-h-[200px] flex flex-col justify-center">
             <div className="text-6xl sm:text-8xl mb-4 sm:mb-6">✅</div>
-            <h1 className={`text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 sm:mb-4 ${dir === 'rtl' ? 'font-arabic' : 'font-latin'}`} style={{
+            <h1 className={`text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-3 sm:mb-4 leading-tight ${dir === 'rtl' ? 'font-arabic' : 'font-latin'}`} style={{
               background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
+              backgroundClip: 'text',
+              lineHeight: '1.2',
+              wordBreak: 'keep-all',
+              overflow: 'visible'
             }}>
               {t('paymentSuccessful')}
             </h1>

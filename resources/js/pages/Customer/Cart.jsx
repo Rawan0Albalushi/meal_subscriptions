@@ -763,28 +763,6 @@ const Cart = () => {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="mt-4 flex gap-3">
-                                            <button 
-                                                type="button"
-                                                onClick={handleSaveNewAddress}
-                                                disabled={!isNewAddressComplete() || updating}
-                                                className="text-white py-3 px-6 rounded-2xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
-                                                style={{
-                                                    background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)'
-                                                }}
-                                            >
-                                                {t('save')}
-                                            </button>
-                                            {deliveryAddresses.length > 0 && (
-                                                <button 
-                                                    type="button" 
-                                                    onClick={() => setAddingNewAddress(false)}
-                                                    className="py-3 px-6 rounded-2xl font-semibold border-2 border-gray-200 text-gray-700 bg-white hover:bg-gray-50 transition-all duration-300"
-                                                >
-                                                    {t('cancel')}
-                                                </button>
-                                            )}
-                                        </div>
                                     </div>
                                 )}
                             </div>

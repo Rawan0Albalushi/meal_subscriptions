@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار منع إضافة أكثر من اشتراك في السلة</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            background: #f8fafc;
+        }
+        .test-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2f6e73;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .test-description {
+            color: #64748b;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #2f6e73, #4a8a8f);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(47, 110, 115, 0.3);
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        .info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+        .api-info {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; color: #2f6e73; margin-bottom: 30px;">
+            🧪 اختبار منع إضافة أكثر من اشتراك في السلة
+        </h1>
+
+        <div class="test-section">
+            <div class="test-title">📋 معلومات الاختبار</div>
+            <div class="test-description">
+                هذا الاختبار يتحقق من أن النظام يمنع إضافة أكثر من اشتراك واحد في السلة.
+                <br><br>
+                <strong>الخطوات المتوقعة:</strong>
+                <ol>
+                    <li>إنشاء سلة جديدة مع اشتراك أول</li>
+                    <li>محاولة إنشاء سلة جديدة مع اشتراك ثاني</li>
+                    <li>يجب أن يظهر خطأ يمنع إضافة الاشتراك الثاني</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">🔧 اختبار API</div>
+            <div class="test-description">
+                اختبار API endpoints للتأكد من أن المنطق يعمل بشكل صحيح:
+            </div>
+            
+            <div class="api-info">
+                <strong>POST /api/cart</strong><br>
+                إنشاء سلة جديدة مع اشتراك<br>
+                <code>Body: { "restaurant_id": 1, "subscription_type_id": 1 }</code>
+            </div>
+
+            <button class="test-button" onclick="testCreateFirstCart()">
+                🛒 إنشاء السلة الأولى
+            </button>
+            
+            <button class="test-button" onclick="testCreateSecondCart()">
+                🛒 محاولة إنشاء السلة الثانية
+            </button>
+            
+            <button class="test-button" onclick="testClearCart()">
+                🗑️ مسح السلة
+            </button>
+
+            <div id="test-results"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">📱 اختبار الواجهة الأمامية</div>
+            <div class="test-description">
+                اختبار الواجهة الأمامية للتأكد من عرض رسائل الخطأ بشكل صحيح:
+            </div>
+            
+            <button class="test-button" onclick="simulateFrontendError()">
+                🎨 محاكاة خطأ الواجهة الأمامية
+            </button>
+            
+            <div id="frontend-test-results"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">✅ ملخص التغييرات المطبقة</div>
+            <div class="test-description">
+                <strong>1. تعديل CartController:</strong>
+                <ul>
+                    <li>إضافة فحص لوجود سلة موجودة قبل إنشاء سلة جديدة</li>
+                    <li>إرجاع رسالة خطأ باللغة العربية عند محاولة إضافة اشتراك ثاني</li>
+                    <li>إضافة error_code للتمييز بين أنواع الأخطاء</li>
+                </ul>
+                
+                <strong>2. تحديث useCart Hook:</strong>
+                <ul>
+                    <li>معالجة خطأ CART_ALREADY_EXISTS بشكل خاص</li>
+                    <li>عرض رسالة خطأ واضحة للمستخدم</li>
+                </ul>
+                
+                <strong>3. تحديث RestaurantDetail Component:</strong>
+                <ul>
+                    <li>إضافة عرض رسائل الخطأ العامة</li>
+                    <li>تنسيق جميل لرسائل الخطأ</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let authToken = null;
+
+        // محاكاة تسجيل الدخول
+        function simulateLogin() {
+            authToken = 'test-token-' + Date.now();
+            console.log('تم تسجيل الدخول:', authToken);
+        }
+
+        // اختبار إنشاء السلة الأولى
+        async function testCreateFirstCart() {
+            simulateLogin();
+            const resultsDiv = document.getElementById('test-results');
+            
+            try {
+                const response = await fetch(`${API_BASE}/cart`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: 1,
+                        subscription_type_id: 1,
+                        start_date: new Date().toISOString().split('T')[0]
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultsDiv.innerHTML = `
+                        <div class="result success">
+                            ✅ تم إنشاء السلة الأولى بنجاح<br>
+                            <strong>Cart ID:</strong> ${data.data?.id || 'N/A'}<br>
+                            <strong>Restaurant:</strong> ${data.data?.restaurant?.name_ar || 'N/A'}
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="result error">
+                            ❌ فشل في إنشاء السلة الأولى<br>
+                            <strong>Error:</strong> ${data.message}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="result error">
+                        ❌ خطأ في الاتصال<br>
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // اختبار إنشاء السلة الثانية (يجب أن تفشل)
+        async function testCreateSecondCart() {
+            const resultsDiv = document.getElementById('test-results');
+            
+            try {
+                const response = await fetch(`${API_BASE}/cart`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: 2,
+                        subscription_type_id: 2,
+                        start_date: new Date().toISOString().split('T')[0]
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.status === 400 && data.error_code === 'CART_ALREADY_EXISTS') {
+                    resultsDiv.innerHTML += `
+                        <div class="result success">
+                            ✅ تم منع إنشاء السلة الثانية بنجاح!<br>
+                            <strong>Error Code:</strong> ${data.error_code}<br>
+                            <strong>Message:</strong> ${data.message}
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML += `
+                        <div class="result error">
+                            ❌ لم يتم منع إنشاء السلة الثانية كما هو متوقع<br>
+                            <strong>Response:</strong> ${JSON.stringify(data)}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML += `
+                    <div class="result error">
+                        ❌ خطأ في الاتصال<br>
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // اختبار مسح السلة
+        async function testClearCart() {
+            const resultsDiv = document.getElementById('test-results');
+            
+            try {
+                const response = await fetch(`${API_BASE}/cart/clear`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultsDiv.innerHTML += `
+                        <div class="result success">
+                            ✅ تم مسح السلة بنجاح<br>
+                            <strong>Message:</strong> ${data.message}
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML += `
+                        <div class="result error">
+                            ❌ فشل في مسح السلة<br>
+                            <strong>Error:</strong> ${data.message}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML += `
+                    <div class="result error">
+                        ❌ خطأ في الاتصال<br>
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // محاكاة خطأ الواجهة الأمامية
+        function simulateFrontendError() {
+            const resultsDiv = document.getElementById('frontend-test-results');
+            
+            // محاكاة رسالة الخطأ التي ستظهر في الواجهة الأمامية
+            const errorMessage = 'لا يمكن إضافة أكثر من اشتراك واحد في السلة. يرجى إكمال الطلب الحالي أولاً أو حذف السلة الحالية.';
+            
+            resultsDiv.innerHTML = `
+                <div class="result error">
+                    🎨 محاكاة رسالة الخطأ في الواجهة الأمامية<br><br>
+                    <div style="
+                        background: linear-gradient(135deg, #fef2f2, #fee2e2);
+                        border: 1px solid #fecaca;
+                        border-radius: 1rem;
+                        padding: 1rem;
+                        margin: 10px 0;
+                        box-shadow: 0 6px 20px rgba(220, 38, 38, 0.12);
+                    ">
+                        <div style="
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 0.75rem;
+                            color: #dc2626;
+                            font-size: 0.875rem;
+                            font-weight: 500;
+                        ">
+                            <div style="
+                                width: 1.5rem;
+                                height: 1.5rem;
+                                border-radius: 50%;
+                                background: linear-gradient(135deg, #dc2626, #ef4444);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 0.875rem;
+                                color: white;
+                                font-weight: bold;
+                            ">⚠️</div>
+                            <span>${errorMessage}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // تشغيل الاختبارات تلقائياً عند تحميل الصفحة
+        window.onload = function() {
+            console.log('تم تحميل صفحة الاختبار');
+        };
+    </script>
+</body>
+</html>

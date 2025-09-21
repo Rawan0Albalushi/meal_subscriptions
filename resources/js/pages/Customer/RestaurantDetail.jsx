@@ -2636,6 +2636,58 @@ const RestaurantDetail = () => {
               </div>
             )}
 
+            {/* General Error Message */}
+            {errors.general && (
+              <div 
+                style={{
+                  marginTop: '1.5rem',
+                  padding: '1rem',
+                  background: 'linear-gradient(135deg, #fef2f2, #fee2e2)',
+                  border: '1px solid #fecaca',
+                  borderRadius: '1rem',
+                  boxShadow: '0 6px 20px rgba(220, 38, 38, 0.12)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  animation: 'slideInUp 0.4s ease-out',
+                  transform: 'translateY(0)',
+                  opacity: 1,
+                  transition: 'all 0.3s ease',
+                  cursor: 'pointer'
+                }}
+              >
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.75rem',
+                  color: '#dc2626',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  position: 'relative',
+                  zIndex: 1
+                }}>
+                  <div style={{
+                    width: '1.5rem',
+                    height: '1.5rem',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #dc2626, #ef4444)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.875rem',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    flexShrink: 0,
+                    boxShadow: '0 3px 8px rgba(220, 38, 38, 0.3)',
+                    animation: 'pulse 2s infinite'
+                  }}>
+                    ⚠️
+                  </div>
+                  <span style={{ lineHeight: '1.5', textAlign: 'center' }}>{errors.general}</span>
+                </div>
+              </div>
+            )}
+
             {/* Continue Button */}
             {startDate && Object.keys(selectedMeals).length > 0 && Object.keys(selectedMeals).length === (selectedSubscriptionType?.meals_count || 0) ? (
               <div style={{ 

@@ -63,6 +63,17 @@ class CartController extends Controller
         $restaurantId = $request->restaurant_id;
         $subscriptionTypeId = $request->subscription_type_id;
 
+        // Check if user already has any cart (prevent multiple subscriptions)
+        $existingCart = Cart::where('user_id', $userId)->first();
+        
+        if ($existingCart) {
+            return response()->json([
+                'success' => false,
+                'message' => 'لا يمكن إضافة أكثر من اشتراك واحد في السلة. يرجى إكمال الطلب الحالي أولاً أو حذف السلة الحالية.',
+                'error_code' => 'CART_ALREADY_EXISTS'
+            ], 400);
+        }
+
         // Check if cart already exists for this combination
         $cart = Cart::where([
             'user_id' => $userId,
