@@ -1,0 +1,71 @@
+/* TheYearofHandicrafts Font Family */
+
+@font-face {
+  font-family: 'TheYearofHandicrafts';
+  src: url('/fonts/TheYearofHandicrafts-Regular.otf?v=2') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TheYearofHandicrafts';
+  src: url('/fonts/TheYearofHandicrafts-Medium.otf?v=2') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TheYearofHandicrafts';
+  src: url('/fonts/TheYearofHandicrafts-SemiBold.otf?v=2') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TheYearofHandicrafts';
+  src: url('/fonts/TheYearofHandicrafts-Bold.otf?v=2') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TheYearofHandicrafts';
+  src: url('/fonts/TheYearofHandicrafts-Black.otf?v=2') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Font utility classes */
+.font-handicrafts {
+  font-family: 'TheYearofHandicrafts', 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-handicrafts-regular {
+  font-family: 'TheYearofHandicrafts', 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+}
+
+.font-handicrafts-medium {
+  font-family: 'TheYearofHandicrafts', 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 500;
+}
+
+.font-handicrafts-semibold {
+  font-family: 'TheYearofHandicrafts', 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+}
+
+.font-handicrafts-bold {
+  font-family: 'TheYearofHandicrafts', 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+}
+
+.font-handicrafts-black {
+  font-family: 'TheYearofHandicrafts', 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 900;
+}

@@ -55,7 +55,7 @@ export const LanguageProvider = ({ children }) => {
             viewRestaurants: 'عرض المطاعم',
             learnMore: 'تعرف أكثر',
             discountBadge: 'إشترك وخلي الباقي علينا',
-            heroTitle: 'اشترك من مطاعمك المفضلة',
+            heroTitle: 'اشتـرك من مطاعمـك المفضلـة',
             heroSubtitle: 'وتوصلك وجبتك لين عندك',
             heroDescription: 'اختر مطعمك المفضّل، اشترك أسبوعيًا أو شهريًا، وحدِّد وجبتك لكل يوم (الأحد–الأربعاء) مع عنوان توصيل ثابت',
             designPreview: 'معاينة التصميم',

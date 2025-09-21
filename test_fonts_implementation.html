@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Font Implementation Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* TheYearofHandicrafts Font Family */
+        @font-face {
+            font-family: 'TheYearofHandicrafts';
+            src: url('/fonts/TheYearofHandicrafts-Regular.otf') format('opentype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'TheYearofHandicrafts';
+            src: url('/fonts/TheYearofHandicrafts-Medium.otf') format('opentype');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'TheYearofHandicrafts';
+            src: url('/fonts/TheYearofHandicrafts-SemiBold.otf') format('opentype');
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'TheYearofHandicrafts';
+            src: url('/fonts/TheYearofHandicrafts-Bold.otf') format('opentype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'TheYearofHandicrafts';
+            src: url('/fonts/TheYearofHandicrafts-Black.otf') format('opentype');
+            font-weight: 900;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        body {
+            font-family: 'TheYearofHandicrafts', 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+        }
+
+        .font-handicrafts {
+            font-family: 'TheYearofHandicrafts', 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+        }
+
+        .font-fallback {
+            font-family: 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl font-black mb-8 text-center text-gray-800">
+            اختبار خط TheYearofHandicrafts
+        </h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Custom Font Column -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-4 text-blue-600 font-handicrafts">
+                    الخط المخصص - TheYearofHandicrafts
+                </h2>
+                
+                <div class="space-y-4">
+                    <p class="font-handicrafts font-normal text-lg">
+                        النص العادي (Regular - 400)
+                    </p>
+                    <p class="font-handicrafts font-medium text-lg">
+                        النص المتوسط (Medium - 500)
+                    </p>
+                    <p class="font-handicrafts font-semibold text-lg">
+                        النص شبه الجريء (SemiBold - 600)
+                    </p>
+                    <p class="font-handicrafts font-bold text-lg">
+                        النص الجريء (Bold - 700)
+                    </p>
+                    <p class="font-handicrafts font-black text-lg">
+                        النص الأسود (Black - 900)
+                    </p>
+                </div>
+
+                <div class="mt-6 space-y-2">
+                    <h3 class="font-handicrafts font-bold text-lg text-green-600">English Text:</h3>
+                    <p class="font-handicrafts font-normal">Regular weight (400)</p>
+                    <p class="font-handicrafts font-medium">Medium weight (500)</p>
+                    <p class="font-handicrafts font-semibold">SemiBold weight (600)</p>
+                    <p class="font-handicrafts font-bold">Bold weight (700)</p>
+                    <p class="font-handicrafts font-black">Black weight (900)</p>
+                </div>
+            </div>
+
+            <!-- Fallback Font Column -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-4 text-red-600 font-fallback">
+                    الخط الاحتياطي - Calibri/Tajawal
+                </h2>
+                
+                <div class="space-y-4">
+                    <p class="font-fallback font-normal text-lg">
+                        النص العادي (Regular - 400)
+                    </p>
+                    <p class="font-fallback font-medium text-lg">
+                        النص المتوسط (Medium - 500)
+                    </p>
+                    <p class="font-fallback font-semibold text-lg">
+                        النص شبه الجريء (SemiBold - 600)
+                    </p>
+                    <p class="font-fallback font-bold text-lg">
+                        النص الجريء (Bold - 700)
+                    </p>
+                    <p class="font-fallback font-black text-lg">
+                        النص الأسود (Black - 900)
+                    </p>
+                </div>
+
+                <div class="mt-6 space-y-2">
+                    <h3 class="font-fallback font-bold text-lg text-green-600">English Text:</h3>
+                    <p class="font-fallback font-normal">Regular weight (400)</p>
+                    <p class="font-fallback font-medium">Medium weight (500)</p>
+                    <p class="font-fallback font-semibold">SemiBold weight (600)</p>
+                    <p class="font-fallback font-bold">Bold weight (700)</p>
+                    <p class="font-fallback font-black">Black weight (900)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample UI Elements -->
+        <div class="mt-12 bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-6 text-center font-handicrafts">
+                عناصر واجهة المستخدم مع الخط المخصص
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Buttons -->
+                <div class="space-y-4">
+                    <button class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-handicrafts font-semibold hover:bg-blue-700 transition-colors">
+                        زر أساسي
+                    </button>
+                    <button class="w-full border-2 border-blue-600 text-blue-600 py-3 px-6 rounded-lg font-handicrafts font-semibold hover:bg-blue-50 transition-colors">
+                        زر ثانوي
+                    </button>
+                </div>
+
+                <!-- Form Elements -->
+                <div class="space-y-4">
+                    <input type="text" placeholder="اكتب هنا..." class="w-full p-3 border rounded-lg font-handicrafts">
+                    <select class="w-full p-3 border rounded-lg font-handicrafts">
+                        <option>اختر خياراً</option>
+                        <option>الخيار الأول</option>
+                        <option>الخيار الثاني</option>
+                    </select>
+                </div>
+
+                <!-- Card -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-handicrafts font-bold text-lg mb-2">عنوان البطاقة</h3>
+                    <p class="font-handicrafts text-gray-600 mb-3">
+                        هذا نص تجريبي لاختبار الخط في البطاقات والعناصر المختلفة.
+                    </p>
+                    <span class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-handicrafts font-medium">
+                        علامة
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Font Loading Status -->
+        <div class="mt-8 bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
+            <h3 class="font-handicrafts font-bold text-yellow-800 mb-2">حالة تحميل الخط:</h3>
+            <p id="fontStatus" class="font-handicrafts text-yellow-700">جاري فحص الخط...</p>
+        </div>
+    </div>
+
+    <script>
+        // Check if custom font is loaded
+        function checkFontLoading() {
+            const testElement = document.createElement('div');
+            testElement.style.fontFamily = 'TheYearofHandicrafts';
+            testElement.style.fontSize = '16px';
+            testElement.textContent = 'Test';
+            testElement.style.position = 'absolute';
+            testElement.style.visibility = 'hidden';
+            document.body.appendChild(testElement);
+
+            const fallbackElement = document.createElement('div');
+            fallbackElement.style.fontFamily = 'serif';
+            fallbackElement.style.fontSize = '16px';
+            fallbackElement.textContent = 'Test';
+            fallbackElement.style.position = 'absolute';
+            fallbackElement.style.visibility = 'hidden';
+            document.body.appendChild(fallbackElement);
+
+            const statusElement = document.getElementById('fontStatus');
+            
+            if (testElement.offsetWidth !== fallbackElement.offsetWidth) {
+                statusElement.textContent = '✅ تم تحميل الخط المخصص بنجاح!';
+                statusElement.className = 'font-handicrafts text-green-700';
+            } else {
+                statusElement.textContent = '❌ فشل في تحميل الخط المخصص - يتم استخدام الخط الاحتياطي';
+                statusElement.className = 'font-handicrafts text-red-700';
+            }
+
+            document.body.removeChild(testElement);
+            document.body.removeChild(fallbackElement);
+        }
+
+        // Check font loading after page load
+        window.addEventListener('load', () => {
+            setTimeout(checkFontLoading, 1000);
+        });
+
+        // Also check using Font Loading API if available
+        if ('fonts' in document) {
+            document.fonts.ready.then(() => {
+                const fontFace = new FontFace('TheYearofHandicrafts', 'url(/fonts/TheYearofHandicrafts-Regular.otf)');
+                fontFace.load().then(() => {
+                    document.getElementById('fontStatus').textContent = '✅ تم تحميل الخط المخصص بنجاح (Font Loading API)!';
+                    document.getElementById('fontStatus').className = 'font-handicrafts text-green-700';
+                }).catch(() => {
+                    document.getElementById('fontStatus').textContent = '❌ فشل في تحميل الخط المخصص (Font Loading API)';
+                    document.getElementById('fontStatus').className = 'font-handicrafts text-red-700';
+                });
+            });
+        }
+    </script>
+</body>
+</html>

@@ -7,7 +7,10 @@ export default {
   theme: {
     extend: {
       container: { center: true, padding: "1rem" },
-      fontFamily: { sans: ["Calibri", "Tajawal", "ui-sans-serif", "system-ui", "sans-serif"] },
+      fontFamily: { 
+        sans: ["TheYearofHandicrafts", "Calibri", "Tajawal", "ui-sans-serif", "system-ui", "sans-serif"],
+        handicrafts: ["TheYearofHandicrafts", "Calibri", "Tajawal", "ui-sans-serif", "system-ui", "sans-serif"]
+      },
       
       // Design Tokens - نظام الألوان الموحد
       colors: {

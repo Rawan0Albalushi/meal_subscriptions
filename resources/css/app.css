@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import url('https://unpkg.com/leaflet@1.7.1/dist/leaflet.css');
+@import "./fonts.css";
 @import "./tokens.css";
 @import "./enhanced-components.css";
 @import "./special-effects.css";
@@ -27,11 +28,11 @@ html {
 
 /* Font families for different languages */
 .font-arabic {
-  font-family: 'Calibri', 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'TheYearofHandicrafts', 'Calibri', 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .font-english {
-  font-family: 'Calibri', 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'TheYearofHandicrafts', 'Calibri', 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* RTL specific adjustments */
@@ -156,7 +157,7 @@ body {
   color: rgb(17 24 39);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'TheYearofHandicrafts', 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
   position: relative;
 }
 
@@ -2338,7 +2339,7 @@ body.menu-open {
 
 /* Interactive Map Styles */
 .leaflet-container {
-  font-family: 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'TheYearofHandicrafts', 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
   direction: rtl;
 }
 
@@ -2383,7 +2384,7 @@ body.menu-open {
 }
 
 .leaflet-popup-content {
-  font-family: 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif !important;
+  font-family: 'TheYearofHandicrafts', 'Calibri', 'Tajawal', ui-sans-serif, system-ui, sans-serif !important;
   direction: rtl !important;
   text-align: center !important;
   margin: 12px !important;

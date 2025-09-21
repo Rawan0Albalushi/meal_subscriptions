@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Font Debug</title>
+    <style>
+        /* TheYearofHandicrafts Font Family */
+        @font-face {
+            font-family: 'TheYearofHandicrafts';
+            src: url('./public/fonts/TheYearofHandicrafts-Regular.otf?v=2') format('opentype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'TheYearofHandicrafts';
+            src: url('./public/fonts/TheYearofHandicrafts-Medium.otf?v=2') format('opentype');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'TheYearofHandicrafts';
+            src: url('./public/fonts/TheYearofHandicrafts-SemiBold.otf?v=2') format('opentype');
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'TheYearofHandicrafts';
+            src: url('./public/fonts/TheYearofHandicrafts-Bold.otf?v=2') format('opentype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'TheYearofHandicrafts';
+            src: url('./public/fonts/TheYearofHandicrafts-Black.otf?v=2') format('opentype');
+            font-weight: 900;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        body {
+            font-family: 'TheYearofHandicrafts', 'Calibri', 'Tajawal', Arial, sans-serif;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+
+        .font-test {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .font-handicrafts {
+            font-family: 'TheYearofHandicrafts', 'Calibri', 'Tajawal', Arial, sans-serif;
+        }
+
+        .font-fallback {
+            font-family: 'Calibri', 'Tajawal', Arial, sans-serif;
+        }
+
+        .debug-info {
+            background: #333;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Font Loading Debug</h1>
+    
+    <div class="debug-info">
+        <h3>Font Loading Status:</h3>
+        <div id="fontStatus">جاري فحص الخط...</div>
+        <div id="fontDetails"></div>
+    </div>
+
+    <div class="font-test">
+        <h2 class="font-handicrafts">TheYearofHandicrafts Font Test</h2>
+        <p class="font-handicrafts font-normal" style="font-weight: 400;">Regular (400): مرحباً بك في اختبار الخط المخصص</p>
+        <p class="font-handicrafts font-medium" style="font-weight: 500;">Medium (500): مرحباً بك في اختبار الخط المخصص</p>
+        <p class="font-handicrafts font-semibold" style="font-weight: 600;">SemiBold (600): مرحباً بك في اختبار الخط المخصص</p>
+        <p class="font-handicrafts font-bold" style="font-weight: 700;">Bold (700): مرحباً بك في اختبار الخط المخصص</p>
+        <p class="font-handicrafts font-black" style="font-weight: 900;">Black (900): مرحباً بك في اختبار الخط المخصص</p>
+    </div>
+
+    <div class="font-test">
+        <h2 class="font-fallback">Fallback Font Test</h2>
+        <p class="font-fallback" style="font-weight: 400;">Regular (400): مرحباً بك في اختبار الخط الاحتياطي</p>
+        <p class="font-fallback" style="font-weight: 500;">Medium (500): مرحباً بك في اختبار الخط الاحتياطي</p>
+        <p class="font-fallback" style="font-weight: 600;">SemiBold (600): مرحباً بك في اختبار الخط الاحتياطي</p>
+        <p class="font-fallback" style="font-weight: 700;">Bold (700): مرحباً بك في اختبار الخط الاحتياطي</p>
+        <p class="font-fallback" style="font-weight: 900;">Black (900): مرحباً بك في اختبار الخط الاحتياطي</p>
+    </div>
+
+    <script>
+        // Check font loading
+        function checkFontLoading() {
+            const statusElement = document.getElementById('fontStatus');
+            const detailsElement = document.getElementById('fontDetails');
+            
+            // Method 1: Check computed style
+            const testElement = document.createElement('div');
+            testElement.style.fontFamily = 'TheYearofHandicrafts, Arial';
+            testElement.style.fontSize = '16px';
+            testElement.textContent = 'Test';
+            testElement.style.position = 'absolute';
+            testElement.style.visibility = 'hidden';
+            document.body.appendChild(testElement);
+
+            const fallbackElement = document.createElement('div');
+            fallbackElement.style.fontFamily = 'Arial';
+            fallbackElement.style.fontSize = '16px';
+            fallbackElement.textContent = 'Test';
+            fallbackElement.style.position = 'absolute';
+            fallbackElement.style.visibility = 'hidden';
+            document.body.appendChild(fallbackElement);
+
+            const customWidth = testElement.offsetWidth;
+            const fallbackWidth = fallbackElement.offsetWidth;
+            
+            detailsElement.innerHTML = `
+                Custom font width: ${customWidth}px<br>
+                Fallback width: ${fallbackWidth}px<br>
+                Font loaded: ${customWidth !== fallbackWidth ? 'YES' : 'NO'}<br>
+                Computed font family: ${window.getComputedStyle(testElement).fontFamily}
+            `;
+
+            if (customWidth !== fallbackWidth) {
+                statusElement.textContent = '✅ Custom font loaded successfully!';
+                statusElement.style.color = '#4CAF50';
+            } else {
+                statusElement.textContent = '❌ Custom font failed to load';
+                statusElement.style.color = '#F44336';
+            }
+
+            document.body.removeChild(testElement);
+            document.body.removeChild(fallbackElement);
+
+            // Method 2: Use Font Loading API if available
+            if ('fonts' in document) {
+                document.fonts.ready.then(() => {
+                    const loadedFonts = [];
+                    document.fonts.forEach(font => {
+                        if (font.family.includes('TheYearofHandicrafts')) {
+                            loadedFonts.push(`${font.family} ${font.weight} - ${font.status}`);
+                        }
+                    });
+                    
+                    if (loadedFonts.length > 0) {
+                        detailsElement.innerHTML += `<br><br>Font Loading API results:<br>${loadedFonts.join('<br>')}`;
+                    }
+                });
+            }
+        }
+
+        // Check font loading after page load
+        window.addEventListener('load', () => {
+            setTimeout(checkFontLoading, 1000);
+        });
+
+        // Also check immediately
+        document.addEventListener('DOMContentLoaded', checkFontLoading);
+    </script>
+</body>
+</html>
