@@ -355,9 +355,9 @@ const AdminRestaurants = () => {
             <div style={{
                 background: 'rgba(255, 255, 255, 0.9)',
                 backdropFilter: 'blur(20px)',
-                borderRadius: '1rem',
-                padding: '2rem',
-                marginBottom: '2rem',
+                borderRadius: window.innerWidth <= 768 ? '0.75rem' : '1rem',
+                padding: window.innerWidth <= 768 ? '1rem' : '2rem',
+                marginBottom: window.innerWidth <= 768 ? '1.5rem' : '2rem',
                 boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
                 border: '1px solid rgba(255, 255, 255, 0.2)'
             }}>
@@ -368,7 +368,7 @@ const AdminRestaurants = () => {
                     marginBottom: '1.5rem'
                 }}>
                     <h1 style={{
-                        fontSize: '1.5rem',
+                        fontSize: window.innerWidth <= 768 ? '1.25rem' : '1.5rem',
                         fontWeight: 'bold',
                         color: 'rgb(55 65 81)',
                         margin: 0
@@ -378,12 +378,12 @@ const AdminRestaurants = () => {
                     <button
                         onClick={() => setShowAddModal(true)}
                         style={{
-                            padding: '0.75rem 1.5rem',
+                            padding: window.innerWidth <= 768 ? '0.5rem 1rem' : '0.75rem 1.5rem',
                             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                             color: 'white',
                             border: 'none',
-                            borderRadius: '0.5rem',
-                            fontSize: '0.875rem',
+                            borderRadius: window.innerWidth <= 768 ? '0.375rem' : '0.5rem',
+                            fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.875rem',
                             fontWeight: '600',
                             cursor: 'pointer',
                             transition: 'all 0.2s'
@@ -402,12 +402,13 @@ const AdminRestaurants = () => {
                 {/* Filters */}
                 <div style={{
                     display: 'flex',
-                    gap: '1rem',
-                    flexWrap: 'wrap'
+                    gap: window.innerWidth <= 768 ? '0.5rem' : '1rem',
+                    flexWrap: 'wrap',
+                    flexDirection: window.innerWidth <= 768 ? 'column' : 'row'
                 }}>
                     <div style={{
                         flex: 1,
-                        minWidth: '200px'
+                        minWidth: window.innerWidth <= 768 ? '100%' : '200px'
                     }}>
                         <input
                             type="text"
@@ -416,10 +417,10 @@ const AdminRestaurants = () => {
                             onChange={(e) => setSearchTerm(e.target.value)}
                             style={{
                                 width: '100%',
-                                padding: '0.75rem',
+                                padding: window.innerWidth <= 768 ? '0.5rem' : '0.75rem',
                                 border: '1px solid rgba(0, 0, 0, 0.1)',
-                                borderRadius: '0.5rem',
-                                fontSize: '0.875rem',
+                                borderRadius: window.innerWidth <= 768 ? '0.375rem' : '0.5rem',
+                                fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.875rem',
                                 background: 'rgba(255, 255, 255, 0.8)',
                                 backdropFilter: 'blur(10px)'
                             }}
@@ -429,10 +430,10 @@ const AdminRestaurants = () => {
                         value={filterStatus}
                         onChange={(e) => setFilterStatus(e.target.value)}
                         style={{
-                            padding: '0.75rem',
+                            padding: window.innerWidth <= 768 ? '0.5rem' : '0.75rem',
                             border: '1px solid rgba(0, 0, 0, 0.1)',
-                            borderRadius: '0.5rem',
-                            fontSize: '0.875rem',
+                            borderRadius: window.innerWidth <= 768 ? '0.375rem' : '0.5rem',
+                            fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.875rem',
                             background: 'rgba(255, 255, 255, 0.8)',
                             backdropFilter: 'blur(10px)',
                             minWidth: '150px'

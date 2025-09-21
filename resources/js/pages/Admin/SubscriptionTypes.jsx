@@ -250,17 +250,18 @@ const SubscriptionTypes = () => {
   }
 
   return (
-    <div style={{ padding: '2rem', direction: dir }}>
-      <div style={{ 
+    <div className="admin-subscription-types-container" style={{ padding: '2rem', direction: dir }}>
+      <div className="admin-subscription-types-header" style={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
         alignItems: 'center', 
         marginBottom: '2rem' 
       }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2f6e73' }}>
+        <h1 className="admin-subscription-types-title" style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2f6e73' }}>
           {language === 'ar' ? 'إدارة أنواع الاشتراك' : 'Subscription Types Management'}
         </h1>
         <button
+          className="admin-subscription-types-add-btn"
           onClick={() => {
             setShowForm(true);
             setEditingType(null);
@@ -283,7 +284,7 @@ const SubscriptionTypes = () => {
       </div>
 
       {/* Filters */}
-      <div style={{
+      <div className="admin-subscription-types-filters" style={{
         background: 'white',
         padding: '1.5rem',
         borderRadius: '1rem',
@@ -294,10 +295,10 @@ const SubscriptionTypes = () => {
           🔍 {language === 'ar' ? 'فلاتر البحث' : 'Search Filters'}
         </h3>
         
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+        <div className="admin-subscription-types-filters-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
           {/* Search */}
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151' }}>
+          <div className="admin-subscription-types-search">
+            <label className="admin-subscription-types-form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151' }}>
               {language === 'ar' ? 'البحث' : 'Search'}
             </label>
             <div style={{ position: 'relative' }}>
@@ -318,6 +319,7 @@ const SubscriptionTypes = () => {
               />
               {searchInput && (
                 <button
+                  className="admin-subscription-types-search-clear"
                   onClick={() => setSearchInput('')}
                   style={{
                     position: 'absolute',
@@ -339,10 +341,11 @@ const SubscriptionTypes = () => {
 
           {/* Restaurant Filter */}
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151' }}>
+            <label className="admin-subscription-types-form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151' }}>
               {language === 'ar' ? 'المطعم' : 'Restaurant'}
             </label>
             <select
+              className="admin-subscription-types-filter-select"
               value={filters.restaurant_id}
               onChange={(e) => handleFilterChange('restaurant_id', e.target.value)}
               style={{
@@ -365,10 +368,11 @@ const SubscriptionTypes = () => {
 
           {/* Type Filter */}
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151' }}>
+            <label className="admin-subscription-types-form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151' }}>
               {language === 'ar' ? 'نوع الاشتراك' : 'Subscription Type'}
             </label>
             <select
+              className="admin-subscription-types-filter-select"
               value={filters.type}
               onChange={(e) => handleFilterChange('type', e.target.value)}
               style={{
@@ -388,11 +392,11 @@ const SubscriptionTypes = () => {
         </div>
 
         {/* Active Filters and Clear Button */}
-        <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="admin-subscription-types-active-filters" style={{ marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           {/* Active Filters */}
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <div className="admin-subscription-types-filter-tags" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {filters.search && (
-              <span style={{
+              <span className="admin-subscription-types-filter-tag" style={{
                 padding: '0.25rem 0.75rem',
                 background: 'rgb(59 130 246)',
                 color: 'white',
@@ -404,7 +408,7 @@ const SubscriptionTypes = () => {
               </span>
             )}
             {filters.restaurant_id && (
-              <span style={{
+              <span className="admin-subscription-types-filter-tag" style={{
                 padding: '0.25rem 0.75rem',
                 background: 'rgb(34 197 94)',
                 color: 'white',
@@ -416,7 +420,7 @@ const SubscriptionTypes = () => {
               </span>
             )}
             {filters.type !== 'all' && (
-              <span style={{
+              <span className="admin-subscription-types-filter-tag" style={{
                 padding: '0.25rem 0.75rem',
                 background: 'rgb(168 85 247)',
                 color: 'white',
@@ -432,6 +436,7 @@ const SubscriptionTypes = () => {
           {/* Clear Filters Button */}
           {(filters.search || filters.restaurant_id || filters.type !== 'all') && (
             <button
+              className="admin-subscription-types-clear-filters"
               onClick={() => {
                 setFilters({ restaurant_id: '', type: 'all', search: '' });
                 setSearchInput('');
@@ -455,7 +460,7 @@ const SubscriptionTypes = () => {
       </div>
 
       {error && (
-        <div style={{
+        <div className="admin-subscription-types-error" style={{
           padding: '1rem',
           background: 'rgb(254 242 242)',
           border: '1px solid rgb(252 165 165)',
@@ -469,23 +474,23 @@ const SubscriptionTypes = () => {
 
       {/* Form */}
       {showForm && (
-        <div style={{
+        <div className="admin-subscription-types-form" style={{
           background: 'white',
           padding: '2rem',
           borderRadius: '1rem',
           boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
           marginBottom: '2rem'
         }}>
-          <h2 style={{ marginBottom: '1.5rem', color: '#2f6e73' }}>
+          <h2 className="admin-subscription-types-form-title" style={{ marginBottom: '1.5rem', color: '#2f6e73' }}>
             {editingType ? (language === 'ar' ? 'تعديل نوع الاشتراك' : 'Edit Subscription Type') : (language === 'ar' ? 'إضافة نوع اشتراك جديد' : 'Add New Subscription Type')}
           </h2>
           
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+              <label className="admin-subscription-types-form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
                 {language === 'ar' ? 'المطاعم' : 'Restaurants'} *
               </label>
-              <div style={{
+              <div className="admin-subscription-types-restaurants" style={{
                 border: '1px solid rgb(229 231 235)',
                 borderRadius: '0.5rem',
                 padding: '0.75rem',
@@ -496,6 +501,7 @@ const SubscriptionTypes = () => {
                 {restaurants.map(restaurant => (
                   <label
                     key={restaurant.id}
+                    className="admin-subscription-types-restaurant-item"
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -531,13 +537,14 @@ const SubscriptionTypes = () => {
               )}
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+            <div className="admin-subscription-types-form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                <label className="admin-subscription-types-form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
                   {language === 'ar' ? 'الاسم بالعربية' : 'Name in Arabic'} *
                 </label>
                 <input
                   type="text"
+                  className="admin-subscription-types-form-input"
                   value={formData.name_ar}
                   onChange={(e) => handleInputChange('name_ar', e.target.value)}
                   required
@@ -552,11 +559,12 @@ const SubscriptionTypes = () => {
               </div>
               
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                <label className="admin-subscription-types-form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
                   {language === 'ar' ? 'الاسم بالإنجليزية' : 'Name in English'} *
                 </label>
                 <input
                   type="text"
+                  className="admin-subscription-types-form-input"
                   value={formData.name_en}
                   onChange={(e) => handleInputChange('name_en', e.target.value)}
                   required
@@ -571,12 +579,13 @@ const SubscriptionTypes = () => {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+            <div className="admin-subscription-types-form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                <label className="admin-subscription-types-form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
                   {language === 'ar' ? 'الوصف بالعربية' : 'Description in Arabic'}
                 </label>
                 <textarea
+                  className="admin-subscription-types-form-textarea"
                   value={formData.description_ar}
                   onChange={(e) => handleInputChange('description_ar', e.target.value)}
                   rows="3"
@@ -592,10 +601,11 @@ const SubscriptionTypes = () => {
               </div>
               
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                <label className="admin-subscription-types-form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
                   {language === 'ar' ? 'الوصف بالإنجليزية' : 'Description in English'}
                 </label>
                 <textarea
+                  className="admin-subscription-types-form-textarea"
                   value={formData.description_en}
                   onChange={(e) => handleInputChange('description_en', e.target.value)}
                   rows="3"
@@ -611,12 +621,13 @@ const SubscriptionTypes = () => {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+            <div className="admin-subscription-types-form-grid-3" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                <label className="admin-subscription-types-form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
                   {language === 'ar' ? 'النوع' : 'Type'} *
                 </label>
                 <select
+                  className="admin-subscription-types-form-select"
                   value={formData.type}
                   onChange={(e) => handleInputChange('type', e.target.value)}
                   required
@@ -634,12 +645,13 @@ const SubscriptionTypes = () => {
               </div>
               
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                <label className="admin-subscription-types-form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
                   {language === 'ar' ? 'السعر (ريال عماني)' : 'Price (OMR)'} *
                 </label>
                 <input
                   type="number"
                   step="0.01"
+                  className="admin-subscription-types-form-input"
                   value={formData.price}
                   onChange={(e) => handleInputChange('price', e.target.value)}
                   required
@@ -654,12 +666,13 @@ const SubscriptionTypes = () => {
               </div>
               
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                <label className="admin-subscription-types-form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
                   {language === 'ar' ? 'سعر التوصيل (ريال عماني)' : 'Delivery Price (OMR)'} *
                 </label>
                 <input
                   type="number"
                   step="0.01"
+                  className="admin-subscription-types-form-input"
                   value={formData.delivery_price}
                   onChange={(e) => handleInputChange('delivery_price', e.target.value)}
                   required
@@ -674,11 +687,12 @@ const SubscriptionTypes = () => {
               </div>
               
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                <label className="admin-subscription-types-form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
                   {language === 'ar' ? 'عدد الوجبات' : 'Number of Meals'} *
                 </label>
                 <input
                   type="number"
+                  className="admin-subscription-types-form-input"
                   value={formData.meals_count}
                   onChange={(e) => handleInputChange('meals_count', e.target.value)}
                   required
@@ -693,7 +707,7 @@ const SubscriptionTypes = () => {
               </div>
             </div>
 
-            <div style={{ marginBottom: '1.5rem' }}>
+            <div className="admin-subscription-types-form-checkbox" style={{ marginBottom: '1.5rem' }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <input
                   type="checkbox"
@@ -705,9 +719,10 @@ const SubscriptionTypes = () => {
               </label>
             </div>
 
-            <div style={{ display: 'flex', gap: '1rem' }}>
+            <div className="admin-subscription-types-form-buttons" style={{ display: 'flex', gap: '1rem' }}>
               <button
                 type="submit"
+                className="admin-subscription-types-form-button"
                 disabled={loading}
                 style={{
                   padding: '0.75rem 1.5rem',
@@ -726,6 +741,7 @@ const SubscriptionTypes = () => {
               
               <button
                 type="button"
+                className="admin-subscription-types-form-button"
                 onClick={() => {
                   setShowForm(false);
                   setEditingType(null);
@@ -808,8 +824,8 @@ const SubscriptionTypes = () => {
           </div>
         </div>
         
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{
+        <div className="admin-subscription-types-table-container" style={{ overflowX: 'auto' }}>
+          <table className="admin-subscription-types-table" style={{
             width: '100%',
             borderCollapse: 'collapse',
             fontSize: '0.875rem'
@@ -917,11 +933,11 @@ const SubscriptionTypes = () => {
                   }}
                 >
                   {/* Restaurant */}
-                  <td style={{ padding: '1rem 0.75rem' }}>
+                  <td className="admin-subscription-types-restaurant-cell" style={{ padding: '1rem 0.75rem' }}>
                     <div>
                       {type.restaurants && type.restaurants.length > 0 ? (
                         type.restaurants.map((restaurant, index) => (
-                          <div key={restaurant.id} style={{
+                          <div key={restaurant.id} className="admin-subscription-types-restaurant-tag" style={{
                             marginBottom: index < type.restaurants.length - 1 ? '0.25rem' : '0',
                             padding: '0.25rem 0.5rem',
                             background: 'rgba(59, 130, 246, 0.1)',
@@ -946,9 +962,9 @@ const SubscriptionTypes = () => {
                   </td>
 
                   {/* Name */}
-                  <td style={{ padding: '1rem 0.75rem' }}>
+                  <td className="admin-subscription-types-name-cell" style={{ padding: '1rem 0.75rem' }}>
                     <div>
-                      <div style={{
+                      <div className="admin-subscription-types-name-primary" style={{
                         fontWeight: '600',
                         color: '#1f2937',
                         marginBottom: '0.25rem',
@@ -956,7 +972,7 @@ const SubscriptionTypes = () => {
                       }}>
                         {language === 'ar' ? type.name_ar : type.name_en}
                       </div>
-                      <div style={{
+                      <div className="admin-subscription-types-name-secondary" style={{
                         fontSize: '0.75rem',
                         color: '#6b7280'
                       }}>
@@ -967,7 +983,7 @@ const SubscriptionTypes = () => {
 
                   {/* Type */}
                   <td style={{ padding: '1rem 0.75rem' }}>
-                    <span style={{
+                    <span className="admin-subscription-types-type-badge" style={{
                       padding: '0.375rem 0.75rem',
                       borderRadius: '0.5rem',
                       fontSize: '0.75rem',
@@ -993,12 +1009,12 @@ const SubscriptionTypes = () => {
 
                   {/* Price */}
                   <td style={{ padding: '1rem 0.75rem' }}>
-                    <div style={{
+                    <div className="admin-subscription-types-price-cell" style={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: '0.5rem'
                     }}>
-                      <span style={{
+                      <span className="admin-subscription-types-price-badge" style={{
                         background: '#fef3c7',
                         color: '#92400e',
                         padding: '0.25rem 0.5rem',
@@ -1008,7 +1024,7 @@ const SubscriptionTypes = () => {
                       }}>
                         {type.price}
                       </span>
-                      <span style={{
+                      <span className="admin-subscription-types-price-label" style={{
                         color: '#6b7280',
                         fontSize: '0.75rem'
                       }}>
@@ -1019,12 +1035,12 @@ const SubscriptionTypes = () => {
 
                   {/* Delivery Price */}
                   <td style={{ padding: '1rem 0.75rem' }}>
-                    <div style={{
+                    <div className="admin-subscription-types-price-cell" style={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: '0.5rem'
                     }}>
-                      <span style={{
+                      <span className="admin-subscription-types-price-badge" style={{
                         background: '#d1fae5',
                         color: '#065f46',
                         padding: '0.25rem 0.5rem',
@@ -1034,7 +1050,7 @@ const SubscriptionTypes = () => {
                       }}>
                         {type.delivery_price || 0}
                       </span>
-                      <span style={{
+                      <span className="admin-subscription-types-price-label" style={{
                         color: '#6b7280',
                         fontSize: '0.75rem'
                       }}>
@@ -1045,12 +1061,12 @@ const SubscriptionTypes = () => {
 
                   {/* Meals Count */}
                   <td style={{ padding: '1rem 0.75rem' }}>
-                    <div style={{
+                    <div className="admin-subscription-types-price-cell" style={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: '0.5rem'
                     }}>
-                      <span style={{
+                      <span className="admin-subscription-types-price-badge" style={{
                         background: '#dbeafe',
                         color: '#1e40af',
                         padding: '0.25rem 0.5rem',
@@ -1060,7 +1076,7 @@ const SubscriptionTypes = () => {
                       }}>
                         {type.meals_count}
                       </span>
-                      <span style={{
+                      <span className="admin-subscription-types-price-label" style={{
                         color: '#6b7280',
                         fontSize: '0.75rem'
                       }}>
@@ -1071,7 +1087,7 @@ const SubscriptionTypes = () => {
 
                   {/* Status */}
                   <td style={{ padding: '1rem 0.75rem' }}>
-                    <span style={{
+                    <span className="admin-subscription-types-status-badge" style={{
                       padding: '0.375rem 0.75rem',
                       borderRadius: '0.5rem',
                       fontSize: '0.75rem',
@@ -1097,12 +1113,13 @@ const SubscriptionTypes = () => {
 
                   {/* Actions */}
                   <td style={{ padding: '1rem 0.75rem' }}>
-                    <div style={{
+                    <div className="admin-subscription-types-actions" style={{
                       display: 'flex',
                       gap: '0.5rem',
                       justifyContent: 'center'
                     }}>
                       <button
+                        className="admin-subscription-types-action-btn"
                         onClick={() => handleEdit(type)}
                         style={{
                           padding: '0.5rem',
@@ -1131,6 +1148,7 @@ const SubscriptionTypes = () => {
                         ✏️
                       </button>
                       <button
+                        className="admin-subscription-types-action-btn"
                         onClick={() => handleDelete(type.id)}
                         style={{
                           padding: '0.5rem',
@@ -1169,7 +1187,7 @@ const SubscriptionTypes = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div style={{
+          <div className="admin-subscription-types-pagination" style={{
             padding: '1.5rem',
             borderTop: '1px solid #e2e8f0',
             background: '#f8fafc',
@@ -1177,18 +1195,19 @@ const SubscriptionTypes = () => {
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            <div style={{
+            <div className="admin-subscription-types-pagination-info" style={{
               color: '#6b7280',
               fontSize: '0.875rem'
             }}>
               {language === 'ar' ? 'عرض' : 'Showing'} {startIndex + 1} {language === 'ar' ? 'إلى' : 'to'} {Math.min(startIndex + itemsPerPage, sortedSubscriptionTypes.length)} {language === 'ar' ? 'من' : 'of'} {sortedSubscriptionTypes.length} {language === 'ar' ? 'نوع اشتراك' : 'subscription types'}
             </div>
-            <div style={{
+            <div className="admin-subscription-types-pagination-controls" style={{
               display: 'flex',
               gap: '0.5rem',
               alignItems: 'center'
             }}>
               <button
+                className="admin-subscription-types-pagination-btn"
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
                 style={{
@@ -1210,6 +1229,7 @@ const SubscriptionTypes = () => {
                 return (
                   <button
                     key={pageNum}
+                    className={`admin-subscription-types-pagination-btn ${currentPage === pageNum ? 'active' : ''}`}
                     onClick={() => handlePageChange(pageNum)}
                     style={{
                       padding: '0.5rem 0.75rem',
@@ -1229,6 +1249,7 @@ const SubscriptionTypes = () => {
               })}
               
               <button
+                className="admin-subscription-types-pagination-btn"
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 style={{

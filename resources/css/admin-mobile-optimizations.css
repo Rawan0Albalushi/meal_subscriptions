@@ -1,0 +1,305 @@
+/* تحسينات الهاتف المحمول لصفحات الإدارة - Admin Mobile Optimizations */
+
+/* تحسينات عامة للهاتف المحمول */
+@media (max-width: 768px) {
+    .admin-layout {
+        padding: 0.5rem !important;
+    }
+    
+    .admin-nav-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem !important;
+    }
+    
+    .admin-nav-item {
+        padding: 0.75rem 0.5rem !important;
+    }
+    
+    .admin-nav-icon {
+        width: 2.25rem !important;
+        height: 2.25rem !important;
+        font-size: 1rem !important;
+    }
+    
+    .admin-nav-text {
+        font-size: 0.75rem !important;
+    }
+    
+    .admin-nav-description {
+        font-size: 0.65rem !important;
+        display: none !important;
+    }
+    
+    .admin-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+        gap: 0.75rem !important;
+    }
+    
+    .admin-stats-card {
+        padding: 1rem !important;
+        border-radius: 0.75rem !important;
+    }
+    
+    .admin-quick-actions {
+        gap: 0.5rem !important;
+    }
+    
+    .admin-quick-action {
+        padding: 0.75rem !important;
+        border-radius: 0.5rem !important;
+    }
+    
+    .admin-restaurants-grid {
+        gap: 0.75rem !important;
+    }
+    
+    .admin-restaurant-card {
+        padding: 0.875rem !important;
+        border-radius: 0.75rem !important;
+    }
+    
+    .admin-meals-grid {
+        gap: 0.75rem !important;
+    }
+    
+    .admin-meal-card {
+        padding: 0.875rem !important;
+        border-radius: 0.75rem !important;
+    }
+    
+    .admin-form-grid {
+        gap: 0.75rem !important;
+    }
+    
+    .admin-modal-content {
+        padding: 1rem !important;
+        border-radius: 0.75rem !important;
+    }
+    
+    .admin-button {
+        font-size: 0.8rem !important;
+        border-radius: 0.375rem !important;
+    }
+    
+    .admin-card {
+        padding: 0.875rem !important;
+        border-radius: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    .admin-header {
+        padding: 1rem !important;
+        border-radius: 0.75rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .admin-title {
+        font-size: 1.25rem !important;
+    }
+    
+    .admin-filters {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+    
+    .admin-filter-input {
+        padding: 0.5rem !important;
+        border-radius: 0.375rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .admin-filter-select {
+        padding: 0.5rem !important;
+        border-radius: 0.375rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .admin-table {
+        font-size: 0.8rem !important;
+    }
+    
+    .admin-table th,
+    .admin-table td {
+        padding: 0.5rem !important;
+    }
+    
+    .admin-actions {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+    
+    .admin-action-button {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.8rem !important;
+        border-radius: 0.375rem !important;
+    }
+}
+
+/* تحسينات للشاشات الصغيرة جداً */
+@media (max-width: 480px) {
+    .admin-layout {
+        padding: 0.25rem !important;
+    }
+    
+    .admin-nav-grid {
+        gap: 0.25rem !important;
+    }
+    
+    .admin-nav-item {
+        padding: 0.5rem 0.25rem !important;
+    }
+    
+    .admin-stats-grid {
+        gap: 0.5rem !important;
+    }
+    
+    .admin-modal-content {
+        padding: 0.75rem !important;
+    }
+    
+    .admin-button {
+        font-size: 0.75rem !important;
+    }
+    
+    .admin-card {
+        padding: 0.75rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .admin-header {
+        padding: 0.75rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .admin-title {
+        font-size: 1rem !important;
+    }
+    
+    .admin-filters {
+        gap: 0.25rem !important;
+    }
+    
+    .admin-filter-input,
+    .admin-filter-select {
+        padding: 0.375rem !important;
+        font-size: 0.75rem !important;
+    }
+    
+    .admin-table {
+        font-size: 0.75rem !important;
+    }
+    
+    .admin-table th,
+    .admin-table td {
+        padding: 0.375rem !important;
+    }
+    
+    .admin-action-button {
+        padding: 0.375rem 0.75rem !important;
+        font-size: 0.75rem !important;
+    }
+}
+
+/* تحسينات للوضع الأفقي */
+@media (max-width: 768px) and (orientation: landscape) {
+    .admin-nav-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+    
+    .admin-nav-description {
+        display: none !important;
+    }
+    
+    .admin-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+    }
+}
+
+/* تحسينات للتفاعل باللمس */
+@media (hover: none) and (pointer: coarse) {
+    .admin-nav-item:hover {
+        transform: none !important;
+    }
+    
+    .admin-stats-card:hover {
+        transform: none !important;
+    }
+    
+    .admin-quick-action:hover {
+        transform: none !important;
+    }
+    
+    .admin-action-button:hover {
+        transform: none !important;
+    }
+}
+
+/* تحسينات للوصولية */
+@media (prefers-reduced-motion: reduce) {
+    .admin-nav-item,
+    .admin-stats-card,
+    .admin-quick-action,
+    .admin-action-button {
+        transition: none !important;
+    }
+}
+
+/* تحسينات للوضع المظلم */
+@media (prefers-color-scheme: dark) {
+    .admin-layout {
+        background: rgba(17, 24, 39, 0.95) !important;
+    }
+    
+    .admin-nav-item {
+        background: rgba(31, 41, 55, 0.8) !important;
+        border-color: rgba(75, 85, 99, 0.3) !important;
+    }
+    
+    .admin-stats-card {
+        background: rgba(31, 41, 55, 0.8) !important;
+        border-color: rgba(75, 85, 99, 0.3) !important;
+    }
+    
+    .admin-quick-action {
+        background: rgba(31, 41, 55, 0.8) !important;
+        border-color: rgba(75, 85, 99, 0.3) !important;
+    }
+    
+    .admin-card {
+        background: rgba(31, 41, 55, 0.8) !important;
+        border-color: rgba(75, 85, 99, 0.3) !important;
+    }
+    
+    .admin-header {
+        background: rgba(31, 41, 55, 0.8) !important;
+        border-color: rgba(75, 85, 99, 0.3) !important;
+    }
+    
+    .admin-modal-content {
+        background: rgba(31, 41, 55, 0.95) !important;
+        border-color: rgba(75, 85, 99, 0.3) !important;
+    }
+}
+
+/* تحسينات للطباعة */
+@media print {
+    .admin-layout {
+        background: white !important;
+    }
+    
+    .admin-nav-item,
+    .admin-stats-card,
+    .admin-quick-action,
+    .admin-card,
+    .admin-header {
+        background: white !important;
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+    }
+    
+    .admin-modal-content {
+        background: white !important;
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+    }
+}

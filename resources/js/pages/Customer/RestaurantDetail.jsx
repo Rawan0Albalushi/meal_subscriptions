@@ -847,8 +847,8 @@ const RestaurantDetail = () => {
       ? ['الوجبة الأولى', 'الوجبة الثانية', 'الوجبة الثالثة', 'الوجبة الرابعة', 'الوجبة الخامسة', 'الوجبة السادسة', 'الوجبة السابعة', 'الوجبة الثامنة', 'الوجبة التاسعة', 'الوجبة العاشرة', 'الوجبة الحادية عشر', 'الوجبة الثانية عشر', 'الوجبة الثالثة عشر', 'الوجبة الرابعة عشر', 'الوجبة الخامسة عشر', 'الوجبة السادسة عشر']
       : ['Meal 1', 'Meal 2', 'Meal 3', 'Meal 4', 'Meal 5', 'Meal 6', 'Meal 7', 'Meal 8', 'Meal 9', 'Meal 10', 'Meal 11', 'Meal 12', 'Meal 13', 'Meal 14', 'Meal 15', 'Meal 16'];
     
-    // Define meal icons for each meal
-    const mealIconsArray = ['🍽️', '🥘', '🍲', '🍛', '🍜', '🍝', '🍱', '🥗', '🍳', '🥙', '🌮', '🌯', '🍕', '🍔', '🌭', '🥪'];
+    // Define meal icons for each meal (removed emoji icons)
+    const mealIconsArray = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
     
     const mealLabels = [];
     const mealIcons = [];
@@ -859,7 +859,7 @@ const RestaurantDetail = () => {
       const dayIndex = i % 4; // 0-3 for each week
       
       mealLabels.push(mealLabelsArray[i]);
-      mealIcons.push(mealIconsArray[i] || '🍽️'); // Use default icon if array is too short
+      mealIcons.push(mealIconsArray[i] || ''); // No default icon
       
       // For monthly subscriptions, we need to repeat the same days
       // So we'll use the same day key but with a unique identifier
@@ -2196,7 +2196,6 @@ const RestaurantDetail = () => {
                         textAlign: 'center'
                       }
                     }}>
-                      <div style={{ fontSize: '1.5rem' }}>{day.icon}</div>
                       <div style={{ flex: 1 }}>
                         <h3 style={{ 
                           fontSize: '1.125rem', 

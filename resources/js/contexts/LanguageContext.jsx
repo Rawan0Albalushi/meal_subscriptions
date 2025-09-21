@@ -340,7 +340,7 @@ export const LanguageProvider = ({ children }) => {
             
             // Meals and Subscriptions
             noMealsInSubscription: 'لا توجد وجبات في هذا الاشتراك',
-            noMealsAvailable: 'لا توجد وجبات متاحة في هذا المطعم',
+            noMealsAvailableInRestaurant: 'لا توجد وجبات متاحة في هذا المطعم',
             noMealsYet: 'لا توجد وجبات لهذا المطعم بعد',
             noMealsTitle: 'لا توجد وجبات',
             selectMealTypeToShow: 'يرجى اختيار نوع الوجبة لعرض الوجبات المتاحة',
@@ -355,7 +355,7 @@ export const LanguageProvider = ({ children }) => {
             clearCart: 'إفراغ السلة',
             confirmClearCart: 'هل أنت متأكد من أنك تريد إفراغ السلة؟',
             orderSummary: 'ملخص الطلب',
-            selectDeliveryAddress: 'اختر عنوان التوصيل',
+            selectDeliveryAddressForOrder: 'اختر عنوان التوصيل',
             pleaseSelectDeliveryAddress: 'يرجى اختيار عنوان التوصيل',
             enterSpecialInstructions: 'أدخل التعليمات الخاصة',
             subtotal: 'المجموع الفرعي',
@@ -375,7 +375,7 @@ export const LanguageProvider = ({ children }) => {
             addToCart: 'إضافة للسلة',
             itemAddedToCart: 'تم إضافة العنصر للسلة',
             failedToAddToCart: 'فشل في إضافة العناصر للسلة',
-            reload: 'إعادة تحميل',
+            reloadPage: 'إعادة تحميل',
         },
         en: {
             // Navigation
@@ -701,7 +701,7 @@ export const LanguageProvider = ({ children }) => {
             
             // Meals and Subscriptions
             noMealsInSubscription: 'No meals in this subscription',
-            noMealsAvailable: 'No meals available in this restaurant',
+            noMealsAvailableInRestaurant: 'No meals available in this restaurant',
             noMealsYet: 'No meals available for this restaurant yet',
             selectMealTypeToShow: 'Please select a meal type to show available meals',
             noMealsOfTypeAvailable: 'No {type} meals available',
@@ -715,7 +715,7 @@ export const LanguageProvider = ({ children }) => {
             clearCart: 'Clear Cart',
             confirmClearCart: 'Are you sure you want to clear the cart?',
             orderSummary: 'Order Summary',
-            selectDeliveryAddress: 'Select delivery address',
+            selectDeliveryAddressForOrder: 'Select delivery address',
             pleaseSelectDeliveryAddress: 'Please select a delivery address',
             enterSpecialInstructions: 'Enter special instructions',
             subtotal: 'Subtotal',
@@ -735,7 +735,7 @@ export const LanguageProvider = ({ children }) => {
             addToCart: 'Add to Cart',
             itemAddedToCart: 'Item added to cart',
             failedToAddToCart: 'Failed to add items to cart',
-            reload: 'Reload',
+            reloadPage: 'Reload',
         }
     };
 

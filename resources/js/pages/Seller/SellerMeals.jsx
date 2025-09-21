@@ -523,7 +523,7 @@ const SellerMeals = () => {
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : 'repeat(auto-fill, minmax(350px, 1fr))',
-                    gap: window.innerWidth <= 768 ? '1rem' : '1.5rem'
+                    gap: window.innerWidth <= 768 ? '0.75rem' : '1.5rem'
                 }}>
                     {meals.map((meal) => (
                         <div
@@ -531,8 +531,8 @@ const SellerMeals = () => {
                             style={{
                                 background: 'rgba(255, 255, 255, 0.9)',
                                 backdropFilter: 'blur(20px)',
-                                borderRadius: '1rem',
-                                padding: window.innerWidth <= 768 ? '1rem' : '1.5rem',
+                                borderRadius: window.innerWidth <= 768 ? '0.75rem' : '1rem',
+                                padding: window.innerWidth <= 768 ? '0.875rem' : '1.5rem',
                                 boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
                                 border: '1px solid rgba(255, 255, 255, 0.2)',
                                 transition: 'transform 0.2s'
@@ -552,9 +552,9 @@ const SellerMeals = () => {
                             }}>
                                 {meal.image ? (
                                     <div style={{
-                                        width: '8rem',
-                                        height: '6rem',
-                                        borderRadius: '16px',
+                                        width: window.innerWidth <= 768 ? '6rem' : '8rem',
+                                        height: window.innerWidth <= 768 ? '4.5rem' : '6rem',
+                                        borderRadius: window.innerWidth <= 768 ? '12px' : '16px',
                                         overflow: 'hidden',
                                         boxShadow: '0 4px 15px rgba(79, 70, 229, 0.2)',
                                         border: '2px solid rgba(79, 70, 229, 0.1)',
@@ -607,16 +607,16 @@ const SellerMeals = () => {
                                     </div>
                                 ) : (
                                     <div style={{
-                                        width: '8rem',
-                                        height: '6rem',
+                                        width: window.innerWidth <= 768 ? '6rem' : '8rem',
+                                        height: window.innerWidth <= 768 ? '4.5rem' : '6rem',
                                         background: meal.is_available 
                                             ? 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
                                             : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                                        borderRadius: '16px',
+                                        borderRadius: window.innerWidth <= 768 ? '12px' : '16px',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        fontSize: '2.5rem',
+                                        fontSize: window.innerWidth <= 768 ? '2rem' : '2.5rem',
                                         color: 'white',
                                         boxShadow: '0 4px 15px rgba(79, 70, 229, 0.2)',
                                         border: '2px solid rgba(79, 70, 229, 0.1)',
@@ -635,7 +635,7 @@ const SellerMeals = () => {
                                 )}
                                 <div>
                                     <h3 style={{
-                                        fontSize: '1.125rem',
+                                        fontSize: window.innerWidth <= 768 ? '1rem' : '1.125rem',
                                         fontWeight: '600',
                                         color: 'rgb(55 65 81)',
                                         margin: 0,
@@ -671,9 +671,9 @@ const SellerMeals = () => {
 
                             <p style={{
                                 color: 'rgb(107 114 128)',
-                                fontSize: '0.875rem',
+                                fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.875rem',
                                 margin: 0,
-                                marginBottom: '1rem',
+                                marginBottom: window.innerWidth <= 768 ? '0.75rem' : '1rem',
                                 lineHeight: 1.5
                             }}>
                                 {language === 'ar' ? meal.description_ar : meal.description_en}
@@ -682,10 +682,10 @@ const SellerMeals = () => {
                             {/* Meal Details */}
                             <div style={{
                                 display: 'grid',
-                                gridTemplateColumns: '1fr 1fr',
-                                gap: '0.75rem',
-                                fontSize: '0.75rem',
-                                marginBottom: '1rem'
+                                gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : '1fr 1fr',
+                                gap: window.innerWidth <= 768 ? '0.5rem' : '0.75rem',
+                                fontSize: window.innerWidth <= 768 ? '0.7rem' : '0.75rem',
+                                marginBottom: window.innerWidth <= 768 ? '0.75rem' : '1rem'
                             }}>
                                 <div>
                                     <span style={{
@@ -755,7 +755,8 @@ const SellerMeals = () => {
                             <div style={{
                                 display: 'flex',
                                 gap: window.innerWidth <= 768 ? '0.75rem' : '0.5rem',
-                                justifyContent: window.innerWidth <= 768 ? 'center' : 'flex-start'
+                                justifyContent: window.innerWidth <= 768 ? 'center' : 'flex-start',
+                                marginTop: window.innerWidth <= 768 ? '0.75rem' : '0'
                             }}>
                                 <button
                                     onClick={() => handleEdit(meal)}
@@ -763,9 +764,9 @@ const SellerMeals = () => {
                                         padding: window.innerWidth <= 768 ? '0.75rem' : '0.5rem',
                                         background: 'rgba(79, 70, 229, 0.1)',
                                         border: 'none',
-                                        borderRadius: '0.5rem',
+                                        borderRadius: window.innerWidth <= 768 ? '0.375rem' : '0.5rem',
                                         cursor: 'pointer',
-                                        fontSize: '1rem'
+                                        fontSize: window.innerWidth <= 768 ? '1.125rem' : '1rem'
                                     }}
                                     title={language === 'ar' ? 'تعديل' : 'Edit'}
                                 >
@@ -777,9 +778,9 @@ const SellerMeals = () => {
                                         padding: window.innerWidth <= 768 ? '0.75rem' : '0.5rem',
                                         background: 'rgba(239, 68, 68, 0.1)',
                                         border: 'none',
-                                        borderRadius: '0.5rem',
+                                        borderRadius: window.innerWidth <= 768 ? '0.375rem' : '0.5rem',
                                         cursor: 'pointer',
-                                        fontSize: '1rem'
+                                        fontSize: window.innerWidth <= 768 ? '1.125rem' : '1rem'
                                     }}
                                     title={language === 'ar' ? 'حذف' : 'Delete'}
                                 >
@@ -883,8 +884,8 @@ const SellerMeals = () => {
                 }}>
                     <div style={{
                         background: 'white',
-                        borderRadius: '1rem',
-                        padding: window.innerWidth <= 768 ? '1.5rem' : '2rem',
+                        borderRadius: window.innerWidth <= 768 ? '0.75rem' : '1rem',
+                        padding: window.innerWidth <= 768 ? '1rem' : '2rem',
                         maxWidth: window.innerWidth <= 768 ? '95vw' : '600px',
                         width: '100%',
                         maxHeight: '90vh',
@@ -894,10 +895,10 @@ const SellerMeals = () => {
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',
-                            marginBottom: '2rem'
+                            marginBottom: window.innerWidth <= 768 ? '1.5rem' : '2rem'
                         }}>
                             <h2 style={{
-                                fontSize: '1.5rem',
+                                fontSize: window.innerWidth <= 768 ? '1.25rem' : '1.5rem',
                                 fontWeight: 'bold',
                                 color: 'rgb(55 65 81)',
                                 margin: 0
@@ -929,8 +930,8 @@ const SellerMeals = () => {
                             <div style={{
                                 display: 'grid',
                                 gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : '1fr 1fr',
-                                gap: '1rem',
-                                marginBottom: '1rem'
+                                gap: window.innerWidth <= 768 ? '0.75rem' : '1rem',
+                                marginBottom: window.innerWidth <= 768 ? '0.75rem' : '1rem'
                             }}>
                                 <div>
                                     <label style={{
@@ -987,8 +988,8 @@ const SellerMeals = () => {
                             <div style={{
                                 display: 'grid',
                                 gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : '1fr 1fr',
-                                gap: '1rem',
-                                marginBottom: '1rem'
+                                gap: window.innerWidth <= 768 ? '0.75rem' : '1rem',
+                                marginBottom: window.innerWidth <= 768 ? '0.75rem' : '1rem'
                             }}>
                                 <div>
                                     <label style={{
@@ -1166,8 +1167,8 @@ const SellerMeals = () => {
                             <div style={{
                                 display: 'grid',
                                 gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : '1fr 1fr',
-                                gap: '1rem',
-                                marginBottom: '1rem'
+                                gap: window.innerWidth <= 768 ? '0.75rem' : '1rem',
+                                marginBottom: window.innerWidth <= 768 ? '0.75rem' : '1rem'
                             }}>
                                 <div>
                                     <label style={{

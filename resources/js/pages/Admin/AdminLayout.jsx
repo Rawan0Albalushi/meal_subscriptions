@@ -265,21 +265,22 @@ const AdminLayout = () => {
                     <nav style={{
                         background: 'rgba(255, 255, 255, 0.95)',
                         backdropFilter: 'blur(20px)',
-                        borderRadius: window.innerWidth <= 768 ? '0.75rem' : '1.25rem',
-                        padding: window.innerWidth <= 768 ? '1.25rem' : '1.5rem',
+                        borderRadius: window.innerWidth <= 768 ? '0.5rem' : '1.25rem',
+                        padding: window.innerWidth <= 768 ? '1rem' : '1.5rem',
                         boxShadow: '0 15px 35px rgba(0, 0, 0, 0.1)',
                         border: '1px solid rgba(255, 255, 255, 0.2)',
                         height: 'fit-content',
                         position: window.innerWidth <= 768 ? 'static' : 'sticky',
                         top: '6rem',
-                        maxWidth: '100%'
+                        maxWidth: '100%',
+                        marginBottom: window.innerWidth <= 768 ? '1rem' : '0'
                     }}>
 
 
                         <div style={{
                             display: 'grid',
                             gridTemplateColumns: window.innerWidth <= 768 ? 'repeat(2, 1fr)' : '1fr',
-                            gap: window.innerWidth <= 768 ? '1rem' : '0.75rem',
+                            gap: window.innerWidth <= 768 ? '0.5rem' : '0.75rem',
                             width: '100%',
                             paddingTop: '0.5rem'
                         }}>
@@ -293,7 +294,7 @@ const AdminLayout = () => {
                                         alignItems: 'center',
                                         justifyContent: window.innerWidth <= 768 ? 'center' : 'flex-start',
                                         gap: window.innerWidth <= 768 ? '0.5rem' : '0.75rem',
-                                        padding: window.innerWidth <= 768 ? '1rem 0.5rem' : '0.875rem 1rem',
+                                        padding: window.innerWidth <= 768 ? '0.75rem 0.5rem' : '0.875rem 1rem',
                                         borderRadius: window.innerWidth <= 768 ? '0.75rem' : '0.875rem',
                                         textDecoration: 'none',
                                         transition: 'all 0.2s ease',
@@ -343,8 +344,8 @@ const AdminLayout = () => {
                                     
                                     {/* Icon Container */}
                                     <div style={{
-                                        width: window.innerWidth <= 768 ? '2.5rem' : '2.25rem',
-                                        height: window.innerWidth <= 768 ? '2.5rem' : '2.25rem',
+                                        width: window.innerWidth <= 768 ? '2.25rem' : '2.25rem',
+                                        height: window.innerWidth <= 768 ? '2.25rem' : '2.25rem',
                                         background: isActive(item.path)
                                             ? 'rgba(79, 70, 229, 0.12)'
                                             : 'rgba(79, 70, 229, 0.06)',
@@ -352,7 +353,7 @@ const AdminLayout = () => {
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        fontSize: window.innerWidth <= 768 ? '1.125rem' : '1rem',
+                                        fontSize: window.innerWidth <= 768 ? '1rem' : '1rem',
                                         transition: 'all 0.2s ease',
                                         flexShrink: 0
                                     }}>
@@ -368,7 +369,7 @@ const AdminLayout = () => {
                                         background: 'transparent'
                                     }}>
                                         <div style={{
-                                            fontSize: window.innerWidth <= 768 ? '0.875rem' : '0.875rem',
+                                            fontSize: window.innerWidth <= 768 ? '0.75rem' : '0.875rem',
                                             fontWeight: isActive(item.path) ? '700' : '600',
                                             marginBottom: window.innerWidth <= 768 ? '0.25rem' : '0.25rem',
                                             lineHeight: 1.2,
@@ -383,7 +384,7 @@ const AdminLayout = () => {
                                             {item.label}
                                         </div>
                                         <div style={{
-                                            fontSize: window.innerWidth <= 768 ? '0.75rem' : '0.75rem',
+                                            fontSize: window.innerWidth <= 768 ? '0.65rem' : '0.75rem',
                                             opacity: isActive(item.path) ? 0.8 : 0.65,
                                             lineHeight: 1.3,
                                             whiteSpace: 'nowrap',
@@ -392,7 +393,8 @@ const AdminLayout = () => {
                                             textAlign: window.innerWidth <= 768 ? 'center' : (dir === 'rtl' ? 'right' : 'left'),
                                             maxWidth: '100%',
                                             background: 'transparent',
-                                            color: isActive(item.path) ? 'rgba(79, 70, 229, 0.8)' : 'rgba(55, 65, 81, 0.65)'
+                                            color: isActive(item.path) ? 'rgba(79, 70, 229, 0.8)' : 'rgba(55, 65, 81, 0.65)',
+                                            display: window.innerWidth <= 768 ? 'none' : 'block'
                                         }}>
                                             {item.description}
                                         </div>

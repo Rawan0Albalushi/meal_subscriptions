@@ -344,6 +344,20 @@ const AdminSubscriptions = () => {
         return subscription.delivery_address?.address || subscription.deliveryAddress?.address || (language === 'ar' ? 'غير متوفر' : 'Not Available');
     };
 
+    const getMapLink = (subscription) => {
+        const lat = subscription?.delivery_address?.latitude ?? subscription?.deliveryAddress?.latitude;
+        const lng = subscription?.delivery_address?.longitude ?? subscription?.deliveryAddress?.longitude;
+        const address = subscription?.delivery_address?.address ?? subscription?.deliveryAddress?.address;
+        if (typeof lat === 'number' && typeof lng === 'number') {
+            return `https://www.google.com/maps?q=${lat},${lng}`;
+        }
+        if (address) {
+            const encoded = encodeURIComponent(address);
+            return `https://www.google.com/maps/search/?api=1&query=${encoded}`;
+        }
+        return null;
+    };
+
     const formatDate = (dateString) => {
         if (!dateString) return '';
         
@@ -1666,6 +1680,15 @@ const AdminSubscriptions = () => {
                                     </strong>
                                     <span style={{ color: '#374151', marginLeft: '0.5rem' }}>
                                         {getDeliveryLocation(subscription)}
+                                        {(() => {
+                                            const link = getMapLink(subscription);
+                                            if (!link) return null;
+                                            return (
+                                                <a href={link} target="_blank" rel="noopener noreferrer" style={{ marginInlineStart: '0.5rem', color: '#2563eb', textDecoration: 'underline' }}>
+                                                    {language === 'ar' ? 'فتح على الخريطة' : 'Open Map'}
+                                                </a>
+                                            );
+                                        })()}
                                     </span>
                                 </div>
                                 <div>
@@ -1813,14 +1836,6 @@ const AdminSubscriptions = () => {
                                                 display: 'inline-block'
                                             }}>
                                                 📅 {language === 'ar' ? 'تاريخ التوصيل:' : 'Delivery Date:'} {formatDate(item.delivery_date) || (language === 'ar' ? 'غير محدد' : 'Not set')}
-                                            </div>
-                                            
-                                            <div style={{
-                                                fontSize: '0.875rem',
-                                                color: '#6b7280',
-                                                marginBottom: '0.25rem'
-                                            }}>
-                                                {language === 'ar' ? 'الكمية:' : 'Quantity:'} {item.quantity}
                                             </div>
                                             
                                             <div style={{

@@ -190,9 +190,9 @@ const AdminDashboard = () => {
             <div style={{
                 background: 'rgba(255, 255, 255, 0.9)',
                 backdropFilter: 'blur(20px)',
-                borderRadius: '1rem',
-                padding: '2rem',
-                marginBottom: '2rem',
+                borderRadius: window.innerWidth <= 768 ? '0.75rem' : '1rem',
+                padding: window.innerWidth <= 768 ? '1rem' : '2rem',
+                marginBottom: window.innerWidth <= 768 ? '1.5rem' : '2rem',
                 boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
                 border: '1px solid rgba(255, 255, 255, 0.2)'
             }}>
@@ -242,9 +242,9 @@ const AdminDashboard = () => {
             {/* Statistics Cards */}
             <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                gap: '1.5rem',
-                marginBottom: '2rem'
+                gridTemplateColumns: window.innerWidth <= 768 ? 'repeat(auto-fit, minmax(250px, 1fr))' : 'repeat(auto-fit, minmax(250px, 1fr))',
+                gap: window.innerWidth <= 768 ? '0.75rem' : '1.5rem',
+                marginBottom: window.innerWidth <= 768 ? '1.5rem' : '2rem'
             }}>
                 {statCards.map((card, index) => (
                     <div
@@ -252,8 +252,8 @@ const AdminDashboard = () => {
                         style={{
                             background: 'rgba(255, 255, 255, 0.9)',
                             backdropFilter: 'blur(20px)',
-                            borderRadius: '1rem',
-                            padding: '1.5rem',
+                            borderRadius: window.innerWidth <= 768 ? '0.75rem' : '1rem',
+                            padding: window.innerWidth <= 768 ? '1rem' : '1.5rem',
                             boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
                             border: '1px solid rgba(255, 255, 255, 0.2)',
                             transition: 'transform 0.2s',
@@ -269,25 +269,25 @@ const AdminDashboard = () => {
                         <div style={{
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '1rem',
-                            marginBottom: '1rem'
+                            gap: window.innerWidth <= 768 ? '0.75rem' : '1rem',
+                            marginBottom: window.innerWidth <= 768 ? '0.75rem' : '1rem'
                         }}>
                             <div style={{
-                                width: '3rem',
-                                height: '3rem',
+                                width: window.innerWidth <= 768 ? '2.5rem' : '3rem',
+                                height: window.innerWidth <= 768 ? '2.5rem' : '3rem',
                                 background: card.color,
-                                borderRadius: '0.75rem',
+                                borderRadius: window.innerWidth <= 768 ? '0.5rem' : '0.75rem',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                fontSize: '1.5rem',
+                                fontSize: window.innerWidth <= 768 ? '1.25rem' : '1.5rem',
                                 color: 'white'
                             }}>
                                 {card.icon}
                             </div>
                             <div>
                                 <div style={{
-                                    fontSize: '2rem',
+                                    fontSize: window.innerWidth <= 768 ? '1.5rem' : '2rem',
                                     fontWeight: 'bold',
                                     color: 'rgb(55 65 81)',
                                     lineHeight: 1
@@ -295,7 +295,7 @@ const AdminDashboard = () => {
                                     {card.value}
                                 </div>
                                 <div style={{
-                                    fontSize: '0.875rem',
+                                    fontSize: window.innerWidth <= 768 ? '0.75rem' : '0.875rem',
                                     color: 'rgb(107 114 128)',
                                     marginTop: '0.25rem'
                                 }}>
@@ -311,17 +311,17 @@ const AdminDashboard = () => {
             <div style={{
                 background: 'rgba(255, 255, 255, 0.9)',
                 backdropFilter: 'blur(20px)',
-                borderRadius: '1rem',
-                padding: '2rem',
+                borderRadius: window.innerWidth <= 768 ? '0.75rem' : '1rem',
+                padding: window.innerWidth <= 768 ? '1rem' : '2rem',
                 boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
                 border: '1px solid rgba(255, 255, 255, 0.2)'
             }}>
                 <h2 style={{
-                    fontSize: '1.25rem',
+                    fontSize: window.innerWidth <= 768 ? '1rem' : '1.25rem',
                     fontWeight: 'bold',
                     color: 'rgb(55 65 81)',
                     margin: 0,
-                    marginBottom: '1.5rem',
+                    marginBottom: window.innerWidth <= 768 ? '1rem' : '1.5rem',
                     textAlign: dir === 'rtl' ? 'right' : 'left'
                 }}>
                     {language === 'ar' ? 'الإجراءات السريعة' : 'Quick Actions'}
@@ -329,8 +329,8 @@ const AdminDashboard = () => {
                 
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                    gap: '1rem'
+                    gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : 'repeat(auto-fit, minmax(280px, 1fr))',
+                    gap: window.innerWidth <= 768 ? '0.5rem' : '1rem'
                 }}>
                     {quickActions.map((action, index) => (
                         <button
@@ -339,11 +339,11 @@ const AdminDashboard = () => {
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '1rem',
-                                padding: '1.5rem',
+                                gap: window.innerWidth <= 768 ? '0.75rem' : '1rem',
+                                padding: window.innerWidth <= 768 ? '0.75rem' : '1.5rem',
                                 background: 'rgba(79, 70, 229, 0.05)',
                                 border: '1px solid rgba(79, 70, 229, 0.1)',
-                                borderRadius: '0.75rem',
+                                borderRadius: window.innerWidth <= 768 ? '0.5rem' : '0.75rem',
                                 cursor: 'pointer',
                                 transition: 'all 0.2s',
                                 textAlign: dir === 'rtl' ? 'right' : 'left',
@@ -362,14 +362,14 @@ const AdminDashboard = () => {
                             }}
                         >
                             <div style={{
-                                width: '2.5rem',
-                                height: '2.5rem',
+                                width: window.innerWidth <= 768 ? '2rem' : '2.5rem',
+                                height: window.innerWidth <= 768 ? '2rem' : '2.5rem',
                                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                borderRadius: '0.5rem',
+                                borderRadius: window.innerWidth <= 768 ? '0.375rem' : '0.5rem',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                fontSize: '1.25rem',
+                                fontSize: window.innerWidth <= 768 ? '1rem' : '1.25rem',
                                 color: 'white',
                                 order: dir === 'rtl' ? 2 : 1
                             }}>
@@ -380,7 +380,7 @@ const AdminDashboard = () => {
                                 flex: 1
                             }}>
                                 <div style={{
-                                    fontSize: '0.875rem',
+                                    fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.875rem',
                                     fontWeight: '600',
                                     color: 'rgb(55 65 81)',
                                     marginBottom: '0.25rem'
@@ -388,7 +388,7 @@ const AdminDashboard = () => {
                                     {language === 'ar' ? action.titleAr : action.titleEn}
                                 </div>
                                 <div style={{
-                                    fontSize: '0.75rem',
+                                    fontSize: window.innerWidth <= 768 ? '0.7rem' : '0.75rem',
                                     color: 'rgb(107 114 128)'
                                 }}>
                                     {language === 'ar' ? action.descriptionAr : action.descriptionEn}

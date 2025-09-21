@@ -13,11 +13,13 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
-        host: 'localhost',
+        host: '192.168.100.105',
         port: 5173,
         hmr: {
-            host: 'localhost'
-        }
+            host: '192.168.100.105'
+        },
+        strictPort: true,
+        origin: 'http://192.168.100.105:5173'
     },
     optimizeDeps: {
         include: ['leaflet']

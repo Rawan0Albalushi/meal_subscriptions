@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار صفحة أنواع الاشتراكات للإدارة - الهاتف المحمول</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 1rem;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 1rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2f6e73, #4a8a8f);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .content {
+            padding: 1rem;
+        }
+
+        .mobile-demo {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2f6e73;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .demo-description {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .feature-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-description {
+            color: #6b7280;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .improvements-list {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .improvements-title {
+            font-weight: 600;
+            color: #0369a1;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .improvements-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .improvements-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e0f2fe;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #0c4a6e;
+            font-size: 0.85rem;
+        }
+
+        .improvements-list li:last-child {
+            border-bottom: none;
+        }
+
+        .code-example {
+            background: #1f2937;
+            color: #f9fafb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            overflow-x: auto;
+        }
+
+        .code-example pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+
+        .responsive-demo {
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .responsive-demo h3 {
+            color: #374151;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .screen-sizes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .screen-size {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .screen-size-title {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.25rem;
+        }
+
+        .screen-size-desc {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 1.25rem;
+            }
+            
+            .content {
+                padding: 0.75rem;
+            }
+            
+            .mobile-demo {
+                padding: 0.75rem;
+            }
+            
+            .features-grid {
+                gap: 0.75rem;
+            }
+            
+            .feature-item {
+                padding: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+            }
+            
+            .header h1 {
+                font-size: 1.1rem;
+            }
+            
+            .demo-title {
+                font-size: 1rem;
+            }
+            
+            .screen-sizes {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 تحسين صفحة أنواع الاشتراكات للإدارة - الهاتف المحمول</h1>
+            <p>تحسينات شاملة لصفحة إدارة أنواع الاشتراكات على الأجهزة المحمولة</p>
+        </div>
+
+        <div class="content">
+            <div class="mobile-demo">
+                <div class="demo-title">
+                    🎯 الهدف من التحسينات
+                </div>
+                <div class="demo-description">
+                    تم تحسين صفحة أنواع الاشتراكات للإدارة لتكون متوافقة تماماً مع الهواتف المحمولة، مع التركيز على سهولة الاستخدام والتفاعل والوصولية.
+                </div>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-title">
+                        📱 تحسينات التخطيط
+                    </div>
+                    <div class="feature-description">
+                        • تحسين التخطيط العام للصفحة على الهواتف المحمولة<br>
+                        • إعادة ترتيب العناصر لتتناسب مع الشاشات الصغيرة<br>
+                        • تحسين المسافات والحشو للهواتف
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">
+                        🔍 تحسينات البحث والفلاتر
+                    </div>
+                    <div class="feature-description">
+                        • تحسين واجهة البحث والفلاتر للهواتف<br>
+                        • إعادة ترتيب عناصر الفلترة في عمود واحد<br>
+                        • تحسين عرض الفلاتر النشطة
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">
+                        📝 تحسينات النماذج
+                    </div>
+                    <div class="feature-description">
+                        • تحسين نموذج إضافة/تعديل أنواع الاشتراكات<br>
+                        • إعادة ترتيب الحقول في عمود واحد على الهواتف<br>
+                        • تحسين قائمة اختيار المطاعم
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">
+                        📊 تحسينات الجداول
+                    </div>
+                    <div class="feature-description">
+                        • تحسين عرض الجداول على الهواتف المحمولة<br>
+                        • إضافة التمرير الأفقي للجداول<br>
+                        • تحسين عرض البيانات في الخلايا
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">
+                        🎨 تحسينات التصميم
+                    </div>
+                    <div class="feature-description">
+                        • تحسين الألوان والخطوط للهواتف<br>
+                        • تحسين الأزرار والتفاعلات<br>
+                        • تحسين الشارات والحالات
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">
+                        ♿ تحسينات الوصولية
+                    </div>
+                    <div class="feature-description">
+                        • تحسين التفاعل باللمس<br>
+                        • تحسين الوصولية للمستخدمين ذوي الاحتياجات الخاصة<br>
+                        • تحسين التنقل بالكيبورد
+                    </div>
+                </div>
+            </div>
+
+            <div class="improvements-list">
+                <div class="improvements-title">
+                    ✨ التحسينات المطبقة
+                </div>
+                <ul>
+                    <li>📱 تحسين التخطيط العام للهواتف المحمولة</li>
+                    <li>🔍 إعادة ترتيب فلاتر البحث في عمود واحد</li>
+                    <li>📝 تحسين نموذج إضافة/تعديل أنواع الاشتراكات</li>
+                    <li>📊 تحسين عرض الجداول مع التمرير الأفقي</li>
+                    <li>🎨 تحسين الألوان والخطوط للهواتف</li>
+                    <li>⚡ تحسين سرعة التحميل والتفاعل</li>
+                    <li>♿ تحسين الوصولية والتفاعل باللمس</li>
+                    <li>📐 دعم أحجام شاشات مختلفة</li>
+                    <li>🔄 تحسين الترقيم والتنقل</li>
+                    <li>💾 تحسين حفظ البيانات</li>
+                </ul>
+            </div>
+
+            <div class="responsive-demo">
+                <h3>📱 أحجام الشاشات المدعومة</h3>
+                <div class="screen-sizes">
+                    <div class="screen-size">
+                        <div class="screen-size-title">📱 الهواتف الصغيرة</div>
+                        <div class="screen-size-desc">أقل من 480px</div>
+                    </div>
+                    <div class="screen-size">
+                        <div class="screen-size-title">📱 الهواتف العادية</div>
+                        <div class="screen-size-desc">480px - 768px</div>
+                    </div>
+                    <div class="screen-size">
+                        <div class="screen-size-title">📱 الأجهزة اللوحية</div>
+                        <div class="screen-size-desc">768px - 1024px</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-example">
+                <pre>
+/* تحسينات الهاتف المحمول لصفحة أنواع الاشتراكات */
+
+@media (max-width: 768px) {
+    .admin-subscription-types-container {
+        padding: 0.5rem !important;
+    }
+    
+    .admin-subscription-types-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 1rem !important;
+    }
+    
+    .admin-subscription-types-filters-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    .admin-subscription-types-form-grid-2,
+    .admin-subscription-types-form-grid-3 {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    .admin-subscription-types-table {
+        min-width: 800px !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .admin-subscription-types-table-container {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-subscription-types-container {
+        padding: 0.25rem !important;
+    }
+    
+    .admin-subscription-types-table {
+        font-size: 0.7rem !important;
+        min-width: 700px !important;
+    }
+}
+                </pre>
+            </div>
+
+            <div class="mobile-demo">
+                <div class="demo-title">
+                    🚀 المميزات الجديدة
+                </div>
+                <div class="demo-description">
+                    <strong>1. تحسين التخطيط:</strong> تم تحسين التخطيط العام للصفحة ليتناسب مع الهواتف المحمولة مع إعادة ترتيب العناصر.<br><br>
+                    <strong>2. تحسين الفلاتر:</strong> تم تحسين واجهة البحث والفلاتر لتكون أكثر سهولة في الاستخدام على الهواتف.<br><br>
+                    <strong>3. تحسين النماذج:</strong> تم تحسين نموذج إضافة/تعديل أنواع الاشتراكات ليكون أكثر سهولة على الهواتف.<br><br>
+                    <strong>4. تحسين الجداول:</strong> تم تحسين عرض الجداول مع إضافة التمرير الأفقي وتحسين عرض البيانات.<br><br>
+                    <strong>5. تحسين الوصولية:</strong> تم تحسين التفاعل باللمس والوصولية للمستخدمين ذوي الاحتياجات الخاصة.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

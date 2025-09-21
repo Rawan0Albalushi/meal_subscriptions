@@ -7,6 +7,8 @@
 @import "./mobile-responsive.css";
 @import "./mobile-filter-fix.css";
 @import "./seller-mobile-optimizations.css";
+@import "./admin-mobile-optimizations.css";
+@import "./admin-subscription-types-mobile.css";
 
 html { 
   /* scroll-behavior: smooth; */ /* Disabled to prevent auto-scroll */

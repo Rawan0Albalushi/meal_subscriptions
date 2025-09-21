@@ -1634,6 +1634,23 @@ const SellerSubscriptions = () => {
                                 color: '#374151'
                             }}>
                                 {selectedSubscription.delivery_address?.address}
+                                {(() => {
+                                    const lat = selectedSubscription?.delivery_address?.latitude;
+                                    const lng = selectedSubscription?.delivery_address?.longitude;
+                                    const address = selectedSubscription?.delivery_address?.address;
+                                    let link = null;
+                                    if (typeof lat === 'number' && typeof lng === 'number') {
+                                        link = `https://www.google.com/maps?q=${lat},${lng}`;
+                                    } else if (address) {
+                                        link = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+                                    }
+                                    if (!link) return null;
+                                    return (
+                                        <a href={link} target="_blank" rel="noopener noreferrer" style={{ marginInlineStart: '0.5rem', color: '#2563eb', textDecoration: 'underline' }}>
+                                            {language === 'ar' ? 'فتح على الخريطة' : 'Open Map'}
+                                        </a>
+                                    );
+                                })()}
                             </div>
                         </div>
 

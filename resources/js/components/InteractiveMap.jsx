@@ -1,276 +1,133 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { showAlert } from '../utils/popupUtils';
 
-const InteractiveMap = ({ 
-  onLocationSelect, 
-  initialLat = 23.5880, 
-  initialLng = 58.3829, 
+const GOOGLE_MAPS_LIBRARIES = ['maps'];
+
+const InteractiveMap = ({
+  onLocationSelect,
+  initialLat = 23.5880,
+  initialLng = 58.3829,
   initialZoom = 13,
-  selectedLocation = null 
+  selectedLocation = null
 }) => {
-  const mapRef = useRef(null);
+  const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [userLocation, setUserLocation] = useState(null);
+
+  const loadGoogleMapsScript = () => {
+    return new Promise((resolve, reject) => {
+      if (typeof window !== 'undefined' && window.google && window.google.maps) {
+        resolve(window.google);
+        return;
+      }
+
+      const existingScript = document.getElementById('google-maps-script');
+      if (existingScript) {
+        existingScript.addEventListener('load', () => resolve(window.google));
+        existingScript.addEventListener('error', reject);
+        return;
+      }
+
+      const apiKey = import.meta?.env?.VITE_GOOGLE_MAPS_API_KEY;
+      if (!apiKey) {
+        console.error('Missing VITE_GOOGLE_MAPS_API_KEY');
+      }
+
+      const script = document.createElement('script');
+      script.id = 'google-maps-script';
+      const params = new URLSearchParams({
+        key: apiKey || '',
+        libraries: GOOGLE_MAPS_LIBRARIES.join(','),
+        v: 'weekly'
+      });
+      script.src = `https://maps.googleapis.com/maps/api/js?${params.toString()}`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => resolve(window.google);
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  };
 
   useEffect(() => {
+    let mapClickListener = null;
+    let markerDragListener = null;
+
     const initMap = async () => {
       try {
-        // استخدام CDN لـ Leaflet في التطوير
-        if (typeof window !== 'undefined' && !window.L) {
-          // إضافة Leaflet من CDN إذا لم يكن موجوداً
-          const script = document.createElement('script');
-          script.src = 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.js';
-          script.onload = () => {
-            // إضافة CSS
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.css';
-            document.head.appendChild(link);
+        const google = await loadGoogleMapsScript();
+
+        if (!mapInstanceRef.current && mapContainerRef.current) {
+          mapInstanceRef.current = new google.maps.Map(mapContainerRef.current, {
+            center: { lat: initialLat, lng: initialLng },
+            zoom: initialZoom,
+            mapTypeControl: true,
+            streetViewControl: false,
+            fullscreenControl: false,
+          });
+
+          // زر تحديد الموقع الحالي
+          const locateButton = document.createElement('button');
+          locateButton.title = 'تحديد موقعي الحالي';
+          locateButton.textContent = '📍';
+          locateButton.style.width = '44px';
+          locateButton.style.height = '44px';
+          locateButton.style.backgroundColor = 'white';
+          locateButton.style.color = '#374151';
+          locateButton.style.fontWeight = 'bold';
+          locateButton.style.border = '2px solid #d1d5db';
+          locateButton.style.borderRadius = '8px';
+          locateButton.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+          locateButton.style.display = 'flex';
+          locateButton.style.alignItems = 'center';
+          locateButton.style.justifyContent = 'center';
+          locateButton.style.fontSize = '18px';
+          locateButton.style.cursor = 'pointer';
+          locateButton.style.transition = 'all 0.2s ease';
+          locateButton.style.margin = '10px';
+          locateButton.onmouseover = () => {
+            locateButton.style.backgroundColor = '#f3f4f6';
+            locateButton.style.transform = 'scale(1.05)';
           };
-          document.head.appendChild(script);
+          locateButton.onmouseout = () => {
+            locateButton.style.backgroundColor = 'white';
+            locateButton.style.transform = 'scale(1)';
+          };
+          locateButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            getCurrentLocation();
+          });
+          mapInstanceRef.current.controls[google.maps.ControlPosition.TOP_RIGHT].push(locateButton);
+
+          // إنشاء مؤشر ابتدائي
+          const initial = selectedLocation || { lat: initialLat, lng: initialLng };
+          markerRef.current = new google.maps.Marker({
+            position: initial,
+            map: mapInstanceRef.current,
+            draggable: true,
+          });
+
+          // أحداث الخريطة
+          mapClickListener = mapInstanceRef.current.addListener('click', (e) => {
+            const lat = e.latLng.lat();
+            const lng = e.latLng.lng();
+            placeMarker({ lat, lng });
+            onLocationSelect({ lat, lng });
+          });
+
+          markerDragListener = markerRef.current.addListener('dragend', () => {
+            const pos = markerRef.current.getPosition();
+            const lat = pos.lat();
+            const lng = pos.lng();
+            onLocationSelect({ lat, lng });
+          });
         }
 
-        // انتظار تحميل Leaflet
-        const waitForLeaflet = () => {
-          return new Promise((resolve) => {
-            if (typeof window !== 'undefined' && window.L) {
-              resolve(window.L);
-            } else {
-              setTimeout(() => waitForLeaflet().then(resolve), 100);
-            }
-          });
-        };
-
-        const L = await waitForLeaflet();
-        
-                 // إصلاح مشكلة أيقونات Leaflet
-         delete L.Icon.Default.prototype._getIconUrl;
-         L.Icon.Default.mergeOptions({
-           iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-           iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-           shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-         });
-
-         // إنشاء الخريطة
-         if (!mapInstanceRef.current) {
-           mapInstanceRef.current = L.map(mapRef.current).setView([initialLat, initialLng], initialZoom);
-          
-                     // إضافة طبقة الخريطة الأساسية
-           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-             attribution: '© OpenStreetMap contributors',
-             maxZoom: 19,
-           }).addTo(mapInstanceRef.current);
-
-           // إضافة طبقة خريطة الأقمار الصناعية
-           const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-             attribution: '© Esri',
-             maxZoom: 19,
-           });
-
-           // إضافة طبقة خريطة الشوارع
-           const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-             attribution: '© OpenStreetMap contributors',
-             maxZoom: 19,
-           });
-
-          // إنشاء مجموعة الطبقات
-          const baseMaps = {
-            "الخريطة الأساسية": streetLayer,
-            "الأقمار الصناعية": satelliteLayer
-          };
-
-                     // إضافة التحكم في الطبقات
-          const layerControl = L.control.layers(baseMaps).addTo(mapInstanceRef.current);
-          
-          // تحسين التحكم في الطبقات للهاتف
-          setTimeout(() => {
-            const layerControlContainer = layerControl.getContainer();
-            if (layerControlContainer) {
-              layerControlContainer.style.zIndex = '1000';
-              layerControlContainer.style.position = 'relative';
-              
-              if (window.innerWidth <= 768) {
-                layerControlContainer.style.fontSize = '14px';
-                layerControlContainer.style.padding = '8px';
-                layerControlContainer.style.borderRadius = '8px';
-                layerControlContainer.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-                layerControlContainer.style.minWidth = '120px';
-              }
-            }
-          }, 100);
-
-          // إضافة زر تحديد الموقع الحالي
-          const locationButton = L.control({ position: 'topright' });
-          locationButton.onAdd = function () {
-            const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-           div.innerHTML = `
-             <button 
-               title="تحديد موقعي الحالي"
-               style="
-                 width: 44px; 
-                 height: 44px; 
-                 background-color: white; 
-                 color: #374151; 
-                 font-weight: bold; 
-                 border: 2px solid #d1d5db; 
-                 border-radius: 8px; 
-                 box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
-                 display: flex; 
-                 align-items: center; 
-                 justify-content: center; 
-                 font-size: 18px; 
-                 cursor: pointer;
-                 transition: all 0.2s ease;
-                 z-index: 1000;
-               "
-               onmouseover="this.style.backgroundColor='#f3f4f6'; this.style.transform='scale(1.05)'"
-               onmouseout="this.style.backgroundColor='white'; this.style.transform='scale(1)'"
-             >
-               📍
-             </button>
-           `;
-           
-           div.onclick = (e) => {
-             e.preventDefault();
-             e.stopPropagation();
-             getCurrentLocation();
-           };
-           return div;
-         };
-         locationButton.addTo(mapInstanceRef.current);
-
-         // تحسين الزر للهاتف
-         setTimeout(() => {
-           const buttonElement = locationButton.getContainer()?.querySelector('button');
-           if (buttonElement) {
-             // إضافة touch events للهاتف
-             buttonElement.addEventListener('touchstart', (e) => {
-               e.preventDefault();
-               buttonElement.style.backgroundColor = '#f3f4f6';
-               buttonElement.style.transform = 'scale(1.05)';
-             });
-             
-             buttonElement.addEventListener('touchend', (e) => {
-               e.preventDefault();
-               buttonElement.style.backgroundColor = 'white';
-               buttonElement.style.transform = 'scale(1)';
-             });
-             
-             // تحسين الحجم والموضع للهاتف
-             if (window.innerWidth <= 768) {
-               buttonElement.style.width = '48px';
-               buttonElement.style.height = '48px';
-               buttonElement.style.fontSize = '20px';
-               buttonElement.style.borderRadius = '10px';
-               buttonElement.style.zIndex = '1000';
-               buttonElement.style.position = 'relative';
-             }
-             
-             // تحسين z-index للعنصر الأب
-             const container = locationButton.getContainer();
-             if (container) {
-               container.style.zIndex = '1000';
-               container.style.position = 'relative';
-             }
-           }
-         }, 100);
-
-                     // إضافة مؤشر الموقع المحدد
-           if (selectedLocation) {
-             markerRef.current = L.marker([selectedLocation.lat, selectedLocation.lng], {
-               draggable: true,
-               icon: L.divIcon({
-                 className: 'custom-marker',
-                 html: '<div style="background-color: #2f6e73; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
-                 iconSize: [20, 20],
-                 iconAnchor: [10, 10]
-               })
-             }).addTo(mapInstanceRef.current);
-
-            markerRef.current.bindPopup(`
-              <div style="text-align: center; font-family: Calibri, Arial, sans-serif;">
-                <div style="font-weight: bold; margin-bottom: 5px;">الموقع المحدد</div>
-                <div style="font-size: 12px; color: #666;">
-                  ${selectedLocation.lat.toFixed(6)}, ${selectedLocation.lng.toFixed(6)}
-                </div>
-              </div>
-            `, {
-              closeButton: false,
-              closeOnClick: false
-            });
-          }
-
-                     // إضافة مؤشر قابل للسحب إذا لم يكن هناك موقع محدد
-           if (!selectedLocation) {
-             markerRef.current = L.marker([initialLat, initialLng], {
-               draggable: true,
-               icon: L.divIcon({
-                 className: 'custom-marker',
-                 html: '<div style="background-color: #b65449; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
-                 iconSize: [20, 20],
-                 iconAnchor: [10, 10]
-               })
-             }).addTo(mapInstanceRef.current);
-
-            markerRef.current.bindPopup(`
-              <div style="text-align: center; font-family: Calibri, Arial, sans-serif;">
-                <div style="font-weight: bold; margin-bottom: 5px;">اسحب المؤشر لتحديد موقعك</div>
-                <div style="font-size: 12px; color: #666;">
-                  ${initialLat.toFixed(6)}, ${initialLng.toFixed(6)}
-                </div>
-              </div>
-            `, {
-              closeButton: false,
-              closeOnClick: false
-            });
-          }
-
-                     // إضافة مؤشر الموقع الحالي للمستخدم
-           if (userLocation) {
-             const userMarker = L.marker([userLocation.lat, userLocation.lng], {
-               icon: L.divIcon({
-                 className: 'user-location-marker',
-                 html: '<div style="background-color: #4a8a8f; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
-                 iconSize: [16, 16],
-                 iconAnchor: [8, 8]
-               })
-             }).addTo(mapInstanceRef.current).bindPopup('موقعك الحالي', {
-               closeButton: false,
-               closeOnClick: false
-             });
-             
-             userMarker.on('click', (e) => {
-               if (e.originalEvent) {
-                 e.originalEvent.preventDefault();
-                 e.originalEvent.stopPropagation();
-               }
-             });
-           }
-
-          // إضافة أحداث النقر والسحب
-          mapInstanceRef.current.on('click', handleMapClick);
-          mapInstanceRef.current.on('click', (e) => {
-            if (e.originalEvent) {
-              e.originalEvent.preventDefault();
-              e.originalEvent.stopPropagation();
-            }
-          });
-          if (markerRef.current) {
-            markerRef.current.on('dragend', handleMarkerDrag);
-            markerRef.current.on('click', (e) => {
-              if (e.originalEvent) {
-                e.originalEvent.preventDefault();
-                e.originalEvent.stopPropagation();
-              }
-            });
-          }
-
-          setIsLoading(false);
-        }
-      } catch (error) {
-        console.error('خطأ في تحميل الخريطة:', error);
+        setIsLoading(false);
+      } catch (err) {
+        console.error('خطأ في تحميل خرائط جوجل:', err);
         setIsLoading(false);
       }
     };
@@ -278,294 +135,87 @@ const InteractiveMap = ({
     initMap();
 
     return () => {
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
+      if (mapClickListener) mapClickListener.remove();
+      if (markerDragListener) markerDragListener.remove();
+      if (markerRef.current) {
+        markerRef.current.setMap(null);
+        markerRef.current = null;
       }
+      mapInstanceRef.current = null;
     };
   }, []);
 
-  // تحديث المؤشر عند تغيير الموقع المحدد
   useEffect(() => {
-    const updateMarker = async () => {
-      if (mapInstanceRef.current && selectedLocation) {
-        try {
-          // انتظار تحميل Leaflet
-          const waitForLeaflet = () => {
-            return new Promise((resolve) => {
-              if (typeof window !== 'undefined' && window.L) {
-                resolve(window.L);
-              } else {
-                setTimeout(() => waitForLeaflet().then(resolve), 100);
-              }
-            });
-          };
-
-          const L = await waitForLeaflet();
-          
-          if (markerRef.current) {
-            mapInstanceRef.current.removeLayer(markerRef.current);
-          }
-          
-                     markerRef.current = L.marker([selectedLocation.lat, selectedLocation.lng], {
-             draggable: true,
-             icon: L.divIcon({
-               className: 'custom-marker',
-               html: '<div style="background-color: #2f6e73; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
-               iconSize: [20, 20],
-               iconAnchor: [10, 10]
-             })
-           }).addTo(mapInstanceRef.current);
-
-          markerRef.current.bindPopup(`
-            <div style="text-align: center; font-family: Arial, sans-serif;">
-              <div style="font-weight: bold; margin-bottom: 5px;">الموقع المحدد</div>
-              <div style="font-size: 12px; color: #666;">
-                ${selectedLocation.lat.toFixed(6)}, ${selectedLocation.lng.toFixed(6)}
-              </div>
-            </div>
-          `, {
-            closeButton: false,
-            closeOnClick: false
-          });
-
-          markerRef.current.on('dragend', handleMarkerDrag);
-          markerRef.current.on('click', (e) => {
-            if (e.originalEvent) {
-              e.originalEvent.preventDefault();
-              e.originalEvent.stopPropagation();
-            }
-          });
-          mapInstanceRef.current.setView([selectedLocation.lat, selectedLocation.lng], 16);
-        } catch (error) {
-          console.error('خطأ في تحديث المؤشر:', error);
-        }
-      }
-    };
-   
-    updateMarker();
+    if (!mapInstanceRef.current || !selectedLocation) return;
+    placeMarker(selectedLocation);
+    mapInstanceRef.current.setCenter(selectedLocation);
+    mapInstanceRef.current.setZoom(16);
   }, [selectedLocation]);
 
-  // الحصول على الموقع الحالي للمستخدم
-  const getCurrentLocation = async () => {
-    if (navigator.geolocation) {
-      setIsLoading(true);
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          try {
-            const { latitude, longitude } = position.coords;
-            setUserLocation({ lat: latitude, lng: longitude });
-            
-            // تحريك الخريطة إلى موقع المستخدم
-            if (mapInstanceRef.current) {
-              mapInstanceRef.current.setView([latitude, longitude], 16);
-            }
-            
-            // إضافة مؤشر موقع المستخدم
-            const waitForLeaflet = () => {
-              return new Promise((resolve) => {
-                if (typeof window !== 'undefined' && window.L) {
-                  resolve(window.L);
-                } else {
-                  setTimeout(() => waitForLeaflet().then(resolve), 100);
-                }
-              });
-            };
-
-            const L = await waitForLeaflet();
-            const userMarker = L.marker([latitude, longitude], {
-              icon: L.divIcon({
-                className: 'user-location-marker',
-                html: '<div style="background-color: #4a8a8f; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
-                iconSize: [16, 16],
-                iconAnchor: [8, 8]
-              })
-                         }).addTo(mapInstanceRef.current).bindPopup('موقعك الحالي', {
-               closeButton: false,
-               closeOnClick: false
-             });
-             
-             userMarker.on('click', (e) => {
-              if (e.originalEvent) {
-                e.originalEvent.preventDefault();
-                e.originalEvent.stopPropagation();
-              }
-            });
-            
-            setIsLoading(false);
-          } catch (error) {
-            console.error('خطأ في إضافة مؤشر الموقع الحالي:', error);
-            setIsLoading(false);
-          }
-        },
-        (error) => {
-          console.error('خطأ في تحديد الموقع:', error);
-          setIsLoading(false);
-          // You can add a state for showing error message here instead of alert
-          console.log('تعذر تحديد موقعك الحالي. يرجى تحديد الموقع يدوياً على الخريطة.');
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 300000
-        }
-      );
-    } else {
-      showAlert('متصفحك لا يدعم تحديد الموقع الجغرافي.', 'خطأ في الموقع', 'error');
-    }
-  };
-
-  // معالجة النقر على الخريطة
-  const handleMapClick = async (e) => {
-    // منع انتشار الحدث لتجنب تداخله مع أحداث النموذج
-    e.originalEvent.preventDefault();
-    e.originalEvent.stopPropagation();
-    
-    try {
-      const { lat, lng } = e.latlng;
-      
-      // انتظار تحميل Leaflet
-      const waitForLeaflet = () => {
-        return new Promise((resolve) => {
-          if (typeof window !== 'undefined' && window.L) {
-            resolve(window.L);
-          } else {
-            setTimeout(() => waitForLeaflet().then(resolve), 100);
-          }
-        });
-      };
-
-      const L = await waitForLeaflet();
-      
-      if (markerRef.current) {
-        mapInstanceRef.current.removeLayer(markerRef.current);
-      }
-      
-      markerRef.current = L.marker([lat, lng], {
+  const placeMarker = (position) => {
+    if (!mapInstanceRef.current || !window.google) return;
+    if (!markerRef.current) {
+      markerRef.current = new window.google.maps.Marker({
+        map: mapInstanceRef.current,
         draggable: true,
-        icon: L.divIcon({
-          className: 'custom-marker',
-          html: '<div style="background-color: #3b82f6; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
-          iconSize: [20, 20],
-          iconAnchor: [10, 10]
-        })
-      }).addTo(mapInstanceRef.current);
-
-      markerRef.current.bindPopup(`
-        <div style="text-align: center; font-family: Calibri, Arial, sans-serif;">
-          <div style="font-weight: bold; margin-bottom: 5px;">الموقع المحدد</div>
-          <div style="font-size: 12px; color: #666;">
-            ${lat.toFixed(6)}, ${lng.toFixed(6)}
-          </div>
-        </div>
-      `, {
-        closeButton: false,
-        closeOnClick: false
       });
-
-      markerRef.current.on('dragend', handleMarkerDrag);
-      markerRef.current.on('click', (e) => {
-        if (e.originalEvent) {
-          e.originalEvent.preventDefault();
-          e.originalEvent.stopPropagation();
-        }
+      markerRef.current.addListener('dragend', () => {
+        const pos = markerRef.current.getPosition();
+        onLocationSelect({ lat: pos.lat(), lng: pos.lng() });
       });
-      
-      // استدعاء دالة callback مع إحداثيات الموقع
-      onLocationSelect({ lat, lng });
-    } catch (error) {
-      console.error('خطأ في معالجة النقر على الخريطة:', error);
     }
+    markerRef.current.setPosition(position);
   };
 
-  // معالجة سحب المؤشر
-  const handleMarkerDrag = (e) => {
-    // منع انتشار الحدث لتجنب تداخله مع أحداث النموذج
-    if (e.originalEvent) {
-      e.originalEvent.preventDefault();
-      e.originalEvent.stopPropagation();
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      showAlert('متصفحك لا يدعم تحديد الموقع الجغرافي.', 'خطأ في الموقع', 'error');
+      return;
     }
-    
-    const { lat, lng } = e.target.getLatLng();
-    onLocationSelect({ lat, lng });
+    setIsLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const coords = { lat: latitude, lng: longitude };
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.setCenter(coords);
+          mapInstanceRef.current.setZoom(16);
+        }
+        placeMarker(coords);
+        onLocationSelect(coords);
+        setIsLoading(false);
+      },
+      (err) => {
+        console.error('خطأ في تحديد الموقع:', err);
+        setIsLoading(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
+    );
   };
 
   return (
-    <div className="relative" style={{
-      position: 'relative',
-      zIndex: 1
-    }}>
-      <style jsx>{`
-        .leaflet-control-container {
-          z-index: 1000 !important;
-        }
-        .leaflet-control {
-          z-index: 1000 !important;
-        }
-        .leaflet-control-layers {
-          z-index: 1000 !important;
-        }
-        .leaflet-control-layers-toggle {
-          z-index: 1000 !important;
-        }
-        @media (max-width: 768px) {
-          .leaflet-control {
-            font-size: 14px !important;
-          }
-          .leaflet-control-layers {
-            font-size: 14px !important;
-            min-width: 120px !important;
-          }
-        }
-      `}</style>
+    <div className="relative" style={{ position: 'relative', zIndex: 1 }}>
       {isLoading && (
         <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10 rounded-lg">
           <div className="text-center">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto mb-2" style={{
-                    borderBottomColor: '#2f6e73'
-                }}></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto mb-2" style={{ borderBottomColor: '#2f6e73' }}></div>
             <p className="text-sm text-gray-600">جاري تحميل الخريطة...</p>
           </div>
         </div>
       )}
-      
-      <div 
-        ref={mapRef} 
+
+      <div
+        ref={mapContainerRef}
         className="w-full h-80 rounded-2xl border-2 border-gray-200 shadow-lg"
-        style={{ 
-          minHeight: '320px',
-          position: 'relative',
-          zIndex: 1
-        }}
+        style={{ minHeight: '320px', position: 'relative', zIndex: 1 }}
       />
-      
-      <div className="mt-3 text-center" style={{
-        '@media (max-width: 768px)': {
-          marginTop: '0.75rem'
-        }
-      }}>
-        <p className="text-sm text-gray-600 mb-2" style={{
-          '@media (max-width: 768px)': {
-            fontSize: '0.875rem',
-            marginBottom: '0.75rem'
-          }
-        }}>
-          💡 انقر على الخريطة أو اسحب المؤشر لتحديد موقعك بدقة
-        </p>
-        <div className="flex items-center justify-center gap-4 text-xs text-gray-500" style={{
-          '@media (max-width: 768px)': {
-            flexDirection: 'column',
-            gap: '0.5rem',
-            fontSize: '0.75rem'
-          }
-        }}>
+
+      <div className="mt-3 text-center">
+        <p className="text-sm text-gray-600 mb-2">💡 انقر على الخريطة أو اسحب المؤشر لتحديد موقعك بدقة</p>
+        <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
           <div className="flex items-center gap-1">
             <div className="w-3 h-3 bg-blue-500 rounded-full border-2 border-white shadow-sm"></div>
             <span>الموقع المحدد</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-green-500 rounded-full border-2 border-white shadow-sm"></div>
-            <span>موقعك الحالي</span>
           </div>
         </div>
       </div>

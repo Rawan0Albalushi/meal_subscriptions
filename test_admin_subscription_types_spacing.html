@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار زيادة مساحة بطاقة الفلاتر والجدول - صفحة أنواع الاشتراكات</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 1rem;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 1rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2f6e73, #4a8a8f);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .content {
+            padding: 1rem;
+        }
+
+        .spacing-demo {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2f6e73;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .demo-description {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .improvements-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .improvement-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+
+        .improvement-title {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .improvement-description {
+            color: #6b7280;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .before, .after {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 2px solid;
+        }
+
+        .before {
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        .after {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .before-title, .after-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .before-title {
+            color: #dc2626;
+        }
+
+        .after-title {
+            color: #16a34a;
+        }
+
+        .code-example {
+            background: #1f2937;
+            color: #f9fafb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            overflow-x: auto;
+        }
+
+        .code-example pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+
+        .spacing-comparison {
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .spacing-comparison h3 {
+            color: #374151;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .spacing-values {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .spacing-value {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .spacing-value-title {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.25rem;
+        }
+
+        .spacing-value-desc {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 1.25rem;
+            }
+            
+            .content {
+                padding: 0.75rem;
+            }
+            
+            .spacing-demo {
+                padding: 1rem;
+            }
+            
+            .improvements-grid {
+                gap: 0.75rem;
+            }
+            
+            .improvement-item {
+                padding: 0.75rem;
+            }
+            
+            .before-after {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+            }
+            
+            .header h1 {
+                font-size: 1.1rem;
+            }
+            
+            .demo-title {
+                font-size: 1rem;
+            }
+            
+            .spacing-values {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 زيادة مساحة بطاقة الفلاتر والجدول - صفحة أنواع الاشتراكات</h1>
+            <p>تحسينات شاملة لزيادة المساحات والمسافات في صفحة إدارة أنواع الاشتراكات على الهواتف</p>
+        </div>
+
+        <div class="content">
+            <div class="spacing-demo">
+                <div class="demo-title">
+                    🎯 الهدف من التحسينات
+                </div>
+                <div class="demo-description">
+                    تم زيادة مساحة بطاقة الفلاتر وجدول عرض أنواع الاشتراكات في الهاتف لتحسين تجربة المستخدم وسهولة التفاعل مع العناصر.
+                </div>
+            </div>
+
+            <div class="improvements-grid">
+                <div class="improvement-item">
+                    <div class="improvement-title">
+                        📱 تحسينات بطاقة الفلاتر
+                    </div>
+                    <div class="improvement-description">
+                        • زيادة الحشو من 1rem إلى 1.5rem<br>
+                        • زيادة المسافات بين العناصر من 1rem إلى 1.25rem<br>
+                        • زيادة ارتفاع حقول الإدخال إلى 3rem<br>
+                        • تحسين حجم الخط من 0.9rem إلى 1rem
+                    </div>
+                </div>
+
+                <div class="improvement-item">
+                    <div class="improvement-title">
+                        📊 تحسينات الجدول
+                    </div>
+                    <div class="improvement-description">
+                        • زيادة الحشو في الخلايا من 0.75rem إلى 1.25rem<br>
+                        • زيادة الحد الأدنى للارتفاع إلى 4rem<br>
+                        • تحسين عرض البيانات في الخلايا<br>
+                        • زيادة حجم الخط من 0.8rem إلى 0.9rem
+                    </div>
+                </div>
+
+                <div class="improvement-item">
+                    <div class="improvement-title">
+                        🎨 تحسينات الشارات والأزرار
+                    </div>
+                    <div class="improvement-description">
+                        • زيادة حجم الشارات من 0.7rem إلى 0.8rem<br>
+                        • زيادة الحشو في الأزرار من 0.5rem إلى 0.75rem<br>
+                        • تحسين الحد الأدنى للارتفاع إلى 2.5rem<br>
+                        • تحسين المسافات بين العناصر
+                    </div>
+                </div>
+
+                <div class="improvement-item">
+                    <div class="improvement-title">
+                        📝 تحسينات النماذج
+                    </div>
+                    <div class="improvement-description">
+                        • زيادة الحشو في النماذج من 1rem إلى 1.5rem<br>
+                        • زيادة ارتفاع حقول الإدخال إلى 3rem<br>
+                        • تحسين حجم الخط من 0.9rem إلى 1rem<br>
+                        • زيادة المسافات بين الحقول
+                    </div>
+                </div>
+            </div>
+
+            <div class="before-after">
+                <div class="before">
+                    <div class="before-title">
+                        ❌ قبل التحسين
+                    </div>
+                    <div style="font-size: 0.8rem; color: #6b7280;">
+                        • حشو صغير في بطاقة الفلاتر (1rem)<br>
+                        • ارتفاع صغير للحقول (0.75rem)<br>
+                        • مسافات ضيقة بين العناصر<br>
+                        • حجم خط صغير (0.8rem)<br>
+                        • خلايا جدول ضيقة
+                    </div>
+                </div>
+                <div class="after">
+                    <div class="after-title">
+                        ✅ بعد التحسين
+                    </div>
+                    <div style="font-size: 0.8rem; color: #6b7280;">
+                        • حشو أكبر في بطاقة الفلاتر (1.5rem)<br>
+                        • ارتفاع أكبر للحقول (3rem)<br>
+                        • مسافات مريحة بين العناصر<br>
+                        • حجم خط مناسب (1rem)<br>
+                        • خلايا جدول واسعة
+                    </div>
+                </div>
+            </div>
+
+            <div class="spacing-comparison">
+                <h3>📏 قيم المسافات الجديدة</h3>
+                <div class="spacing-values">
+                    <div class="spacing-value">
+                        <div class="spacing-value-title">بطاقة الفلاتر</div>
+                        <div class="spacing-value-desc">الحشو: 1.5rem<br>المسافات: 1.25rem</div>
+                    </div>
+                    <div class="spacing-value">
+                        <div class="spacing-value-title">حقول الإدخال</div>
+                        <div class="spacing-value-desc">الارتفاع: 3rem<br>الحشو: 1rem</div>
+                    </div>
+                    <div class="spacing-value">
+                        <div class="spacing-value-title">خلايا الجدول</div>
+                        <div class="spacing-value-desc">الحشو: 1.25rem<br>الارتفاع: 4rem</div>
+                    </div>
+                    <div class="spacing-value">
+                        <div class="spacing-value-title">الأزرار</div>
+                        <div class="spacing-value-desc">الحشو: 0.75rem<br>الارتفاع: 2.5rem</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-example">
+                <pre>
+/* تحسينات المساحات للهاتف المحمول */
+
+@media (max-width: 768px) {
+    /* بطاقة الفلاتر */
+    .admin-subscription-types-filters {
+        padding: 1.5rem !important;
+        border-radius: 1rem !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    .admin-subscription-types-filters-grid {
+        gap: 1.25rem !important;
+    }
+    
+    .admin-subscription-types-search input,
+    .admin-subscription-types-filter-select {
+        padding: 1rem !important;
+        font-size: 1rem !important;
+        min-height: 3rem !important;
+    }
+    
+    /* الجدول */
+    .admin-subscription-types-table {
+        min-width: 900px !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .admin-subscription-types-table th,
+    .admin-subscription-types-table td {
+        padding: 1.25rem 0.75rem !important;
+        min-height: 4rem !important;
+    }
+    
+    /* الشارات والأزرار */
+    .admin-subscription-types-type-badge,
+    .admin-subscription-types-status-badge {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.8rem !important;
+        min-height: 2.5rem !important;
+    }
+    
+    .admin-subscription-types-action-btn {
+        padding: 0.75rem !important;
+        min-height: 2.5rem !important;
+    }
+}
+                </pre>
+            </div>
+
+            <div class="spacing-demo">
+                <div class="demo-title">
+                    🚀 المميزات الجديدة
+                </div>
+                <div class="demo-description">
+                    <strong>1. بطاقة الفلاتر المحسنة:</strong> تم زيادة مساحة بطاقة الفلاتر مع تحسين الحشو والمسافات بين العناصر.<br><br>
+                    <strong>2. جدول محسن:</strong> تم زيادة مساحة خلايا الجدول مع تحسين عرض البيانات والأزرار.<br><br>
+                    <strong>3. حقول إدخال أكبر:</strong> تم زيادة ارتفاع حقول الإدخال لسهولة التفاعل على الهواتف.<br><br>
+                    <strong>4. شارات وأزرار محسنة:</strong> تم تحسين حجم الشارات والأزرار مع زيادة المساحات.<br><br>
+                    <strong>5. تجربة مستخدم أفضل:</strong> تحسين شامل لتجربة المستخدم على الهواتف المحمولة.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

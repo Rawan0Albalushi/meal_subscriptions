@@ -4,7 +4,7 @@
 @media (max-width: 768px) {
     /* تحسين التخطيط العام */
     .seller-layout {
-        padding: 0.75rem !important;
+        padding: 0.5rem !important;
     }
     
     /* تحسين الشريط الجانبي */
@@ -21,31 +21,32 @@
     /* تحسين قائمة التنقل */
     .seller-nav-grid {
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.75rem !important;
+        gap: 0.5rem !important;
     }
     
     .seller-nav-item {
-        padding: 0.875rem 0.5rem !important;
+        padding: 0.75rem 0.5rem !important;
         flex-direction: column !important;
         align-items: center !important;
         text-align: center !important;
     }
     
     .seller-nav-icon {
-        width: 2.5rem !important;
-        height: 2.5rem !important;
-        font-size: 1.125rem !important;
+        width: 2.25rem !important;
+        height: 2.25rem !important;
+        font-size: 1rem !important;
         margin-bottom: 0.5rem !important;
     }
     
     .seller-nav-text {
-        font-size: 0.8rem !important;
+        font-size: 0.75rem !important;
         line-height: 1.2 !important;
     }
     
     .seller-nav-description {
-        font-size: 0.7rem !important;
+        font-size: 0.65rem !important;
         margin-top: 0.25rem !important;
+        display: none !important;
     }
     
     /* تحسين لوحة التحكم */
@@ -54,33 +55,36 @@
     }
     
     .seller-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
-        gap: 1rem !important;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+        gap: 0.75rem !important;
     }
     
     .seller-stats-card {
-        padding: 1.25rem !important;
+        padding: 1rem !important;
+        border-radius: 0.75rem !important;
     }
     
     .seller-quick-actions {
         grid-template-columns: 1fr !important;
-        gap: 0.75rem !important;
+        gap: 0.5rem !important;
     }
     
     .seller-quick-action {
-        padding: 1rem !important;
+        padding: 0.75rem !important;
         flex-direction: row !important;
         align-items: center !important;
+        border-radius: 0.5rem !important;
     }
     
     /* تحسين صفحة المطاعم */
     .seller-restaurants-grid {
         grid-template-columns: 1fr !important;
-        gap: 1rem !important;
+        gap: 0.75rem !important;
     }
     
     .seller-restaurant-card {
-        padding: 1rem !important;
+        padding: 0.875rem !important;
+        border-radius: 0.75rem !important;
     }
     
     .seller-restaurant-actions {
@@ -97,11 +101,12 @@
     /* تحسين صفحة الوجبات */
     .seller-meals-grid {
         grid-template-columns: 1fr !important;
-        gap: 1rem !important;
+        gap: 0.75rem !important;
     }
     
     .seller-meal-card {
-        padding: 1rem !important;
+        padding: 0.875rem !important;
+        border-radius: 0.75rem !important;
     }
     
     .seller-meal-actions {
@@ -118,7 +123,7 @@
     /* تحسين النماذج */
     .seller-form-grid {
         grid-template-columns: 1fr !important;
-        gap: 1rem !important;
+        gap: 0.75rem !important;
     }
     
     .seller-form-field {
@@ -145,8 +150,9 @@
     
     .seller-modal-content {
         max-width: 95vw !important;
-        padding: 1.5rem !important;
+        padding: 1rem !important;
         margin: 0.5rem !important;
+        border-radius: 0.75rem !important;
     }
     
     .seller-modal-header {
@@ -162,8 +168,8 @@
         min-height: 44px !important;
         min-width: 44px !important;
         padding: 0.75rem 1rem !important;
-        font-size: 0.875rem !important;
-        border-radius: 0.5rem !important;
+        font-size: 0.8rem !important;
+        border-radius: 0.375rem !important;
     }
     
     .seller-button-primary {
@@ -190,9 +196,9 @@
     
     /* تحسين البطاقات */
     .seller-card {
-        padding: 1rem !important;
+        padding: 0.875rem !important;
         border-radius: 0.75rem !important;
-        margin-bottom: 1rem !important;
+        margin-bottom: 0.75rem !important;
     }
     
     .seller-card-header {
@@ -297,25 +303,25 @@
 /* تحسينات للشاشات الصغيرة جداً */
 @media (max-width: 480px) {
     .seller-layout {
-        padding: 0.5rem !important;
+        padding: 0.25rem !important;
     }
     
     .seller-nav-grid {
         grid-template-columns: 1fr !important;
-        gap: 0.5rem !important;
+        gap: 0.25rem !important;
     }
     
     .seller-nav-item {
-        padding: 0.75rem 0.5rem !important;
+        padding: 0.5rem 0.25rem !important;
     }
     
     .seller-stats-grid {
         grid-template-columns: 1fr !important;
-        gap: 0.75rem !important;
+        gap: 0.5rem !important;
     }
     
     .seller-modal-content {
-        padding: 1rem !important;
+        padding: 0.75rem !important;
         margin: 0.25rem !important;
     }
     
@@ -327,7 +333,7 @@
     
     .seller-button {
         padding: 0.75rem !important;
-        font-size: 0.8rem !important;
+        font-size: 0.75rem !important;
     }
 }
 

@@ -835,7 +835,11 @@ const Cart = () => {
                                 <textarea
                                     value={specialInstructions}
                                     onChange={(e) => setSpecialInstructions(e.target.value)}
-                                    onBlur={handleUpdateSpecialInstructions}
+                                    onBlur={(e) => {
+                                        handleUpdateSpecialInstructions();
+                                        e.target.style.borderColor = '#e5e7eb';
+                                        e.target.style.boxShadow = 'none';
+                                    }}
                                     className="w-full p-4 bg-white border-2 border-gray-200 rounded-2xl text-lg transition-all duration-300 outline-none resize-none"
                                     style={{ 
                                         '--tw-ring-color': '#4a757c',
@@ -844,10 +848,6 @@ const Cart = () => {
                                     onFocus={(e) => {
                                         e.target.style.borderColor = '#4a757c';
                                         e.target.style.boxShadow = '0 0 0 4px rgba(74, 117, 124, 0.1)';
-                                    }}
-                                    onBlur={(e) => {
-                                        e.target.style.borderColor = '#e5e7eb';
-                                        e.target.style.boxShadow = 'none';
                                     }}
                                     rows="3"
                                     placeholder={t('specialInstructionsPlaceholder')}

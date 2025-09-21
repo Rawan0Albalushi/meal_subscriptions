@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet">
-    @viteReactRefresh
-    @vite(['resources/css/app.css','resources/js/app.jsx'])
+    @php
+        $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true);
+    @endphp
+    
+    <link rel="stylesheet" href="{{ asset('build/' . $manifest['resources/css/app.css']['file']) }}">
+    <script type="module" src="{{ asset('build/' . $manifest['resources/js/app.jsx']['file']) }}"></script>
     <title>اشتراك الوجبات</title>
-    <script>
-        // Configure Vite for local network access
-        window.__VITE_DEV_SERVER_URL__ = 'http://localhost:5173';
-    </script>
   </head>
   <body>
     <div id="app"></div>

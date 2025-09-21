@@ -16,6 +16,8 @@ const DeliveryAddresses = () => {
         phone: '',
         address: '',
         city: '',
+        latitude: '',
+        longitude: '',
         postal_code: '',
         additional_notes: '',
         is_default: false
@@ -101,6 +103,8 @@ const DeliveryAddresses = () => {
             phone: address.phone,
             address: address.address,
             city: address.city,
+            latitude: address.latitude ?? '',
+            longitude: address.longitude ?? '',
             postal_code: address.postal_code || '',
             additional_notes: address.additional_notes || '',
             is_default: address.is_default
@@ -142,6 +146,8 @@ const DeliveryAddresses = () => {
             phone: '',
             address: '',
             city: '',
+            latitude: '',
+            longitude: '',
             postal_code: '',
             additional_notes: '',
             is_default: false
@@ -387,6 +393,39 @@ const DeliveryAddresses = () => {
                                 
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-3">
+                                        {language === 'ar' ? 'خط العرض (Latitude)' : 'Latitude'}
+                                    </label>
+                                    <input
+                                        type="number"
+                                        step="0.00000001"
+                                        min="-90"
+                                        max="90"
+                                        value={formData.latitude}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, latitude: e.target.value }))}
+                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                                        placeholder={language === 'ar' ? 'مثال: 23.58500000' : 'e.g. 23.58500000'}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-3">
+                                        {language === 'ar' ? 'خط الطول (Longitude)' : 'Longitude'}
+                                    </label>
+                                    <input
+                                        type="number"
+                                        step="0.00000001"
+                                        min="-180"
+                                        max="180"
+                                        value={formData.longitude}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, longitude: e.target.value }))}
+                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+                                        placeholder={language === 'ar' ? 'مثال: 58.40590000' : 'e.g. 58.40590000'}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-3">
                                         {t('postalCode')}
                                     </label>
                                     <input
@@ -436,7 +475,7 @@ const DeliveryAddresses = () => {
                                 <button
                                     type="submit"
                                     disabled={submitting}
-                                    className="group relative px-8 py-3 text-white rounded-2xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                                        className="group relative px-8 py-3 text-white rounded-2xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2"
                                     style={{
                                         background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
                                         focusRingColor: '#4a757c'
