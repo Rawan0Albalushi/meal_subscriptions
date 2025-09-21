@@ -341,57 +341,6 @@ const MySubscriptions = () => {
                                             gridTemplateColumns: 'repeat(3, 1fr)'
                                         }
                                     }}>
-                                        <div style={{
-                                            padding: 'clamp(0.75rem, 3vw, 1rem)',
-                                            background: 'rgb(249 250 251)',
-                                            borderRadius: '0.75rem',
-                                            border: '1px solid rgb(229 231 235)'
-                                        }}>
-                                            <div style={{ 
-                                                fontSize: 'clamp(0.625rem, 2.5vw, 0.75rem)', 
-                                                color: 'rgb(107 114 128)', 
-                                                marginBottom: '0.5rem' 
-                                            }}>
-                                                {language === 'ar' ? 'تاريخ البداية' : 'Start Date'}
-                                            </div>
-                                            <div style={{ 
-                                                fontSize: 'clamp(0.875rem, 3vw, 1rem)', 
-                                                fontWeight: '600', 
-                                                color: 'rgb(31 41 55)' 
-                                            }}>
-                                                {new Date(subscription.start_date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-})}
-                                            </div>
-                                        </div>
-                                        
-                                        <div style={{
-                                            padding: 'clamp(0.75rem, 3vw, 1rem)',
-                                            background: 'rgb(249 250 251)',
-                                            borderRadius: '0.75rem',
-                                            border: '1px solid rgb(229 231 235)'
-                                        }}>
-                                            <div style={{ 
-                                                fontSize: 'clamp(0.625rem, 2.5vw, 0.75rem)', 
-                                                color: 'rgb(107 114 128)', 
-                                                marginBottom: '0.5rem' 
-                                            }}>
-                                                {language === 'ar' ? 'تاريخ الانتهاء' : 'End Date'}
-                                            </div>
-                                            <div style={{ 
-                                                fontSize: 'clamp(0.875rem, 3vw, 1rem)', 
-                                                fontWeight: '600', 
-                                                color: 'rgb(31 41 55)' 
-                                            }}>
-                                                {new Date(subscription.end_date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-})}
-                                            </div>
-                                        </div>
                                         
                                         <div style={{
                                             padding: 'clamp(0.75rem, 3vw, 1rem)',

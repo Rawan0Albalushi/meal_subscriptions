@@ -409,6 +409,10 @@ const RestaurantDetail = () => {
   const [errors, setErrors] = useState({});
   const [mealTypeFilter, setMealTypeFilter] = useState('');
   const [showMealTypeDropdown, setShowMealTypeDropdown] = useState(false);
+  const [customMealDates, setCustomMealDates] = useState({});
+  const [editingMealDate, setEditingMealDate] = useState(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [dateError, setDateError] = useState('');
 
   const weekDays = [
     { key: 'sunday', label: language === 'ar' ? 'الأحد' : 'Sunday' },
@@ -803,6 +807,58 @@ const RestaurantDetail = () => {
     return selectedMeals[dayKey] || null;
   };
 
+  // دالة لتحديث تاريخ وجبة معينة
+  const updateMealDate = (mealKey, newDate) => {
+    if (!newDate) {
+      setDateError('');
+      return;
+    }
+    
+    // استخدام نفس validation المستخدم في تاريخ البداية
+    if (isValidWeekday(newDate)) {
+      // حفظ التاريخ المخصص
+      setCustomMealDates(prev => {
+        const updatedDates = {
+          ...prev,
+          [mealKey]: newDate
+        };
+        console.log('📅 تم حفظ التاريخ المخصص:', { mealKey, newDate, allCustomDates: updatedDates });
+        return updatedDates;
+      });
+      setDateError('');
+      setEditingMealDate(null);
+      setShowDatePicker(false);
+    } else {
+      // عرض رسالة خطأ كـ state
+      const date = new Date(newDate);
+      const today = new Date();
+      const todayString = today.toISOString().split('T')[0];
+      const isToday = newDate === todayString;
+      const isWeekend = date.getDay() === 5 || date.getDay() === 6;
+      
+      if (isToday) {
+        setDateError(language === 'ar' ? 'لا يمكن اختيار تاريخ اليوم - يجب اختيار تاريخ من الغد فما بعد' : 'Cannot select today\'s date - Please select a date from tomorrow onwards');
+      } else if (isWeekend) {
+        setDateError(language === 'ar' ? 'لا يمكن اختيار الخميس أو الجمعة أو السبت - يجب اختيار يوم من الأحد إلى الأربعاء' : 'Cannot select Thursday, Friday, or Saturday - Please select a day from Sunday to Wednesday');
+      } else {
+        setDateError(language === 'ar' ? 'لا يمكن اختيار الخميس أو الجمعة أو السبت - يجب اختيار يوم من الأحد إلى الأربعاء' : 'Cannot select Thursday, Friday, or Saturday - Please select a day from Sunday to Wednesday');
+      }
+    }
+  };
+
+  // دالة لفتح محرر التاريخ
+  const openDateEditor = (mealKey) => {
+    setEditingMealDate(mealKey);
+    setShowDatePicker(true);
+  };
+
+  // دالة لإغلاق محرر التاريخ
+  const closeDateEditor = () => {
+    setEditingMealDate(null);
+    setShowDatePicker(false);
+    setDateError('');
+  };
+
   // Get next valid weekday (Sunday to Wednesday) - starting from tomorrow
   const getNextValidDate = () => {
     const today = new Date();
@@ -837,6 +893,8 @@ const RestaurantDetail = () => {
   // Generate meal days based on selected start date and subscription type
   const getWeekDaysFromStartDate = () => {
     if (!startDate || !selectedSubscriptionType) return [];
+    
+    console.log('📅 بدء إنشاء أيام الوجبات مع التواريخ المخصصة:', customMealDates);
     
     const start = new Date(startDate);
     const days = [];
@@ -887,12 +945,26 @@ const RestaurantDetail = () => {
     while (mealIndex < requiredMeals) {
       const dayOfWeek = currentDate.getDay();
       if (dayOfWeek >= 0 && dayOfWeek <= 3) { // Sunday = 0, Wednesday = 3 (only 4 days per week)
+        const mealKey = dayKeys[mealIndex];
+        const customDate = customMealDates[mealKey];
+        const finalDate = customDate ? new Date(customDate) : currentDate;
+        
+        // تسجيل استخدام التاريخ المخصص
+        if (customDate) {
+          console.log('📅 استخدام التاريخ المخصص:', { 
+            mealKey, 
+            customDate, 
+            originalDate: currentDate.toISOString().split('T')[0],
+            finalDate: finalDate.toISOString().split('T')[0]
+          });
+        }
+        
         days.push({
           key: dayKeys[mealIndex],
           label: mealLabels[mealIndex],
           icon: mealIcons[mealIndex],
-          date: currentDate.toISOString().split('T')[0],
-          displayDate: currentDate.toLocaleDateString('en-US', { 
+          date: finalDate.toISOString().split('T')[0],
+          displayDate: finalDate.toLocaleDateString('en-US', { 
             weekday: 'long', 
             year: 'numeric', 
             month: 'long', 
@@ -900,7 +972,8 @@ const RestaurantDetail = () => {
             calendar: 'gregory'
           }),
           weekNumber: Math.floor(mealIndex / 4) + 1,
-          dayOfWeek: dayOfWeek
+          dayOfWeek: dayOfWeek,
+          hasCustomDate: !!customDate
         });
         mealIndex++;
       }
@@ -908,6 +981,13 @@ const RestaurantDetail = () => {
       // Move to next day
       currentDate.setDate(currentDate.getDate() + 1);
     }
+    
+    console.log('📅 النتيجة النهائية لأيام الوجبات:', days.map(day => ({
+      label: day.label,
+      date: day.date,
+      displayDate: day.displayDate,
+      hasCustomDate: day.hasCustomDate
+    })));
     
     return days;
   };
@@ -2201,15 +2281,15 @@ const RestaurantDetail = () => {
                           fontSize: '1.125rem', 
                           fontWeight: '600', 
                           color: '#2f6e73',
-                          margin: 0,
-                          marginBottom: '0.125rem'
+                          margin: '0 0 0.25rem 0'
                         }}>
                           {day.label}
                         </h3>
                         <div style={{
                           fontSize: '0.75rem',
                           color: 'rgb(107 114 128)',
-                          fontWeight: '500'
+                          fontWeight: '500',
+                          marginBottom: '0.5rem'
                         }}>
                           {day.displayDate}
                         </div>
@@ -2218,24 +2298,75 @@ const RestaurantDetail = () => {
                             fontSize: '0.75rem',
                             color: day.weekNumber === 1 ? '#2f6e73' : day.weekNumber === 2 ? '#4a8a8f' : day.weekNumber === 3 ? '#b65449' : '#c86a5a',
                             fontWeight: '600',
-                            marginTop: '0.25rem'
+                            marginBottom: '0.5rem'
                           }}>
                             {language === 'ar' ? `الأسبوع ${day.weekNumber}` : `Week ${day.weekNumber}`}
                           </div>
                         )}
                       </div>
-                      {getSelectedMealForDay(day.key) && (
-                        <div style={{
-                          padding: '0.375rem 0.75rem',
-                          background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
-                          color: 'white',
-                          borderRadius: '1rem',
-                          fontSize: '0.75rem',
-                          fontWeight: '600'
-                        }}>
-                          {t('selected')}
-                        </div>
-                      )}
+                      
+                      {/* الأزرار في نفس السطر */}
+                      <div style={{
+                        display: 'flex',
+                        gap: '0.5rem',
+                        alignItems: 'center'
+                      }}>
+                        <button
+                          onClick={() => openDateEditor(day.key)}
+                          style={{
+                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '0.75rem',
+                            padding: '0.5rem 1rem',
+                            fontSize: '0.8rem',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.375rem',
+                            boxShadow: '0 3px 10px rgba(47, 110, 115, 0.3)',
+                            minWidth: '80px',
+                            height: '36px',
+                            whiteSpace: 'nowrap'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.transform = 'translateY(-2px)';
+                            e.target.style.boxShadow = '0 6px 16px rgba(47, 110, 115, 0.4)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.transform = 'translateY(0)';
+                            e.target.style.boxShadow = '0 3px 10px rgba(47, 110, 115, 0.3)';
+                          }}
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                          </svg>
+                          {language === 'ar' ? 'تعديل' : 'Edit'}
+                        </button>
+                        
+                        {getSelectedMealForDay(day.key) && (
+                          <div style={{
+                            padding: '0.5rem 1rem',
+                            background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
+                            color: 'white',
+                            borderRadius: '0.75rem',
+                            fontSize: '0.8rem',
+                            fontWeight: '600',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            minWidth: '80px',
+                            height: '36px',
+                            boxShadow: '0 3px 10px rgba(47, 110, 115, 0.3)',
+                            whiteSpace: 'nowrap'
+                          }}>
+                            {t('selected')}
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     {/* Meals Grid */}
@@ -2746,12 +2877,199 @@ const RestaurantDetail = () => {
         </div>
       )}
 
+      {/* Date Picker Modal */}
+      {showDatePicker && editingMealDate && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          backdropFilter: 'blur(4px)'
+        }}>
+          <div style={{
+            background: 'white',
+            borderRadius: '1rem',
+            padding: '2rem',
+            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
+            maxWidth: '400px',
+            width: '90%',
+            animation: 'slideInUp 0.3s ease-out'
+          }}>
+            <h3 style={{
+              fontSize: '1.25rem',
+              fontWeight: '700',
+              color: '#2f6e73',
+              margin: '0 0 1rem 0',
+              textAlign: 'center'
+            }}>
+              {language === 'ar' ? 'اختر تاريخ جديد للوجبة' : 'Choose New Date for Meal'}
+            </h3>
+            
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '0.5rem'
+              }}>
+                {language === 'ar' ? 'التاريخ الجديد:' : 'New Date:'}
+              </label>
+              <div style={{
+                fontSize: '0.75rem',
+                color: '#6b7280',
+                marginBottom: '0.75rem',
+                padding: '0.5rem',
+                background: '#f3f4f6',
+                borderRadius: '0.375rem',
+                border: '1px solid #e5e7eb'
+              }}>
+                {language === 'ar' 
+                  ? '⚠️ يمكن اختيار أيام الأحد إلى الأربعاء فقط (لا يمكن اختيار الخميس، الجمعة، السبت أو تاريخ اليوم)'
+                  : '⚠️ You can only select days from Sunday to Wednesday (Cannot select Thursday, Friday, Saturday or today\'s date)'
+                }
+              </div>
+              <input
+                type="date"
+                value={customMealDates[editingMealDate] || ''}
+                min={getNextValidDate()}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: dateError ? '2px solid #dc2626' : '2px solid #e5e7eb',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem',
+                  outline: 'none',
+                  transition: 'border-color 0.3s ease',
+                  background: '#f9fafb'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = dateError ? '#dc2626' : '#2f6e73';
+                  e.target.style.background = 'white';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = dateError ? '#dc2626' : '#e5e7eb';
+                  e.target.style.background = '#f9fafb';
+                }}
+                onChange={(e) => {
+                  const selectedDate = e.target.value;
+                  if (selectedDate) {
+                    updateMealDate(editingMealDate, selectedDate);
+                  }
+                }}
+              />
+              
+              {/* رسالة الخطأ */}
+              {dateError && (
+                <div style={{
+                  marginTop: '0.5rem',
+                  padding: '0.5rem',
+                  background: '#fef2f2',
+                  border: '1px solid #fecaca',
+                  borderRadius: '0.375rem',
+                  color: '#dc2626',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.375rem'
+                }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
+                  {dateError}
+                </div>
+              )}
+            </div>
+            
+            <div style={{
+              display: 'flex',
+              gap: '0.75rem',
+              justifyContent: 'center'
+            }}>
+              <button
+                onClick={closeDateEditor}
+                style={{
+                  background: '#f3f4f6',
+                  color: '#374151',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  padding: '0.75rem 1.5rem',
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = '#e5e7eb';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = '#f3f4f6';
+                }}
+              >
+                {language === 'ar' ? 'إلغاء' : 'Cancel'}
+              </button>
+              
+              {customMealDates[editingMealDate] && (
+                <button
+                  onClick={() => {
+                    setCustomMealDates(prev => {
+                      const newDates = { ...prev };
+                      delete newDates[editingMealDate];
+                      return newDates;
+                    });
+                    setEditingMealDate(null);
+                    setShowDatePicker(false);
+                  }}
+                  style={{
+                    background: '#dc2626',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '0.5rem',
+                    padding: '0.75rem 1.5rem',
+                    fontSize: '0.875rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = '#b91c1c';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = '#dc2626';
+                  }}
+                >
+                  {language === 'ar' ? 'إعادة تعيين' : 'Reset'}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* CSS Animations */}
       <style>{`
         @keyframes slideIn {
           from {
             opacity: 0;
             transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes slideInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
           }
           to {
             opacity: 1;

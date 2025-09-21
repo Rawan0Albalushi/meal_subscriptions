@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار حفظ التواريخ المخصصة</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #2f6e73;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .test-section h2 {
+            color: #2f6e73;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .test-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .test-item .icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #2f6e73, #4a8a8f);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+        
+        .test-item .text {
+            flex: 1;
+        }
+        
+        .test-item .text h3 {
+            margin: 0 0 5px 0;
+            color: #2f6e73;
+            font-size: 1.1rem;
+        }
+        
+        .test-item .text p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .success-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, #2f6e73, #4a8a8f);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .warning-box h3 {
+            color: #d97706;
+            margin: 0 0 10px 0;
+        }
+        
+        .warning-box p {
+            color: #92400e;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 اختبار حفظ التواريخ المخصصة</h1>
+            <p>تأكد من أن التواريخ المخصصة يتم حفظها واستخدامها بشكل صحيح</p>
+        </div>
+        
+        <div class="test-section">
+            <h2>✅ التحسينات المطبقة</h2>
+            
+            <div class="test-item">
+                <div class="icon">1</div>
+                <div class="text">
+                    <h3>إضافة Console Logging</h3>
+                    <p>تم إضافة console.log لتتبع حفظ واستخدام التواريخ المخصصة</p>
+                </div>
+                <span class="success-badge">مكتمل</span>
+            </div>
+            
+            <div class="test-item">
+                <div class="icon">2</div>
+                <div class="text">
+                    <h3>تتبع حفظ التاريخ</h3>
+                    <p>console.log عند حفظ التاريخ المخصص في updateMealDate</p>
+                </div>
+                <span class="success-badge">مكتمل</span>
+            </div>
+            
+            <div class="test-item">
+                <div class="icon">3</div>
+                <div class="text">
+                    <h3>تتبع استخدام التاريخ</h3>
+                    <p>console.log عند استخدام التاريخ المخصص في generateMealDays</p>
+                </div>
+                <span class="success-badge">مكتمل</span>
+            </div>
+            
+            <div class="test-item">
+                <div class="icon">4</div>
+                <div class="text">
+                    <h3>تتبع النتيجة النهائية</h3>
+                    <p>console.log لعرض النتيجة النهائية لأيام الوجبات</p>
+                </div>
+                <span class="success-badge">مكتمل</span>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔧 كيفية الاختبار</h2>
+            
+            <div class="warning-box">
+                <h3>⚠️ خطوات الاختبار</h3>
+                <p>1. افتح Developer Tools (F12) وانتقل إلى Console</p>
+                <p>2. اختر مطعم ونوع اشتراك وتاريخ بداية</p>
+                <p>3. اضغط على زر "تعديل" لأي وجبة</p>
+                <p>4. اختر تاريخ جديد صحيح</p>
+                <p>5. راقب console.log للتأكد من حفظ التاريخ</p>
+                <p>6. تأكد من أن التاريخ الجديد يظهر في الواجهة</p>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📊 Console Logs المتوقعة</h2>
+            
+            <h3>عند حفظ التاريخ:</h3>
+            <div class="code-block">
+📅 تم حفظ التاريخ المخصص: {
+  mealKey: "meal_0",
+  newDate: "2024-01-15",
+  allCustomDates: { "meal_0": "2024-01-15" }
+}
+            </div>
+            
+            <h3>عند استخدام التاريخ:</h3>
+            <div class="code-block">
+📅 استخدام التاريخ المخصص: {
+  mealKey: "meal_0",
+  customDate: "2024-01-15",
+  originalDate: "2024-01-14",
+  finalDate: "2024-01-15"
+}
+            </div>
+            
+            <h3>النتيجة النهائية:</h3>
+            <div class="code-block">
+📅 النتيجة النهائية لأيام الوجبات: [
+  {
+    label: "الوجبة الأولى",
+    date: "2024-01-15",
+    displayDate: "Monday, January 15, 2024",
+    hasCustomDate: true
+  }
+]
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🎯 النتائج المتوقعة</h2>
+            
+            <div class="test-item">
+                <div class="icon">✓</div>
+                <div class="text">
+                    <h3>حفظ صحيح</h3>
+                    <p>التاريخ المخصص يتم حفظه في customMealDates state</p>
+                </div>
+            </div>
+            
+            <div class="test-item">
+                <div class="icon">✓</div>
+                <div class="text">
+                    <h3>عرض صحيح</h3>
+                    <p>التاريخ المخصص يظهر في الواجهة بدلاً من التاريخ الأصلي</p>
+                </div>
+            </div>
+            
+            <div class="test-item">
+                <div class="icon">✓</div>
+                <div class="text">
+                    <h3>استمرارية</h3>
+                    <p>التاريخ المخصص يبقى محفوظاً حتى بعد إعادة تحميل الصفحة</p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; padding: 20px; background: linear-gradient(135deg, #2f6e73, #4a8a8f); color: white; border-radius: 15px;">
+            <h3 style="margin: 0 0 10px 0;">🔍 جاهز للاختبار!</h3>
+            <p style="margin: 0; opacity: 0.9;">افتح Developer Tools واختبر حفظ التواريخ المخصصة</p>
+        </div>
+    </div>
+</body>
+</html>
