@@ -505,7 +505,13 @@ const SubscriptionForm = () => {
               background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
+              backgroundClip: 'text',
+              lineHeight: '1.3',
+              padding: '0.5rem 0',
+              minHeight: '4rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}>
               {t('createNewSubscription')}
             </h1>

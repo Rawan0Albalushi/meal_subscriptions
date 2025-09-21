@@ -380,12 +380,17 @@ const SubscriptionDetail = () => {
                         <h1 style={{ 
                             fontSize: 'clamp(1.75rem, 6vw, 3.5rem)', 
                             fontWeight: 'bold', 
-                            lineHeight: '1.2', 
+                            lineHeight: '1.3', 
                             marginBottom: 'clamp(1rem, 4vw, 1.5rem)',
                             background: 'linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
-                            backgroundClip: 'text'
+                            backgroundClip: 'text',
+                            padding: '0.5rem 0',
+                            minHeight: '4rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
                         }}>
                             {language === 'ar' ? 'تفاصيل الاشتراك' : 'Subscription Details'}
                         </h1>
