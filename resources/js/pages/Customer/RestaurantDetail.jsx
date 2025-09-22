@@ -744,24 +744,19 @@ const RestaurantDetail = () => {
     const currentSelectedCount = Object.keys(selectedMeals).length;
     const maxAllowed = selectedSubscriptionType?.meals_count || 0;
     
-    // If this day is already selected, allow deselection
-    if (selectedMeals[dayKey]) {
+    // Check if this specific meal is already selected
+    const isCurrentMealSelected = selectedMeals[dayKey] && selectedMeals[dayKey].id === meal.id;
+    
+    // If this specific meal is already selected, allow deselection
+    if (isCurrentMealSelected) {
       setSelectedMeals(prev => {
         const newSelected = { ...prev };
         delete newSelected[dayKey];
         return newSelected;
       });
     } else {
-      // Check if we can add more meals
-      if (currentSelectedCount >= maxAllowed) {
-        // Show error message
-        setErrors(prev => ({ 
-          ...prev, 
-          meals: t('maxMealsReached', { count: maxAllowed }) 
-        }));
-        return;
-      }
-      
+      // If this day already has a different meal selected, replace it
+      // or if no meal is selected for this day, add it
       setSelectedMeals(prev => ({
         ...prev,
         [dayKey]: meal
