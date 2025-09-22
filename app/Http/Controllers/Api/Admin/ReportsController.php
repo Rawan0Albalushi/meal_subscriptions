@@ -16,11 +16,23 @@ class ReportsController extends Controller
     {
         try {
             $period = $request->get('period', '30days');
+            $restaurantId = $request->get('restaurant_id');
+            $subscriptionType = $request->get('subscription_type');
+            $subscriptionStatus = $request->get('subscription_status');
+            $minPrice = $request->get('min_price');
+            $maxPrice = $request->get('max_price');
+            $customStartDate = $request->get('start_date');
+            $customEndDate = $request->get('end_date');
             
-            // Calculate date range based on period
-            $dateRange = $this->getDateRange($period);
-            $startDate = $dateRange['start'];
-            $endDate = $dateRange['end'];
+            // Calculate date range based on period or custom dates
+            if ($customStartDate && $customEndDate) {
+                $startDate = Carbon::parse($customStartDate);
+                $endDate = Carbon::parse($customEndDate);
+            } else {
+                $dateRange = $this->getDateRange($period);
+                $startDate = $dateRange['start'];
+                $endDate = $dateRange['end'];
+            }
 
             // User statistics
             $userStats = [
@@ -73,10 +85,38 @@ class ReportsController extends Controller
             $recentActivity = $this->getRecentActivity($startDate, $endDate);
 
             // Recent subscriptions with detailed pricing
-            $recentSubscriptions = Subscription::with(['user', 'restaurant', 'subscriptionType'])
-                ->whereBetween('created_at', [$startDate, $endDate])
+            $subscriptionsQuery = Subscription::with(['user', 'restaurant', 'subscriptionType'])
+                ->whereBetween('created_at', [$startDate, $endDate]);
+                
+            // Apply filters
+            if ($restaurantId) {
+                $subscriptionsQuery->where('restaurant_id', $restaurantId);
+            }
+            
+            if ($subscriptionType) {
+                $subscriptionsQuery->whereHas('subscriptionType', function($query) use ($subscriptionType) {
+                    $query->where('type', $subscriptionType);
+                });
+            }
+            
+            if ($subscriptionStatus) {
+                $subscriptionsQuery->where('status', $subscriptionStatus);
+            }
+            
+            if ($minPrice || $maxPrice) {
+                $subscriptionsQuery->where(function($query) use ($minPrice, $maxPrice) {
+                    if ($minPrice) {
+                        $query->where('total_amount', '>=', $minPrice);
+                    }
+                    if ($maxPrice) {
+                        $query->where('total_amount', '<=', $maxPrice);
+                    }
+                });
+            }
+            
+            $recentSubscriptions = $subscriptionsQuery
                 ->latest()
-                ->take(20)
+                ->take(100) // Increased limit for better filtering results
                 ->get()
                 ->map(function ($subscription) {
                     $subscriptionType = $subscription->subscriptionType;
@@ -114,6 +154,21 @@ class ReportsController extends Controller
             ->orderBy('subscriptions_sum_total_amount', 'desc')
             ->take(10)
             ->get();
+            
+            // Get filter options
+            $filterOptions = [
+                'restaurants' => Restaurant::select('id', 'name_ar', 'name_en')->get(),
+                'subscriptionTypes' => [
+                    ['value' => 'weekly', 'label_ar' => 'أسبوعي', 'label_en' => 'Weekly'],
+                    ['value' => 'monthly', 'label_ar' => 'شهري', 'label_en' => 'Monthly']
+                ],
+                'subscriptionStatuses' => [
+                    ['value' => 'pending', 'label_ar' => 'في الانتظار', 'label_en' => 'Pending'],
+                    ['value' => 'active', 'label_ar' => 'نشط', 'label_en' => 'Active'],
+                    ['value' => 'completed', 'label_ar' => 'مكتمل', 'label_en' => 'Completed'],
+                    ['value' => 'cancelled', 'label_ar' => 'ملغي', 'label_en' => 'Cancelled']
+                ]
+            ];
 
             return response()->json([
                 'success' => true,
@@ -129,7 +184,17 @@ class ReportsController extends Controller
                     'revenueStats' => $revenueStats,
                     'recentActivity' => $recentActivity,
                     'recentSubscriptions' => $recentSubscriptions,
-                    'topRestaurants' => $topRestaurants
+                    'topRestaurants' => $topRestaurants,
+                    'filterOptions' => $filterOptions,
+                    'appliedFilters' => [
+                        'restaurant_id' => $restaurantId,
+                        'subscription_type' => $subscriptionType,
+                        'subscription_status' => $subscriptionStatus,
+                        'min_price' => $minPrice,
+                        'max_price' => $maxPrice,
+                        'start_date' => $customStartDate,
+                        'end_date' => $customEndDate
+                    ]
                 ]
             ]);
 

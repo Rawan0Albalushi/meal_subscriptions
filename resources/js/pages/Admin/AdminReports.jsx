@@ -14,15 +14,45 @@ const AdminReports = () => {
     const [loading, setLoading] = useState(true);
     const [selectedPeriod, setSelectedPeriod] = useState('30days');
     const [selectedReport, setSelectedReport] = useState('overview');
+    
+    // Filter states
+    const [filters, setFilters] = useState({
+        restaurantId: '',
+        subscriptionType: '',
+        subscriptionStatus: '',
+        minPrice: '',
+        maxPrice: '',
+        startDate: '',
+        endDate: ''
+    });
+    const [filterOptions, setFilterOptions] = useState({
+        restaurants: [],
+        subscriptionTypes: [],
+        subscriptionStatuses: []
+    });
 
     useEffect(() => {
         fetchReports();
-    }, [selectedPeriod]);
+    }, [selectedPeriod, filters]);
 
     const fetchReports = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`/api/admin/reports?period=${selectedPeriod}`, {
+            
+            // Build query parameters
+            const params = new URLSearchParams();
+            params.append('period', selectedPeriod);
+            
+            // Add filter parameters
+            if (filters.restaurantId) params.append('restaurant_id', filters.restaurantId);
+            if (filters.subscriptionType) params.append('subscription_type', filters.subscriptionType);
+            if (filters.subscriptionStatus) params.append('subscription_status', filters.subscriptionStatus);
+            if (filters.minPrice) params.append('min_price', filters.minPrice);
+            if (filters.maxPrice) params.append('max_price', filters.maxPrice);
+            if (filters.startDate) params.append('start_date', filters.startDate);
+            if (filters.endDate) params.append('end_date', filters.endDate);
+            
+            const response = await fetch(`/api/admin/reports?${params.toString()}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
                     'Content-Type': 'application/json'
@@ -32,6 +62,11 @@ const AdminReports = () => {
             if (response.ok) {
                 const data = await response.json();
                 setReports(data.data || {});
+                setFilterOptions(data.data?.filterOptions || {
+                    restaurants: [],
+                    subscriptionTypes: [],
+                    subscriptionStatuses: []
+                });
             }
         } catch (error) {
             console.error('Error fetching reports:', error);
@@ -43,11 +78,24 @@ const AdminReports = () => {
     // Fetch recent subscriptions to mirror seller reports table
     useEffect(() => {
         fetchRecentSubscriptions();
-    }, [selectedPeriod]);
+    }, [selectedPeriod, filters]);
 
     const fetchRecentSubscriptions = async () => {
         try {
-            const response = await fetch(`/api/admin/reports?period=${selectedPeriod}`, {
+            // Build query parameters
+            const params = new URLSearchParams();
+            params.append('period', selectedPeriod);
+            
+            // Add filter parameters
+            if (filters.restaurantId) params.append('restaurant_id', filters.restaurantId);
+            if (filters.subscriptionType) params.append('subscription_type', filters.subscriptionType);
+            if (filters.subscriptionStatus) params.append('subscription_status', filters.subscriptionStatus);
+            if (filters.minPrice) params.append('min_price', filters.minPrice);
+            if (filters.maxPrice) params.append('max_price', filters.maxPrice);
+            if (filters.startDate) params.append('start_date', filters.startDate);
+            if (filters.endDate) params.append('end_date', filters.endDate);
+            
+            const response = await fetch(`/api/admin/reports?${params.toString()}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
                     'Content-Type': 'application/json'
@@ -121,6 +169,26 @@ const AdminReports = () => {
         } catch {
             return '-';
         }
+    };
+
+    // Filter handlers
+    const handleFilterChange = (filterName, value) => {
+        setFilters(prev => ({
+            ...prev,
+            [filterName]: value
+        }));
+    };
+
+    const resetFilters = () => {
+        setFilters({
+            restaurantId: '',
+            subscriptionType: '',
+            subscriptionStatus: '',
+            minPrice: '',
+            maxPrice: '',
+            startDate: '',
+            endDate: ''
+        });
     };
 
     const downloadCSV = (filename, rows) => {
@@ -466,6 +534,348 @@ const AdminReports = () => {
                 </div>
 
                 {/* Report Type Selector removed (show key stats only) */}
+            </div>
+
+            {/* Filters Section */}
+            <div style={{
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(20px)',
+                borderRadius: '1.25rem',
+                padding: '1.5rem',
+                marginBottom: '2rem',
+                boxShadow: '0 15px 35px rgba(0, 0, 0, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)'
+            }}>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '1.5rem'
+                }}>
+                    <h3 style={{
+                        fontSize: '1.25rem',
+                        fontWeight: '600',
+                        color: 'rgb(17 24 39)',
+                        margin: '0',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                    }}>
+                        <span>🔍</span>
+                        {language === 'ar' ? 'فلاتر التقارير' : 'Report Filters'}
+                    </h3>
+                    <button
+                        onClick={resetFilters}
+                        style={{
+                            padding: '0.5rem 1rem',
+                            borderRadius: '0.5rem',
+                            border: '1px solid rgba(239, 68, 68, 0.3)',
+                            background: 'rgba(239, 68, 68, 0.08)',
+                            color: '#ef4444',
+                            fontSize: '0.875rem',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.target.style.background = 'rgba(239, 68, 68, 0.15)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.background = 'rgba(239, 68, 68, 0.08)';
+                        }}
+                    >
+                        {language === 'ar' ? 'إعادة تعيين' : 'Reset Filters'}
+                    </button>
+                </div>
+
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gap: '1rem',
+                    marginBottom: '1rem'
+                }}>
+                    {/* Restaurant Filter */}
+                    <div>
+                        <label style={{
+                            display: 'block',
+                            fontSize: '0.875rem',
+                            fontWeight: '500',
+                            color: 'rgb(55 65 81)',
+                            marginBottom: '0.5rem'
+                        }}>
+                            {language === 'ar' ? 'المطعم' : 'Restaurant'}
+                        </label>
+                        <select
+                            value={filters.restaurantId}
+                            onChange={(e) => handleFilterChange('restaurantId', e.target.value)}
+                            style={{
+                                width: '100%',
+                                padding: '0.75rem',
+                                border: '1px solid rgba(0, 0, 0, 0.1)',
+                                borderRadius: '0.5rem',
+                                fontSize: '0.875rem',
+                                background: 'white'
+                            }}
+                        >
+                            <option value="">{language === 'ar' ? 'جميع المطاعم' : 'All Restaurants'}</option>
+                            {filterOptions.restaurants.map(restaurant => (
+                                <option key={restaurant.id} value={restaurant.id}>
+                                    {language === 'ar' ? restaurant.name_ar : restaurant.name_en}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Subscription Type Filter */}
+                    <div>
+                        <label style={{
+                            display: 'block',
+                            fontSize: '0.875rem',
+                            fontWeight: '500',
+                            color: 'rgb(55 65 81)',
+                            marginBottom: '0.5rem'
+                        }}>
+                            {language === 'ar' ? 'نوع الاشتراك' : 'Subscription Type'}
+                        </label>
+                        <select
+                            value={filters.subscriptionType}
+                            onChange={(e) => handleFilterChange('subscriptionType', e.target.value)}
+                            style={{
+                                width: '100%',
+                                padding: '0.75rem',
+                                border: '1px solid rgba(0, 0, 0, 0.1)',
+                                borderRadius: '0.5rem',
+                                fontSize: '0.875rem',
+                                background: 'white'
+                            }}
+                        >
+                            <option value="">{language === 'ar' ? 'جميع الأنواع' : 'All Types'}</option>
+                            {filterOptions.subscriptionTypes.map(type => (
+                                <option key={type.value} value={type.value}>
+                                    {language === 'ar' ? type.label_ar : type.label_en}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Subscription Status Filter */}
+                    <div>
+                        <label style={{
+                            display: 'block',
+                            fontSize: '0.875rem',
+                            fontWeight: '500',
+                            color: 'rgb(55 65 81)',
+                            marginBottom: '0.5rem'
+                        }}>
+                            {language === 'ar' ? 'حالة الاشتراك' : 'Subscription Status'}
+                        </label>
+                        <select
+                            value={filters.subscriptionStatus}
+                            onChange={(e) => handleFilterChange('subscriptionStatus', e.target.value)}
+                            style={{
+                                width: '100%',
+                                padding: '0.75rem',
+                                border: '1px solid rgba(0, 0, 0, 0.1)',
+                                borderRadius: '0.5rem',
+                                fontSize: '0.875rem',
+                                background: 'white'
+                            }}
+                        >
+                            <option value="">{language === 'ar' ? 'جميع الحالات' : 'All Statuses'}</option>
+                            {filterOptions.subscriptionStatuses.map(status => (
+                                <option key={status.value} value={status.value}>
+                                    {language === 'ar' ? status.label_ar : status.label_en}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                    gap: '1rem',
+                    marginBottom: '1rem'
+                }}>
+                    {/* Price Range Filters */}
+                    <div>
+                        <label style={{
+                            display: 'block',
+                            fontSize: '0.875rem',
+                            fontWeight: '500',
+                            color: 'rgb(55 65 81)',
+                            marginBottom: '0.5rem'
+                        }}>
+                            {language === 'ar' ? 'الحد الأدنى للسعر' : 'Min Price'}
+                        </label>
+                        <input
+                            type="number"
+                            value={filters.minPrice}
+                            onChange={(e) => handleFilterChange('minPrice', e.target.value)}
+                            placeholder={language === 'ar' ? '0' : '0'}
+                            style={{
+                                width: '100%',
+                                padding: '0.75rem',
+                                border: '1px solid rgba(0, 0, 0, 0.1)',
+                                borderRadius: '0.5rem',
+                                fontSize: '0.875rem'
+                            }}
+                        />
+                    </div>
+
+                    <div>
+                        <label style={{
+                            display: 'block',
+                            fontSize: '0.875rem',
+                            fontWeight: '500',
+                            color: 'rgb(55 65 81)',
+                            marginBottom: '0.5rem'
+                        }}>
+                            {language === 'ar' ? 'الحد الأقصى للسعر' : 'Max Price'}
+                        </label>
+                        <input
+                            type="number"
+                            value={filters.maxPrice}
+                            onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
+                            placeholder={language === 'ar' ? '1000' : '1000'}
+                            style={{
+                                width: '100%',
+                                padding: '0.75rem',
+                                border: '1px solid rgba(0, 0, 0, 0.1)',
+                                borderRadius: '0.5rem',
+                                fontSize: '0.875rem'
+                            }}
+                        />
+                    </div>
+
+                    {/* Date Range Filters */}
+                    <div>
+                        <label style={{
+                            display: 'block',
+                            fontSize: '0.875rem',
+                            fontWeight: '500',
+                            color: 'rgb(55 65 81)',
+                            marginBottom: '0.5rem'
+                        }}>
+                            {language === 'ar' ? 'من تاريخ' : 'From Date'}
+                        </label>
+                        <input
+                            type="date"
+                            value={filters.startDate}
+                            onChange={(e) => handleFilterChange('startDate', e.target.value)}
+                            style={{
+                                width: '100%',
+                                padding: '0.75rem',
+                                border: '1px solid rgba(0, 0, 0, 0.1)',
+                                borderRadius: '0.5rem',
+                                fontSize: '0.875rem'
+                            }}
+                        />
+                    </div>
+
+                    <div>
+                        <label style={{
+                            display: 'block',
+                            fontSize: '0.875rem',
+                            fontWeight: '500',
+                            color: 'rgb(55 65 81)',
+                            marginBottom: '0.5rem'
+                        }}>
+                            {language === 'ar' ? 'إلى تاريخ' : 'To Date'}
+                        </label>
+                        <input
+                            type="date"
+                            value={filters.endDate}
+                            onChange={(e) => handleFilterChange('endDate', e.target.value)}
+                            style={{
+                                width: '100%',
+                                padding: '0.75rem',
+                                border: '1px solid rgba(0, 0, 0, 0.1)',
+                                borderRadius: '0.5rem',
+                                fontSize: '0.875rem'
+                            }}
+                        />
+                    </div>
+                </div>
+
+                {/* Active Filters Summary */}
+                {Object.values(filters).some(value => value !== '') && (
+                    <div style={{
+                        padding: '1rem',
+                        background: 'rgba(47, 110, 115, 0.1)',
+                        borderRadius: '0.5rem',
+                        border: '1px solid rgba(47, 110, 115, 0.2)'
+                    }}>
+                        <div style={{
+                            fontSize: '0.875rem',
+                            fontWeight: '500',
+                            color: '#2f6e73',
+                            marginBottom: '0.5rem'
+                        }}>
+                            {language === 'ar' ? 'الفلاتر النشطة:' : 'Active Filters:'}
+                        </div>
+                        <div style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: '0.5rem'
+                        }}>
+                            {filters.restaurantId && (
+                                <span style={{
+                                    padding: '0.25rem 0.5rem',
+                                    background: 'rgba(47, 110, 115, 0.15)',
+                                    borderRadius: '0.25rem',
+                                    fontSize: '0.75rem',
+                                    color: '#2f6e73'
+                                }}>
+                                    {language === 'ar' ? 'مطعم محدد' : 'Specific Restaurant'}
+                                </span>
+                            )}
+                            {filters.subscriptionType && (
+                                <span style={{
+                                    padding: '0.25rem 0.5rem',
+                                    background: 'rgba(47, 110, 115, 0.15)',
+                                    borderRadius: '0.25rem',
+                                    fontSize: '0.75rem',
+                                    color: '#2f6e73'
+                                }}>
+                                    {filterOptions.subscriptionTypes.find(t => t.value === filters.subscriptionType)?.label_ar || filters.subscriptionType}
+                                </span>
+                            )}
+                            {filters.subscriptionStatus && (
+                                <span style={{
+                                    padding: '0.25rem 0.5rem',
+                                    background: 'rgba(47, 110, 115, 0.15)',
+                                    borderRadius: '0.25rem',
+                                    fontSize: '0.75rem',
+                                    color: '#2f6e73'
+                                }}>
+                                    {filterOptions.subscriptionStatuses.find(s => s.value === filters.subscriptionStatus)?.label_ar || filters.subscriptionStatus}
+                                </span>
+                            )}
+                            {(filters.minPrice || filters.maxPrice) && (
+                                <span style={{
+                                    padding: '0.25rem 0.5rem',
+                                    background: 'rgba(47, 110, 115, 0.15)',
+                                    borderRadius: '0.25rem',
+                                    fontSize: '0.75rem',
+                                    color: '#2f6e73'
+                                }}>
+                                    {language === 'ar' ? `سعر: ${filters.minPrice || 0} - ${filters.maxPrice || '∞'}` : `Price: ${filters.minPrice || 0} - ${filters.maxPrice || '∞'}`}
+                                </span>
+                            )}
+                            {(filters.startDate || filters.endDate) && (
+                                <span style={{
+                                    padding: '0.25rem 0.5rem',
+                                    background: 'rgba(47, 110, 115, 0.15)',
+                                    borderRadius: '0.25rem',
+                                    fontSize: '0.75rem',
+                                    color: '#2f6e73'
+                                }}>
+                                    {language === 'ar' ? `تاريخ مخصص` : 'Custom Date Range'}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Key Stats only */}
