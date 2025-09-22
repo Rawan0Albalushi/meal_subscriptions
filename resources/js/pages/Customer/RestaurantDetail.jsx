@@ -488,7 +488,7 @@ const RestaurantDetail = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { t, language, dir } = useLanguage();
-  const { createOrUpdateCart, addItem } = useCart();
+  const { createOrUpdateCart, addItem, clearCart } = useCart();
   
   const [restaurant, setRestaurant] = useState(null);
   const [meals, setMeals] = useState([]);
@@ -514,6 +514,67 @@ const RestaurantDetail = () => {
     { key: 'wednesday', label: language === 'ar' ? 'الأربعاء' : 'Wednesday' },
     { key: 'thursday', label: language === 'ar' ? 'الخميس' : 'Thursday' }
   ];
+
+  // Intercept clicks on "إفراغ السلة" inside inline error and confirm clearing
+  useEffect(() => {
+    const handleClick = async (e) => {
+      const target = e.target.closest('a[data-clear-cart="1"]');
+      if (!target) return;
+
+      e.preventDefault();
+
+      const confirmed = await new Promise((resolve) => {
+        const confirmBox = document.createElement('div');
+        confirmBox.style.position = 'fixed';
+        confirmBox.style.inset = '0';
+        confirmBox.style.background = 'rgba(0,0,0,0.5)';
+        confirmBox.style.display = 'flex';
+        confirmBox.style.alignItems = 'center';
+        confirmBox.style.justifyContent = 'center';
+        confirmBox.style.zIndex = '10000';
+
+        const modal = document.createElement('div');
+        modal.style.background = '#fff';
+        modal.style.padding = '20px';
+        modal.style.borderRadius = '12px';
+        modal.style.width = 'min(420px, 92vw)';
+        modal.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)';
+        modal.style.direction = dir;
+
+        modal.innerHTML = `
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+            <div style="width:40px; height:40px; border-radius:10px; background:linear-gradient(135deg,#f59e0b,#ef4444); display:flex; align-items:center; justify-content:center; color:white; font-weight:700;">!</div>
+            <div style="font-size:1.1rem; font-weight:700; color:#111827;">${t('confirm')}</div>
+          </div>
+          <div style="color:#4b5563; font-size:0.95rem; margin-bottom:16px;">${t('confirmClearCart')}</div>
+          <div style="display:flex; gap:8px; justify-content:${dir==='rtl'?'flex-start':'flex-end'};">
+            <button id="confirmCancelBtn" style="padding:10px 14px; border:1px solid #e5e7eb; background:#fff; color:#374151; border-radius:8px; font-weight:600; cursor:pointer;">${t('cancel')}</button>
+            <button id="confirmOkBtn" style="padding:10px 14px; border:none; background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border-radius:8px; font-weight:700; cursor:pointer;">${t('clearCart')}</button>
+          </div>
+        `;
+
+        confirmBox.appendChild(modal);
+        document.body.appendChild(confirmBox);
+
+        const cleanup = () => document.body.removeChild(confirmBox);
+        modal.querySelector('#confirmOkBtn').onclick = () => { cleanup(); resolve(true); };
+        modal.querySelector('#confirmCancelBtn').onclick = () => { cleanup(); resolve(false); };
+      });
+
+      if (!confirmed) return;
+
+      try {
+        await clearCart();
+        setErrors((prev) => ({ ...prev, general: '' }));
+      } catch (err) {
+        // Keep the user on the same page; optionally surface an inline error
+        setErrors((prev) => ({ ...prev, general: t('failedToClearCart') }));
+      }
+    };
+
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [dir, t, clearCart]);
 
   // أسماء أنواع الوجبات حسب اللغة
   const mealTypeNames = {

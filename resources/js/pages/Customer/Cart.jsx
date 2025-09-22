@@ -27,6 +27,13 @@ const Cart = () => {
     const [addingNewAddress, setAddingNewAddress] = useState(false);
     const [newAddress, setNewAddress] = useState({ name: '', address: '', phone: '', city: '' });
     const [selectedLocation, setSelectedLocation] = useState(null);
+    const [showAddressErrors, setShowAddressErrors] = useState(false);
+
+    useEffect(() => {
+        if (showAddressErrors && isNewAddressComplete()) {
+            setShowAddressErrors(false);
+        }
+    }, [newAddress, showAddressErrors]);
     
     // Subscription details
     const [subscriptionTypeData, setSubscriptionTypeData] = useState(null);
@@ -260,8 +267,18 @@ const Cart = () => {
         );
     };
 
+    const getNewAddressErrors = () => {
+        return {
+            name: !newAddress.name?.trim(),
+            address: !newAddress.address?.trim(),
+            phone: !newAddress.phone?.trim(),
+            city: !newAddress.city?.trim()
+        };
+    };
+
     const handleSaveNewAddress = async () => {
         if (!isNewAddressComplete()) {
+            setShowAddressErrors(true);
             setPopupTitle(t('addressError'));
             setPopupMessage(t('enterCompleteAddressData'));
             setShowErrorPopup(true);
@@ -324,6 +341,7 @@ const Cart = () => {
             const shouldCreateAddress = addingNewAddress || !deliveryAddressId;
             if (shouldCreateAddress) {
                 if (!isNewAddressComplete()) {
+                    setShowAddressErrors(true);
                     console.log('New address is incomplete while trying to checkout');
                     setPopupTitle(t('error'));
                     setPopupMessage(t('enterCompleteAddressData'));
@@ -735,11 +753,14 @@ const Cart = () => {
                                                 <input 
                                                     type="text" 
                                                     value={newAddress.name} 
-                                                    onChange={(e) => setNewAddress(prev => ({ ...prev, name: e.target.value }))} 
+                                                    onChange={(e) => { setAddingNewAddress(true); setNewAddress(prev => ({ ...prev, name: e.target.value })); }} 
                                                     placeholder={t('addressNamePlaceholder')} 
                                                     className="w-full p-3 bg-white border border-gray-300 rounded-xl transition-all duration-300 outline-none"
                                                     required 
                                                 />
+                                                {showAddressErrors && getNewAddressErrors().name && (
+                                                    <p className="mt-1 text-sm text-red-600">{t('fieldIsRequired')}</p>
+                                                )}
                                             </div>
                                             <div>
                                                 <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -748,11 +769,14 @@ const Cart = () => {
                                                 <input 
                                                     type="text" 
                                                     value={newAddress.address} 
-                                                    onChange={(e) => setNewAddress(prev => ({ ...prev, address: e.target.value }))} 
+                                                    onChange={(e) => { setAddingNewAddress(true); setNewAddress(prev => ({ ...prev, address: e.target.value })); }} 
                                                     placeholder={t('detailedAddressPlaceholder')} 
                                                     className="w-full p-3 bg-white border border-gray-300 rounded-xl transition-all duration-300 outline-none"
                                                     required 
                                                 />
+                                                {showAddressErrors && getNewAddressErrors().address && (
+                                                    <p className="mt-1 text-sm text-red-600">{t('fieldIsRequired')}</p>
+                                                )}
                                             </div>
                                             <div>
                                                 <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -761,11 +785,14 @@ const Cart = () => {
                                                 <input 
                                                     type="text" 
                                                     value={newAddress.city} 
-                                                    onChange={(e) => setNewAddress(prev => ({ ...prev, city: e.target.value }))} 
+                                                    onChange={(e) => { setAddingNewAddress(true); setNewAddress(prev => ({ ...prev, city: e.target.value })); }} 
                                                     placeholder={t('cityPlaceholder')} 
                                                     className="w-full p-3 bg-white border border-gray-300 rounded-xl transition-all duration-300 outline-none"
                                                     required 
                                                 />
+                                                {showAddressErrors && getNewAddressErrors().city && (
+                                                    <p className="mt-1 text-sm text-red-600">{t('fieldIsRequired')}</p>
+                                                )}
                                             </div>
                                             <div>
                                                 <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -774,7 +801,7 @@ const Cart = () => {
                                                 <input 
                                                     type="tel" 
                                                     value={newAddress.phone} 
-                                                    onChange={(e) => setNewAddress(prev => ({ ...prev, phone: e.target.value }))} 
+                                                    onChange={(e) => { setAddingNewAddress(true); setNewAddress(prev => ({ ...prev, phone: e.target.value })); }} 
                                                     placeholder={t('phonePlaceholder')} 
                                                     className="w-full p-3 bg-white border border-gray-300 rounded-xl transition-all duration-300 outline-none"
                                                     style={{ 
@@ -783,6 +810,9 @@ const Cart = () => {
                                                     }}
                                                     required 
                                                 />
+                                                {showAddressErrors && getNewAddressErrors().phone && (
+                                                    <p className="mt-1 text-sm text-red-600">{t('fieldIsRequired')}</p>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -959,6 +989,7 @@ const Cart = () => {
                                     addingNewAddress ? isNewAddressComplete() : Boolean(selectedDeliveryAddress)
                                 );
                                 return (
+                                    <>
                                     <button
                                 onClick={handleCheckout}
                                 disabled={!canProceed}
@@ -981,8 +1012,25 @@ const Cart = () => {
                                     </div>
                                 )}
                             </button>
-                                );
-                            })()}
+                            {!canProceed && addingNewAddress && showAddressErrors && (
+                                (() => {
+                                    const errs = getNewAddressErrors();
+                                    const missing = [
+                                        errs.name ? t('addressName') : null,
+                                        errs.address ? t('detailedAddress') : null,
+                                        errs.city ? t('city') : null,
+                                        errs.phone ? t('phone') : null,
+                                    ].filter(Boolean);
+                                    return (
+                                        <p className="mt-2 text-sm text-red-600">
+                                            {t('pleaseFillRequiredFields')}: {missing.join('، ')}
+                                        </p>
+                                    );
+                                })()
+                            )}
+                                    </>
+                        );
+                    })()}
                             {lastCheckoutError && (
                                 <div className="mt-3 p-3 rounded-xl border border-red-200 bg-red-50 text-red-700 text-sm">
                                     {lastCheckoutError}

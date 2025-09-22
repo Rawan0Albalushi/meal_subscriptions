@@ -1838,13 +1838,7 @@ const AdminSubscriptions = () => {
                                                 📅 {language === 'ar' ? 'تاريخ التوصيل:' : 'Delivery Date:'} {formatDate(item.delivery_date) || (language === 'ar' ? 'غير محدد' : 'Not set')}
                                             </div>
                                             
-                                            <div style={{
-                                                fontSize: '0.875rem',
-                                                color: '#6b7280',
-                                                marginBottom: '0.25rem'
-                                            }}>
-                                                {language === 'ar' ? 'يوم الأسبوع:' : 'Day of Week:'} {item.day_of_week_text || item.day_of_week}
-                                            </div>
+
                                             
                                             {item.meal?.description_ar && (
                                                 <div style={{

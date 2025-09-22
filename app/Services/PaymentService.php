@@ -38,9 +38,14 @@ class PaymentService
             
             foreach ($gatewayConfigs as $gatewayConfig) {
                 try {
+                    $config = $gatewayConfig->config;
+                    if (is_string($config)) {
+                        $decoded = json_decode($config, true);
+                        $config = is_array($decoded) ? $decoded : [];
+                    }
                     $this->gateways[$gatewayConfig->name] = $this->createGatewayInstance(
                         $gatewayConfig->name, 
-                        $gatewayConfig->config
+                        $config
                     );
                 } catch (Exception $e) {
                     Log::warning("Failed to load payment gateway: {$gatewayConfig->name}", [

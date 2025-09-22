@@ -2,15 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Area;
 
 class AreaSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $areas = [
@@ -19,22 +15,22 @@ class AreaSeeder extends Seeder
                 'name_en' => 'Bosher',
                 'code' => 'bosher',
                 'is_active' => true,
-                'sort_order' => 1
+                'sort_order' => 1,
             ],
             [
                 'name_ar' => 'الخوض',
                 'name_en' => 'Al Khoudh',
                 'code' => 'khoudh',
                 'is_active' => true,
-                'sort_order' => 2
+                'sort_order' => 2,
             ],
             [
                 'name_ar' => 'المعبيلة',
                 'name_en' => 'Al Mabaila',
                 'code' => 'maabilah',
                 'is_active' => true,
-                'sort_order' => 3
-            ]
+                'sort_order' => 3,
+            ],
         ];
 
         foreach ($areas as $area) {
@@ -45,3 +41,5 @@ class AreaSeeder extends Seeder
         }
     }
 }
+
+

@@ -51,7 +51,7 @@ export const useCart = () => {
             // Handle specific error for existing cart
             if (err.response?.data?.error_code === 'CART_ALREADY_EXISTS') {
                 const errorMessage = err.response.data.message || 'لا يمكن إضافة أكثر من اشتراك واحد في السلة';
-                const enhancedMessage = `${errorMessage} <a href="/cart" style="color: #ef4444; text-decoration: underline; font-weight: 600;">إفراغ السلة</a>`;
+                const enhancedMessage = `${errorMessage} <a href="#" data-clear-cart="1" style="color: #ef4444; text-decoration: underline; font-weight: 600;">إفراغ السلة</a>`;
                 setError(enhancedMessage);
                 throw new Error(enhancedMessage);
             }
