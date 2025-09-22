@@ -428,6 +428,52 @@ const styles = `
       background: rgba(255, 255, 255, 1) !important;
     }
   }
+
+  /* Mobile horizontal scroll styles */
+  @media (max-width: 768px) {
+    .meals-grid {
+      display: flex !important;
+      flex-direction: row !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      gap: 1rem !important;
+      padding: 0 0.5rem !important;
+      scroll-snap-type: x mandatory !important;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(47, 110, 115, 0.3) transparent;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .meals-grid::-webkit-scrollbar {
+      height: 4px;
+    }
+    
+    .meals-grid::-webkit-scrollbar-track {
+      background: rgba(47, 110, 115, 0.1);
+      border-radius: 2px;
+    }
+    
+    .meals-grid::-webkit-scrollbar-thumb {
+      background: rgba(47, 110, 115, 0.4);
+      border-radius: 2px;
+    }
+    
+    .meals-grid::-webkit-scrollbar-thumb:hover {
+      background: rgba(47, 110, 115, 0.6);
+    }
+    
+    .meal-card {
+      scroll-snap-align: start !important;
+      min-width: 260px !important;
+      max-width: 280px !important;
+      flex-shrink: 0 !important;
+      height: 280px !important;
+      border-radius: 1rem !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    
+  }
 `;
 
 // Inject styles
@@ -2432,16 +2478,16 @@ const RestaurantDetail = () => {
                     </div>
 
                     {/* Meals Grid */}
-                    <div                     className="meals-grid"
-                    style={{ 
-                      display: 'grid', 
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(clamp(250px, 90vw, 280px), 1fr))', 
-                      gap: 'clamp(0.75rem, 3vw, 1rem)',
-                      '@media (max-width: 768px)': {
-                        gridTemplateColumns: '1fr',
-                        gap: '0.75rem'
-                      }
+                    <div className="meals-container" style={{
+                      position: 'relative'
                     }}>
+
+                      <div className="meals-grid"
+                      style={{ 
+                        display: 'grid', 
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(clamp(250px, 90vw, 280px), 1fr))', 
+                        gap: 'clamp(0.75rem, 3vw, 1rem)'
+                      }}>
                       {filteredMeals.map((meal) => {
                         const isSelected = getSelectedMealForDay(day.key)?.id === meal.id;
                         return (
@@ -2464,11 +2510,7 @@ const RestaurantDetail = () => {
                             backdropFilter: 'blur(20px)',
                             height: 'clamp(280px, 40vw, 320px)',
                             display: 'flex',
-                            flexDirection: 'column',
-                            '@media (max-width: 768px)': {
-                              height: '280px',
-                              borderRadius: '1rem'
-                            }
+                            flexDirection: 'column'
                           }}
                             onClick={(e) => handleMealSelection(day.key, meal, e)}
                             onTouchStart={(e) => {
@@ -2648,6 +2690,7 @@ const RestaurantDetail = () => {
                           </div>
                         );
                       })}
+                      </div>
                     </div>
                   </div>
                 ))}

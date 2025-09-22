@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار تمرير وجبات اليوم الأول - صفحة تفاصيل المطعم</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .restaurant-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .restaurant-name {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2f6e73;
+            margin-bottom: 0.5rem;
+        }
+
+        .day-section {
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .day-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #2f6e73, #47a8b0);
+            color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 15px rgba(47, 110, 115, 0.3);
+        }
+
+        .day-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .selected-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+        }
+
+        /* Desktop Grid Layout */
+        .meals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Mobile Horizontal Scroll Layout */
+        @media (max-width: 768px) {
+            .meals-grid {
+                display: flex !important;
+                flex-direction: row !important;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                gap: 1rem !important;
+                padding: 0 0.5rem !important;
+                scroll-snap-type: x mandatory !important;
+                scrollbar-width: thin;
+                -ms-overflow-style: -ms-autohiding-scrollbar;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .meals-grid::-webkit-scrollbar {
+                height: 4px;
+            }
+
+            .meals-grid::-webkit-scrollbar-track {
+                background: rgba(47, 110, 115, 0.1);
+                border-radius: 2px;
+            }
+
+            .meals-grid::-webkit-scrollbar-thumb {
+                background: rgba(47, 110, 115, 0.4);
+                border-radius: 2px;
+            }
+
+            .meals-grid::-webkit-scrollbar-thumb:hover {
+                background: rgba(47, 110, 115, 0.6);
+            }
+        }
+
+        .meal-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 1rem;
+            padding: 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            border: 2px solid rgba(47, 110, 115, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            height: 320px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 768px) {
+            .meal-card {
+                height: 280px !important;
+                border-radius: 1rem !important;
+                min-width: 260px !important;
+                max-width: 280px !important;
+                flex-shrink: 0 !important;
+                scroll-snap-align: start !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+        }
+
+        .meal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(47, 110, 115, 0.2);
+            border-color: #2f6e73;
+        }
+
+        .meal-card.selected {
+            background: rgba(240, 253, 244, 0.95);
+            border: 3px solid #2f6e73;
+            box-shadow: 0 15px 35px rgba(47, 110, 115, 0.2);
+        }
+
+        .meal-image {
+            width: 100%;
+            height: 70%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .meal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .meal-card:hover .meal-image img {
+            transform: scale(1.05);
+        }
+
+        .meal-info {
+            flex: 1;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 1rem 1rem;
+        }
+
+        .meal-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.375rem;
+            color: #2f6e73;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .meal-description {
+            font-size: 0.75rem;
+            color: rgb(75 85 99);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+            text-align: center;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .select-button {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background: linear-gradient(135deg, #2f6e73, #47a8b0);
+            color: white;
+            border: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-top: auto;
+        }
+
+        .select-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(47, 110, 115, 0.3);
+        }
+
+        .select-button.selected {
+            background: linear-gradient(135deg, #059669, #10b981);
+        }
+
+        .selection-indicator {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: #2f6e73;
+            color: white;
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(47, 110, 115, 0.3);
+            animation: pulse 2s infinite;
+            z-index: 10;
+        }
+
+        .meal-type-badge {
+            position: absolute;
+            top: 0.75rem;
+            left: 0.75rem;
+            background: rgba(47, 110, 115, 0.9);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            z-index: 10;
+        }
+
+        .scroll-indicator {
+            text-align: center;
+            margin: 1rem 0;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        @media (min-width: 769px) {
+            .scroll-indicator {
+                display: none;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .demo-info {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 1px solid #bae6fd;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .demo-info h3 {
+            color: #0369a1;
+            margin-bottom: 0.5rem;
+        }
+
+        .demo-info p {
+            color: #0c4a6e;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="restaurant-header">
+            <h1 class="restaurant-name">مطعم الشهي</h1>
+            <p>وجبات يومية طازجة ولذيذة</p>
+        </div>
+
+        <div class="demo-info">
+            <h3>🎯 اختبار تمرير وجبات اليوم الأول</h3>
+            <p>في الهاتف المحمول: جرب التمرير الأفقي لعرض وجبات اليوم الأول جنباً إلى جنب</p>
+        </div>
+
+        <div class="day-section">
+            <div class="day-header">
+                <h2 class="day-title">الأحد - اليوم الأول</h2>
+                <div class="selected-count">0 من 6 وجبات مختارة</div>
+            </div>
+
+
+            <div class="meals-grid" id="mealsGrid">
+                <!-- فطور -->
+                <div class="meal-card" data-meal-type="breakfast">
+                    <div class="meal-type-badge">فطور</div>
+                    <div class="meal-image">
+                        <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=300&h=200&fit=crop" alt="فطور صحي">
+                    </div>
+                    <div class="meal-info">
+                        <h3 class="meal-title">فطور صحي متكامل</h3>
+                        <p class="meal-description">بيض مسلوق، خبز توست، جبنة بيضاء، زيت زيتون، طماطم وخيار طازج</p>
+                        <button class="select-button">اختر هذه الوجبة</button>
+                    </div>
+                </div>
+
+                <!-- غداء -->
+                <div class="meal-card" data-meal-type="lunch">
+                    <div class="meal-type-badge">غداء</div>
+                    <div class="meal-image">
+                        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=200&fit=crop" alt="غداء تقليدي">
+                    </div>
+                    <div class="meal-info">
+                        <h3 class="meal-title">منسف لحم تقليدي</h3>
+                        <p class="meal-description">أرز بسمتي مع لحم الغنم المطبوخ باللبن، مقبلات متنوعة</p>
+                        <button class="select-button">اختر هذه الوجبة</button>
+                    </div>
+                </div>
+
+                <!-- عشاء -->
+                <div class="meal-card" data-meal-type="dinner">
+                    <div class="meal-type-badge">عشاء</div>
+                    <div class="meal-image">
+                        <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=300&h=200&fit=crop" alt="عشاء خفيف">
+                    </div>
+                    <div class="meal-info">
+                        <h3 class="meal-title">سلطة يونانية خفيفة</h3>
+                        <p class="meal-description">خضار طازجة مع الجبن الفيتا، زيتون، وزيت زيتون</p>
+                        <button class="select-button">اختر هذه الوجبة</button>
+                    </div>
+                </div>
+
+                <!-- وجبة إضافية -->
+                <div class="meal-card" data-meal-type="lunch">
+                    <div class="meal-type-badge">غداء</div>
+                    <div class="meal-image">
+                        <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&h=200&fit=crop" alt="برجر صحي">
+                    </div>
+                    <div class="meal-info">
+                        <h3 class="meal-title">برجر صحي بالدجاج</h3>
+                        <p class="meal-description">برجر دجاج مشوي مع خضار طازجة وخبز الحبوب الكاملة</p>
+                        <button class="select-button">اختر هذه الوجبة</button>
+                    </div>
+                </div>
+
+                <!-- وجبة إضافية -->
+                <div class="meal-card" data-meal-type="breakfast">
+                    <div class="meal-type-badge">فطور</div>
+                    <div class="meal-image">
+                        <img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=300&h=200&fit=crop" alt="بان كيك">
+                    </div>
+                    <div class="meal-info">
+                        <h3 class="meal-title">بان كيك بالعسل</h3>
+                        <p class="meal-description">بان كيك طري مع عسل طبيعي، فواكه طازجة، وزبدة</p>
+                        <button class="select-button">اختر هذه الوجبة</button>
+                    </div>
+                </div>
+
+                <!-- وجبة إضافية -->
+                <div class="meal-card" data-meal-type="dinner">
+                    <div class="meal-type-badge">عشاء</div>
+                    <div class="meal-image">
+                        <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&h=200&fit=crop" alt="شوربة خضار">
+                    </div>
+                    <div class="meal-info">
+                        <h3 class="meal-title">شوربة خضار دافئة</h3>
+                        <p class="meal-description">شوربة خضار متنوعة مع خبز محمص وزعتر</p>
+                        <button class="select-button">اختر هذه الوجبة</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-info">
+            <h3>📱 مميزات التصميم الجديد</h3>
+            <p>• عرض جنباً إلى جنب في الهاتف المحمول • تمرير أفقي سلس • مؤشرات بصرية واضحة • تصميم متجاوب</p>
+        </div>
+    </div>
+
+    <script>
+        // إضافة تفاعل اختيار الوجبات
+        const mealCards = document.querySelectorAll('.meal-card');
+        const selectedCount = document.querySelector('.selected-count');
+        let selectedMeals = 0;
+
+        mealCards.forEach(card => {
+            const button = card.querySelector('.select-button');
+            
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                if (card.classList.contains('selected')) {
+                    // إلغاء الاختيار
+                    card.classList.remove('selected');
+                    button.textContent = 'اختر هذه الوجبة';
+                    button.classList.remove('selected');
+                    selectedMeals--;
+                } else {
+                    // اختيار الوجبة
+                    card.classList.add('selected');
+                    button.textContent = 'مختار';
+                    button.classList.add('selected');
+                    selectedMeals++;
+                }
+                
+                // تحديث العداد
+                selectedCount.textContent = `${selectedMeals} من 6 وجبات مختارة`;
+            });
+        });
+
+        // إضافة تأثير التمرير السلس
+        const mealsGrid = document.getElementById('mealsGrid');
+        
+        mealsGrid.addEventListener('scroll', () => {
+            // يمكن إضافة مؤشرات التمرير هنا
+        });
+
+        // إضافة تأثيرات بصرية إضافية
+        mealCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                if (!card.classList.contains('selected')) {
+                    card.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
