@@ -72,6 +72,38 @@ class ReportsController extends Controller
             // Recent activity
             $recentActivity = $this->getRecentActivity($startDate, $endDate);
 
+            // Recent subscriptions with detailed pricing
+            $recentSubscriptions = Subscription::with(['user', 'restaurant', 'subscriptionType'])
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->latest()
+                ->take(20)
+                ->get()
+                ->map(function ($subscription) {
+                    $subscriptionType = $subscription->subscriptionType;
+                    $totalAmount = $subscription->total_amount ?? 0;
+                    $deliveryPrice = $subscription->delivery_price ?? 0;
+                    $subscriptionPrice = $totalAmount - $deliveryPrice;
+                    $adminCommissionPercentage = $subscriptionType ? $subscriptionType->admin_commission : 0;
+                    // النسبة تحسب من سعر الاشتراك بدون التوصيل
+                    $adminCommissionAmount = $adminCommissionPercentage ? ($subscriptionPrice * $adminCommissionPercentage / 100) : 0;
+                    $merchantAmount = $subscriptionPrice - $adminCommissionAmount;
+                    
+                    return [
+                        'id' => $subscription->id,
+                        'user' => $subscription->user,
+                        'restaurant' => $subscription->restaurant,
+                        'subscriptionType' => $subscriptionType,
+                        'total_amount' => $totalAmount,
+                        'subscription_price' => $subscriptionPrice,
+                        'delivery_price' => $deliveryPrice,
+                        'admin_commission_percentage' => $adminCommissionPercentage,
+                        'admin_commission_amount' => $adminCommissionAmount,
+                        'merchant_amount' => $merchantAmount,
+                        'status' => $subscription->status,
+                        'created_at' => $subscription->created_at
+                    ];
+                });
+
             // Top performing restaurants
             $topRestaurants = Restaurant::withCount(['subscriptions' => function ($query) use ($startDate, $endDate) {
                 $query->whereBetween('created_at', [$startDate, $endDate]);
@@ -96,6 +128,7 @@ class ReportsController extends Controller
                     'subscriptionStats' => $subscriptionStats,
                     'revenueStats' => $revenueStats,
                     'recentActivity' => $recentActivity,
+                    'recentSubscriptions' => $recentSubscriptions,
                     'topRestaurants' => $topRestaurants
                 ]
             ]);
@@ -220,10 +253,34 @@ class ReportsController extends Controller
                     break;
                 
                 case 'subscriptions':
-                    $data = Subscription::with(['user', 'restaurant'])
+                    $data = Subscription::with(['user', 'restaurant', 'subscriptionType'])
                         ->whereBetween('created_at', [$startDate, $endDate])
-                        ->select('status', 'total_amount', 'created_at')
-                        ->get();
+                        ->get()
+                        ->map(function ($subscription) {
+                            $subscriptionType = $subscription->subscriptionType;
+                            $totalAmount = $subscription->total_amount ?? 0;
+                            $deliveryPrice = $subscription->delivery_price ?? 0;
+                            $subscriptionPrice = $totalAmount - $deliveryPrice;
+                            $adminCommissionPercentage = $subscriptionType ? $subscriptionType->admin_commission : 0;
+                            // النسبة تحسب من سعر الاشتراك بدون التوصيل
+                            $adminCommissionAmount = $adminCommissionPercentage ? ($subscriptionPrice * $adminCommissionPercentage / 100) : 0;
+                            $merchantAmount = $subscriptionPrice - $adminCommissionAmount;
+                            
+                            return [
+                                'id' => $subscription->id,
+                                'user_name' => $subscription->user->name ?? 'غير محدد',
+                                'restaurant_name' => $subscription->restaurant->name_ar ?? 'غير محدد',
+                                'subscription_type' => $subscriptionType ? $subscriptionType->name_ar : 'غير محدد',
+                                'total_amount' => $totalAmount,
+                                'subscription_price' => $subscriptionPrice,
+                                'delivery_price' => $deliveryPrice,
+                                'admin_commission_percentage' => $adminCommissionPercentage,
+                                'admin_commission_amount' => $adminCommissionAmount,
+                                'merchant_amount' => $merchantAmount,
+                                'status' => $subscription->status,
+                                'created_at' => $subscription->created_at->format('Y-m-d H:i:s')
+                            ];
+                        });
                     break;
                 
                 default:

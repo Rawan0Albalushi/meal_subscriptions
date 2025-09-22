@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار ميزة نسبة مكسب الإدارة - Admin Commission Feature Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2f6e73;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .test-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+
+        .test-section h2 {
+            color: #2f6e73;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #2f6e73;
+            box-shadow: 0 0 0 3px rgba(47, 110, 115, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #2f6e73, #4a8a8f);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(47, 110, 115, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #9ca3af);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 10px 20px rgba(107, 114, 128, 0.3);
+        }
+
+        .result {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .success {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+
+        .error {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .info {
+            background: #dbeafe;
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
+
+        .calculation-demo {
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .calculation-demo h3 {
+            color: #2f6e73;
+            margin-bottom: 15px;
+        }
+
+        .calculation-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .calculation-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            background: rgba(47, 110, 115, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 اختبار ميزة نسبة مكسب الإدارة</h1>
+            <p>Admin Commission Feature Testing</p>
+        </div>
+
+        <div class="grid">
+            <!-- Test Form Section -->
+            <div class="test-section">
+                <h2>📝 اختبار إضافة نوع اشتراك جديد</h2>
+                <p>Test Adding New Subscription Type with Admin Commission</p>
+                
+                <div class="form-group">
+                    <label for="nameAr">الاسم بالعربية *</label>
+                    <input type="text" id="nameAr" placeholder="مثال: اشتراك أسبوعي مميز" value="اشتراك أسبوعي مميز">
+                </div>
+
+                <div class="form-group">
+                    <label for="nameEn">الاسم بالإنجليزية *</label>
+                    <input type="text" id="nameEn" placeholder="Example: Premium Weekly Subscription" value="Premium Weekly Subscription">
+                </div>
+
+                <div class="form-group">
+                    <label for="type">النوع *</label>
+                    <select id="type">
+                        <option value="weekly">أسبوعي</option>
+                        <option value="monthly">شهري</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="price">السعر (ريال عماني) *</label>
+                    <input type="number" id="price" step="0.01" min="0" placeholder="25.00" value="25.00">
+                </div>
+
+                <div class="form-group">
+                    <label for="deliveryPrice">سعر التوصيل (ريال عماني) *</label>
+                    <input type="number" id="deliveryPrice" step="0.01" min="0" placeholder="2.00" value="2.00">
+                </div>
+
+                <div class="form-group">
+                    <label for="adminCommission">نسبة مكسب الإدارة (%) - اختياري</label>
+                    <input type="number" id="adminCommission" step="0.01" min="0" max="100" placeholder="10.00" value="10.00">
+                    <small style="color: #666; font-size: 0.9rem;">النسبة المئوية من سعر الاشتراك التي ستكون مكسب الإدارة</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="mealsCount">عدد الوجبات *</label>
+                    <input type="number" id="mealsCount" min="1" placeholder="7" value="7">
+                </div>
+
+                <button class="btn" onclick="testCreateSubscriptionType()">✅ اختبار إنشاء نوع الاشتراك</button>
+                <button class="btn btn-secondary" onclick="clearForm()">🗑️ مسح النموذج</button>
+            </div>
+
+            <!-- Calculation Demo Section -->
+            <div class="test-section">
+                <h2>🧮 عرض حساب الأسعار</h2>
+                <p>Price Calculation Demo</p>
+                
+                <div class="calculation-demo">
+                    <h3>تفاصيل السعر حسب البيانات المدخلة:</h3>
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">
+                        <strong>ملاحظة:</strong> نسبة مكسب الإدارة تحسب من سعر الاشتراك بدون التوصيل
+                    </p>
+                    <div class="calculation-item">
+                        <span>سعر الاشتراك:</span>
+                        <span id="calcSubscriptionPrice">25.00 ريال</span>
+                    </div>
+                    <div class="calculation-item">
+                        <span>سعر التوصيل:</span>
+                        <span id="calcDeliveryPrice">2.00 ريال</span>
+                    </div>
+                    <div class="calculation-item">
+                        <span>سعر الاشتراك ناقص التوصيل:</span>
+                        <span id="calcPriceWithoutDelivery">23.00 ريال</span>
+                    </div>
+                    <div class="calculation-item">
+                        <span>نسبة مكسب الإدارة:</span>
+                        <span id="calcCommissionPercentage">10.00%</span>
+                    </div>
+                    <div class="calculation-item">
+                        <span>مبلغ مكسب الإدارة:</span>
+                        <span id="calcCommissionAmount">2.50 ريال</span>
+                    </div>
+                    <div class="calculation-item">
+                        <span>مستحقات التاجر:</span>
+                        <span id="calcMerchantAmount">22.50 ريال</span>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="updateCalculations()">🔄 تحديث الحسابات</button>
+            </div>
+        </div>
+
+        <!-- Test Results Section -->
+        <div class="test-section">
+            <h2>📊 نتائج الاختبار</h2>
+            <p>Test Results</p>
+            
+            <button class="btn" onclick="testReportsAPI()">📈 اختبار API التقارير</button>
+            <button class="btn btn-secondary" onclick="testSubscriptionTypeAPI()">🔧 اختبار API أنواع الاشتراك</button>
+            <button class="btn btn-secondary" onclick="clearResults()">🗑️ مسح النتائج</button>
+
+            <div id="results" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Database Verification Section -->
+        <div class="test-section">
+            <h2>🗄️ التحقق من قاعدة البيانات</h2>
+            <p>Database Verification</p>
+            
+            <button class="btn" onclick="verifyDatabaseStructure()">🔍 التحقق من هيكل قاعدة البيانات</button>
+            <button class="btn btn-secondary" onclick="checkMigrationStatus()">📋 حالة Migration</button>
+
+            <div id="dbResults" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Update calculations when inputs change
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = ['price', 'deliveryPrice', 'adminCommission'];
+            inputs.forEach(id => {
+                document.getElementById(id).addEventListener('input', updateCalculations);
+            });
+            updateCalculations();
+        });
+
+        function updateCalculations() {
+            const price = parseFloat(document.getElementById('price').value) || 0;
+            const deliveryPrice = parseFloat(document.getElementById('deliveryPrice').value) || 0;
+            const adminCommission = parseFloat(document.getElementById('adminCommission').value) || 0;
+
+            const priceWithoutDelivery = price - deliveryPrice;
+            // النسبة تحسب من سعر الاشتراك بدون التوصيل
+            const commissionAmount = (priceWithoutDelivery * adminCommission) / 100;
+            const merchantAmount = priceWithoutDelivery - commissionAmount;
+
+            document.getElementById('calcSubscriptionPrice').textContent = `${price.toFixed(2)} ريال`;
+            document.getElementById('calcDeliveryPrice').textContent = `${deliveryPrice.toFixed(2)} ريال`;
+            document.getElementById('calcPriceWithoutDelivery').textContent = `${priceWithoutDelivery.toFixed(2)} ريال`;
+            document.getElementById('calcCommissionPercentage').textContent = `${adminCommission.toFixed(2)}%`;
+            document.getElementById('calcCommissionAmount').textContent = `${commissionAmount.toFixed(2)} ريال`;
+            document.getElementById('calcMerchantAmount').textContent = `${merchantAmount.toFixed(2)} ريال`;
+        }
+
+        function testCreateSubscriptionType() {
+            const data = {
+                name_ar: document.getElementById('nameAr').value,
+                name_en: document.getElementById('nameEn').value,
+                type: document.getElementById('type').value,
+                price: parseFloat(document.getElementById('price').value),
+                delivery_price: parseFloat(document.getElementById('deliveryPrice').value),
+                admin_commission: document.getElementById('adminCommission').value ? parseFloat(document.getElementById('adminCommission').value) : null,
+                meals_count: parseInt(document.getElementById('mealsCount').value),
+                restaurant_ids: [1], // Assuming restaurant ID 1 exists
+                is_active: true
+            };
+
+            showResult('📝 اختبار إنشاء نوع الاشتراك مع نسبة مكسب الإدارة...', 'info');
+            
+            fetch('/api/admin/subscription-types', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('auth_token') || 'test-token',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    showResult(`✅ تم إنشاء نوع الاشتراك بنجاح!\n\nالبيانات المرسلة:\n${JSON.stringify(data, null, 2)}\n\nالاستجابة:\n${JSON.stringify(result, null, 2)}`, 'success');
+                } else {
+                    showResult(`❌ فشل في إنشاء نوع الاشتراك\n\nالبيانات المرسلة:\n${JSON.stringify(data, null, 2)}\n\nالاستجابة:\n${JSON.stringify(result, null, 2)}`, 'error');
+                }
+            })
+            .catch(error => {
+                showResult(`❌ خطأ في الاتصال:\n${error.message}`, 'error');
+            });
+        }
+
+        function testReportsAPI() {
+            showResult('📈 اختبار API التقارير مع تفاصيل الأسعار الجديدة...', 'info');
+            
+            fetch('/api/admin/reports?period=30days', {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('auth_token') || 'test-token',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success && result.data && result.data.recentSubscriptions) {
+                    const subscriptions = result.data.recentSubscriptions.slice(0, 3); // Show first 3
+                    let output = `✅ تم جلب التقارير بنجاح!\n\n`;
+                    output += `عدد الاشتراكات الأخيرة: ${result.data.recentSubscriptions.length}\n\n`;
+                    output += `عينة من البيانات:\n`;
+                    
+                    subscriptions.forEach(sub => {
+                        output += `\n--- اشتراك رقم ${sub.id} ---\n`;
+                        output += `العميل: ${sub.user?.name || 'غير محدد'}\n`;
+                        output += `المطعم: ${sub.restaurant?.name_ar || 'غير محدد'}\n`;
+                        output += `السعر الإجمالي: ${sub.total_amount || 0} ريال\n`;
+                        output += `سعر الاشتراك: ${sub.subscription_price || 0} ريال\n`;
+                        output += `سعر التوصيل: ${sub.delivery_price || 0} ريال\n`;
+                        output += `نسبة مكسب الإدارة: ${sub.admin_commission_percentage || 0}%\n`;
+                        output += `مبلغ مكسب الإدارة: ${sub.admin_commission_amount || 0} ريال\n`;
+                        output += `مستحقات التاجر: ${sub.merchant_amount || 0} ريال\n`;
+                    });
+                    
+                    showResult(output, 'success');
+                } else {
+                    showResult(`❌ فشل في جلب التقارير\n\nالاستجابة:\n${JSON.stringify(result, null, 2)}`, 'error');
+                }
+            })
+            .catch(error => {
+                showResult(`❌ خطأ في الاتصال:\n${error.message}`, 'error');
+            });
+        }
+
+        function testSubscriptionTypeAPI() {
+            showResult('🔧 اختبار API أنواع الاشتراك...', 'info');
+            
+            fetch('/api/admin/subscription-types', {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('auth_token') || 'test-token',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success && result.data) {
+                    let output = `✅ تم جلب أنواع الاشتراك بنجاح!\n\n`;
+                    output += `عدد أنواع الاشتراك: ${result.data.length}\n\n`;
+                    
+                    result.data.slice(0, 3).forEach(type => {
+                        output += `\n--- نوع اشتراك رقم ${type.id} ---\n`;
+                        output += `الاسم: ${type.name_ar}\n`;
+                        output += `السعر: ${type.price} ريال\n`;
+                        output += `سعر التوصيل: ${type.delivery_price || 0} ريال\n`;
+                        output += `نسبة مكسب الإدارة: ${type.admin_commission || 0}%\n`;
+                        output += `عدد الوجبات: ${type.meals_count}\n`;
+                        output += `الحالة: ${type.is_active ? 'نشط' : 'غير نشط'}\n`;
+                    });
+                    
+                    showResult(output, 'success');
+                } else {
+                    showResult(`❌ فشل في جلب أنواع الاشتراك\n\nالاستجابة:\n${JSON.stringify(result, null, 2)}`, 'error');
+                }
+            })
+            .catch(error => {
+                showResult(`❌ خطأ في الاتصال:\n${error.message}`, 'error');
+            });
+        }
+
+        function verifyDatabaseStructure() {
+            showResult('🔍 التحقق من هيكل قاعدة البيانات...', 'info');
+            
+            fetch('/api/admin/subscription-types', {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('auth_token') || 'test-token',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success && result.data && result.data.length > 0) {
+                    const sampleType = result.data[0];
+                    const hasAdminCommission = 'admin_commission' in sampleType;
+                    
+                    let output = `✅ التحقق من هيكل قاعدة البيانات\n\n`;
+                    output += `حقل admin_commission موجود: ${hasAdminCommission ? '✅ نعم' : '❌ لا'}\n\n`;
+                    
+                    if (hasAdminCommission) {
+                        output += `قيم الحقل في العينة:\n`;
+                        result.data.slice(0, 5).forEach((type, index) => {
+                            output += `${index + 1}. نوع ${type.id}: ${type.admin_commission || 'null'}%\n`;
+                        });
+                    }
+                    
+                    showResult(output, hasAdminCommission ? 'success' : 'error');
+                } else {
+                    showResult(`❌ لا يمكن التحقق من هيكل قاعدة البيانات - لا توجد بيانات`, 'error');
+                }
+            })
+            .catch(error => {
+                showResult(`❌ خطأ في الاتصال:\n${error.message}`, 'error');
+            });
+        }
+
+        function checkMigrationStatus() {
+            showResult('📋 التحقق من حالة Migration...', 'info');
+            
+            // Since we can't directly check migration status via API,
+            // we'll check if the admin_commission field is working
+            fetch('/api/admin/subscription-types', {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('auth_token') || 'test-token',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success && result.data && result.data.length > 0) {
+                    const sampleType = result.data[0];
+                    const migrationWorking = 'admin_commission' in sampleType;
+                    
+                    let output = `📋 حالة Migration\n\n`;
+                    output += `Migration add_admin_commission_to_subscription_types_table: ${migrationWorking ? '✅ تم تطبيقه بنجاح' : '❌ لم يتم تطبيقه'}\n\n`;
+                    
+                    if (migrationWorking) {
+                        output += `✅ يمكن إنشاء أنواع اشتراك جديدة مع نسبة مكسب الإدارة\n`;
+                        output += `✅ يمكن تحديث أنواع الاشتراك الموجودة\n`;
+                        output += `✅ التقارير ستعرض تفاصيل الأسعار الجديدة\n`;
+                    } else {
+                        output += `❌ يجب تشغيل: php artisan migrate\n`;
+                    }
+                    
+                    showResult(output, migrationWorking ? 'success' : 'error');
+                } else {
+                    showResult(`❌ لا يمكن التحقق من حالة Migration - لا توجد بيانات`, 'error');
+                }
+            })
+            .catch(error => {
+                showResult(`❌ خطأ في الاتصال:\n${error.message}`, 'error');
+            });
+        }
+
+        function showResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.textContent = message;
+            resultsDiv.className = `result ${type}`;
+            resultsDiv.style.display = 'block';
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function clearForm() {
+            document.getElementById('nameAr').value = '';
+            document.getElementById('nameEn').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('deliveryPrice').value = '';
+            document.getElementById('adminCommission').value = '';
+            document.getElementById('mealsCount').value = '';
+            updateCalculations();
+        }
+
+        function clearResults() {
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('dbResults').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

@@ -47,27 +47,19 @@ const AdminReports = () => {
 
     const fetchRecentSubscriptions = async () => {
         try {
-            let page = 1;
-            let all = [];
-            // Fetch first page to get pagination
-            while (true) {
-                const resp = await fetch(`/api/admin/subscriptions?page=${page}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                if (!resp.ok) break;
-                const json = await resp.json();
-                const items = Array.isArray(json.data) ? json.data : [];
-                all = all.concat(items);
-                const pagination = json.pagination || { current_page: page, last_page: page };
-                if (pagination.current_page >= pagination.last_page) break;
-                page += 1;
+            const response = await fetch(`/api/admin/reports?period=${selectedPeriod}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                setRecentSubscriptions(data.data?.recentSubscriptions || []);
             }
-            setRecentSubscriptions(all);
-        } catch (e) {
-            console.error('Error fetching subscriptions (all pages):', e);
+        } catch (error) {
+            console.error('Error fetching recent subscriptions:', error);
             setRecentSubscriptions([]);
         }
     };
@@ -203,9 +195,12 @@ const AdminReports = () => {
             language === 'ar' ? 'العميل' : 'Customer',
             language === 'ar' ? 'المطعم' : 'Restaurant',
             language === 'ar' ? 'نوع الاشتراك' : 'Subscription Type',
-            language === 'ar' ? 'سعر الوجبة (بالريال)' : 'Meal Price (OMR)',
+            language === 'ar' ? 'السعر الإجمالي (بالريال)' : 'Total Amount (OMR)',
+            language === 'ar' ? 'سعر الاشتراك (بالريال)' : 'Subscription Price (OMR)',
             language === 'ar' ? 'سعر التوصيل (بالريال)' : 'Delivery Price (OMR)',
-            language === 'ar' ? 'الإجمالي (بالريال)' : 'Total (OMR)',
+            language === 'ar' ? 'نسبة مكسب الإدارة (%)' : 'Admin Commission (%)',
+            language === 'ar' ? 'مبلغ مكسب الإدارة (بالريال)' : 'Admin Commission Amount (OMR)',
+            language === 'ar' ? 'مستحقات التاجر (بالريال)' : 'Merchant Amount (OMR)',
             language === 'ar' ? 'تاريخ الإنشاء' : 'Created At'
         ];
         const rows = [headers, ...recentSubscriptions.map((sub, idx) => [
@@ -213,9 +208,12 @@ const AdminReports = () => {
             sub.user?.name || '',
             sub.restaurant?.name_ar || sub.restaurant?.name_en || '',
             getSubscriptionTypeText(sub),
-            formatCurrencyText(getMealPrice(sub)),
-            formatDeliveryText(getDeliveryPrice(sub)),
-            formatCurrencyText(sub.total_amount),
+            formatCurrencyText(sub.total_amount || 0),
+            formatCurrencyText(sub.subscription_price || 0),
+            formatDeliveryText(sub.delivery_price || 0),
+            sub.admin_commission_percentage ? `${sub.admin_commission_percentage}%` : '-',
+            formatCurrencyText(sub.admin_commission_amount || 0),
+            formatCurrencyText(sub.merchant_amount || 0),
             formatDatePretty(sub.created_at)
         ])];
         downloadExcelHTML(`admin_subscriptions_${new Date().toISOString().slice(0,10)}.xls`, rows);
@@ -556,9 +554,12 @@ const AdminReports = () => {
                                 <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{language === 'ar' ? 'اسم العميل' : 'Customer Name'}</th>
                                 <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{language === 'ar' ? 'المطعم' : 'Restaurant'}</th>
                                 <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{language === 'ar' ? 'نوع الاشتراك' : 'Subscription Type'}</th>
-                                <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{language === 'ar' ? 'سعر الوجبة' : 'Meal Price'}</th>
+                                <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{language === 'ar' ? 'السعر الإجمالي' : 'Total Amount'}</th>
+                                <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{language === 'ar' ? 'سعر الاشتراك' : 'Subscription Price'}</th>
                                 <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{language === 'ar' ? 'سعر التوصيل' : 'Delivery Price'}</th>
-                                <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)' }}>{language === 'ar' ? 'الإجمالي' : 'Total'}</th>
+                                <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{language === 'ar' ? 'نسبة مكسب الإدارة' : 'Admin Commission %'}</th>
+                                <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{language === 'ar' ? 'مبلغ مكسب الإدارة' : 'Admin Commission Amount'}</th>
+                                <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)' }}>{language === 'ar' ? 'مستحقات التاجر' : 'Merchant Amount'}</th>
                                 <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)' }}>{language === 'ar' ? 'تاريخ الإنشاء' : 'Created At'}</th>
                             </tr>
                         </thead>
@@ -575,15 +576,18 @@ const AdminReports = () => {
                                     <td style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(17 24 39)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{sub.user?.name || '-'}</td>
                                     <td style={{ padding: '1rem', textAlign: 'center', color: 'rgb(107 114 128)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{sub.restaurant?.name_ar || sub.restaurant?.name_en || '-'}</td>
                                     <td style={{ padding: '1rem', textAlign: 'center', color: 'rgb(107 114 128)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{getSubscriptionTypeText(sub)}</td>
-                                    <td style={{ padding: '1rem', textAlign: 'center', color: 'rgb(107 114 128)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{formatCurrency(getMealPrice(sub))}</td>
-                                    <td style={{ padding: '1rem', textAlign: 'center', color: parseFloat(getDeliveryPrice(sub)) > 0 ? '#f59e0b' : '#10b981', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{parseFloat(getDeliveryPrice(sub)) > 0 ? formatCurrency(getDeliveryPrice(sub)) : (language === 'ar' ? 'مجاني' : 'Free')}</td>
-                                    <td style={{ padding: '1rem', textAlign: 'center', color: 'rgb(107 114 128)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{formatCurrency(parseFloat(sub.total_amount || 0))}</td>
+                                    <td style={{ padding: '1rem', textAlign: 'center', color: '#2f6e73', fontWeight: '600', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{formatCurrency(sub.total_amount || 0)}</td>
+                                    <td style={{ padding: '1rem', textAlign: 'center', color: 'rgb(107 114 128)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{formatCurrency(sub.subscription_price || 0)}</td>
+                                    <td style={{ padding: '1rem', textAlign: 'center', color: parseFloat(sub.delivery_price || 0) > 0 ? '#f59e0b' : '#10b981', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{parseFloat(sub.delivery_price || 0) > 0 ? formatCurrency(sub.delivery_price || 0) : (language === 'ar' ? 'مجاني' : 'Free')}</td>
+                                    <td style={{ padding: '1rem', textAlign: 'center', color: sub.admin_commission_percentage ? '#2f6e73' : 'rgb(107 114 128)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{sub.admin_commission_percentage ? `${sub.admin_commission_percentage}%` : (language === 'ar' ? 'غير محدد' : 'Not Set')}</td>
+                                    <td style={{ padding: '1rem', textAlign: 'center', color: sub.admin_commission_amount > 0 ? '#2f6e73' : 'rgb(107 114 128)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>{formatCurrency(sub.admin_commission_amount || 0)}</td>
+                                    <td style={{ padding: '1rem', textAlign: 'center', color: 'rgb(107 114 128)' }}>{formatCurrency(sub.merchant_amount || 0)}</td>
                                     <td style={{ padding: '1rem', textAlign: 'center', color: 'rgb(107 114 128)' }}>{formatDateTime(sub.created_at)}</td>
                                 </tr>
                             ))}
                             {recentSubscriptions.length === 0 && (
                                 <tr>
-                                    <td colSpan="8" style={{ padding: '1rem', textAlign: 'center', color: 'rgb(107 114 128)' }}>
+                                    <td colSpan="11" style={{ padding: '1rem', textAlign: 'center', color: 'rgb(107 114 128)' }}>
                                         {language === 'ar' ? 'لا توجد بيانات' : 'No data'}
                                     </td>
                                 </tr>

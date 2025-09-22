@@ -30,6 +30,7 @@ class SubscriptionTypeController extends Controller
             'type' => 'required|in:weekly,monthly',
             'price' => 'required|numeric|min:0',
             'delivery_price' => 'required|numeric|min:0',
+            'admin_commission' => 'nullable|numeric|min:0|max:100',
             'meals_count' => 'required|integer|min:1',
             'is_active' => 'boolean',
         ], [
@@ -47,6 +48,9 @@ class SubscriptionTypeController extends Controller
             'delivery_price.required' => 'سعر التوصيل مطلوب',
             'delivery_price.numeric' => 'سعر التوصيل يجب أن يكون رقم',
             'delivery_price.min' => 'سعر التوصيل يجب أن يكون أكبر من أو يساوي صفر',
+            'admin_commission.numeric' => 'نسبة مكسب الإدارة يجب أن تكون رقم',
+            'admin_commission.min' => 'نسبة مكسب الإدارة يجب أن تكون أكبر من أو يساوي صفر',
+            'admin_commission.max' => 'نسبة مكسب الإدارة يجب أن تكون أقل من أو تساوي 100',
             'meals_count.required' => 'عدد الوجبات مطلوب',
             'meals_count.integer' => 'عدد الوجبات يجب أن يكون رقم صحيح',
             'meals_count.min' => 'عدد الوجبات يجب أن يكون أكبر من صفر',
@@ -61,6 +65,7 @@ class SubscriptionTypeController extends Controller
             'type' => $request->type,
             'price' => $request->price,
             'delivery_price' => $request->delivery_price,
+            'admin_commission' => $request->admin_commission,
             'meals_count' => $request->meals_count,
             'is_active' => $request->is_active ?? true,
         ]);
@@ -102,6 +107,7 @@ class SubscriptionTypeController extends Controller
             'type' => 'required|in:weekly,monthly',
             'price' => 'required|numeric|min:0',
             'delivery_price' => 'required|numeric|min:0',
+            'admin_commission' => 'nullable|numeric|min:0|max:100',
             'meals_count' => 'required|integer|min:1',
             'is_active' => 'boolean',
         ], [
@@ -119,6 +125,9 @@ class SubscriptionTypeController extends Controller
             'delivery_price.required' => 'سعر التوصيل مطلوب',
             'delivery_price.numeric' => 'سعر التوصيل يجب أن يكون رقم',
             'delivery_price.min' => 'سعر التوصيل يجب أن يكون أكبر من أو يساوي صفر',
+            'admin_commission.numeric' => 'نسبة مكسب الإدارة يجب أن تكون رقم',
+            'admin_commission.min' => 'نسبة مكسب الإدارة يجب أن تكون أكبر من أو يساوي صفر',
+            'admin_commission.max' => 'نسبة مكسب الإدارة يجب أن تكون أقل من أو تساوي 100',
             'meals_count.required' => 'عدد الوجبات مطلوب',
             'meals_count.integer' => 'عدد الوجبات يجب أن يكون رقم صحيح',
             'meals_count.min' => 'عدد الوجبات يجب أن يكون أكبر من صفر',
@@ -133,6 +142,7 @@ class SubscriptionTypeController extends Controller
             'type' => $request->type,
             'price' => $request->price,
             'delivery_price' => $request->delivery_price,
+            'admin_commission' => $request->admin_commission,
             'meals_count' => $request->meals_count,
             'is_active' => $request->is_active ?? $subscriptionType->is_active,
         ]);

@@ -30,6 +30,7 @@ const SubscriptionTypes = () => {
     type: 'weekly',
     price: '',
     delivery_price: '',
+    admin_commission: '',
     meals_count: '',
     is_active: true
   });
@@ -111,6 +112,7 @@ const SubscriptionTypes = () => {
       type: subscriptionType.type,
       price: subscriptionType.price.toString(),
       delivery_price: subscriptionType.delivery_price ? subscriptionType.delivery_price.toString() : '0',
+      admin_commission: subscriptionType.admin_commission ? subscriptionType.admin_commission.toString() : '',
       meals_count: subscriptionType.meals_count.toString(),
       is_active: subscriptionType.is_active
     });
@@ -140,6 +142,7 @@ const SubscriptionTypes = () => {
       type: 'weekly',
       price: '',
       delivery_price: '',
+      admin_commission: '',
       meals_count: '',
       is_active: true
     });
@@ -704,6 +707,37 @@ const SubscriptionTypes = () => {
                     fontSize: '1rem'
                   }}
                 />
+              </div>
+            </div>
+
+            <div className="admin-subscription-types-form-grid-1" style={{ marginBottom: '1rem' }}>
+              <div>
+                <label className="admin-subscription-types-form-label" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                  {language === 'ar' ? 'نسبة مكسب الإدارة (%)' : 'Admin Commission (%)'}
+                  <span style={{ color: 'rgb(107 114 128)', fontSize: '0.875rem', marginLeft: '0.25rem' }}>
+                    ({language === 'ar' ? 'اختياري' : 'Optional'})
+                  </span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="100"
+                  className="admin-subscription-types-form-input"
+                  value={formData.admin_commission}
+                  onChange={(e) => handleInputChange('admin_commission', e.target.value)}
+                  placeholder={language === 'ar' ? 'مثال: 10' : 'Example: 10'}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid rgb(229 231 235)',
+                    borderRadius: '0.5rem',
+                    fontSize: '1rem'
+                  }}
+                />
+                <p style={{ color: 'rgb(107 114 128)', fontSize: '0.75rem', marginTop: '0.25rem' }}>
+                  {language === 'ar' ? 'النسبة المئوية من سعر الاشتراك التي ستكون مكسب الإدارة (0-100%)' : 'Percentage of subscription price that will be admin commission (0-100%)'}
+                </p>
               </div>
             </div>
 

@@ -18,6 +18,7 @@ class SubscriptionType extends Model
         'type',
         'price',
         'delivery_price',
+        'admin_commission',
         'meals_count',
         'is_active',
     ];
@@ -25,6 +26,7 @@ class SubscriptionType extends Model
     protected $casts = [
         'price' => 'decimal:2',
         'delivery_price' => 'decimal:2',
+        'admin_commission' => 'decimal:2',
         'meals_count' => 'integer',
         'is_active' => 'boolean',
     ];
@@ -70,5 +72,29 @@ class SubscriptionType extends Model
             return $this->delivery_price . ' ' . (app()->getLocale() === 'ar' ? 'ريال' : 'OMR');
         }
         return app()->getLocale() === 'ar' ? 'مجاني' : 'Free';
+    }
+
+    public function getCommissionAmountAttribute()
+    {
+        if (!$this->admin_commission) {
+            return 0;
+        }
+        // النسبة تحسب من سعر الاشتراك بدون التوصيل
+        $subscriptionPriceWithoutDelivery = $this->price - $this->delivery_price;
+        return ($subscriptionPriceWithoutDelivery * $this->admin_commission) / 100;
+    }
+
+    public function getMerchantAmountAttribute()
+    {
+        $subscriptionPriceWithoutDelivery = $this->price - $this->delivery_price;
+        return $subscriptionPriceWithoutDelivery - $this->commission_amount;
+    }
+
+    public function getCommissionPercentageTextAttribute()
+    {
+        if (!$this->admin_commission) {
+            return app()->getLocale() === 'ar' ? 'غير محدد' : 'Not Set';
+        }
+        return $this->admin_commission . '%';
     }
 }
