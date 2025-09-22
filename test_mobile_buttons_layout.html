@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار تخطيط الأزرار على الهاتف المحمول</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .day-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+        
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .day-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2f6e73;
+        }
+        
+        .week-number {
+            font-size: 0.9rem;
+            color: #6b7280;
+            background: rgba(47, 110, 115, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+        }
+        
+        /* تخطيط الأزرار - محسن للهاتف */
+        .day-buttons-container {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .edit-button-mobile {
+            background: linear-gradient(135deg, #2f6e73, #4a8a8f);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+            box-shadow: 0 3px 10px rgba(47, 110, 115, 0.3);
+            min-width: 80px;
+            height: 36px;
+            white-space: nowrap;
+        }
+        
+        .edit-button-mobile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(47, 110, 115, 0.4);
+        }
+        
+        .selected-badge-mobile {
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #2f6e73, #4a8a8f);
+            color: white;
+            border-radius: 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 80px;
+            height: 36px;
+            box-shadow: 0 3px 10px rgba(47, 110, 115, 0.3);
+            white-space: nowrap;
+        }
+        
+        /* تحسينات للهاتف المحمول */
+        @media (max-width: 768px) {
+            .day-buttons-container {
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+                align-items: stretch !important;
+            }
+            
+            .day-buttons-container > div {
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+            }
+            
+            .day-buttons-container button,
+            .day-buttons-container .selected-badge {
+                width: 100% !important;
+                min-height: 48px !important;
+                padding: 0.75rem 1rem !important;
+                font-size: 0.9rem !important;
+                justify-content: center !important;
+            }
+            
+            .edit-button-mobile {
+                width: 100% !important;
+                min-height: 48px !important;
+                padding: 0.75rem 1rem !important;
+                font-size: 0.9rem !important;
+            }
+            
+            .selected-badge-mobile {
+                width: 100% !important;
+                min-height: 48px !important;
+                padding: 0.75rem 1rem !important;
+                font-size: 0.9rem !important;
+            }
+        }
+        
+        /* تحسينات للشاشات الصغيرة جداً */
+        @media (max-width: 480px) {
+            .day-buttons-container {
+                gap: 0.5rem !important;
+            }
+            
+            .day-buttons-container button,
+            .day-buttons-container .selected-badge {
+                min-height: 44px !important;
+                padding: 0.625rem 0.875rem !important;
+                font-size: 0.85rem !important;
+            }
+            
+            .edit-button-mobile {
+                min-height: 44px !important;
+                padding: 0.625rem 0.875rem !important;
+                font-size: 0.85rem !important;
+            }
+            
+            .selected-badge-mobile {
+                min-height: 44px !important;
+                padding: 0.625rem 0.875rem !important;
+                font-size: 0.85rem !important;
+            }
+        }
+        
+        .test-info {
+            background: rgba(255,255,255,0.1);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 2rem;
+            color: white;
+        }
+        
+        .test-info h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .test-info ul {
+            padding-right: 1rem;
+        }
+        
+        .test-info li {
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="section-title">اختبار تخطيط الأزرار على الهاتف المحمول</h1>
+        
+        <!-- يوم مع أزرار -->
+        <div class="day-card">
+            <div class="day-header">
+                <div class="day-title">الثلاثاء، 23 سبتمبر 2025</div>
+                <div class="week-number">الأسبوع 1</div>
+            </div>
+            
+            <div class="day-buttons-container">
+                <button class="edit-button-mobile">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                    </svg>
+                    تعديل
+                </button>
+                
+                <div class="selected-badge-mobile">
+                    تم الاختيار
+                </div>
+            </div>
+        </div>
+        
+        <!-- يوم بدون اختيار -->
+        <div class="day-card">
+            <div class="day-header">
+                <div class="day-title">الأربعاء، 24 سبتمبر 2025</div>
+                <div class="week-number">الأسبوع 1</div>
+            </div>
+            
+            <div class="day-buttons-container">
+                <button class="edit-button-mobile">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                    </svg>
+                    تعديل
+                </button>
+            </div>
+        </div>
+        
+        <div class="test-info">
+            <h3>ملاحظات الاختبار:</h3>
+            <ul>
+                <li>على الشاشات الكبيرة: الأزرار في نفس السطر</li>
+                <li>على الهاتف المحمول (أقل من 768px): الأزرار تحت بعض عمودياً</li>
+                <li>على الشاشات الصغيرة جداً (أقل من 480px): أزرار أصغر مع مسافات محسنة</li>
+                <li>تأكد من أن الأزرار سهلة اللمس (48px على الأقل)</li>
+                <li>تأكد من أن النص واضح ومقروء</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

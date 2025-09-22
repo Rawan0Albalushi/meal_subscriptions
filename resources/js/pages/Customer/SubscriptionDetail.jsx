@@ -132,6 +132,19 @@ const SubscriptionDetail = () => {
         return item.meal?.meal_type === mealTypeFilter;
     }) || [];
 
+    // تجميع الوجبات حسب اليوم
+    const mealsByDay = filteredMeals.reduce((acc, item) => {
+        const deliveryDate = item.delivery_date;
+        if (!acc[deliveryDate]) {
+            acc[deliveryDate] = [];
+        }
+        acc[deliveryDate].push(item);
+        return acc;
+    }, {});
+
+    // تحويل إلى مصفوفة مرتبة حسب التاريخ
+    const sortedDays = Object.keys(mealsByDay).sort((a, b) => new Date(a) - new Date(b));
+
     const getStatusColor = (status) => {
         switch (status) {
             case 'pending':
@@ -867,18 +880,18 @@ const SubscriptionDetail = () => {
 
                     </div>
                     
-                    {/* Redesigned Meals List */}
+                    {/* Redesigned Meals List - Grouped by Day */}
                     <div style={{ 
                         display: 'flex', 
                         flexDirection: 'column', 
-                        gap: '1rem', 
+                        gap: '1.5rem', 
                         position: 'relative', 
                         zIndex: 1,
                         '@media (max-width: 768px)': {
-                            gap: '0.75rem'
+                            gap: '1rem'
                         }
                     }}>
-                        {filteredMeals.length === 0 ? (
+                        {sortedDays.length === 0 ? (
                             <div style={{
                                 background: 'linear-gradient(135deg, rgba(47, 110, 115, 0.08) 0%, rgba(182, 84, 73, 0.08) 100%)',
                                 borderRadius: '1.25rem',
@@ -941,25 +954,63 @@ const SubscriptionDetail = () => {
                                 </button>
                             </div>
                         ) : (
-                            <div style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                                gap: 'clamp(0.75rem, 3vw, 1rem)',
-                                '@media (min-width: 768px)': {
-                                    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                                    gap: 'clamp(1rem, 3vw, 1.25rem)'
-                                },
-                                '@media (min-width: 1024px)': {
-                                    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-                                    gap: 'clamp(1.25rem, 3vw, 1.5rem)'
-                                },
-                                '@media (max-width: 767px)': {
-                                    gridTemplateColumns: '1fr',
-                                    gap: '0.75rem'
-                                }
-                            }}>
-                                {filteredMeals.map((item, index) => (
-                                    <div key={index} style={{
+                            sortedDays.map((day, dayIndex) => (
+                                <div key={day} style={{
+                                    background: 'rgba(255, 255, 255, 0.6)',
+                                    borderRadius: '1rem',
+                                    padding: '1rem',
+                                    border: '1px solid rgba(47, 110, 115, 0.1)',
+                                    '@media (max-width: 768px)': {
+                                        borderRadius: '0.75rem',
+                                        padding: '0.75rem'
+                                    }
+                                }}>
+                                    {/* Day Header */}
+                                    <div style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        marginBottom: '1rem',
+                                        paddingBottom: '0.75rem',
+                                        borderBottom: '2px solid rgba(47, 110, 115, 0.1)'
+                                    }}>
+                                        <h3 style={{
+                                            fontSize: '1.25rem',
+                                            fontWeight: '700',
+                                            color: '#2f6e73',
+                                            margin: 0,
+                                            '@media (max-width: 768px)': {
+                                                fontSize: '1.1rem'
+                                            }
+                                        }}>
+                                            {formatDate(day)}
+                                        </h3>
+                                        <span style={{
+                                            fontSize: '0.875rem',
+                                            color: '#6b7280',
+                                            background: 'rgba(47, 110, 115, 0.1)',
+                                            padding: '0.25rem 0.75rem',
+                                            borderRadius: '1rem',
+                                            fontWeight: '600'
+                                        }}>
+                                            {mealsByDay[day].length} {language === 'ar' ? 'وجبة' : 'meals'}
+                                        </span>
+                                    </div>
+
+                                    {/* Horizontal Scrollable Meals */}
+                                    <div style={{
+                                        display: 'flex',
+                                        gap: '1rem',
+                                        overflowX: 'auto',
+                                        paddingBottom: '0.5rem',
+                                        scrollBehavior: 'smooth',
+                                        '@media (max-width: 768px)': {
+                                            gap: '0.75rem'
+                                        }
+                                    }}
+                                    className="meals-scroll-container">
+                                        {mealsByDay[day].map((item, index) => (
+                                            <div key={index} style={{
                                         background: 'rgba(255, 255, 255, 0.95)',
                                         borderRadius: '1.25rem',
                                         padding: 0,
@@ -969,11 +1020,16 @@ const SubscriptionDetail = () => {
                                         position: 'relative',
                                         overflow: 'hidden',
                                         cursor: 'pointer',
-                                        height: 'clamp(320px, 45vw, 380px)',
+                                        height: 'clamp(280px, 40vw, 320px)',
+                                        width: 'clamp(200px, 35vw, 250px)',
+                                        minWidth: '200px',
+                                        flexShrink: 0,
                                         display: 'flex',
                                         flexDirection: 'column',
                                         '@media (max-width: 768px)': {
-                                            height: '320px',
+                                            height: '280px',
+                                            width: '180px',
+                                            minWidth: '180px',
                                             borderRadius: '1rem',
                                             border: '1px solid rgba(255, 255, 255, 0.4)'
                                         }
@@ -1134,14 +1190,58 @@ const SubscriptionDetail = () => {
                                     </div>
                                 ))}
                             </div>
+                                </div>
+                            ))
                         )}
                     </div>
                 </div>
             </div>
-
-
         </div>
     );
 };
+
+// Add CSS for horizontal scroll
+const scrollStyles = `
+  .meals-scroll-container {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(47, 110, 115, 0.3) transparent;
+  }
+
+  .meals-scroll-container::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .meals-scroll-container::-webkit-scrollbar-track {
+    background: rgba(47, 110, 115, 0.1);
+    border-radius: 3px;
+  }
+
+  .meals-scroll-container::-webkit-scrollbar-thumb {
+    background: rgba(47, 110, 115, 0.3);
+    border-radius: 3px;
+  }
+
+  .meals-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(47, 110, 115, 0.5);
+  }
+
+  @media (max-width: 768px) {
+    .meals-scroll-container {
+      scroll-snap-type: x mandatory;
+      scroll-padding: 0.75rem;
+    }
+    
+    .meals-scroll-container > div {
+      scroll-snap-align: start;
+    }
+  }
+`;
+
+// Inject scroll styles
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = scrollStyles;
+  document.head.appendChild(styleSheet);
+}
 
 export default SubscriptionDetail;

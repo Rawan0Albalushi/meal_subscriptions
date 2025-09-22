@@ -49,6 +49,11 @@ const Cart = () => {
         fetchDeliveryAddresses();
     }, [isAuthenticated]);
 
+    // Scroll to top when component mounts
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     const fetchCartData = async () => {
         try {
             setLoading(true);
@@ -90,6 +95,13 @@ const Cart = () => {
         }
     };
 
+    // Scroll to top when cart data is loaded
+    useEffect(() => {
+        if (cart && !loading) {
+            window.scrollTo(0, 0);
+        }
+    }, [cart, loading]);
+
     const fetchDeliveryAddresses = async () => {
         try {
             const response = await deliveryAddressesAPI.getAll();
@@ -109,6 +121,11 @@ const Cart = () => {
             setShowSuccessPopup(true);
 
             fetchCartData();
+            
+            // Scroll to top after removing item
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 100);
         } catch (error) {
             console.error('Error removing item:', error);
             setPopupTitle(t('error'));
@@ -174,6 +191,11 @@ const Cart = () => {
             setShowSuccessPopup(true);
 
             setCart(null);
+            
+            // Scroll to top after clearing cart
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 100);
         } catch (error) {
             console.error('Error clearing cart:', error);
             setPopupTitle(t('error'));

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار اختيار الوجبات على الهاتف المحمول</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .day-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+        
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .day-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2f6e73;
+        }
+        
+        .meals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .meals-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+        }
+        
+        .meal-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 1rem;
+            padding: 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            border: 2px solid rgba(47, 110, 115, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            height: 280px;
+            display: flex;
+            flex-direction: column;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        .meal-card:active {
+            transform: scale(0.98);
+            transition: transform 0.1s ease;
+        }
+        
+        .meal-card.selected {
+            background: rgba(240, 253, 244, 0.95);
+            box-shadow: 0 15px 35px rgba(47, 110, 115, 0.2);
+            border: 3px solid #2f6e73;
+        }
+        
+        .meal-image {
+            width: 100%;
+            height: 70%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem 1rem 0 0;
+        }
+        
+        .meal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        
+        .selection-indicator {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: #2f6e73;
+            color: white;
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(47, 110, 115, 0.3);
+            animation: pulse 2s infinite;
+            z-index: 10;
+        }
+        
+        .meal-content {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .meal-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2f6e73;
+            text-align: center;
+        }
+        
+        .meal-description {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-align: center;
+            line-height: 1.4;
+        }
+        
+        .selection-button {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-top: auto;
+        }
+        
+        .selection-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .test-info {
+            background: rgba(255,255,255,0.1);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 2rem;
+            color: white;
+        }
+        
+        .test-info h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .test-info ul {
+            padding-right: 1rem;
+        }
+        
+        .test-info li {
+            margin-bottom: 0.25rem;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="section-title">اختبار اختيار الوجبات على الهاتف المحمول</h1>
+        
+        <div class="day-card">
+            <div class="day-header">
+                <div class="day-title">الثلاثاء، 23 سبتمبر 2025</div>
+            </div>
+            
+            <div class="meals-grid">
+                <!-- الوجبة الأولى -->
+                <div class="meal-card" onclick="selectMeal(this, 'meal1')">
+                    <div class="meal-image">
+                        <img src="https://via.placeholder.com/300x200/4a757c/ffffff?text=وجبة+1" alt="وجبة 1">
+                        <div class="selection-indicator" style="display: none;">✓</div>
+                    </div>
+                    <div class="meal-content">
+                        <div>
+                            <h3 class="meal-title">وجبة 1</h3>
+                            <p class="meal-description">وصف وجبة 1 - طبق رئيسي لذيذ</p>
+                        </div>
+                        <button class="selection-button">اختيار هذه الوجبة</button>
+                    </div>
+                </div>
+                
+                <!-- الوجبة الثانية -->
+                <div class="meal-card" onclick="selectMeal(this, 'meal2')">
+                    <div class="meal-image">
+                        <img src="https://via.placeholder.com/300x200/ba6c5d/ffffff?text=وجبة+2" alt="وجبة 2">
+                        <div class="selection-indicator" style="display: none;">✓</div>
+                    </div>
+                    <div class="meal-content">
+                        <div>
+                            <h3 class="meal-title">وجبة 2</h3>
+                            <p class="meal-description">وصف وجبة 2 - طبق رئيسي مميز</p>
+                        </div>
+                        <button class="selection-button">اختيار هذه الوجبة</button>
+                    </div>
+                </div>
+                
+                <!-- الوجبة الثالثة -->
+                <div class="meal-card" onclick="selectMeal(this, 'meal3')">
+                    <div class="meal-image">
+                        <img src="https://via.placeholder.com/300x200/66bb6a/ffffff?text=وجبة+3" alt="وجبة 3">
+                        <div class="selection-indicator" style="display: none;">✓</div>
+                    </div>
+                    <div class="meal-content">
+                        <div>
+                            <h3 class="meal-title">وجبة 3</h3>
+                            <p class="meal-description">وصف وجبة 3 - طبق رئيسي صحي</p>
+                        </div>
+                        <button class="selection-button">اختيار هذه الوجبة</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-info">
+            <h3>ملاحظات الاختبار:</h3>
+            <ul>
+                <li>اضغط على أي وجبة لاختيارها</li>
+                <li>تأكد من أن الوجبة المختارة تظهر علامة ✓</li>
+                <li>تأكد من أن الوجبة المختارة تتغير لونها</li>
+                <li>اضغط على وجبة أخرى لاختيارها بدلاً من الأولى</li>
+                <li>تأكد من أن اللمس يعمل بشكل صحيح على الهاتف</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        let selectedMeal = null;
+        
+        function selectMeal(card, mealId) {
+            // إزالة التحديد من الوجبة السابقة
+            if (selectedMeal && selectedMeal !== card) {
+                selectedMeal.classList.remove('selected');
+                const prevIndicator = selectedMeal.querySelector('.selection-indicator');
+                const prevButton = selectedMeal.querySelector('.selection-button');
+                if (prevIndicator) prevIndicator.style.display = 'none';
+                if (prevButton) prevButton.textContent = 'اختيار هذه الوجبة';
+            }
+            
+            // تحديد الوجبة الجديدة
+            card.classList.add('selected');
+            const indicator = card.querySelector('.selection-indicator');
+            const button = card.querySelector('.selection-button');
+            if (indicator) indicator.style.display = 'flex';
+            if (button) button.textContent = 'تم الاختيار';
+            
+            selectedMeal = card;
+            
+            console.log('تم اختيار الوجبة:', mealId);
+        }
+        
+        // إضافة معالجات اللمس للهاتف المحمول
+        document.querySelectorAll('.meal-card').forEach(card => {
+            card.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+            });
+            
+            card.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                const mealId = this.onclick.toString().match(/selectMeal\(this, '([^']+)'\)/)[1];
+                selectMeal(this, mealId);
+            });
+        });
+    </script>
+</body>
+</html>

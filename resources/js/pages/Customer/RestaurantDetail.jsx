@@ -160,6 +160,18 @@ const styles = `
     
     .meal-card {
       touch-action: manipulation !important;
+      -webkit-tap-highlight-color: transparent !important;
+      -webkit-touch-callout: none !important;
+      -webkit-user-select: none !important;
+      -khtml-user-select: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
+      user-select: none !important;
+    }
+    
+    .meal-card:active {
+      transform: scale(0.98) !important;
+      transition: transform 0.1s ease !important;
     }
     
     /* تحسين المسافات على الهاتف */
@@ -181,6 +193,29 @@ const styles = `
     /* تحسين عرض الرسائل */
     .status-message {
       margin-bottom: 1rem !important;
+    }
+    
+    /* تحسين تخطيط الأزرار على الهاتف */
+    .day-buttons-container {
+      flex-direction: column !important;
+      gap: 0.75rem !important;
+      align-items: stretch !important;
+    }
+    
+    .day-buttons-container > div {
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.5rem !important;
+    }
+    
+    .day-buttons-container button,
+    .day-buttons-container .selected-badge {
+      width: 100% !important;
+      min-height: 48px !important;
+      padding: 0.75rem 1rem !important;
+      font-size: 0.9rem !important;
+      justify-content: center !important;
     }
   }
   
@@ -205,6 +240,18 @@ const styles = `
     
     p {
       line-height: 1.4 !important;
+    }
+    
+    /* تحسين الأزرار للشاشات الصغيرة جداً */
+    .day-buttons-container {
+      gap: 0.5rem !important;
+    }
+    
+    .day-buttons-container button,
+    .day-buttons-container .selected-badge {
+      min-height: 44px !important;
+      padding: 0.625rem 0.875rem !important;
+      font-size: 0.85rem !important;
     }
   }
   
@@ -687,10 +734,12 @@ const RestaurantDetail = () => {
 
 
 
-  const handleMealSelection = (dayKey, meal) => {
+  const handleMealSelection = (dayKey, meal, event) => {
     // Prevent auto-scroll by preventing default behavior
-    event?.preventDefault();
-    event?.stopPropagation();
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     
     const currentSelectedCount = Object.keys(selectedMeals).length;
     const maxAllowed = selectedSubscriptionType?.meals_count || 0;
@@ -2305,14 +2354,20 @@ const RestaurantDetail = () => {
                         )}
                       </div>
                       
-                      {/* الأزرار في نفس السطر */}
-                      <div style={{
+                      {/* الأزرار - تخطيط محسن للهاتف */}
+                      <div className="day-buttons-container" style={{
                         display: 'flex',
                         gap: '0.5rem',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        '@media (max-width: 768px)': {
+                          flexDirection: 'column',
+                          gap: '0.75rem',
+                          alignItems: 'stretch'
+                        }
                       }}>
                         <button
                           onClick={() => openDateEditor(day.key)}
+                          className="edit-button-mobile"
                           style={{
                             background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                             color: 'white',
@@ -2330,7 +2385,13 @@ const RestaurantDetail = () => {
                             boxShadow: '0 3px 10px rgba(47, 110, 115, 0.3)',
                             minWidth: '80px',
                             height: '36px',
-                            whiteSpace: 'nowrap'
+                            whiteSpace: 'nowrap',
+                            '@media (max-width: 768px)': {
+                              width: '100%',
+                              minHeight: '48px',
+                              padding: '0.75rem 1rem',
+                              fontSize: '0.9rem'
+                            }
                           }}
                           onMouseEnter={(e) => {
                             e.target.style.transform = 'translateY(-2px)';
@@ -2348,7 +2409,7 @@ const RestaurantDetail = () => {
                         </button>
                         
                         {getSelectedMealForDay(day.key) && (
-                          <div style={{
+                          <div className="selected-badge-mobile" style={{
                             padding: '0.5rem 1rem',
                             background: 'linear-gradient(135deg, #2f6e73, #4a8a8f)',
                             color: 'white',
@@ -2361,7 +2422,13 @@ const RestaurantDetail = () => {
                             minWidth: '80px',
                             height: '36px',
                             boxShadow: '0 3px 10px rgba(47, 110, 115, 0.3)',
-                            whiteSpace: 'nowrap'
+                            whiteSpace: 'nowrap',
+                            '@media (max-width: 768px)': {
+                              width: '100%',
+                              minHeight: '48px',
+                              padding: '0.75rem 1rem',
+                              fontSize: '0.9rem'
+                            }
                           }}>
                             {t('selected')}
                           </div>
@@ -2408,7 +2475,16 @@ const RestaurantDetail = () => {
                               borderRadius: '1rem'
                             }
                           }}
-                            onClick={() => handleMealSelection(day.key, meal)}
+                            onClick={(e) => handleMealSelection(day.key, meal, e)}
+                            onTouchStart={(e) => {
+                              // Prevent default touch behavior
+                              e.preventDefault();
+                            }}
+                            onTouchEnd={(e) => {
+                              // Handle touch end
+                              e.preventDefault();
+                              handleMealSelection(day.key, meal, e);
+                            }}
 >
                             
                             {/* Selection Indicator */}
@@ -2683,7 +2759,10 @@ const RestaurantDetail = () => {
                   }}>
                     ⚠️
                   </div>
-                  <span style={{ lineHeight: '1.5', textAlign: 'center' }}>{errors.general}</span>
+                  <span 
+                    style={{ lineHeight: '1.5', textAlign: 'center' }}
+                    dangerouslySetInnerHTML={{ __html: errors.general }}
+                  />
                 </div>
               </div>
             )}

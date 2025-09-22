@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار رابط إفراغ السلة في رسالة الخطأ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .error-message {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border: 1px solid #fecaca;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.12);
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 0.4s ease-out;
+        }
+        
+        .error-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            color: #dc2626;
+            font-size: 0.875rem;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .error-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            color: white;
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: 0 3px 8px rgba(220, 38, 38, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        .error-text {
+            line-height: 1.5;
+            text-align: center;
+        }
+        
+        .clear-cart-link {
+            color: #ef4444;
+            text-decoration: underline;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .clear-cart-link:hover {
+            color: #dc2626;
+            text-decoration: none;
+            transform: scale(1.05);
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #4a757c 0%, #ba6c5d 100%);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 117, 124, 0.3);
+            margin: 0.5rem;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 117, 124, 0.4);
+        }
+        
+        .test-info {
+            background: rgba(255,255,255,0.1);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 2rem;
+            color: white;
+        }
+        
+        .test-info h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .test-info ul {
+            padding-right: 1rem;
+        }
+        
+        .test-info li {
+            margin-bottom: 0.25rem;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="section-title">اختبار رابط إفراغ السلة في رسالة الخطأ</h1>
+        
+        <div class="test-section">
+            <h2 style="color: #2f6e73; margin-bottom: 1rem;">رسالة الخطأ مع رابط إفراغ السلة</h2>
+            <p style="color: #6b7280; margin-bottom: 1.5rem;">
+                هذا مثال على رسالة الخطأ التي تظهر عندما يحاول المستخدم إضافة أكثر من اشتراك واحد إلى السلة
+            </p>
+            
+            <div class="error-message">
+                <div class="error-content">
+                    <div class="error-icon">⚠️</div>
+                    <div class="error-text">
+                        لا يمكن إضافة أكثر من اشتراك واحد إلى السلة. يرجى إكمال الطلب الحالي أولاً أو حذف السلة الحالية. 
+                        <a href="/cart" class="clear-cart-link" onclick="handleClearCart()">إفراغ السلة</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2 style="color: #2f6e73; margin-bottom: 1rem;">اختبار التفاعل</h2>
+            <p style="color: #6b7280; margin-bottom: 1.5rem;">
+                اضغط على الأزرار أدناه لاختبار التفاعل مع رسالة الخطأ
+            </p>
+            
+            <button class="test-button" onclick="showErrorWithLink()">
+                عرض رسالة الخطأ مع الرابط
+            </button>
+            
+            <button class="test-button" onclick="testLinkClick()">
+                اختبار النقر على الرابط
+            </button>
+            
+            <button class="test-button" onclick="simulateCartError()">
+                محاكاة خطأ السلة
+            </button>
+        </div>
+        
+        <div class="test-info">
+            <h3>ملاحظات الاختبار:</h3>
+            <ul>
+                <li>تأكد من أن رسالة الخطأ تظهر بوضوح</li>
+                <li>تأكد من أن رابط "إفراغ السلة" يظهر بلون مختلف</li>
+                <li>تأكد من أن الرابط قابل للنقر</li>
+                <li>تأكد من أن النقر على الرابط ينقل إلى صفحة السلة</li>
+                <li>اختبر على الهاتف المحمول للتأكد من سهولة النقر</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        function showErrorWithLink() {
+            const errorMessage = document.querySelector('.error-message');
+            if (errorMessage) {
+                errorMessage.style.display = 'block';
+                errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+        
+        function testLinkClick() {
+            const link = document.querySelector('.clear-cart-link');
+            if (link) {
+                // محاكاة النقر على الرابط
+                link.style.transform = 'scale(1.1)';
+                link.style.color = '#dc2626';
+                
+                setTimeout(() => {
+                    link.style.transform = 'scale(1)';
+                    link.style.color = '#ef4444';
+                    alert('تم النقر على رابط إفراغ السلة - سيتم الانتقال إلى صفحة السلة');
+                }, 200);
+            }
+        }
+        
+        function simulateCartError() {
+            // محاكاة خطأ السلة
+            console.log('محاكاة خطأ السلة...');
+            
+            // إظهار رسالة تأكيد
+            alert('تم محاكاة خطأ السلة - يجب أن تظهر رسالة الخطأ مع رابط إفراغ السلة');
+            
+            // تمرير إلى رسالة الخطأ
+            const errorMessage = document.querySelector('.error-message');
+            if (errorMessage) {
+                errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+        
+        function handleClearCart() {
+            // معالجة النقر على رابط إفراغ السلة
+            console.log('تم النقر على رابط إفراغ السلة');
+            
+            // إظهار رسالة تأكيد
+            const confirmed = confirm('هل تريد إفراغ السلة؟');
+            if (confirmed) {
+                alert('تم إفراغ السلة - سيتم الانتقال إلى صفحة السلة');
+                // في التطبيق الحقيقي، سيتم الانتقال إلى صفحة السلة
+                // window.location.href = '/cart';
+            }
+        }
+        
+        // إضافة تأثيرات تفاعلية للرابط
+        document.addEventListener('DOMContentLoaded', function() {
+            const link = document.querySelector('.clear-cart-link');
+            if (link) {
+                link.addEventListener('mouseenter', function() {
+                    this.style.color = '#dc2626';
+                    this.style.transform = 'scale(1.05)';
+                });
+                
+                link.addEventListener('mouseleave', function() {
+                    this.style.color = '#ef4444';
+                    this.style.transform = 'scale(1)';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

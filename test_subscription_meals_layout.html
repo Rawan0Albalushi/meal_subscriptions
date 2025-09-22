@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار تخطيط الوجبات في صفحة تفاصيل الاشتراك</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .meals-section {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+        }
+        
+        .day-group {
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(47, 110, 115, 0.1);
+        }
+        
+        .day-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid rgba(47, 110, 115, 0.1);
+        }
+        
+        .day-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2f6e73;
+            margin: 0;
+        }
+        
+        .day-count {
+            font-size: 0.875rem;
+            color: #6b7280;
+            background: rgba(47, 110, 115, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-weight: 600;
+        }
+        
+        .meals-scroll-container {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(47, 110, 115, 0.3) transparent;
+        }
+        
+        .meals-scroll-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        
+        .meals-scroll-container::-webkit-scrollbar-track {
+            background: rgba(47, 110, 115, 0.1);
+            border-radius: 3px;
+        }
+        
+        .meals-scroll-container::-webkit-scrollbar-thumb {
+            background: rgba(47, 110, 115, 0.3);
+            border-radius: 3px;
+        }
+        
+        .meals-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(47, 110, 115, 0.5);
+        }
+        
+        .meal-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 1.25rem;
+            padding: 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            height: 280px;
+            width: 200px;
+            min-width: 200px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .meal-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .meal-image {
+            width: 100%;
+            height: 70%;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+        }
+        
+        .meal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        
+        .meal-content {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .meal-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: #1f2937;
+            line-height: 1.3;
+            text-align: center;
+        }
+        
+        .meal-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.625rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .meal-time {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            background: rgba(47, 110, 115, 0.1);
+            border-radius: 0.5rem;
+        }
+        
+        .test-info {
+            background: rgba(255,255,255,0.1);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 2rem;
+            color: white;
+        }
+        
+        .test-info h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .test-info ul {
+            padding-right: 1rem;
+        }
+        
+        .test-info li {
+            margin-bottom: 0.25rem;
+        }
+        
+        @media (max-width: 768px) {
+            .meals-scroll-container {
+                scroll-snap-type: x mandatory;
+                scroll-padding: 0.75rem;
+                gap: 0.75rem;
+            }
+            
+            .meals-scroll-container > div {
+                scroll-snap-align: start;
+            }
+            
+            .meal-card {
+                height: 280px;
+                width: 180px;
+                min-width: 180px;
+                border-radius: 1rem;
+                border: 1px solid rgba(255, 255, 255, 0.4);
+            }
+            
+            .day-group {
+                border-radius: 0.75rem;
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="section-title">اختبار تخطيط الوجبات في صفحة تفاصيل الاشتراك</h1>
+        
+        <div class="meals-section">
+            <h2 style="color: #2f6e73; margin-bottom: 1.5rem; text-align: center;">الوجبات مجمعة حسب اليوم</h2>
+            
+            <!-- اليوم الأول -->
+            <div class="day-group">
+                <div class="day-header">
+                    <h3 class="day-title">الثلاثاء، 23 سبتمبر 2025</h3>
+                    <span class="day-count">3 وجبات</span>
+                </div>
+                
+                <div class="meals-scroll-container">
+                    <div class="meal-card">
+                        <div class="meal-image">
+                            <img src="https://via.placeholder.com/200x150/4a757c/ffffff?text=وجبة+1" alt="وجبة 1">
+                        </div>
+                        <div class="meal-content">
+                            <div>
+                                <h4 class="meal-title">وجبة الإفطار</h4>
+                                <div class="meal-info">
+                                    <span class="meal-time">🕐 8:00 ص</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="meal-card">
+                        <div class="meal-image">
+                            <img src="https://via.placeholder.com/200x150/ba6c5d/ffffff?text=وجبة+2" alt="وجبة 2">
+                        </div>
+                        <div class="meal-content">
+                            <div>
+                                <h4 class="meal-title">وجبة الغداء</h4>
+                                <div class="meal-info">
+                                    <span class="meal-time">🕐 1:00 م</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="meal-card">
+                        <div class="meal-image">
+                            <img src="https://via.placeholder.com/200x150/66bb6a/ffffff?text=وجبة+3" alt="وجبة 3">
+                        </div>
+                        <div class="meal-content">
+                            <div>
+                                <h4 class="meal-title">وجبة العشاء</h4>
+                                <div class="meal-info">
+                                    <span class="meal-time">🕐 7:00 م</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- اليوم الثاني -->
+            <div class="day-group">
+                <div class="day-header">
+                    <h3 class="day-title">الأربعاء، 24 سبتمبر 2025</h3>
+                    <span class="day-count">2 وجبات</span>
+                </div>
+                
+                <div class="meals-scroll-container">
+                    <div class="meal-card">
+                        <div class="meal-image">
+                            <img src="https://via.placeholder.com/200x150/4a757c/ffffff?text=وجبة+4" alt="وجبة 4">
+                        </div>
+                        <div class="meal-content">
+                            <div>
+                                <h4 class="meal-title">وجبة الإفطار</h4>
+                                <div class="meal-info">
+                                    <span class="meal-time">🕐 8:00 ص</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="meal-card">
+                        <div class="meal-image">
+                            <img src="https://via.placeholder.com/200x150/ba6c5d/ffffff?text=وجبة+5" alt="وجبة 5">
+                        </div>
+                        <div class="meal-content">
+                            <div>
+                                <h4 class="meal-title">وجبة الغداء</h4>
+                                <div class="meal-info">
+                                    <span class="meal-time">🕐 1:00 م</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- اليوم الثالث -->
+            <div class="day-group">
+                <div class="day-header">
+                    <h3 class="day-title">الخميس، 25 سبتمبر 2025</h3>
+                    <span class="day-count">1 وجبة</span>
+                </div>
+                
+                <div class="meals-scroll-container">
+                    <div class="meal-card">
+                        <div class="meal-image">
+                            <img src="https://via.placeholder.com/200x150/66bb6a/ffffff?text=وجبة+6" alt="وجبة 6">
+                        </div>
+                        <div class="meal-content">
+                            <div>
+                                <h4 class="meal-title">وجبة العشاء</h4>
+                                <div class="meal-info">
+                                    <span class="meal-time">🕐 7:00 م</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-info">
+            <h3>ملاحظات الاختبار:</h3>
+            <ul>
+                <li>الوجبات مجمعة حسب اليوم مع عنوان لكل يوم</li>
+                <li>كل يوم له تمرير أفقي منفصل للوجبات</li>
+                <li>التمرير يعمل بسلاسة مع شريط تمرير مخصص</li>
+                <li>على الهاتف المحمول: التمرير مع snap للبطاقات</li>
+                <li>كل بطاقة وجبة لها عرض ثابت للتمرير السلس</li>
+                <li>تأكد من أن التمرير يعمل على جميع الأجهزة</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // إضافة تأثيرات تفاعلية للبطاقات
+        document.addEventListener('DOMContentLoaded', function() {
+            const mealCards = document.querySelectorAll('.meal-card');
+            
+            mealCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.boxShadow = '0 12px 30px rgba(0, 0, 0, 0.12)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.08)';
+                });
+            });
+        });
+        
+        // إضافة تأثيرات للتمرير
+        const scrollContainers = document.querySelectorAll('.meals-scroll-container');
+        
+        scrollContainers.forEach(container => {
+            container.addEventListener('scroll', function() {
+                // يمكن إضافة تأثيرات إضافية هنا
+                console.log('تم التمرير في:', this);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار إصلاح بطاقات لماذا الاشتراك معنا - الهاتف المحمول</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        /* Mobile styles for feature cards section */
+        @media (max-width: 768px) {
+            .grid-responsive {
+                display: flex !important;
+                overflow-x: auto !important;
+                scroll-snap-type: x mandatory !important;
+                gap: 1rem !important;
+                padding: 1rem 0 !important;
+                scroll-behavior: smooth !important;
+                margin: 0 -0.5rem !important;
+            }
+            
+            .grid-responsive .card {
+                min-width: 220px !important;
+                max-width: 220px !important;
+                min-height: 280px !important;
+                height: auto !important;
+                flex-shrink: 0 !important;
+                scroll-snap-align: center !important;
+                padding: 1.25rem !important;
+                margin: 0 0.5rem !important;
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95)) !important;
+                border: 1px solid rgba(255, 255, 255, 0.3) !important;
+                backdrop-filter: blur(10px) !important;
+                position: relative !important;
+                overflow: visible !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: flex-start !important;
+            }
+            
+            .grid-responsive .card::before {
+                content: '' !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                height: 3px !important;
+                background: linear-gradient(90deg, #4a757c, #ba6c5d) !important;
+                border-radius: 1rem 1rem 0 0 !important;
+            }
+            
+            .grid-responsive .card .feature-icon {
+                font-size: 2.25rem !important;
+                width: 55px !important;
+                height: 55px !important;
+                margin-bottom: 0.75rem !important;
+                border-radius: 50% !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                margin: 0 auto 0.75rem !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+                transition: all 0.3s ease !important;
+            }
+            
+            .grid-responsive .card h3 {
+                font-size: 0.95rem !important;
+                margin-bottom: 0.5rem !important;
+                font-weight: 600 !important;
+                color: #2f6e73 !important;
+                text-align: center !important;
+            }
+            
+            .grid-responsive .card p {
+                font-size: 0.8rem !important;
+                line-height: 1.5 !important;
+                padding: 0.75rem !important;
+                background: rgba(255, 255, 255, 0.7) !important;
+                border-radius: 0.5rem !important;
+                border: 1px solid rgba(255, 255, 255, 0.5) !important;
+                color: #4a5568 !important;
+                text-align: center !important;
+                flex: 1 !important;
+                display: flex !important;
+                align-items: flex-start !important;
+                justify-content: center !important;
+                margin: 0 !important;
+                word-wrap: break-word !important;
+                overflow-wrap: break-word !important;
+                hyphens: auto !important;
+            }
+        }
+        
+        /* Extra small screens (phones) */
+        @media (max-width: 480px) {
+            .grid-responsive {
+                gap: 0.75rem !important;
+                padding: 0.75rem 0 !important;
+            }
+            
+            .grid-responsive .card {
+                min-width: 200px !important;
+                max-width: 200px !important;
+                min-height: 240px !important;
+                height: auto !important;
+                padding: 1rem !important;
+                margin: 0 0.25rem !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: flex-start !important;
+            }
+            
+            .grid-responsive .card .feature-icon {
+                font-size: 1.75rem !important;
+                width: 45px !important;
+                height: 45px !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            .grid-responsive .card h3 {
+                font-size: 0.85rem !important;
+                margin-bottom: 0.4rem !important;
+            }
+            
+            .grid-responsive .card p {
+                font-size: 0.75rem !important;
+                line-height: 1.4 !important;
+                padding: 0.5rem !important;
+                flex: 1 !important;
+                display: flex !important;
+                align-items: flex-start !important;
+                justify-content: center !important;
+                margin: 0 !important;
+                word-wrap: break-word !important;
+                overflow-wrap: break-word !important;
+                hyphens: auto !important;
+            }
+        }
+        
+        /* Hide scrollbars but keep functionality */
+        .grid-responsive::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .grid-responsive {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="section-title">اختبار إصلاح بطاقات لماذا الاشتراك معنا</h1>
+        
+        <div class="grid-responsive">
+            <!-- البطاقة الأولى: وجبات متنوعة -->
+            <div class="card">
+                <div class="feature-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white;">
+                    🍽️
+                </div>
+                <h3>وجبات متنوعة</h3>
+                <p>قائمة مختارة من المطاعم: اختر فطور أو غداء أو عشاء بما يناسب ذوقك ومتطلباتك الغذائية مع ضمان الجودة والطعم المميز</p>
+            </div>
+            
+            <!-- البطاقة الثانية: وقت التوصيل -->
+            <div class="card">
+                <div class="feature-icon" style="background: linear-gradient(135deg, #54a0ff, #2e86de); color: white;">
+                    ⏰
+                </div>
+                <h3>وقت التوصيل</h3>
+                <p>نوصل في نفس الموعد لنوع الوجبة طوال مدة الاشتراك مع ضمان الوصول في الوقت المحدد والوجبة ساخنة وطازجة</p>
+            </div>
+            
+            <!-- البطاقة الثالثة: جودة عالية -->
+            <div class="card">
+                <div class="feature-icon" style="background: linear-gradient(135deg, #66bb6a, #4caf50); color: white;">
+                    ⭐
+                </div>
+                <h3>جودة عالية</h3>
+                <p>نختار أفضل المطاعم والمطابخ المتخصصة لضمان تقديم وجبات عالية الجودة ومتنوعة تناسب جميع الأذواق والاحتياجات الغذائية</p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 2rem; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 0.5rem; color: white;">
+            <h3>ملاحظات الاختبار:</h3>
+            <ul style="margin-top: 0.5rem; padding-right: 1rem;">
+                <li>تأكد من أن النص يظهر كاملاً في جميع البطاقات</li>
+                <li>تأكد من أن البطاقات لا تقطع النص من الأسفل</li>
+                <li>تأكد من أن الارتفاع يتكيف مع محتوى النص</li>
+                <li>اختبر على أحجام شاشات مختلفة (768px, 480px)</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
