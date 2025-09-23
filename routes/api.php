@@ -96,7 +96,7 @@ Route::middleware(['auth:sanctum', 'check.user.status', 'role:admin'])->prefix('
     Route::put('users/{id}/toggle-status', [\App\Http\Controllers\Api\Admin\UserController::class, 'toggleStatus']);
     
     // Restaurant management
-    Route::apiResource('restaurants', \App\Http\Controllers\Api\Admin\RestaurantController::class);
+    Route::apiResource('restaurants', \App\Http\Controllers\Api\Admin\RestaurantController::class)->names('admin.restaurants');
     Route::put('restaurants/{id}/toggle-status', [\App\Http\Controllers\Api\Admin\RestaurantController::class, 'toggleStatus']);
     Route::get('restaurants/sellers/list', [\App\Http\Controllers\Api\Admin\RestaurantController::class, 'getSellers']);
     
@@ -193,7 +193,7 @@ Route::middleware(['auth:sanctum', 'check.user.status', 'role:admin'])->prefix('
 // Seller routes
 Route::middleware(['auth:sanctum', 'check.user.status', 'role:seller', 'log.auth'])->prefix('seller')->group(function () {
     // Restaurant management
-    Route::apiResource('restaurants', SellerRestaurantController::class);
+    Route::apiResource('restaurants', SellerRestaurantController::class)->names('seller.restaurants');
     Route::put('restaurants/{id}/toggle-status', [SellerRestaurantController::class, 'toggleStatus']);
     Route::get('restaurants/{id}/stats', [SellerRestaurantController::class, 'stats']);
     
