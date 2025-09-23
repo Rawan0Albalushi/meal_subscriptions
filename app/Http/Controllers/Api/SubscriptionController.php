@@ -25,6 +25,33 @@ class SubscriptionController extends Controller
     {
         $this->paymentService = $paymentService;
     }
+
+    /**
+     * Update parent subscription status to completed when all items are delivered.
+     */
+    private function updateParentSubscriptionStatusIfCompleted(Subscription $subscription): void
+    {
+        try {
+            $totalItemsCount = $subscription->subscriptionItems()->count();
+            if ($totalItemsCount === 0) {
+                return;
+            }
+
+            $deliveredItemsCount = $subscription->subscriptionItems()
+                ->where('status', 'delivered')
+                ->count();
+
+            if ($deliveredItemsCount === $totalItemsCount && $subscription->status !== 'completed') {
+                $subscription->status = 'completed';
+                $subscription->save();
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Failed to recalculate subscription status', [
+                'subscription_id' => $subscription->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
     public function index(Request $request)
     {
         $subscriptions = Subscription::where('user_id', auth()->id())
@@ -565,6 +592,11 @@ class SubscriptionController extends Controller
         $subscriptionItem->update([
             'status' => $request->status
         ]);
+        // Recalculate parent subscription status
+        $subscriptionItem->load('subscription');
+        if ($subscriptionItem->subscription) {
+            $this->updateParentSubscriptionStatusIfCompleted($subscriptionItem->subscription);
+        }
 
         return response()->json([
             'success' => true,
@@ -703,6 +735,11 @@ class SubscriptionController extends Controller
         $subscriptionItem->update([
             'status' => $request->status
         ]);
+        // Recalculate parent subscription status
+        $subscriptionItem->load('subscription');
+        if ($subscriptionItem->subscription) {
+            $this->updateParentSubscriptionStatusIfCompleted($subscriptionItem->subscription);
+        }
 
         return response()->json([
             'success' => true,
