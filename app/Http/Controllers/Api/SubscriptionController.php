@@ -605,9 +605,27 @@ class SubscriptionController extends Controller
         $restaurant = auth()->user()->restaurants()->findOrFail($restaurantId);
         
         $subscriptions = Subscription::where('restaurant_id', $restaurantId)
-            ->with(['user', 'deliveryAddress', 'subscriptionItems.meal'])
+            ->with(['user', 'deliveryAddress', 'subscriptionItems.meal', 'subscriptionType', 'restaurant'])
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get()
+            ->map(function ($subscription) {
+                $subscriptionType = $subscription->subscriptionType;
+                $totalAmount = $subscription->total_amount ?? 0;
+                $deliveryPrice = $subscription->delivery_price ?? 0;
+                $subscriptionPrice = $totalAmount - $deliveryPrice;
+                $adminCommissionPercentage = $subscriptionType ? ($subscriptionType->admin_commission ?? 0) : 0;
+                // النسبة تحسب من سعر الاشتراك بدون التوصيل
+                $adminCommissionAmount = $adminCommissionPercentage ? ($subscriptionPrice * $adminCommissionPercentage / 100) : 0;
+                $merchantAmount = $subscriptionPrice - $adminCommissionAmount;
+
+                // Preserve original structure plus computed fields for seller UI/export
+                $base = $subscription->toArray();
+                $base['subscription_price'] = $subscriptionPrice;
+                $base['admin_commission_percentage'] = $adminCommissionPercentage;
+                $base['admin_commission_amount'] = $adminCommissionAmount;
+                $base['merchant_amount'] = $merchantAmount;
+                return $base;
+            });
 
         return response()->json([
             'success' => true,

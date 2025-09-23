@@ -218,24 +218,38 @@ const SellerReports = () => {
             language === 'ar' ? 'الهاتف' : 'Phone',
             language === 'ar' ? 'المطعم' : 'Restaurant',
             language === 'ar' ? 'نوع الاشتراك' : 'Subscription Type',
-            language === 'ar' ? 'سعر الوجبة (بالريال)' : 'Meal Price (OMR)',
+            language === 'ar' ? 'السعر الإجمالي (بالريال)' : 'Total Amount (OMR)',
+            language === 'ar' ? 'سعر الاشتراك (بالريال)' : 'Subscription Price (OMR)',
             language === 'ar' ? 'سعر التوصيل (بالريال)' : 'Delivery Price (OMR)',
-            language === 'ar' ? 'الإجمالي (بالريال)' : 'Total (OMR)',
+            language === 'ar' ? 'نسبة مكسب (%)' : 'Admin Commission (%)',
+            language === 'ar' ? 'مستحقات مكسب (بالريال)' : 'Admin Commission Amount (OMR)',
+            language === 'ar' ? 'مستحقاتي (بالريال)' : 'Merchant Amount (OMR)',
             language === 'ar' ? 'تاريخ البدء' : 'Start Date',
             language === 'ar' ? 'تاريخ الإنشاء' : 'Created At'
         ];
-        const rows = [headers, ...recentSubscriptions.map((s) => [
-            s.id || '',
-            (s.user?.name || s.customer_name || ''),
-            (s.deliveryAddress?.phone || s.delivery_address?.phone || s.customer_phone || ''),
-            resolveRestaurantName(s),
-            s.subscription_type || '',
-            formatCurrencyText((s.total_amount || 0) - (s.delivery_price || 0)),
-            formatDeliveryText(s.delivery_price || 0),
-            formatCurrencyText(s.total_amount || 0),
-            s.start_date ? formatDateTime(s.start_date) : '',
-            s.created_at ? formatDateTime(s.created_at) : ''
-        ])];
+        const rows = [headers, ...recentSubscriptions.map((s) => {
+            const totalAmount = parseFloat(s.total_amount || 0);
+            const deliveryPrice = parseFloat(s.delivery_price || 0);
+            const subscriptionPrice = parseFloat(s.subscription_price != null ? s.subscription_price : (totalAmount - deliveryPrice));
+            const adminCommissionPercentage = s.admin_commission_percentage || 0;
+            const adminCommissionAmount = s.admin_commission_amount != null ? s.admin_commission_amount : (subscriptionPrice * adminCommissionPercentage / 100);
+            const merchantAmount = s.merchant_amount != null ? s.merchant_amount : (subscriptionPrice - adminCommissionAmount);
+            return [
+                s.id || '',
+                (s.user?.name || s.customer_name || ''),
+                (s.deliveryAddress?.phone || s.delivery_address?.phone || s.customer_phone || ''),
+                resolveRestaurantName(s),
+                getSubscriptionTypeDisplay(s),
+                formatCurrencyText(totalAmount),
+                formatCurrencyText(subscriptionPrice),
+                formatDeliveryText(deliveryPrice),
+                adminCommissionPercentage ? `${adminCommissionPercentage}%` : '-',
+                formatCurrencyText(adminCommissionAmount || 0),
+                formatCurrencyText(merchantAmount || 0),
+                s.start_date ? formatDateTime(s.start_date) : '',
+                s.created_at ? formatDateTime(s.created_at) : ''
+            ];
+        })];
         downloadExcelHTML(`seller_subscriptions_${new Date().toISOString().slice(0,10)}.xls`, rows);
     };
 
@@ -249,24 +263,7 @@ const SellerReports = () => {
         }
     };
 
-    const getStatusColor = (status) => {
-        switch (status?.toLowerCase()) {
-            case 'active':
-            case 'نشط':
-                return 'rgb(34 197 94)';
-            case 'completed':
-            case 'مكتمل':
-                return 'rgb(59 130 246)';
-            case 'cancelled':
-            case 'ملغي':
-                return 'rgb(239 68 68)';
-            case 'pending':
-            case 'في الانتظار':
-                return 'rgb(245 158 11)';
-            default:
-                return 'rgb(107 114 128)';
-        }
-    };
+    // removed status color helper as status column is no longer displayed
 
     const resolveRestaurantName = (subscription) => {
         const fromRel = subscription?.restaurant?.name_ar || subscription?.restaurant?.name_en || subscription?.restaurant?.name;
@@ -274,6 +271,19 @@ const SellerReports = () => {
         if (subscription?.restaurant_name) return subscription.restaurant_name;
         const found = (restaurants || []).find(r => r.id === subscription?.restaurant_id);
         return found?.name_ar || found?.name_en || found?.name || '-';
+    };
+
+    const getSubscriptionTypeDisplay = (subscription) => {
+        const raw = subscription?.subscription_type;
+        if (typeof raw === 'string') return raw;
+        if (raw && typeof raw === 'object') {
+            return raw.name_ar || raw.name_en || raw.name || '-';
+        }
+        const rel = subscription?.subscriptionType;
+        if (rel && typeof rel === 'object') {
+            return rel.name_ar || rel.name_en || rel.name || '-';
+        }
+        return '-';
     };
 
     const getDisplayValue = (data, key) => {
@@ -800,23 +810,24 @@ const SellerReports = () => {
                                         {language === 'ar' ? 'نوع الاشتراك' : 'Subscription Type'}
                                     </th>
                                     <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>
-                                        {language === 'ar' ? 'سعر الوجبة' : 'Meal Price'}
+                                        {language === 'ar' ? 'السعر الإجمالي' : 'Total Amount'}
+                                    </th>
+                                    <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>
+                                        {language === 'ar' ? 'سعر الاشتراك' : 'Subscription Price'}
                                     </th>
                                     <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>
                                         {language === 'ar' ? 'سعر التوصيل' : 'Delivery Price'}
                                     </th>
                                     <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>
-                                        {language === 'ar' ? 'الإجمالي' : 'Total'}
+                                        {language === 'ar' ? 'نسبة مكسب' : 'Admin Commission %'}
                                     </th>
-                                    <th style={{
-                                        padding: '1rem',
-                                        textAlign: 'center',
-                                        fontWeight: '600',
-                                        color: 'rgb(79 70 229)',
-                                        borderRight: '1px solid rgba(0, 0, 0, 0.1)'
-                                    }}>
-                                        {language === 'ar' ? 'الحالة' : 'Status'}
+                                    <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>
+                                        {language === 'ar' ? 'مستحقات مكسب' : 'Admin Commission Amount'}
                                     </th>
+                                    <th style={{ padding: '1rem', textAlign: 'center', fontWeight: '600', color: 'rgb(79 70 229)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>
+                                        {language === 'ar' ? 'مستحقاتي' : 'Merchant Amount'}
+                                    </th>
+                                     
                                     <th style={{
                                         padding: '1rem',
                                         textAlign: 'center',
@@ -889,7 +900,7 @@ const SellerReports = () => {
                                             color: 'rgb(107 114 128)',
                                             borderRight: '1px solid rgba(0, 0, 0, 0.1)'
                                         }}>
-                                            {subscription.subscription_type}
+                                        {getSubscriptionTypeDisplay(subscription)}
                                         </td>
                                                                                 <td style={{
                                             padding: '1rem',
@@ -898,7 +909,16 @@ const SellerReports = () => {
                                             color: '#2f6e73',
                                             borderRight: '1px solid rgba(0, 0, 0, 0.1)'
                                     }}>
-                                        {formatCurrency((subscription.total_amount || 0) - (subscription.delivery_price || 0))}
+                                        {formatCurrency(subscription.total_amount || 0)}
+                                        </td>
+                                        <td style={{
+                                            padding: '1rem',
+                                            textAlign: 'center',
+                                            fontWeight: '600',
+                                            color: '#2f6e73',
+                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
+                                        }}>
+                                            {formatCurrency((subscription.subscription_price != null ? subscription.subscription_price : (subscription.total_amount || 0) - (subscription.delivery_price || 0)))}
                                         </td>
                                         <td style={{
                                             padding: '1rem',
@@ -908,30 +928,16 @@ const SellerReports = () => {
                                         }}>
                                             {subscription.delivery_price > 0 ? formatCurrency(subscription.delivery_price) : (language === 'ar' ? 'مجاني' : 'Free')}
                                         </td>
-                                        <td style={{
-                                            padding: '1rem',
-                                            textAlign: 'center',
-                                            color: 'rgb(107 114 128)',
-                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
-                                        }}>
-                                            {formatCurrency(subscription.total_amount || 0)}
+                                        <td style={{ padding: '1rem', textAlign: 'center', color: subscription.admin_commission_percentage ? '#2f6e73' : 'rgb(107 114 128)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>
+                                            {subscription.admin_commission_percentage ? `${subscription.admin_commission_percentage}%` : (language === 'ar' ? 'غير محدد' : 'Not Set')}
                                         </td>
-                                        <td style={{
-                                            padding: '1rem',
-                                            textAlign: 'center',
-                                            borderRight: '1px solid rgba(0, 0, 0, 0.1)'
-                                        }}>
-                                            <span style={{
-                                                padding: '0.25rem 0.75rem',
-                                                borderRadius: '9999px',
-                                         fontSize: '0.75rem',
-                                                fontWeight: '500',
-                                                background: `${getStatusColor(subscription.status)}20`,
-                                                color: getStatusColor(subscription.status)
-                                            }}>
-                                                {subscription.status}
-                                            </span>
+                                        <td style={{ padding: '1rem', textAlign: 'center', color: subscription.admin_commission_amount > 0 ? '#2f6e73' : 'rgb(107 114 128)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>
+                                            {formatCurrency(subscription.admin_commission_amount || 0)}
                                         </td>
+                                        <td style={{ padding: '1rem', textAlign: 'center', color: 'rgb(107 114 128)', borderRight: '1px solid rgba(0, 0, 0, 0.1)' }}>
+                                            {formatCurrency(subscription.merchant_amount || 0)}
+                                        </td>
+                                        
                                         <td style={{
                                             padding: '1rem',
                                             textAlign: 'center',
