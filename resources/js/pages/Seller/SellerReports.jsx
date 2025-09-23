@@ -39,6 +39,8 @@ const SellerReports = () => {
     const [restaurants, setRestaurants] = useState([]);
     const [recentSubscriptions, setRecentSubscriptions] = useState([]);
     const [topSubscriptionTypes, setTopSubscriptionTypes] = useState([]);
+    const [dateFrom, setDateFrom] = useState('');
+    const [dateTo, setDateTo] = useState('');
 
     useEffect(() => {
         fetchReportsData();
@@ -196,6 +198,19 @@ const SellerReports = () => {
         URL.revokeObjectURL(url);
     };
 
+    const getFilteredSubscriptions = () => {
+        if (!dateFrom && !dateTo) return recentSubscriptions;
+        const fromTs = dateFrom ? new Date(dateFrom + 'T00:00:00').getTime() : null;
+        const toTs = dateTo ? new Date(dateTo + 'T23:59:59').getTime() : null;
+        return recentSubscriptions.filter((s) => {
+            const ts = new Date(s.created_at).getTime();
+            if (Number.isNaN(ts)) return false;
+            if (fromTs && ts < fromTs) return false;
+            if (toTs && ts > toTs) return false;
+            return true;
+        });
+    };
+
     const handleExportExcel = () => {
         const currencyLabel = language === 'ar' ? 'ريال' : 'OMR';
         const formatCurrencyText = (n) => `${parseFloat(n || 0).toFixed(2)} ${currencyLabel}`;
@@ -227,7 +242,7 @@ const SellerReports = () => {
             language === 'ar' ? 'تاريخ البدء' : 'Start Date',
             language === 'ar' ? 'تاريخ الإنشاء' : 'Created At'
         ];
-        const rows = [headers, ...recentSubscriptions.map((s) => {
+        const rows = [headers, ...getFilteredSubscriptions().map((s) => {
             const totalAmount = parseFloat(s.total_amount || 0);
             const deliveryPrice = parseFloat(s.delivery_price || 0);
             const subscriptionPrice = parseFloat(s.subscription_price != null ? s.subscription_price : (totalAmount - deliveryPrice));
@@ -583,7 +598,7 @@ const SellerReports = () => {
                                 {/* Filters */}
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
                     gap: '1.5rem',
                     marginBottom: '2rem',
                     padding: '0 1.5rem'
@@ -681,6 +696,50 @@ const SellerReports = () => {
                             ))}
                         </select>
                     </div>
+
+                    {/* Date Range Filters */}
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
+                        gap: '0.75rem'
+                    }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <label style={{ fontSize: '0.875rem', fontWeight: '600', color: 'rgb(55 65 81)', textAlign: 'center' }}>
+                                {language === 'ar' ? 'من تاريخ' : 'From'}
+                            </label>
+                            <input
+                                type="date"
+                                value={dateFrom}
+                                onChange={(e) => setDateFrom(e.target.value)}
+                                style={{
+                                    padding: '0.65rem 0.75rem',
+                                    borderRadius: '0.75rem',
+                                    border: '1px solid rgba(0, 0, 0, 0.1)',
+                                    background: 'rgba(255, 255, 255, 0.9)',
+                                    fontSize: '0.875rem',
+                                    color: 'rgb(55 65 81)'
+                                }}
+                            />
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <label style={{ fontSize: '0.875rem', fontWeight: '600', color: 'rgb(55 65 81)', textAlign: 'center' }}>
+                                {language === 'ar' ? 'إلى تاريخ' : 'To'}
+                            </label>
+                            <input
+                                type="date"
+                                value={dateTo}
+                                onChange={(e) => setDateTo(e.target.value)}
+                                style={{
+                                    padding: '0.65rem 0.75rem',
+                                    borderRadius: '0.75rem',
+                                    border: '1px solid rgba(0, 0, 0, 0.1)',
+                                    background: 'rgba(255, 255, 255, 0.9)',
+                                    fontSize: '0.875rem',
+                                    color: 'rgb(55 65 81)'
+                                }}
+                            />
+                        </div>
+                    </div>
                 </div>
 
             {/* Subscription Orders Table */}
@@ -721,7 +780,7 @@ const SellerReports = () => {
                              }}>
                                  {language === 'ar' ? 'جميع طلبات الاشتراك' : 'All Subscription Orders'}
                              </h3>
-                             <span style={{
+                            <span style={{
                                  padding: '0.25rem 0.75rem',
                                  borderRadius: '9999px',
                                  fontSize: '0.875rem',
@@ -729,7 +788,7 @@ const SellerReports = () => {
                                  background: 'rgba(47, 110, 115, 0.1)',
                                  color: '#2f6e73'
                              }}>
-                                                                   {recentSubscriptions.length} {language === 'ar' ? 'اشتراك' : 'subscriptions'}
+                                                                   {getFilteredSubscriptions().length} {language === 'ar' ? 'اشتراك' : 'subscriptions'}
                              </span>
                         </div>
                         <div>
@@ -848,7 +907,7 @@ const SellerReports = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {recentSubscriptions.map((subscription, index) => (
+                                {getFilteredSubscriptions().map((subscription, index) => (
                                     <tr key={index} style={{
                                         borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
                                 transition: 'all 0.2s ease',
