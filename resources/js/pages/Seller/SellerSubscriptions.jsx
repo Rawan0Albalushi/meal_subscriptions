@@ -137,7 +137,23 @@ const SellerSubscriptions = () => {
             });
             
             if (response.ok) {
-                // Refresh subscriptions
+                // تحديث فوري للاشتراك المحدد في النافذة المنبثقة
+                if (selectedSubscription && selectedSubscription.id === subscriptionId) {
+                    setSelectedSubscription(prev => ({
+                        ...prev,
+                        status: newStatus
+                    }));
+                }
+                
+                // رسالة نجاح
+                showMessage(
+                    language === 'ar' 
+                        ? `تم تحديث حالة الاشتراك إلى ${getStatusText(newStatus)}` 
+                        : `Subscription status updated to ${getStatusText(newStatus)}`,
+                    'success'
+                );
+                
+                // تحديث قائمة الاشتراكات
                 fetchSubscriptions(selectedRestaurant);
             }
         } catch (error) {
@@ -157,7 +173,27 @@ const SellerSubscriptions = () => {
             });
             
             if (response.ok) {
-                // Refresh subscriptions
+                // تحديث فوري للاشتراك المحدد في النافذة المنبثقة
+                if (selectedSubscription && selectedSubscription.id === subscriptionId) {
+                    setSelectedSubscription(prev => ({
+                        ...prev,
+                        subscription_items: prev.subscription_items.map(item => 
+                            item.id === itemId 
+                                ? { ...item, status: newStatus }
+                                : item
+                        )
+                    }));
+                }
+                
+                // رسالة نجاح
+                showMessage(
+                    language === 'ar' 
+                        ? `تم تحديث حالة الوجبة إلى ${getItemStatusText(newStatus)}` 
+                        : `Meal status updated to ${getItemStatusText(newStatus)}`,
+                    'success'
+                );
+                
+                // تحديث قائمة الاشتراكات
                 fetchSubscriptions(selectedRestaurant);
             }
         } catch (error) {
@@ -1150,17 +1186,6 @@ const SellerSubscriptions = () => {
                                         }}>
                                             {language === 'ar' ? 'الوجبات' : 'Meals'}
                                         </th>
-                                        <th style={{
-                                            padding: '1rem',
-                                            textAlign: 'center',
-                                               fontWeight: '600',
-                                            color: '#374151',
-                                            fontSize: '0.9rem',
-                                               textTransform: 'uppercase',
-                                            letterSpacing: '0.05em'
-                                        }}>
-                                            {language === 'ar' ? 'الإجراءات' : 'Actions'}
-                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1306,46 +1331,10 @@ const SellerSubscriptions = () => {
                                                     🍽️ {language === 'ar' ? 'عرض الوجبات' : 'View Meals'}
                                                 </button>
                                             </td>
-                                            <td style={{
-                                                padding: '1rem',
-                                                textAlign: 'center'
-                                            }}>
-                                                <div style={{
-                                                    display: 'flex',
-                                                    gap: '0.5rem',
-                                                    justifyContent: 'center',
-                                                    flexWrap: 'wrap'
-                                                }}>
-                                                    <button
-                                                        onClick={() => {
-                                                            setSelectedSubscription(subscription);
-                                                            setShowDetailsModal(true);
-                                                        }}
-                                                        style={{
-                                                            background: '#3b82f6',
-                                                            color: 'white',
-                                                            border: 'none',
-                                                            borderRadius: '0.375rem',
-                                                            padding: '0.5rem 0.75rem',
-                                                            fontSize: '0.8rem',
-                                                            cursor: 'pointer',
-                                                            transition: 'all 0.2s ease'
-                                                        }}
-                                                        onMouseOver={(e) => {
-                                                            e.target.style.backgroundColor = '#2563eb';
-                                                        }}
-                                                        onMouseOut={(e) => {
-                                                            e.target.style.backgroundColor = '#3b82f6';
-                                                        }}
-                                                    >
-                                                        {language === 'ar' ? 'عرض' : 'View'}
-                                                    </button>
-                                                </div>
-                                            </td>
                                         </tr>
                                     )) : (
                                         <tr>
-                                            <td colSpan="9" style={{
+                                            <td colSpan="8" style={{
                                                 padding: '3rem',
                                                 textAlign: 'center',
                                                 color: '#6b7280',
@@ -1614,26 +1603,168 @@ const SellerSubscriptions = () => {
 
                         {/* Delivery Address */}
                         <div style={{
-                            background: 'rgba(59, 130, 246, 0.1)',
+                            background: 'rgba(16, 185, 129, 0.1)',
                             borderRadius: '0.75rem',
                             padding: '1rem',
                             marginBottom: '1.5rem',
-                            border: '1px solid rgba(59, 130, 246, 0.2)'
+                            border: '1px solid rgba(16, 185, 129, 0.2)'
                         }}>
                             <h3 style={{
                                 fontSize: '1.1rem',
                                 fontWeight: '600',
-                                color: '#1e40af',
+                                color: '#059669',
                                 margin: 0,
                                 marginBottom: '1rem'
                             }}>
                                 {language === 'ar' ? 'عنوان التوصيل' : 'Delivery Address'}
                             </h3>
                             <div style={{
-                                fontSize: '0.9rem',
-                                color: '#374151'
+                                display: 'grid',
+                                gridTemplateColumns: windowWidth <= 768 ? '1fr' : 'repeat(2, 1fr)',
+                                gap: '1rem'
                             }}>
-                                {selectedSubscription.delivery_address?.address}
+                                {/* اسم العنوان */}
+                                {selectedSubscription.delivery_address?.name && (
+                                    <div>
+                                        <div style={{
+                                            fontSize: '0.875rem',
+                                            fontWeight: '600',
+                                            color: 'rgb(107 114 128)',
+                                            marginBottom: '0.25rem',
+                                            textAlign: dir === 'rtl' ? 'right' : 'left'
+                                        }}>
+                                            {language === 'ar' ? 'اسم العنوان' : 'Address Name'}
+                                        </div>
+                                        <div style={{
+                                            fontSize: '1rem',
+                                            color: 'rgb(17 24 39)',
+                                            textAlign: dir === 'rtl' ? 'right' : 'left'
+                                        }}>
+                                            {selectedSubscription.delivery_address.name}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* رقم الهاتف */}
+                                {selectedSubscription.delivery_address?.phone && (
+                                    <div>
+                                        <div style={{
+                                            fontSize: '0.875rem',
+                                            fontWeight: '600',
+                                            color: 'rgb(107 114 128)',
+                                            marginBottom: '0.25rem',
+                                            textAlign: dir === 'rtl' ? 'right' : 'left'
+                                        }}>
+                                            {language === 'ar' ? 'رقم الهاتف' : 'Phone Number'}
+                                        </div>
+                                        <div style={{
+                                            fontSize: '1rem',
+                                            color: 'rgb(17 24 39)',
+                                            textAlign: dir === 'rtl' ? 'right' : 'left',
+                                            direction: 'ltr'
+                                        }}>
+                                            {selectedSubscription.delivery_address.phone}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* العنوان التفصيلي */}
+                                {selectedSubscription.delivery_address?.address && (
+                                    <div style={{
+                                        gridColumn: windowWidth <= 768 ? '1' : '1 / -1'
+                                    }}>
+                                        <div style={{
+                                            fontSize: '0.875rem',
+                                            fontWeight: '600',
+                                            color: 'rgb(107 114 128)',
+                                            marginBottom: '0.25rem',
+                                            textAlign: dir === 'rtl' ? 'right' : 'left'
+                                        }}>
+                                            {language === 'ar' ? 'العنوان التفصيلي' : 'Detailed Address'}
+                                        </div>
+                                        <div style={{
+                                            fontSize: '1rem',
+                                            color: 'rgb(17 24 39)',
+                                            textAlign: dir === 'rtl' ? 'right' : 'left',
+                                            lineHeight: '1.5'
+                                        }}>
+                                            {selectedSubscription.delivery_address.address}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* المدينة */}
+                                {selectedSubscription.delivery_address?.city && (
+                                    <div>
+                                        <div style={{
+                                            fontSize: '0.875rem',
+                                            fontWeight: '600',
+                                            color: 'rgb(107 114 128)',
+                                            marginBottom: '0.25rem',
+                                            textAlign: dir === 'rtl' ? 'right' : 'left'
+                                        }}>
+                                            {language === 'ar' ? 'المدينة' : 'City'}
+                                        </div>
+                                        <div style={{
+                                            fontSize: '1rem',
+                                            color: 'rgb(17 24 39)',
+                                            textAlign: dir === 'rtl' ? 'right' : 'left'
+                                        }}>
+                                            {selectedSubscription.delivery_address.city}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* الرمز البريدي */}
+                                {selectedSubscription.delivery_address?.postal_code && (
+                                    <div>
+                                        <div style={{
+                                            fontSize: '0.875rem',
+                                            fontWeight: '600',
+                                            color: 'rgb(107 114 128)',
+                                            marginBottom: '0.25rem',
+                                            textAlign: dir === 'rtl' ? 'right' : 'left'
+                                        }}>
+                                            {language === 'ar' ? 'الرمز البريدي' : 'Postal Code'}
+                                        </div>
+                                        <div style={{
+                                            fontSize: '1rem',
+                                            color: 'rgb(17 24 39)',
+                                            textAlign: dir === 'rtl' ? 'right' : 'left',
+                                            direction: 'ltr'
+                                        }}>
+                                            {selectedSubscription.delivery_address.postal_code}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* الملاحظات الإضافية */}
+                                {selectedSubscription.delivery_address?.additional_notes && (
+                                    <div style={{
+                                        gridColumn: windowWidth <= 768 ? '1' : '1 / -1'
+                                    }}>
+                                        <div style={{
+                                            fontSize: '0.875rem',
+                                            fontWeight: '600',
+                                            color: 'rgb(107 114 128)',
+                                            marginBottom: '0.25rem',
+                                            textAlign: dir === 'rtl' ? 'right' : 'left'
+                                        }}>
+                                            {language === 'ar' ? 'ملاحظات إضافية' : 'Additional Notes'}
+                                        </div>
+                                        <div style={{
+                                            fontSize: '1rem',
+                                            color: 'rgb(17 24 39)',
+                                            textAlign: dir === 'rtl' ? 'right' : 'left',
+                                            lineHeight: '1.5',
+                                            fontStyle: 'italic'
+                                        }}>
+                                            {selectedSubscription.delivery_address.additional_notes}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* رابط الخريطة */}
                                 {(() => {
                                     const lat = selectedSubscription?.delivery_address?.latitude;
                                     const lng = selectedSubscription?.delivery_address?.longitude;
@@ -1646,9 +1777,35 @@ const SellerSubscriptions = () => {
                                     }
                                     if (!link) return null;
                                     return (
-                                        <a href={link} target="_blank" rel="noopener noreferrer" style={{ marginInlineStart: '0.5rem', color: '#2563eb', textDecoration: 'underline' }}>
-                                            {language === 'ar' ? 'فتح على الخريطة' : 'Open Map'}
-                                        </a>
+                                        <div style={{
+                                            gridColumn: windowWidth <= 768 ? '1' : '1 / -1'
+                                        }}>
+                                            <div style={{
+                                                fontSize: '0.875rem',
+                                                fontWeight: '600',
+                                                color: 'rgb(107 114 128)',
+                                                marginBottom: '0.25rem',
+                                                textAlign: dir === 'rtl' ? 'right' : 'left'
+                                            }}>
+                                                {language === 'ar' ? 'الموقع على الخريطة' : 'Map Location'}
+                                            </div>
+                                            <a 
+                                                href={link} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer" 
+                                                style={{ 
+                                                    fontSize: '1rem',
+                                                    color: '#2563eb',
+                                                    textDecoration: 'underline',
+                                                    fontWeight: '500',
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.25rem'
+                                                }}
+                                            >
+                                                {language === 'ar' ? 'فتح على الخريطة' : 'Open Map'} 🚀
+                                            </a>
+                                        </div>
                                     );
                                 })()}
                             </div>
@@ -1718,18 +1875,35 @@ const SellerSubscriptions = () => {
                                                 {getItemStatusText(item.status)}
                                             </span>
                                             
+                                            {/* رسالة توضيحية للوجبات غير القابلة للتعديل */}
+                                            {(item.status === 'cancelled' || item.status === 'delivered') && (
+                                                <span style={{
+                                                    fontSize: '0.75rem',
+                                                    color: '#6b7280',
+                                                    fontStyle: 'italic',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.25rem'
+                                                }}>
+                                                    {item.status === 'cancelled' 
+                                                        ? (language === 'ar' ? '⛔ لا يمكن تعديل الوجبة الملغية' : '⛔ Cannot modify cancelled meal')
+                                                        : (language === 'ar' ? '✅ لا يمكن تعديل الوجبة المُسلمة' : '✅ Cannot modify delivered meal')
+                                                    }
+                                                </span>
+                                            )}
+                                            
                                             <select
                                                 value={item.status}
                                                 onChange={(e) => updateItemStatus(selectedSubscription.id, item.id, e.target.value)}
-                                                disabled={selectedSubscription.status === 'cancelled'}
+                                                disabled={selectedSubscription.status === 'cancelled' || item.status === 'cancelled' || item.status === 'delivered'}
                                                 style={{
                                                     padding: '0.5rem',
                                                     border: '1px solid rgb(209 213 219)',
                                                     borderRadius: '0.375rem',
                                                     fontSize: '0.875rem',
-                                                    background: selectedSubscription.status === 'cancelled' ? '#f3f4f6' : 'white',
-                                                    cursor: selectedSubscription.status === 'cancelled' ? 'not-allowed' : 'pointer',
-                                                    opacity: selectedSubscription.status === 'cancelled' ? 0.7 : 1
+                                                    background: (selectedSubscription.status === 'cancelled' || item.status === 'cancelled' || item.status === 'delivered') ? '#f3f4f6' : 'white',
+                                                    cursor: (selectedSubscription.status === 'cancelled' || item.status === 'cancelled' || item.status === 'delivered') ? 'not-allowed' : 'pointer',
+                                                    opacity: (selectedSubscription.status === 'cancelled' || item.status === 'cancelled' || item.status === 'delivered') ? 0.7 : 1
                                                 }}
                                             >
                                                 <option value="pending">{language === 'ar' ? 'في الانتظار' : 'Pending'}</option>

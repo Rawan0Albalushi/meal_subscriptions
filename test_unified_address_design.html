@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار التصميم الموحد - بطاقة العنوان</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            margin: 0;
+            font-size: 2rem;
+        }
+        
+        .success-message {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .comparison-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid;
+        }
+        
+        .customer-card .card-title {
+            color: #059669;
+            border-bottom-color: rgba(16, 185, 129, 0.2);
+        }
+        
+        .address-card .card-title {
+            color: #059669;
+            border-bottom-color: rgba(16, 185, 129, 0.2);
+        }
+        
+        .field {
+            margin-bottom: 15px;
+        }
+        
+        .field-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: rgb(107 114 128);
+            margin-bottom: 5px;
+            text-align: right;
+        }
+        
+        .field-value {
+            font-size: 1rem;
+            color: rgb(17 24 39);
+            text-align: right;
+        }
+        
+        .field-value.phone {
+            direction: ltr;
+            text-align: left;
+        }
+        
+        .field-value.postal {
+            direction: ltr;
+            text-align: left;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .features-list {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .features-list h3 {
+            margin: 0 0 15px 0;
+            color: #495057;
+            font-size: 1.2rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .feature-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .feature-text {
+            font-size: 0.85rem;
+            color: #495057;
+            font-weight: 500;
+        }
+        
+        .implementation-steps {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .implementation-steps h3 {
+            margin: 0 0 15px 0;
+            color: #1976d2;
+            font-size: 1.2rem;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #bbdefb;
+        }
+        
+        .step-number {
+            width: 1.2rem;
+            height: 1.2rem;
+            background: #1976d2;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .step-text {
+            font-size: 0.85rem;
+            color: #1976d2;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 اختبار التصميم الموحد - بطاقة العنوان</h1>
+        </div>
+        
+        <div class="success-message">
+            ✅ تم إعادة تصميم بطاقة العنوان لتتناسب مع تصميم بطاقة بيانات العميل!
+        </div>
+        
+        <div class="comparison-section">
+            <!-- بطاقة بيانات العميل -->
+            <div class="card customer-card">
+                <h3 class="card-title">معلومات العميل</h3>
+                <div class="grid-2">
+                    <div class="field">
+                        <div class="field-label">الاسم</div>
+                        <div class="field-value">أحمد محمد العلي</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">البريد الإلكتروني</div>
+                        <div class="field-value">ahmed@example.com</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">رقم الهاتف</div>
+                        <div class="field-value phone">+968 9123 4567</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- بطاقة العنوان الجديدة -->
+            <div class="card address-card">
+                <h3 class="card-title">عنوان التوصيل</h3>
+                <div class="grid-2">
+                    <div class="field">
+                        <div class="field-label">اسم العنوان</div>
+                        <div class="field-value">أحمد محمد العلي</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">رقم الهاتف</div>
+                        <div class="field-value phone">+968 9123 4567</div>
+                    </div>
+                    <div class="field full-width">
+                        <div class="field-label">العنوان التفصيلي</div>
+                        <div class="field-value">شارع السلطان قابوس، بناية النخيل، الطابق الثالث، شقة 301، بالقرب من مجمع العاصمة التجاري</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">المدينة</div>
+                        <div class="field-value">مسقط</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">الرمز البريدي</div>
+                        <div class="field-value postal">112</div>
+                    </div>
+                    <div class="field full-width">
+                        <div class="field-label">ملاحظات إضافية</div>
+                        <div class="field-value" style="font-style: italic;">يرجى ترك الطلب عند الباب الرئيسي، والاتصال قبل التوصيل بساعة</div>
+                    </div>
+                    <div class="field full-width">
+                        <div class="field-label">الموقع على الخريطة</div>
+                        <div class="field-value">
+                            <a href="#" style="color: #2563eb; text-decoration: underline;">فتح على الخريطة 🚀</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features-list">
+            <h3>🎯 الميزات الموحدة</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">🎨</div>
+                    <div class="feature-text">نفس الألوان الخضراء</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">📐</div>
+                    <div class="feature-text">نفس التخطيط الشبكي</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">🔤</div>
+                    <div class="feature-text">نفس خطوط الكتابة</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">📱</div>
+                    <div class="feature-text">نفس التجاوب مع الأجهزة</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">🎯</div>
+                    <div class="feature-text">نفس التنسيق للاتجاه</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">⚡</div>
+                    <div class="feature-text">نفس الأداء والسرعة</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="implementation-steps">
+            <h3>🔧 خطوات التطبيق المكتملة</h3>
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-text">تم تغيير الألوان من الأزرق إلى الأخضر</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-text">تم إزالة الأيقونات الملونة</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-text">تم توحيد التخطيط الشبكي</div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-text">تم توحيد خطوط الكتابة والأحجام</div>
+            </div>
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-text">تم توحيد التنسيق للاتجاه العربي</div>
+            </div>
+            <div class="step">
+                <div class="step-number">6</div>
+                <div class="step-text">تم توحيد التجاوب مع الأجهزة المحمولة</div>
+            </div>
+            <div class="step">
+                <div class="step-number">7</div>
+                <div class="step-text">تم تحسين عرض الحقول الطويلة (العنوان، الملاحظات، الخريطة)</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

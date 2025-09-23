@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار إزالة عمود الإجراءات المكرر</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            margin: 0;
+            font-size: 2rem;
+        }
+        
+        .success-message {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        
+        .table th {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .table td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+        
+        .table tr:hover {
+            background: #f8fafc;
+        }
+        
+        .customer-info {
+            text-align: right;
+        }
+        
+        .customer-name {
+            color: #374151;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .customer-email {
+            color: #6b7280;
+            font-size: 0.8rem;
+        }
+        
+        .amount {
+            color: #3b82f6;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .delivery-price {
+            color: #f59e0b;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .total-amount {
+            color: #059669;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .date {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: rgb(16, 185, 129);
+        }
+        
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: rgb(245, 158, 11);
+        }
+        
+        .status-completed {
+            background: rgba(59, 130, 246, 0.1);
+            color: rgb(59, 130, 246);
+        }
+        
+        .status-cancelled {
+            background: rgba(239, 68, 68, 0.1);
+            color: rgb(239, 68, 68);
+        }
+        
+        .view-button {
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin: 0 auto;
+        }
+        
+        .view-button:hover {
+            background: #7c3aed;
+            transform: translateY(-1px);
+        }
+        
+        .comparison-section {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .comparison-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .before-after {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .before-after h4 {
+            margin: 0 0 10px 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .before-after.before h4 {
+            color: #dc2626;
+        }
+        
+        .before-after.after h4 {
+            color: #059669;
+        }
+        
+        .column-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .column-list li {
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .column-list li.removed {
+            background: #fee2e2;
+            color: #dc2626;
+            text-decoration: line-through;
+        }
+        
+        .column-list li.kept {
+            background: #d1fae5;
+            color: #059669;
+        }
+        
+        .improvements-list {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .improvements-list h3 {
+            margin: 0 0 15px 0;
+            color: #1976d2;
+            font-size: 1.2rem;
+        }
+        
+        .improvement-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #bbdefb;
+        }
+        
+        .improvement-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .improvement-text {
+            font-size: 0.9rem;
+            color: #1976d2;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗑️ إزالة عمود الإجراءات المكرر</h1>
+        </div>
+        
+        <div class="success-message">
+            ✅ تم حذف عمود الإجراءات المكرر بنجاح! الآن الجدول أكثر تنظيماً
+        </div>
+        
+        <div class="comparison-section">
+            <h3 class="comparison-title">📊 مقارنة قبل وبعد التعديل</h3>
+            <div class="comparison-grid">
+                <div class="before-after before">
+                    <h4>❌ قبل التعديل (9 أعمدة)</h4>
+                    <ul class="column-list">
+                        <li class="kept">🆔 رقم الاشتراك</li>
+                        <li class="kept">👤 العميل</li>
+                        <li class="kept">💰 مبلغ الاشتراك</li>
+                        <li class="kept">🚚 سعر التوصيل</li>
+                        <li class="kept">💵 المبلغ الإجمالي</li>
+                        <li class="kept">📅 التاريخ</li>
+                        <li class="kept">📊 الحالة</li>
+                        <li class="kept">🍽️ الوجبات</li>
+                        <li class="removed">⚙️ الإجراءات (مكرر)</li>
+                    </ul>
+                </div>
+                <div class="before-after after">
+                    <h4>✅ بعد التعديل (8 أعمدة)</h4>
+                    <ul class="column-list">
+                        <li class="kept">🆔 رقم الاشتراك</li>
+                        <li class="kept">👤 العميل</li>
+                        <li class="kept">💰 مبلغ الاشتراك</li>
+                        <li class="kept">🚚 سعر التوصيل</li>
+                        <li class="kept">💵 المبلغ الإجمالي</li>
+                        <li class="kept">📅 التاريخ</li>
+                        <li class="kept">📊 الحالة</li>
+                        <li class="kept">🍽️ الوجبات</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>🆔 رقم الاشتراك</th>
+                        <th>👤 العميل</th>
+                        <th>💰 مبلغ الاشتراك</th>
+                        <th>🚚 سعر التوصيل</th>
+                        <th>💵 المبلغ الإجمالي</th>
+                        <th>📅 التاريخ</th>
+                        <th>📊 الحالة</th>
+                        <th>🍽️ الوجبات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#12345</td>
+                        <td class="customer-info">
+                            <div class="customer-name">أحمد محمد</div>
+                            <div class="customer-email">ahmed@example.com</div>
+                        </td>
+                        <td class="amount">15.50 ريال</td>
+                        <td class="delivery-price">2.00 ريال</td>
+                        <td class="total-amount">17.50 ريال</td>
+                        <td class="date">15 يناير 2024</td>
+                        <td><span class="status status-active">نشط</span></td>
+                        <td>
+                            <button class="view-button">
+                                🍽️ عرض الوجبات
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#12346</td>
+                        <td class="customer-info">
+                            <div class="customer-name">فاطمة علي</div>
+                            <div class="customer-email">fatima@example.com</div>
+                        </td>
+                        <td class="amount">12.00 ريال</td>
+                        <td class="delivery-price">مجاني</td>
+                        <td class="total-amount">12.00 ريال</td>
+                        <td class="date">14 يناير 2024</td>
+                        <td><span class="status status-pending">في الانتظار</span></td>
+                        <td>
+                            <button class="view-button">
+                                🍽️ عرض الوجبات
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#12347</td>
+                        <td class="customer-info">
+                            <div class="customer-name">محمد حسن</div>
+                            <div class="customer-email">mohammed@example.com</div>
+                        </td>
+                        <td class="amount">20.00 ريال</td>
+                        <td class="delivery-price">3.00 ريال</td>
+                        <td class="total-amount">23.00 ريال</td>
+                        <td class="date">13 يناير 2024</td>
+                        <td><span class="status status-completed">مكتمل</span></td>
+                        <td>
+                            <button class="view-button">
+                                🍽️ عرض الوجبات
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="improvements-list">
+            <h3>🎯 التحسينات المطبقة</h3>
+            <div class="improvement-item">
+                <div class="improvement-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">🗑️</div>
+                <div class="improvement-text">تم حذف عمود الإجراءات المكرر</div>
+            </div>
+            <div class="improvement-item">
+                <div class="improvement-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">📊</div>
+                <div class="improvement-text">تحسين تنظيم الجدول (8 أعمدة بدلاً من 9)</div>
+            </div>
+            <div class="improvement-item">
+                <div class="improvement-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">🎨</div>
+                <div class="improvement-text">تحسين المظهر البصري للجدول</div>
+            </div>
+            <div class="improvement-item">
+                <div class="improvement-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">⚡</div>
+                <div class="improvement-text">تبسيط واجهة المستخدم</div>
+            </div>
+            <div class="improvement-item">
+                <div class="improvement-icon" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">🔧</div>
+                <div class="improvement-text">إصلاح colSpan في رسالة "لا توجد اشتراكات"</div>
+            </div>
+            <div class="improvement-item">
+                <div class="improvement-icon" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">✅</div>
+                <div class="improvement-text">الحفاظ على وظيفة "عرض الوجبات" في عمود الوجبات</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

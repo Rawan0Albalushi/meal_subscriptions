@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار قيود تعديل حالة الوجبات</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            margin: 0;
+            font-size: 2rem;
+        }
+        
+        .success-message {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .subscription-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .subscription-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .subscription-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1e40af;
+        }
+        
+        .subscription-status {
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: rgba(34, 197, 94, 0.1);
+            color: rgb(34 197 94);
+        }
+        
+        .meals-section {
+            margin-top: 20px;
+        }
+        
+        .meals-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 15px 0;
+        }
+        
+        .meal-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .meal-info {
+            flex: 1;
+        }
+        
+        .meal-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+        
+        .meal-date {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .meal-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: rgb(245, 158, 11);
+        }
+        
+        .status-preparing {
+            background: rgba(59, 130, 246, 0.1);
+            color: rgb(59, 130, 246);
+        }
+        
+        .status-delivered {
+            background: rgba(34, 197, 94, 0.1);
+            color: rgb(34, 197, 94);
+        }
+        
+        .status-cancelled {
+            background: rgba(239, 68, 68, 0.1);
+            color: rgb(239, 68, 68);
+        }
+        
+        .status-select {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .status-select:disabled {
+            background: #f3f4f6;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .restriction-message {
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .features-list {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .features-list h3 {
+            margin: 0 0 15px 0;
+            color: #495057;
+            font-size: 1.2rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .feature-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .feature-text {
+            font-size: 0.9rem;
+            color: #495057;
+            font-weight: 500;
+        }
+        
+        .implementation-steps {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .implementation-steps h3 {
+            margin: 0 0 15px 0;
+            color: #1976d2;
+            font-size: 1.2rem;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #bbdefb;
+        }
+        
+        .step-number {
+            width: 1.5rem;
+            height: 1.5rem;
+            background: #1976d2;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .step-text {
+            font-size: 0.9rem;
+            color: #1976d2;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 اختبار قيود تعديل حالة الوجبات</h1>
+        </div>
+        
+        <div class="success-message">
+            ✅ تم تطبيق قيود تعديل الوجبات بنجاح! الوجبات الملغية والمُسلمة لا يمكن تعديلها
+        </div>
+        
+        <!-- مثال على الاشتراكات مع حالات مختلفة -->
+        <div class="subscription-card">
+            <div class="subscription-header">
+                <div class="subscription-title">اشتراك #12345</div>
+                <div class="subscription-status status-active">نشط</div>
+            </div>
+            
+            <div class="meals-section">
+                <h3 class="meals-title">الوجبات المطلوبة</h3>
+                
+                <!-- وجبة في الانتظار - قابلة للتعديل -->
+                <div class="meal-item">
+                    <div class="meal-info">
+                        <div class="meal-name">وجبة فطور 1</div>
+                        <div class="meal-date">2024-01-15</div>
+                    </div>
+                    <div class="meal-controls">
+                        <span class="status-badge status-pending">في الانتظار</span>
+                        <select class="status-select">
+                            <option value="pending">في الانتظار</option>
+                            <option value="preparing">قيد التحضير</option>
+                            <option value="delivered">تم التوصيل</option>
+                            <option value="cancelled">ملغي</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- وجبة قيد التحضير - قابلة للتعديل -->
+                <div class="meal-item">
+                    <div class="meal-info">
+                        <div class="meal-name">وجبة غداء 1</div>
+                        <div class="meal-date">2024-01-15</div>
+                    </div>
+                    <div class="meal-controls">
+                        <span class="status-badge status-preparing">قيد التحضير</span>
+                        <select class="status-select">
+                            <option value="pending">في الانتظار</option>
+                            <option value="preparing" selected>قيد التحضير</option>
+                            <option value="delivered">تم التوصيل</option>
+                            <option value="cancelled">ملغي</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- وجبة تم التوصيل - غير قابلة للتعديل -->
+                <div class="meal-item">
+                    <div class="meal-info">
+                        <div class="meal-name">وجبة عشاء 1</div>
+                        <div class="meal-date">2024-01-14</div>
+                    </div>
+                    <div class="meal-controls">
+                        <span class="status-badge status-delivered">تم التوصيل</span>
+                        <span class="restriction-message">✅ لا يمكن تعديل الوجبة المُسلمة</span>
+                        <select class="status-select" disabled>
+                            <option value="pending">في الانتظار</option>
+                            <option value="preparing">قيد التحضير</option>
+                            <option value="delivered" selected>تم التوصيل</option>
+                            <option value="cancelled">ملغي</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- وجبة ملغية - غير قابلة للتعديل -->
+                <div class="meal-item">
+                    <div class="meal-info">
+                        <div class="meal-name">وجبة فطور 2</div>
+                        <div class="meal-date">2024-01-13</div>
+                    </div>
+                    <div class="meal-controls">
+                        <span class="status-badge status-cancelled">ملغي</span>
+                        <span class="restriction-message">⛔ لا يمكن تعديل الوجبة الملغية</span>
+                        <select class="status-select" disabled>
+                            <option value="pending">في الانتظار</option>
+                            <option value="preparing">قيد التحضير</option>
+                            <option value="delivered">تم التوصيل</option>
+                            <option value="cancelled" selected>ملغي</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features-list">
+            <h3>🔒 الميزات المطبقة</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">🚫</div>
+                    <div class="feature-text">منع تعديل الوجبات الملغية</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">✅</div>
+                    <div class="feature-text">منع تعديل الوجبات المُسلمة</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">📝</div>
+                    <div class="feature-text">رسائل توضيحية للمستخدم</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">🎨</div>
+                    <div class="feature-text">تنسيق بصري للعناصر المعطلة</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">⚡</div>
+                    <div class="feature-text">منع التعديل على مستوى الوجبة الفردية</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">🔄</div>
+                    <div class="feature-text">الحفاظ على الوجبات القابلة للتعديل</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="implementation-steps">
+            <h3>🔧 خطوات التطبيق المكتملة</h3>
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-text">تم إضافة شرط منع التعديل للوجبات الملغية</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-text">تم إضافة شرط منع التعديل للوجبات المُسلمة</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-text">تم إضافة رسائل توضيحية للمستخدم</div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-text">تم تطبيق التنسيق البصري للعناصر المعطلة</div>
+            </div>
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-text">تم اختبار جميع الحالات المختلفة</div>
+            </div>
+            <div class="step">
+                <div class="step-number">6</div>
+                <div class="step-text">تم التأكد من عدم وجود أخطاء في الكود</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

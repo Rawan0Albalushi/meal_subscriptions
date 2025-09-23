@@ -324,6 +324,35 @@ const SellerMeals = () => {
         });
     };
 
+    const handleToggleAvailability = async (mealId) => {
+        try {
+            const response = await fetch(`/api/seller/restaurants/${selectedRestaurant}/meals/${mealId}/toggle-availability`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                // Update the meal in the local state
+                setMeals(meals.map(meal => 
+                    meal.id === mealId 
+                        ? { ...meal, is_available: result.data.is_available }
+                        : meal
+                ));
+                showMessage(result.message, 'success');
+            } else {
+                const errorData = await response.json();
+                showMessage(errorData.message || (language === 'ar' ? 'حدث خطأ في تغيير حالة الوجبة' : 'Error toggling meal availability'), 'error');
+            }
+        } catch (error) {
+            console.error('Error toggling meal availability:', error);
+            showMessage(language === 'ar' ? 'حدث خطأ في تغيير حالة الوجبة' : 'Error toggling meal availability', 'error');
+        }
+    };
+
     const resetForm = () => {
         setFormData({
             name_ar: '',
@@ -771,6 +800,25 @@ const SellerMeals = () => {
                                     title={language === 'ar' ? 'تعديل' : 'Edit'}
                                 >
                                     ✏️
+                                </button>
+                                <button
+                                    onClick={() => handleToggleAvailability(meal.id)}
+                                    style={{
+                                        padding: window.innerWidth <= 768 ? '0.75rem' : '0.5rem',
+                                        background: meal.is_available 
+                                            ? 'rgba(239, 68, 68, 0.1)' 
+                                            : 'rgba(34, 197, 94, 0.1)',
+                                        border: 'none',
+                                        borderRadius: window.innerWidth <= 768 ? '0.375rem' : '0.5rem',
+                                        cursor: 'pointer',
+                                        fontSize: window.innerWidth <= 768 ? '1.125rem' : '1rem'
+                                    }}
+                                    title={meal.is_available 
+                                        ? (language === 'ar' ? 'إلغاء التفعيل' : 'Deactivate') 
+                                        : (language === 'ar' ? 'تفعيل' : 'Activate')
+                                    }
+                                >
+                                    {meal.is_available ? '⏸️' : '▶️'}
                                 </button>
                                 <button
                                     onClick={() => handleDelete(meal.id)}
