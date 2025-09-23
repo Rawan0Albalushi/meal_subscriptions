@@ -3,6 +3,11 @@ import { showAlert } from '../utils/popupUtils';
 
 const GOOGLE_MAPS_LIBRARIES = ['maps'];
 
+// دالة callback لتحميل خرائط جوجل
+window.initGoogleMaps = () => {
+  console.log('تم تحميل خرائط جوجل بنجاح');
+};
+
 const InteractiveMap = ({
   onLocationSelect,
   initialLat = 23.5880,
@@ -30,22 +35,46 @@ const InteractiveMap = ({
       }
 
       const apiKey = import.meta?.env?.VITE_GOOGLE_MAPS_API_KEY;
-      if (!apiKey) {
+      if (!apiKey || apiKey === 'your-google-maps-api-key-here') {
+        const error = new Error('مفتاح Google Maps API غير موجود. يرجى إضافة VITE_GOOGLE_MAPS_API_KEY في ملف .env');
         console.error('Missing VITE_GOOGLE_MAPS_API_KEY');
+        reject(error);
+        return;
       }
 
       const script = document.createElement('script');
       script.id = 'google-maps-script';
       const params = new URLSearchParams({
-        key: apiKey || '',
+        key: apiKey,
         libraries: GOOGLE_MAPS_LIBRARIES.join(','),
-        v: 'weekly'
+        v: 'weekly',
+        callback: 'initGoogleMaps',
+        language: 'ar',
+        region: 'OM'
       });
       script.src = `https://maps.googleapis.com/maps/api/js?${params.toString()}`;
       script.async = true;
       script.defer = true;
-      script.onload = () => resolve(window.google);
-      script.onerror = reject;
+      
+      // تسجيل معلومات الاستدعاء للتشخيص
+      console.log('تحميل Google Maps API:', {
+        apiKey: apiKey ? `${apiKey.substring(0, 10)}...` : 'غير موجود',
+        url: script.src,
+        libraries: GOOGLE_MAPS_LIBRARIES
+      });
+      script.onload = () => {
+        // التحقق من أن Google Maps تم تحميله بشكل صحيح
+        if (window.google && window.google.maps) {
+          console.log('تم تحميل خرائط جوجل بنجاح');
+          resolve(window.google);
+        } else {
+          reject(new Error('فشل في تحميل خرائط جوجل - API غير متاح'));
+        }
+      };
+      script.onerror = (error) => {
+        console.error('خطأ في تحميل خرائط جوجل:', error);
+        reject(new Error('فشل في تحميل خرائط جوجل. تحقق من مفتاح API والاتصال بالإنترنت.'));
+      };
       document.head.appendChild(script);
     });
   };
@@ -57,6 +86,11 @@ const InteractiveMap = ({
     const initMap = async () => {
       try {
         const google = await loadGoogleMapsScript();
+
+        // التحقق من أن Google Maps متاح
+        if (!google || !google.maps) {
+          throw new Error('خرائط جوجل غير متاحة');
+        }
 
         if (!mapInstanceRef.current && mapContainerRef.current) {
           mapInstanceRef.current = new google.maps.Map(mapContainerRef.current, {
@@ -128,6 +162,11 @@ const InteractiveMap = ({
         setIsLoading(false);
       } catch (err) {
         console.error('خطأ في تحميل خرائط جوجل:', err);
+        showAlert(
+          err.message || 'حدث خطأ في تحميل الخريطة. يرجى التحقق من الاتصال بالإنترنت وإعدادات API.',
+          'خطأ في الخريطة',
+          'error'
+        );
         setIsLoading(false);
       }
     };
@@ -196,10 +235,10 @@ const InteractiveMap = ({
   return (
     <div className="relative" style={{ position: 'relative', zIndex: 1 }}>
       {isLoading && (
-        <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10 rounded-lg">
+        <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-10 rounded-lg">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto mb-2" style={{ borderBottomColor: '#2f6e73' }}></div>
-            <p className="text-sm text-gray-600">جاري تحميل الخريطة...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+            <p className="text-gray-600">جاري تحميل الخريطة...</p>
           </div>
         </div>
       )}
